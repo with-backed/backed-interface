@@ -18,7 +18,7 @@ export default function Home(){
       <Head>
         <title>{"Commune"}</title>
         <link
-  async
+ 
   rel="stylesheet"
   href="//cdn.jsdelivr.net/npm/semantic-ui@${props.versions.sui}/dist/semantic.min.css"
 />

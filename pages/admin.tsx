@@ -17,15 +17,6 @@ export default function Home(){
    <div>
       <Head>
         <title>Admin</title>
-        <link
-  async
-  rel="stylesheet"
-  href="//cdn.jsdelivr.net/npm/semantic-ui@${props.versions.sui}/dist/semantic.min.css"
-/>
-<script
-  async
-  src="//cdn.jsdelivr.net/npm/semantic-ui@${props.versions.sui}/dist/semantic.min.js"
-></script>
       </Head>
       <div>
       

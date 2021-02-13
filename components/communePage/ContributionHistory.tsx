@@ -18,7 +18,8 @@ export default function ContributionHistory({communeData}){
 	const loadData = async () => {
 		var results = []
 		// if(events.length == 0){
-			results = await communeContract.queryFilter("*")
+			let filter = { topics: []}
+			results = await communeContract.queryFilter(filter)
 			console.log(results)
 			setEvents(results)
 
