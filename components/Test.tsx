@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import CommuneArtifact from "../contracts/Commune.json";
 import React, { useEffect, useState } from 'react';
 import { getCommuneData } from '../lib/communes'
+import { Dimmer, Loader } from 'semantic-ui-react'
 import Commune from "./Commune"
 
 
@@ -31,10 +32,14 @@ export default function Test({communeID}){
 	}, [communeID])
 	return(
 		<div> 
-		{communeData == null ?
-		<p> loadaing </p> : 
+		{communeData == null ? 
+		<Dimmer active={communeData == null} inverted>
+        <Loader inverted content='Loading' />
+      	</Dimmer>
+      	 :
 		<Commune {...communeData}/>
 		}
+		
 
 		 </div>
 		)
