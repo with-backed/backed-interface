@@ -8,8 +8,18 @@
     "start": "next start"
   },
   "dependencies": {
+    "ethers": "^5.0.26",
     "next": "10.0.5",
     "react": "17.0.1",
-    "react-dom": "17.0.1"
+    "react-dom": "17.0.1",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^2.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.21",
+    "@types/react": "^17.0.0",
+    "file-loader": "^6.2.0",
+    "typescript": "^4.1.3",
+    "url-loader": "^4.1.1"
   }
 }
