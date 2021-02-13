@@ -213,12 +213,15 @@ function ConfirmContent({members, didContribute, account, communeID, communeCont
 	}
 
 	var contribute = async () => {
+      setIsLoading(true)
 	    const t = await communeContract.contribute(BigInt(amount * Math.pow(10, assetDecimals)), communeID)
 	    t.wait().then((receipt) => {
-	      setIsLoading(true)
-	      waitForContribution()
+	       setIsLoading(false)
+         setHasConfirmed(true)
+         didContribute()
 	    })
 	    .catch(err => {
+        setIsLoading(false)
 	    	console.log(err)
 	    })
 	}
