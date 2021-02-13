@@ -64,7 +64,7 @@ export default function Home(){
         <Header as="h4"> 1. <Link href="/create" > Create a Commune </Link> </Header>
         <Header as="h4"> 2. Add others to it </Header>
         <Header as="h4"> 3. Start contributing </Header>
-        <Header as="h4"> 4. Members can withdraw funds wheneve they want </Header>
+        <Header as="h4"> 4. Members can withdraw funds whenever they want </Header>
         </div>
       </div>
 
