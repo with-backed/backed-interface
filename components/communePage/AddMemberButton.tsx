@@ -16,6 +16,7 @@ export default function AddMemberButton({communeContract, communeID, setIsLoadin
     communeContract.addCommuneMember(address, BigInt(communeID)).then((receipt) => {
         setIsLoading(true)
         waitForAddMember()
+        setAddress("")
       })
       .catch(err => {
         console.log(err)
@@ -39,6 +40,10 @@ export default function AddMemberButton({communeContract, communeID, setIsLoadin
 
   }
 
+  const clearErrors = () => {
+    setError(false)
+  }
+
   return(
     <Modal
         open={open}
@@ -46,7 +51,7 @@ export default function AddMemberButton({communeContract, communeID, setIsLoadin
         >
           <Modal.Header>Add Member to Commune</Modal.Header>
           <Modal.Content>
-            <Input error={isError} placeholder='Address' value={address} onChange={handleChange}/>
+            <Input onFocus={clearErrors} error={isError} placeholder='Address' value={address} onChange={handleChange}/>
             {isError ? <p> Address is invalid </p> : ""}
           </Modal.Content>
           <Modal.Actions>
