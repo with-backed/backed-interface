@@ -182,8 +182,8 @@ export default function CommunePage({account, communeContract, communeData}) {
         <Grid.Row>
         {communeData.allowsOutsideContribution ? 
           <div>
-            <Contribute memberCount={memberCount} communeContract={communeContract} didContribute={didContribute} communeID={communeData.id} account={account} assetAddress={communeData.asset} assetSymbol={communeData.assetSymbol}/>
-            {memberCount == 0 ? <p> Must have at least one member to accept contributions </p> : "" }
+          <div> down for maintenance </div>
+            
           </div>
         : "" }
 
@@ -196,8 +196,7 @@ export default function CommunePage({account, communeContract, communeData}) {
         {isCommuneMember ? 
           <div>
         { addressBalance > 0 ? 
-        <WithdrawButton balance={addressBalance} communeContract={communeContract} communeID={communeData.id} 
-          setIsLoading={setIsLoading} didWithdraw={didContribute} account={account} assetDecimals={communeData.assetDecimals}/>
+        <div> down for maintenance </div>
         : ""
       }
         <LeaveButton communeContract={communeContract} communeID={communeData.id} 
@@ -225,6 +224,10 @@ export default function CommunePage({account, communeContract, communeData}) {
   )
 }
 
+// <Contribute memberCount={memberCount} communeContract={communeContract} didContribute={didContribute} communeID={communeData.id} account={account} assetAddress={communeData.asset} assetSymbol={communeData.assetSymbol}/>
+            // {memberCount == 0 ? <p> Must have at least one member to accept contributions </p> : "" }
+            // <WithdrawButton balance={addressBalance} communeContract={communeContract} communeID={communeData.id} 
+          // setIsLoading={setIsLoading} didWithdraw={didContribute} account={account} assetDecimals={communeData.assetDecimals}/>
 
 const AdminButtons = ({communeContract, communeData, setIsLoading, memberChange, getController}) => {
   return(
