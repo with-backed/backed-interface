@@ -180,10 +180,10 @@ export default function CommunePage({account, communeContract, communeData}) {
       {communeContract == null || account == null ? "" :
       <Grid>
         <Grid.Row>
-        {communeData.allowsOutsideContribution ? 
+        {communeData.allowsOutsideContribution  || isCommuneMember ? 
           <div>
-          <div> down for maintenance </div>
-            
+            <Contribute memberCount={memberCount} communeContract={communeContract} didContribute={didContribute} communeID={communeData.id} account={account} assetAddress={communeData.asset} assetSymbol={communeData.assetSymbol}/>
+            {memberCount == 0 ? <p> Must have at least one member to accept contributions </p> : "" }
           </div>
         : "" }
 
@@ -196,7 +196,8 @@ export default function CommunePage({account, communeContract, communeData}) {
         {isCommuneMember ? 
           <div>
         { addressBalance > 0 ? 
-        <div> down for maintenance </div>
+        <WithdrawButton balance={addressBalance} communeContract={communeContract} communeID={communeData.id} 
+          setIsLoading={setIsLoading} didWithdraw={didContribute} account={account} assetDecimals={communeData.assetDecimals}/>
         : ""
       }
         <LeaveButton communeContract={communeContract} communeID={communeData.id} 
@@ -224,10 +225,6 @@ export default function CommunePage({account, communeContract, communeData}) {
   )
 }
 
-// <Contribute memberCount={memberCount} communeContract={communeContract} didContribute={didContribute} communeID={communeData.id} account={account} assetAddress={communeData.asset} assetSymbol={communeData.assetSymbol}/>
-            // {memberCount == 0 ? <p> Must have at least one member to accept contributions </p> : "" }
-            // <WithdrawButton balance={addressBalance} communeContract={communeContract} communeID={communeData.id} 
-          // setIsLoading={setIsLoading} didWithdraw={didContribute} account={account} assetDecimals={communeData.assetDecimals}/>
 
 const AdminButtons = ({communeContract, communeData, setIsLoading, memberChange, getController}) => {
   return(
