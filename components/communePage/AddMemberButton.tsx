@@ -13,7 +13,8 @@ export default function AddMemberButton({communeContract, communeID, setIsLoadin
       return
     }
     setOpen(false)
-    communeContract.addCommuneMember(address, BigInt(communeID)).then((receipt) => {
+    const t = await communeContract.addCommuneMember(address, BigInt(communeID))
+    t.wait().then((receipt) => {
         setIsLoading(true)
         waitForAddMember()
         setAddress("")

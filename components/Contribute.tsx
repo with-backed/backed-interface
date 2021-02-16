@@ -170,11 +170,11 @@ function ApproveContent({account,  assetSymbol, setApproved, tokenContract, comm
 	      console.log("is null")
 	      return
 	    }
-	    tokenContract.approve(communeAddress, BigNumber.from(2).pow(255))
-	    .then((receipt) => {
-	      setIsLoading(true)
-	      waitForApproval()
-	    })
+	    const t = await tokenContract.approve(communeAddress, BigNumber.from(2).pow(255))
+      t.wait().then((receipt) => {
+         setIsLoading(false)
+         setApproved(true)
+      })
 	    .catch(err => {
 	    	console.log(err)
 	    })
