@@ -215,7 +215,7 @@ function ConfirmContent({members, didContribute, account, communeID, communeCont
 
 	var contribute = async () => {
       setIsLoading(true)
-	    const t = await communeContract.contribute(BigInt(amount * Math.pow(10, assetDecimals)), communeID)
+	    const t = await communeContract.contribute(ethers.utils.parseUnits(amount, assetDecimals), communeID)
 	    t.wait().then((receipt) => {
 	       setIsLoading(false)
          setHasConfirmed(true)
@@ -282,7 +282,7 @@ function ConfirmContent({members, didContribute, account, communeID, communeCont
 }
 
 function InputContribution({account, tokenContract, assetDecimals, assetSymbol, amount, setAmount, setHasInput}){
-	const [balance, setBalance] = useState(0)
+	const [balance, setBalance] = useState("0")
 
 	const handleKeyPress = (event) => {
 	  if(event.key === 'Enter'){
@@ -296,7 +296,8 @@ function InputContribution({account, tokenContract, assetDecimals, assetSymbol, 
 
   const getBalance = async () => {
   	const balance = await tokenContract.balanceOf(account)
-  	setBalance(balance.toString() / Math.pow(10, assetDecimals))
+    setBalance(ethers.utils.formatUnits(balance, assetDecimals))
+  	// setBalance(balance.toString() / Math.pow(10, assetDecimals))
   }
 
   useEffect(() => {
@@ -306,9 +307,9 @@ function InputContribution({account, tokenContract, assetDecimals, assetSymbol, 
 	return(
 		<div>
 		<p> You have {balance} {assetSymbol}</p>
-		<Input error={parseFloat(amount) > balance || parseFloat(amount) < 0} placeholder='Amount to contribute' onKeyPress={handleKeyPress} type='number' value={amount} onChange={handleChange}/>
-		<Button onClick={() => setHasInput(true)} color="blue" disabled={parseFloat(amount) == 0 || parseFloat(amount) > balance}> continue </Button>
-		{parseFloat(amount) > balance ? 
+		<Input error={parseFloat(amount) > parseFloat(balance) || parseFloat(amount) < 0} placeholder='Amount to contribute' onKeyPress={handleKeyPress} type='number' value={amount} onChange={handleChange}/>
+		<Button onClick={() => setHasInput(true)} color="blue" disabled={parseFloat(amount) == 0 || parseFloat(amount) > parseFloat(balance)}> continue </Button>
+		{parseFloat(amount) > parseFloat(balance) ? 
 			<p> exceeds amount available </p>
 			: ""}
 			{parseFloat(amount) < 0 ? 

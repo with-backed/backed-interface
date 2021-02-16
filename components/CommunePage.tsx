@@ -21,7 +21,7 @@ import ChangeControllerButton from "./communePage/ChangeControllerButton"
 export default function CommunePage({account, communeContract, communeData}) {
   // const [communeContract, setCommuneContract] = React.useState(null)
   const [isCommuneMember, setIsCommuneMember] = React.useState(false)
-  const [addressBalance, setAddressBalance] = React.useState(0)
+  const [addressBalance, setAddressBalance] = React.useState("0")
   const [proratedTotal, setProratedTotal] = React.useState(communeData.proratedTotal)
   const [memberCount, setMemberCount] = React.useState(communeData.memberCount)
   const [controller, setController] = React.useState(communeData.controller)
@@ -80,7 +80,8 @@ export default function CommunePage({account, communeContract, communeData}) {
   const refreshData = async () => {
     const data = await communeContract.getCommune(BigInt(communeData.id))
     setMemberCount(data["memberCount"].toNumber())
-    setProratedTotal(parseInt(data["proratedTotal"].toString()) / Math.pow(10, communeData.assetDecimals))
+    setProratedTotal(ethers.utils.formatUnits(data["proratedTotal"].toString(), communeData.assetDecimals))
+    // setProratedTotal(parseInt(data["proratedTotal"].toString()) / Math.pow(10, communeData.assetDecimals))
     setController(data["controller"])
   }
 
@@ -93,9 +94,8 @@ export default function CommunePage({account, communeContract, communeData}) {
       return
     }
     const balance = await communeContract.balanceOf(account, BigInt(communeData.id))
-    console.log("settting address balance")
-    console.log(parseInt(balance.toString()) / Math.pow(10, communeData.assetDecimals))
-    setAddressBalance(parseInt(balance.toString()) / Math.pow(10, communeData.assetDecimals))
+
+    setAddressBalance(ethers.utils.formatUnits(balance, communeData.assetDecimals))
   }
 
   // const getController  = async () => {
@@ -137,7 +137,7 @@ export default function CommunePage({account, communeContract, communeData}) {
       <div>
 
         {
-          isCommuneMember || addressBalance > 0 ? 
+          isCommuneMember || parseFloat(addressBalance) > 0 ? 
            
           <Header as='h1'> Your balance: {addressBalance} {communeData.assetSymbol} </Header>
           
@@ -195,7 +195,7 @@ export default function CommunePage({account, communeContract, communeData}) {
 
         {isCommuneMember ? 
           <div>
-        { addressBalance > 0 ? 
+        { parseFloat(addressBalance) > 0 ? 
         <WithdrawButton balance={addressBalance} communeContract={communeContract} communeID={communeData.id} 
           setIsLoading={setIsLoading} didWithdraw={didContribute} account={account} assetDecimals={communeData.assetDecimals}/>
         : ""
