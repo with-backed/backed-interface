@@ -7,7 +7,8 @@ export default function WithdrawButton({balance, account, communeContract, commu
   const [withdrawAmount, setWithdrawAmount] = React.useState("0")
   
   const withdraw = async () => {
-    const t= await communeContract.withdraw(account, account, BigInt(communeID), BigInt(parseFloat(withdrawAmount) * Math.pow(10,assetDecimals)))
+    setIsLoading(true)
+    const t= await communeContract.withdraw(account, account, BigInt(communeID), BigNumber.from(parseFloat(withdrawAmount) * Math.pow(10,assetDecimals)))
     t.wait().then((receipt) => {
         didWithdraw()
         setIsLoading(false)
