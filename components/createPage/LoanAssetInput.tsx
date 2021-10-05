@@ -36,6 +36,6 @@ export default function LoanAssetInput({setDecimals, setLoanAssetAddress}){
     }
 
     return(
-            <Input type='text' title={'collateral NFT contract address'} value={value} placeholder={`address`} error={error} message={message} setValue={handleValue}/>
+            <Input type='text' title={'loan asset contract address'} value={value} placeholder={`e.g. DAI contract address`} error={error} message={message} setValue={handleValue}/>
     )
 }
