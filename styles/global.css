@@ -6,11 +6,14 @@ body {
     Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   line-height: 1.6;
   font-size: 18px;
+  background-color:rgba(255, 255, 255, 1);
 }
 
 * {
   box-sizing: border-box;
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
 a {
   color: #0070f3;
@@ -24,4 +27,295 @@ a:hover {
 img {
   max-width: 100%;
   display: block;
+}
+
+p{
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.times{
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.gray1-fill{
+  background-color: #F4F4F4;
+}
+
+.gray2-fill{
+  background-color: #EEEEEE
+}
+
+.gray3{
+  color: #424242
+}
+
+.black{
+  color: #181818
+}
+
+.blue{
+  color: #0000EE
+}
+
+.dark-gray{
+  color: #DDDDDD;
+}
+
+.craigslist-title{
+  font-size: 20px;
+  font-weight: '300';
+  text-align: center;
+  background-color: #EEEEEE;
+  padding: 20px;
+  border-top: 1px solid #CCCCCC;
+  border-bottom: 1px solid #CCCCCC;
+}
+
+.craiglist-row{
+  height: 55px;
+  width: 100%;
+  background-color: white;
+  padding: 10px;
+}
+
+a{
+  color: #0000EE;
+  text-decoration: underline;
+}
+
+
+.craiglist-row>p{
+  /*padding: 10px;*/
+  /*background: white;*/
+  margin: 0px;
+  margin-top: 5px;
+}
+
+.craiglist-row>.title{
+  float: left;
+  margin-left: 30px;
+}
+
+.craiglist-row>.info{
+  float: right;
+  margin-right: 30px;
+}
+
+#ticket-page{
+  display: table;
+  margin: 0px auto;
+}
+
+#ticket-page-left{
+  float: left;
+  width: 50%;
+}
+
+#ticket-page-right{
+  width: 50%;
+  float: left;
+}
+
+.standard-width-card{
+  width: 476px;
+  
+}
+
+.ticket-items-wrapper{
+  width: 100%;
+}
+
+#collateral-header{
+  width: 85%;
+}
+
+
+/* ntfe */
+.nfte__details{
+  background-color: yellow;
+}
+
+.nfte__meta{
+  display: none;
+}
+
+.nfte__header{
+  display: none;
+}
+
+.nfte--loaded>.nfte__header {
+  display: none;
+}
+
+#info-card{
+  float: left;
+  width: 50%;
+  margin-left: 50px;
+  background-color: blue;
+}
+
+.i{
+   background-color: #f4f4f4;
+   padding: 10px;
+   color: #75187C;
+   padding-top: 40px;
+   padding-bottom: 40px;
+   font-size: 17px;
+ }
+
+ #interest-card{
+  margin-right: 20px;
+ }
+
+ #current-lender-card{
+  margin-top: 40px;
+ }
+
+
+ #pawnShopHeader{
+   text-align: center;
+   margin-top: 40px
+   
+ }
+
+ #pawnShopHeader>h1{
+  color: blue;
+  font-family: 'Times New Roman', Times, serif;
+  font-weight: 400;
+  display: inline;
+ }
+
+ p{
+  font-family: 'Times New Roman', Times, serif;
+ }
+ 
+ #pawnShopHeaderDivider{
+   width: 100%;
+   margin-top: 40px;
+   margin-bottom: 40px;
+   background-color: #FAFAFA;
+   border-top: 1px solid #CCCCCC;
+   border-bottom: 1px solid #CCCCCC;
+   text-align: center;
+   height: 50px;
+ }
+
+ #pawnShopHeaderDivider>h2{
+  font-family: Inter, Helvetica;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 24px;
+  text-align: center;
+  padding-top: 13px
+ }
+
+ .float-left{
+   float: left;
+ }
+
+ .standard-fieldset{
+  border: none;
+  background-color: #F7F7F7;
+  border-radius: 10px;;
+  margin: 0px 0px 40px 0px;
+  width: 400px;
+ }
+
+ .standard-fieldset>p{
+   padding: 20px;
+ }
+
+ legend{
+   font-family: 'Inter', sans-serif;
+ }
+
+ input{
+    border: 2px solid #0000EE;
+    padding: 5px;
+    padding-left: 15px;
+    width: 330px;
+    font-size: 14px;
+    height: 40px;
+ }
+
+ .input-wrapper{
+  margin-left: 20px;
+  width: 330px;
+  margin-bottom: 15px;
+ }
+
+ .input-wrapper>h4{
+   margin-bottom: 5px;
+   font-family: Helvetica, Arial, sans-serif;
+   font-size: 15px;
+ }
+
+ .button-1{
+  border: 2px solid #0000EE;
+  background-color: rgba(0,0,238,.1);
+  border-radius: 6px;
+  width: 330px;
+  margin-left: 20px;
+  text-align: center;
+  padding: 10px;
+  color: #0000EE;
+  cursor: pointer;
+  margin-bottom: 15px;
+ }
+
+ .disabled-button{
+  color: #C4C4C4;
+  background-color: #EEEEEE;
+  border: 2px solid #DDDDDD;
+  cursor: text;
+ }
+
+ #header-connect-address-wrapper{
+  
+  float: right;
+  width: 150px;
+  text-align: right;
+  
+ }
+
+ .button-2{
+  background-color: rgba(0,0,238,.1);
+  cursor: pointer;
+  font-size: 22px;
+  color: #0000EE;
+  font-family: 'Times New Roman', Times, serif;
+ }
+
+
+ .blue-loader {
+  border: 5px solid rgba(0,0,238,.1); /* Light grey */
+  border-top: 5px solid #0000EE; /* Blue */
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 2s linear infinite;
+  margin-top: 7px;
+  margin-left: 7px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.pawn-art>div>p{
+  font-size: 14px;
+}
+
+.display-table{
+  display: table;
+}
+
+.error{
+  color: red;
+}
+
+.small-text-button{
+  font-size: 15px;
 }

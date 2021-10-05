@@ -1,0 +1,35 @@
+.collateral_card{
+    min-height: 518px;
+    width: 340px;
+    margin-left: 25px;
+    margin-top: 0px;
+    /* background: radial-gradient(76.18% 76.18% at 26.9% 23.82%, hsl(var(--collateral-color),90%,90%) 0%, hsl(var(--loan-assett-color),90%,90%) 100%); */
+}
+
+.collateral_card>legend{
+    font-size: 18px;
+}
+
+.nfte__media {
+    margin: auto;
+    aspect-ratio: 1/1;
+    
+  }
+
+.collateral-media{
+    max-height: 400px;
+    padding: 5px;
+    background-color: white;
+}
+
+.collateralDetails{
+    font-family: Helvetica;
+    font-size: 17px;
+    padding-top: 10px;
+    padding-left: 5px;
+    padding-bottom: 10px;
+}
+
+#collateralTitle{
+    font-weight: 700;
+}

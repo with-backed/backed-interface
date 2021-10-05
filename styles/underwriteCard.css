@@ -1,0 +1,47 @@
+#underwrite-card{
+    width: 400px;
+}
+
+#underwrite-card>p{
+    padding: 20px;
+    padding-bottom: 5px;
+}
+
+#underwrite-card>#collateral-asset-balance{
+    padding-top: 0px;
+    padding-left: 20px;
+}
+
+#underwrite-card>input{
+    margin-left: 20px;
+    width: 290px;
+}
+
+#right-elements-wrapper{
+    margin-left: 25px;
+    width: 400px;
+}
+
+#allowance-button{
+    font-size: 15px;
+    padding: 12px;
+    
+}
+
+#allowance-button-wrapper{
+    height: 52px;
+    margin-bottom: 15px;
+}
+
+#interest-rate-explainer{
+    padding-left: 20px;
+    height: 50px;
+}
+
+#interest-rate-explainer>p{
+    margin-top: 3px;
+}
+
+#interest-rate-explainer-icon{
+    margin-left: 5px;
+}
