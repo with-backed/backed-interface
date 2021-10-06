@@ -33,7 +33,7 @@ function LeftColumn({account, ticketInfo, refresh}: TicketPageBodyProps) {
         <div id='left-elements-wrapper' className='float-left'>
 			<div> <PawnTicketArt tokenId={ticketInfo.ticketNumber} />	</div>
             { account == null || ticketInfo.closed || ticketInfo.lastAccumulatedTimestamp.toString() == '0' ? '' : <RepayCard account={account} ticketInfo={ticketInfo} repaySuccessCallback={refresh} /> }
-            <TicketHistory ticketId={ticketInfo.ticketNumber}/>
+            <TicketHistory ticketId={ticketInfo.ticketNumber} loanAssetDecimals={ticketInfo.loanAssetDecimals} />
         </div>
     )
 }
