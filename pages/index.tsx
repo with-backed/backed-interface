@@ -19,5 +19,12 @@ export default function Home(){
   )
 }
 
+function MintDai(){
+
+}
+
+function MintPunk(){
+  
+}
 
 

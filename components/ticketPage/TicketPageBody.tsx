@@ -28,12 +28,12 @@ export default function TicketPageBody({account, ticketInfo, refresh}: TicketPag
 		)
 }
 
-function LeftColumn({account, ticketInfo, refresh}) {
+function LeftColumn({account, ticketInfo, refresh}: TicketPageBodyProps) {
     return(
         <div id='left-elements-wrapper' className='float-left'>
 			<div> <PawnTicketArt tokenId={ticketInfo.ticketNumber} />	</div>
-            { account == null || ticketInfo.closed ? '' : <RepayCard account={account} ticketInfo={ticketInfo} repaySuccessCallback={refresh} /> }
-            <TicketHistory ticketId={ticketInfo.ticketNumber}/>
+            { account == null || ticketInfo.closed || ticketInfo.lastAccumulatedTimestamp.toString() == '0' ? '' : <RepayCard account={account} ticketInfo={ticketInfo} repaySuccessCallback={refresh} /> }
+            <TicketHistory ticketId={ticketInfo.ticketNumber} loanAssetDecimals={ticketInfo.loanAssetDecimals} />
         </div>
     )
 }

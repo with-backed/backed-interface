@@ -29,3 +29,10 @@
 #left-elements-wrapper{
     width: 400px;
 }
+
+.event-details {
+    margin-bottom: 15px;
+}
+.event-details>p{
+    margin: 0px;
+}

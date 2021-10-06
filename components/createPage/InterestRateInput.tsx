@@ -2,6 +2,7 @@ import { ethers } from "ethers"
 import { useState, useEffect } from "react"
 import Input from "../Input";
 import { Popup, Icon } from "semantic-ui-react";
+import { formattedAnnualRate } from "../../lib/interest";
 
 const SECONDS_IN_YEAR = 31_536_000
 const INTEREST_RATE_PERCENT_DECIMALS = 10
@@ -52,8 +53,4 @@ export default function InterestRateInput({setInterestRate}){
             }
         </div>
     )
-}
-
-const formattedAnnualRate = (ratePerSecond) => {
-    return ethers.utils.formatUnits(ratePerSecond.mul(SECONDS_IN_YEAR), INTEREST_RATE_PERCENT_DECIMALS)
 }
