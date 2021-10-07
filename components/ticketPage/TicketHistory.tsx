@@ -45,7 +45,7 @@ function ParsedEvent({event, loanAssetDecimals}) {
             break;
     }
     return (
-        <div>  hey</div>
+        <EventText event={event} />
     )
 }
 
