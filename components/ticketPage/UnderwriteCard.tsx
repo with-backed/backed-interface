@@ -52,8 +52,8 @@ export default function UnderwriteCard({account, ticketInfo, loanUpdatedCallback
     const explainer = () => {
         if (ticketInfo.lastAccumulatedTimestamp == 0){
             return "Meet or beat the proposed loan terms to underwrite. \
-            If lender does not pay loan amount and all interest accrued by the end block, \
-            the collateral NFT will be transferred to you."
+            If repaid, you will receive payment for the loan amount + interest for the entire loan duration.\
+            If not repaid, you will be able to claim the NFT collateral."
         }
 
         return "This loan has an underwriter, but you can buy them out by matching their terms  \
