@@ -266,6 +266,10 @@ a{
   font-family: Inter, Helvetica;
  }
 
+ .button-1>p{
+  font-family: Inter, Helvetica;
+ }
+
 
  .clicked-button{
   background-color: rgba(117, 24, 124, 0.2);
@@ -283,6 +287,7 @@ a{
  }
  .clicked-button>p{
    margin: 0px;
+   font-family: Inter, Helvetica;
  }
  .clicked-button>p>a{
     /* text-decoration: none; */
