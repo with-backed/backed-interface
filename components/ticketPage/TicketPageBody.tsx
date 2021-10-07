@@ -52,7 +52,7 @@ function LeftColumn({account, ticketInfo, refresh}: TicketPageBodyProps) {
             </fieldset>
             
 			<div> <PawnTicketArt tokenId={ticketInfo.ticketNumber} />	</div>
-            { account == null || ticketInfo.closed || ticketInfo.lastAccumulatedTimestamp.toString() == '0' ? '' : <RepayCard account={account} ticketInfo={ticketInfo} repaySuccessCallback={refresh} /> }
+            { account == null || ticketInfo.closed || ticketInfo.lastAccumulatedTimestamp.toString() == '0' || owner != account ? '' : <RepayCard account={account} ticketInfo={ticketInfo} repaySuccessCallback={refresh} /> }
             <TicketHistory ticketId={ticketInfo.ticketNumber} loanAssetDecimals={ticketInfo.loanAssetDecimals} />
         </div>
     )
