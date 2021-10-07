@@ -259,11 +259,11 @@ a{
   width: 330px;
   margin-left: 20px;
   text-align: center;
-  font-weight: bold;
   padding: 10px;
   color: white;
   cursor: pointer;
   margin-bottom: 15px;
+  font-family: Inter, Helvetica;
  }
 
 
