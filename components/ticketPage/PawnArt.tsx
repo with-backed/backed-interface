@@ -54,7 +54,7 @@ function PawnArt({contract, tokenId}){
             "" :
             <div>
             <PawnArtLoaded {...nftInfo} />
-            <p>owned by: {owner}</p>
+            
             </div>
         }
         </div>

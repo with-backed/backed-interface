@@ -208,6 +208,10 @@ a{
   padding-top: 13px
  }
 
+ .inter{
+  font-family: Inter, Helvetica;
+ }
+
  .float-left{
    float: left;
  }
