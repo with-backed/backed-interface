@@ -254,16 +254,40 @@ a{
  }
 
  .button-1{
-  border: 2px solid #0000EE;
-  background-color: rgba(0,0,238,.1);
+  background-color: #0000EE;
   border-radius: 6px;
   width: 330px;
   margin-left: 20px;
   text-align: center;
+  font-weight: bold;
   padding: 10px;
-  color: #0000EE;
+  color: white;
   cursor: pointer;
   margin-bottom: 15px;
+ }
+
+
+ .clicked-button{
+  background-color: rgba(117, 24, 124, 0.2);
+  border-radius: 6px;
+  width: 330px;
+  height: 70px;
+  margin-left: 20px;
+  text-align: center;
+  padding: 10px;
+  color: rgba(117, 24, 124, 1);
+  font-family: 'Times New Roman', Times, serif;
+  font-weight: normal;
+  cursor: pointer;
+  margin-bottom: 15px;
+ }
+ .clicked-button>p{
+   margin: 0px;
+ }
+ .clicked-button>p>a{
+    /* text-decoration: none; */
+    color: rgba(117, 24, 124, 1);
+    font-weight: normal;
  }
 
  .disabled-button{

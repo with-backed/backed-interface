@@ -1,7 +1,9 @@
 import { ethers } from "ethers";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TicketInfo } from "../../lib/TicketInfoType";
-import { web3PawnShopContract, pawnShopContract } from '../../lib/contracts'
+import { web3PawnShopContract, pawnShopContract, jsonRpcERC20Contract, web3Erc20Contract } from '../../lib/contracts'
+import AllowButton from './underwriteCard/AllowButton'
+import TransactionButton from './TransactionButton'
 
 interface RepayCardProps {
     account: string, 
@@ -12,6 +14,41 @@ interface RepayCardProps {
 const jsonRpcProvider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER);
 
 export default function RepayCard({account, ticketInfo, repaySuccessCallback} : RepayCardProps) {
+    const [allowanceValue, setAllowanceValue] = useState(ethers.BigNumber.from("0"))
+    const [amountOwed, ] = useState(ticketInfo.interestOwed.add(ticketInfo.loanAmount))
+
+    const setAllowance = async () => {
+        const contract = jsonRpcERC20Contract(ticketInfo.loanAsset) 
+        const allowance = await contract.allowance(account, process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_CONTRACT)
+        setAllowanceValue(allowance)
+    }
+
+    useEffect(() => {
+        setAllowance()
+    })
+
+    return(
+        <fieldset className='standard-fieldset'>
+            <legend>repay</legend>
+            <p> The current cost to repay this loan    
+                is {ethers.utils.formatUnits(amountOwed.toString(), ticketInfo.loanAssetDecimals)} {ticketInfo.loanAssetSymbol}.
+                On repayment, the NFT collateral will be sent to the Pawn Ticket holder, {ticketInfo.ticketOwner.slice(0, 10)}...{ticketInfo.ticketOwner.slice(34, 42)}
+            </p>
+            { parseInt(allowanceValue.toString()) >= parseInt(amountOwed.toString()) ? '' : 
+            <AllowButton 
+                jsonRpcContract={jsonRpcERC20Contract(ticketInfo.loanAsset)} 
+                web3Contract={web3Erc20Contract(ticketInfo.loanAsset)} 
+                account={account}
+                loanAssetSymbol={ticketInfo.loanAssetSymbol}
+                callback={setAllowance}
+                />
+            }
+            <RepayButton ticketNumber={ticketInfo.ticketNumber} repaySuccessCallback={repaySuccessCallback} />
+        </fieldset>
+    )
+}
+
+function RepayButton({ticketNumber, repaySuccessCallback}){
     const [txHash, setTxHash] = useState('')
     const [waitingForTx, setWaitingForTx] = useState(false)
     const [web3PawnShop, ] = useState(web3PawnShopContract)
@@ -20,7 +57,7 @@ export default function RepayCard({account, ticketInfo, repaySuccessCallback} : 
     const repay = async () => {
         setTxHash('')
         setWaitingForTx(false)
-        const t = await web3PawnShop.repayAndCloseTicket(ethers.BigNumber.from(ticketInfo.ticketNumber))
+        const t = await web3PawnShop.repayAndCloseTicket(ethers.BigNumber.from(ticketNumber))
         t.wait().then((receipt) => {
             setTxHash(t.hash)
             setWaitingForTx(true)
@@ -33,7 +70,7 @@ export default function RepayCard({account, ticketInfo, repaySuccessCallback} : 
     }
 
     const wait = async () => {
-        const filter = jsonRpcPawnShop.filters.Repay(ticketInfo.ticketNumber, null, null)
+        const filter = jsonRpcPawnShop.filters.Repay(ticketNumber, null, null, null, null)
         jsonRpcPawnShop.once(filter, () => {
             repaySuccessCallback()
             setWaitingForTx(false)
@@ -41,13 +78,9 @@ export default function RepayCard({account, ticketInfo, repaySuccessCallback} : 
     }
 
     return(
-        <fieldset className='standard-fieldset'>
-            <legend>repay</legend>
-            <p> The current cost to repay this loan    
-                is {ethers.utils.formatUnits(ticketInfo.interestOwed.add(ticketInfo.loanAmount).toString(), ticketInfo.loanAssetDecimals)} {ticketInfo.loanAssetSymbol}.
-                On repayment, the NFT collateral will be sent to the Pawn Ticket holder, {ticketInfo.ticketOwner.slice(0, 10)}...{ticketInfo.ticketOwner.slice(34, 42)}
-            </p>
-            <div className="button-1" onClick={repay} > Repay </div>
-        </fieldset>
+        <TransactionButton text={'repay'} onClick={repay} txHash={txHash} isPending={waitingForTx} />
+    
     )
+    
 }
+
