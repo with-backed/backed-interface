@@ -58,6 +58,7 @@ function RepayButton({ticketNumber, repaySuccessCallback}){
         setTxHash('')
         setWaitingForTx(false)
         const t = await web3PawnShop.repayAndCloseTicket(ethers.BigNumber.from(ticketNumber))
+        setTxHash(t.hash)
         t.wait().then((receipt) => {
             setTxHash(t.hash)
             setWaitingForTx(true)
