@@ -40,7 +40,7 @@ export default function RepayCard({account, ticketInfo, repaySuccessCallback} : 
                 web3Contract={web3Erc20Contract(ticketInfo.loanAsset)} 
                 account={account}
                 loanAssetSymbol={ticketInfo.loanAssetSymbol}
-                callback={setAllowance}
+                callback={() => console.log('did it')}
                 />
             }
             <RepayButton ticketNumber={ticketInfo.ticketNumber} repaySuccessCallback={repaySuccessCallback} />
