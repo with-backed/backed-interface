@@ -10,6 +10,7 @@ export default function AllowButton({jsonRpcContract, web3Contract, account, loa
     const allow = async () => {
         console.log(ethers.BigNumber.from(2).pow(256).sub(1))
         const t = await web3Contract.approve(process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_CONTRACT, ethers.BigNumber.from(2).pow(256).sub(1))
+        setWaitingForTx(true)
         setTxHash(t.hash)
         t.wait().then((receipt) => {
             setWaitingForTx(true)
@@ -24,7 +25,7 @@ export default function AllowButton({jsonRpcContract, web3Contract, account, loa
     const waitForApproval = async () => {
         const filter = jsonRpcContract.filters.Approval(account, process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_CONTRACT, null)
         jsonRpcContract.once(filter, (owner, spender, amount) => {
-            // callback()
+            callback()
             setWaitingForTx(false)
         })
     }

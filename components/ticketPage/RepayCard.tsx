@@ -15,11 +15,15 @@ const jsonRpcProvider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PU
 
 export default function RepayCard({account, ticketInfo, repaySuccessCallback} : RepayCardProps) {
     const [allowanceValue, setAllowanceValue] = useState(ethers.BigNumber.from("0"))
+    const [needsAllowance, setNeedsAllowance] = useState(false)
     const [amountOwed, ] = useState(ticketInfo.interestOwed.add(ticketInfo.loanAmount))
 
     const setAllowance = async () => {
         const contract = jsonRpcERC20Contract(ticketInfo.loanAsset) 
         const allowance = await contract.allowance(account, process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_CONTRACT)
+        if(!needsAllowance){
+            setNeedsAllowance(allowanceValue.lt(amountOwed))
+        }
         setAllowanceValue(allowance)
     }
 
@@ -34,13 +38,13 @@ export default function RepayCard({account, ticketInfo, repaySuccessCallback} : 
                 is {ethers.utils.formatUnits(amountOwed.toString(), ticketInfo.loanAssetDecimals)} {ticketInfo.loanAssetSymbol}.
                 On repayment, the NFT collateral will be sent to the Pawn Ticket holder, {ticketInfo.ticketOwner.slice(0, 10)}...{ticketInfo.ticketOwner.slice(34, 42)}
             </p>
-            { parseInt(allowanceValue.toString()) >= parseInt(amountOwed.toString()) ? '' : 
+            { !needsAllowance ? '' : 
             <AllowButton 
                 jsonRpcContract={jsonRpcERC20Contract(ticketInfo.loanAsset)} 
                 web3Contract={web3Erc20Contract(ticketInfo.loanAsset)} 
                 account={account}
                 loanAssetSymbol={ticketInfo.loanAssetSymbol}
-                callback={() => console.log('did it')}
+                callback={() => setAllowance()}
                 />
             }
             <RepayButton ticketNumber={ticketInfo.ticketNumber} repaySuccessCallback={repaySuccessCallback} />

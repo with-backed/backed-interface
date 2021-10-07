@@ -19,6 +19,7 @@ export default function UnderwriteCard({account, ticketInfo, loanUpdatedCallback
     const [interestRate, setInterestRate] = useState(ethers.BigNumber.from("0"))
     const [duration, setDuration] = useState(ethers.BigNumber.from("0"))
     const [allowanceValue, setAllowanceValue] = useState(ethers.BigNumber.from("0"))
+    const [needsAllowance, setNeedsAllowance] = useState(false)
     // const [curTimestamp, ]
 
     const getAccountLoanAssetBalance = async (loanAsseetContract) => {
@@ -29,6 +30,9 @@ export default function UnderwriteCard({account, ticketInfo, loanUpdatedCallback
 
     const setAllowance = async (assetContract) => {
         const allowance = await assetContract.allowance(account, process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_CONTRACT)
+        if(!needsAllowance){
+            setNeedsAllowance(allowanceValue.lt(loanAmount))
+        }
         setAllowanceValue(allowance)
     }
 
@@ -74,7 +78,7 @@ export default function UnderwriteCard({account, ticketInfo, loanUpdatedCallback
             <LoanAmountInput accountBalance={loanAssetBalance} minLoanAmount={ticketInfo.loanAmount} decimals={ticketInfo.loanAssetDecimals} loanAssetSymbol={ticketInfo.loanAssetSymbol} setLoanAmount={setLoanAmount} />
             <InterestRateInput maxPerSecondRate={ticketInfo.perSecondInterestRate} setInterestRate={setInterestRate}/>
             <DurationInput minDurationSeconds={ticketInfo.durationSeconds} setDurationSeconds={setDuration}/>
-            { allowanceValue.gt(loanAmount) ? '' : <AllowButton jsonRpcContract={collateralAssetContract} web3Contract={web3CollateralAssetContract} account={account} loanAssetSymbol={ticketInfo.loanAssetSymbol} callback={() => setAllowance(collateralAssetContract)}/> }
+            { !needsAllowance ? '' : <AllowButton jsonRpcContract={collateralAssetContract} web3Contract={web3CollateralAssetContract} account={account} loanAssetSymbol={ticketInfo.loanAssetSymbol} callback={() => setAllowance(collateralAssetContract)}/> }
             <UnderwriteButton 
                 pawnShopContract={web3PawnShop}
                 jsonRPCContract={pawnShop}
