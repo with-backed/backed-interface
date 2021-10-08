@@ -14,6 +14,7 @@ interface RepayCardProps {
 const jsonRpcProvider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER);
 
 export default function RepayCard({account, ticketInfo, repaySuccessCallback} : RepayCardProps) {
+    const [disabled, setDisabled] = useState(false)
     const [allowanceValue, setAllowanceValue] = useState(ethers.BigNumber.from("0"))
     const [needsAllowance, setNeedsAllowance] = useState(false)
     const [amountOwed, ] = useState(ticketInfo.interestOwed.add(ticketInfo.loanAmount))
@@ -24,6 +25,7 @@ export default function RepayCard({account, ticketInfo, repaySuccessCallback} : 
         if(!needsAllowance){
             setNeedsAllowance(allowance.lt(amountOwed))
         }
+        setDisabled(allowance.lt(amountOwed))
         setAllowanceValue(allowance)
     }
 
@@ -44,15 +46,15 @@ export default function RepayCard({account, ticketInfo, repaySuccessCallback} : 
                 web3Contract={web3Erc20Contract(ticketInfo.loanAsset)} 
                 account={account}
                 loanAssetSymbol={ticketInfo.loanAssetSymbol}
-                callback={() => setAllowance()}
+                callback={setAllowance}
                 />
             }
-            <RepayButton ticketNumber={ticketInfo.ticketNumber} repaySuccessCallback={repaySuccessCallback} />
+            <RepayButton ticketNumber={ticketInfo.ticketNumber} repaySuccessCallback={repaySuccessCallback} disabled={disabled}/>
         </fieldset>
     )
 }
 
-function RepayButton({ticketNumber, repaySuccessCallback}){
+function RepayButton({ticketNumber, repaySuccessCallback, disabled}){
     const [txHash, setTxHash] = useState('')
     const [waitingForTx, setWaitingForTx] = useState(false)
     const [web3PawnShop, ] = useState(web3PawnShopContract)
@@ -82,7 +84,7 @@ function RepayButton({ticketNumber, repaySuccessCallback}){
     }
 
     return(
-        <TransactionButton text={'repay'} onClick={repay} txHash={txHash} isPending={waitingForTx} />
+        <TransactionButton text={'repay'} onClick={repay} txHash={txHash} isPending={waitingForTx} disabled={disabled}/>
     
     )
     
