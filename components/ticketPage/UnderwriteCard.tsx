@@ -53,6 +53,10 @@ export default function UnderwriteCard({account, ticketInfo, loanUpdatedCallback
         setAllowance(jsonRpcLoanAssetContract)
     }, [account])
 
+    useEffect(() => {
+        setNeedsAllowance(allowanceValue.lt(loanAmount))
+    }, [loanAmount])
+
     const explainer = () => {
         if (ticketInfo.lastAccumulatedTimestamp == 0){
             return "Meet or beat the proposed loan terms to underwrite. \
