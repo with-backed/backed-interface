@@ -92,7 +92,7 @@ function MintTicketButton({account, isApproved, collateralAddress, collateralTok
     const [waitingForTx, setWaitingForTx] = useState(false)
 
     const disabled = () => {
-        return collateralAddress = '' || collateralTokenID.eq(0) || loanAsset == '' || duration.eq(0)
+        return collateralAddress == '' || collateralTokenID.eq(0) || loanAsset == '' || duration.eq(0)
     }
 
     const mint = async () => {
