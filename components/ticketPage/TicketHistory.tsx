@@ -35,25 +35,6 @@ interface ParsedEventProps {
 }
 
 function ParsedEvent({event, loanAssetDecimals}) {
-    console.log(event)
-    switch (event.event) {
-        case "MintTicket":
-            return MintEventDetails(event, loanAssetDecimals)
-            break;
-        case "UnderwriteLoan":
-            return UnderwriteEventDetails(event, loanAssetDecimals)
-            break;
-    }
-    return (
-        <EventText event={event} />
-    )
-}
-
-function MintEventDetails(event: ethers.Event, loanAssetDecimals: ethers.BigNumber){
-    const [minter, ]  = useState(event.args['minter'])
-    const [maxInterestRate, ]  = useState(formattedAnnualRate(event.args['maxInterestRate']))
-    const [minLoanAmount, ]  = useState(ethers.utils.formatUnits(event.args['minLoanAmount'], loanAssetDecimals))
-    const [minDuration, ]  = useState(secondsToDays(event.args['minDurationSeconds']))
     const [timestamp, setTimestamp] = useState(0)
 
     const getTimeStamp = async () => {
@@ -64,10 +45,36 @@ function MintEventDetails(event: ethers.Event, loanAssetDecimals: ethers.BigNumb
     useEffect(()=> {
         getTimeStamp()
     })
+    const eventDetails = () => {
+        switch (event.event) {
+            case "MintTicket":
+                return MintEventDetails(event, loanAssetDecimals)
+                break;
+            case "UnderwriteLoan":
+                return UnderwriteEventDetails(event, loanAssetDecimals)
+                break;
+        }
+    }
+    
+    return (
+        // <EventText event={event} />
+        <div className='event-details'>
+            <p> <b> { camelToSentenceCase(event.event) } </b> - {toLocaleDateTime(timestamp)} </p>
+            {eventDetails()}
+        </div>
+    )
+}
+
+function MintEventDetails(event: ethers.Event, loanAssetDecimals: ethers.BigNumber){
+    const [minter, ]  = useState(event.args['minter'])
+    const [maxInterestRate, ]  = useState(formattedAnnualRate(event.args['maxInterestRate']))
+    const [minLoanAmount, ]  = useState(ethers.utils.formatUnits(event.args['minLoanAmount'], loanAssetDecimals))
+    const [minDuration, ]  = useState(secondsToDays(event.args['minDurationSeconds']))
+    
 
     return(
         <div className='event-details'>
-            <p> <b> Mint Ticket </b> - {toDateTime(timestamp).toLocaleDateString()} {toDateTime(timestamp).toLocaleTimeString()} </p>
+            
             <p> minter: <a target="_blank" href={process.env.NEXT_PUBLIC_ETHERSCAN_URL + "/address/" +  minter }>  {minter.slice(0,10)}... </a></p>
             <p> max interest rate: {maxInterestRate}%</p>
             <p> minimum loan amount: {minLoanAmount}</p>
@@ -76,11 +83,17 @@ function MintEventDetails(event: ethers.Event, loanAssetDecimals: ethers.BigNumb
     )
 }
 
-function toDateTime(secs) {
-    var t = new Date(1970, 0, 1); // Epoch
-    t.setSeconds(secs);
-    return t;
+function toLocaleDateTime(seconds) {
+    var date = new Date(0);
+    date.setUTCSeconds(seconds);
+    return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
 }
+
+function camelToSentenceCase(text){
+    const result = text.replace(/([A-Z])/g, " $1");
+    return result.charAt(0).toUpperCase() + result.slice(1);
+}
+
 
 function UnderwriteEventDetails(event: ethers.Event, loanAssetDecimals: ethers.BigNumber){
     const [underwriter, ]  = useState(event.args['underwriter'])
@@ -100,7 +113,6 @@ function UnderwriteEventDetails(event: ethers.Event, loanAssetDecimals: ethers.B
 
     return(
         <div className='event-details'>
-            <p> <b> Underwrite Loan </b> - {toDateTime(timestamp).toLocaleDateString()} {toDateTime(timestamp).toLocaleTimeString()} </p>
             <p> underwriter: <a target="_blank" href={process.env.NEXT_PUBLIC_ETHERSCAN_URL + "/address/" +  underwriter }>  {underwriter.slice(0,10)}... </a></p>
             <p> interest rate: {interestRate}%</p>
             <p> loan amount: {loanAmount}</p>
