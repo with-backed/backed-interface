@@ -31,7 +31,7 @@ export default function DurationInput({minDurationSeconds, setDurationSeconds}){
             setError(`Minimum duration ${minDurationDays} days`)
             return
         }
-        const valueInSeconds = ethers.BigNumber.from(valueAsFloat * SECONDS_IN_DAY)
+        const valueInSeconds = ethers.BigNumber.from(Math.ceil(valueAsFloat * SECONDS_IN_DAY))
         setDurationSeconds(valueInSeconds)
     }
 
