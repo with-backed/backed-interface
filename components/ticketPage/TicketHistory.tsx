@@ -53,11 +53,13 @@ function ParsedEvent({event, loanAssetDecimals}) {
             case "UnderwriteLoan":
                 return UnderwriteEventDetails(event, loanAssetDecimals)
                 break;
+            case "Repay":
+                return RepayEventDetails(event, loanAssetDecimals)
+                break;
         }
     }
     
     return (
-        // <EventText event={event} />
         <div className='event-details'>
             <p> <b> { camelToSentenceCase(event.event) } </b> - {toLocaleDateTime(timestamp)} </p>
             {eventDetails()}
@@ -100,16 +102,6 @@ function UnderwriteEventDetails(event: ethers.Event, loanAssetDecimals: ethers.B
     const [interestRate, ]  = useState(formattedAnnualRate(event.args['interestRate']))
     const [loanAmount, ]  = useState(ethers.utils.formatUnits(event.args['loanAmount'], loanAssetDecimals))
     const [duration, ]  = useState(secondsToDays(event.args['durationSeconds']))
-    const [timestamp, setTimestamp] = useState(0)
-
-    const getTimeStamp = async () => {
-        const t = await event.getBlock()
-        setTimestamp(t.timestamp)
-    }
-
-    useEffect(()=> {
-        getTimeStamp()
-    })
 
     return(
         <div className='event-details'>
@@ -117,6 +109,22 @@ function UnderwriteEventDetails(event: ethers.Event, loanAssetDecimals: ethers.B
             <p> interest rate: {interestRate}%</p>
             <p> loan amount: {loanAmount}</p>
             <p> duration: {duration}</p>
+        </div>
+    )
+}
+
+function RepayEventDetails(event: ethers.Event, loanAssetDecimals: ethers.BigNumber){
+    const [repayer, ]  = useState(event.args['repayer'])
+    const [interestEarned, ]  = useState(ethers.utils.formatUnits(event.args['loanAmount'], loanAssetDecimals))
+    const [loanAmount, ]  = useState(ethers.utils.formatUnits(event.args['loanAmount'], loanAssetDecimals))
+    const [loanOwner, ]  = useState(event.args['loanOwner'])
+
+    return(
+        <div className='event-details'>
+            <p> repayer: <a target="_blank" href={process.env.NEXT_PUBLIC_ETHERSCAN_URL + "/address/" +  repayer }>  {repayer.slice(0,10)}... </a></p>
+            <p> lender: <a target="_blank" href={process.env.NEXT_PUBLIC_ETHERSCAN_URL + "/address/" +  loanOwner }>  {loanOwner.slice(0,10)}... </a></p>
+            <p> interest earned: {interestEarned}</p>
+            <p> loan amount: {loanAmount}</p>
         </div>
     )
 }
