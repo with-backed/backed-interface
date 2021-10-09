@@ -266,11 +266,6 @@ a{
   font-family: Inter, Helvetica;
  }
 
- .button-1>p{
-  font-family: Inter, Helvetica;
- }
-
-
  .clicked-button{
   background-color: rgba(117, 24, 124, 0.2);
   border-radius: 6px;
@@ -296,9 +291,8 @@ a{
  }
 
  .disabled-button{
-  color: #C4C4C4;
-  background-color: #EEEEEE;
-  border: 2px solid #DDDDDD;
+  color: rgba(158, 158, 158, 1);
+  background-color:rgba(238, 238, 238, 1);
   cursor: text;
  }
 
@@ -347,6 +341,6 @@ a{
   color: red;
 }
 
-.small-text-button{
+.small-text{
   font-size: 15px;
 }

@@ -1,4 +1,4 @@
-export default function TransactionButton({text, onClick, txHash, isPending, disabled = false}){
+export default function TransactionButton({text, onClick, txHash, isPending, disabled = false, textSize = 'large'}){
 
     const handleClick = () => {
         if(txHash != '' || disabled){
@@ -8,10 +8,10 @@ export default function TransactionButton({text, onClick, txHash, isPending, dis
     } 
 
     return(
-        <div className={txHash == '' ? `button-1 ${disabled ? 'disabled-button' : ''}` : 'clicked-button'} onClick={handleClick} >
-            <p> {text} </p>
+        <div className={(txHash == '' ? `button-1 ${disabled ? 'disabled-button' : ''}` : 'clicked-button') + `${textSize != 'large' ? ' small-text' : ''}`} onClick={handleClick} >
+            <p className='inter'> {text} </p>
             {txHash == '' ? '' :
-            <p className='times'> {isPending ? "Pending..." : ""} <a href={process.env.NEXT_PUBLIC_ETHERSCAN_URL + "/tx/" +  txHash} target="_blank"> view transaction </a> </p>
+            <p className='times'> {isPending ? "Pending..." : "Success!"} <a href={process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_CONTRACT + "/tx/" +  txHash} target="_blank"> view transaction </a> </p>
             }
         </div>
 

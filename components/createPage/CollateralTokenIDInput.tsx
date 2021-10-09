@@ -42,9 +42,13 @@ export default function CollateralTokenIDInput({account, collateralContractAddre
             }
             setIsValidCollateral(true)
             setCollateralTokenID(bigNumValue)
+            console.log(bigNumValue.toString())
             
             const approved = await contract.getApproved(bigNumValue)
-            setIsApproved(approved.includes(account))
+            console.log('approved')
+            console.log(approved)
+            
+            setIsApproved(approved.includes(process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_CONTRACT))
             
         }
         
