@@ -7,6 +7,7 @@ export default function CollateralAddressInput({setCollateralAddress}){
     const [error, setError] = useState("")
 
     const handleValue = (newValue) => {
+        newValue = newValue.trim()
         if(newValue == value){
             return
         }

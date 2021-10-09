@@ -10,6 +10,7 @@ export default function LoanAssetInput({setDecimals, setLoanAssetAddress}){
     const [error, setError] = useState("")
 
     const handleValue = async (newValue) => {
+        newValue = newValue.trim()
         if(newValue == value){
             return
         }
