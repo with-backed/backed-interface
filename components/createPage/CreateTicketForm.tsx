@@ -133,7 +133,7 @@ function MintTicketButton({account, isApproved, collateralAddress, collateralTok
         onClick={mint}
         txHash={transactionHash}
         isPending={waitingForTx}
-        disabled={!isApproved || disabled()}
+        disabled={!isApproved}
     />
         
     )
