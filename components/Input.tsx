@@ -1,26 +1,42 @@
-import { useState, useEffect } from "react";
-import $ from 'jquery';
+import { ChangeEvent, InputHTMLAttributes, useCallback, useMemo } from "react";
 
+import styles from './Input.module.css';
 
-export default function Input({type, title, placeholder, value, error, message, setValue}){
-    const [v, setV] = useState('')
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+  setValue: (value: string) => void;
+  title: string;
+  error?: React.ReactNode;
+  message?: React.ReactNode;
+};
 
-    const handleChange = (event) => {
-        console.log(`event value ${event.target.value}`)
-        setV(event.target.value)
-    }
+export default function Input({ setValue, error, message, title, ...props }: InputProps) {
+  const handleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setValue(event.target.value);
+  }, [setValue]);
 
-    useEffect(() => {
-        const timeOutId = setTimeout(() => setValue(v), 500);
-        return () => clearTimeout(timeOutId);
-      }, [v, error, message]);
+  const id = useMemo(() => {
+    return title.replace(/\s/g, '-');
+  }, [title]);
 
-    return(
-        <div className='input-wrapper'>
-            <h4 className='blue'> {title} </h4>
-            <input type={type} value={v} placeholder={placeholder} onChange={handleChange} onWheel={(e) => e.currentTarget.blur()}/>
-            { error == "" ? '' : <p className='error'>{error}</p> }
-            { message == "" ? '' : <p className='message'>{message}</p> }
-        </div>
-    )
+  const hasError = Boolean(error);
+  const hasMessage = Boolean(message);
+
+  return (
+    <>
+      <label htmlFor={id} className={hasError ? styles.errorLabel : styles.label}>
+        {title}
+      </label>
+      <div className={hasError ? styles.errorWrapper : styles.wrapper}>
+        <input
+          aria-invalid={hasError}
+          id={id}
+          className={styles.input}
+          onChange={handleChange}
+          {...props}
+        />
+      </div>
+      {hasError && <p className={styles.errorMessage}>{error}</p>}
+      {hasMessage && <p>{message}</p>}
+    </>
+  );
 }
