@@ -1,11 +1,5 @@
 .wrapper {
-  width: 330px;
-  border: 2px solid #0000ee;
-}
-
-.errorWrapper {
-  composes: wrapper;
-  border: 2px solid #d12424;
+  width: 330px; 
 }
 
 .input {
@@ -13,6 +7,12 @@
   border: none;
   height: 40px;
   width: 100%;
+  border: 2px solid #0000ee;
+}
+
+.errorInput {
+  composes: input;
+  border: 2px solid #d12424;
 }
 
 .label {

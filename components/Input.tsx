@@ -1,4 +1,4 @@
-import { ChangeEvent, InputHTMLAttributes, useCallback, useMemo } from "react";
+import { ChangeEvent, InputHTMLAttributes, useCallback } from "react";
 
 import styles from './Input.module.css';
 
@@ -14,29 +14,22 @@ export default function Input({ setValue, error, message, title, ...props }: Inp
     setValue(event.target.value);
   }, [setValue]);
 
-  const id = useMemo(() => {
-    return title.replace(/\s/g, '-');
-  }, [title]);
-
   const hasError = Boolean(error);
   const hasMessage = Boolean(message);
 
   return (
-    <>
-      <label htmlFor={id} className={hasError ? styles.errorLabel : styles.label}>
+    <div className={styles.wrapper}>
+      <label className={hasError ? styles.errorLabel : styles.label}>
         {title}
-      </label>
-      <div className={hasError ? styles.errorWrapper : styles.wrapper}>
         <input
           aria-invalid={hasError}
-          id={id}
-          className={styles.input}
+          className={hasError ? styles.errorInput : styles.input}
           onChange={handleChange}
           {...props}
         />
-      </div>
+      </label>
       {hasError && <p className={styles.errorMessage}>{error}</p>}
       {hasMessage && <p>{message}</p>}
-    </>
+    </div>
   );
 }
