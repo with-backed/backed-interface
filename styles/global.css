@@ -1,3 +1,16 @@
+:root {
+  --beige: #f4eae8;
+  --white: #ffffff;
+  --primary-blue: #0000ee;
+  --primary-purple: #75187c;
+  --yellow: #fffed1;
+  --dark-grey: #dddddd;
+  --light-grey: #eeeeee;
+  --black: #000000;
+  --lightest: #f7f7f7;
+  --red: #d12424;
+}
+
 html,
 body {
   padding: 0;
