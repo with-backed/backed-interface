@@ -1,14 +1,14 @@
 :root {
   --beige: #f4eae8;
-  --white: #ffffff;
-  --primary-blue: #0000ee;
-  --primary-purple: #75187c;
-  --yellow: #fffed1;
+  --black: #000000;
   --dark-grey: #dddddd;
   --light-grey: #eeeeee;
-  --black: #000000;
   --lightest: #f7f7f7;
+  --primary-blue: #0000ee;
+  --primary-purple: #75187c;
   --red: #d12424;
+  --white: #ffffff;
+  --yellow: #fffed1;
 }
 
 html,
