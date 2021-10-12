@@ -8,9 +8,10 @@
     "start": "next start",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "lint": "yarn eslint --no-error-on-unmatched-pattern $(git diff --name-only HEAD $(git merge-base HEAD origin/main) | grep -E '\\.(ts|tsx)$' | xargs)",
+    "lint": "yarn eslint --no-error-on-unmatched-pattern $(git diff --name-only --cached | grep -E *.tsx?$ | xargs)",
     "lint:all": "yarn eslint .",
-    "lint:in": "yarn eslint"
+    "lint:in": "yarn eslint",
+    "preinstall": "git config core.hooksPath git-hooks"
   },
   "dependencies": {
     "@ethersproject/keccak256": "^5.4.0",
