@@ -21,10 +21,12 @@ export default function LoanAssetInput({ setDecimals, setLoanAssetAddress }) {
       const address = ethers.utils.getAddress(newValue);
       const contract = jsonRpcERC20Contract(address);
       let error = false;
-      const symbol = await contract.symbol().catch((e) => error = true);
-      const decimals = await contract.decimals().catch((e) => error = true);
+      const symbol = await contract.symbol().catch((e) => (error = true));
+      const decimals = await contract.decimals().catch((e) => (error = true));
       if (error) {
-        setError('Error fetching loan asset info, please ensure you have entered an ERC20 contract address');
+        setError(
+          'Error fetching loan asset info, please ensure you have entered an ERC20 contract address',
+        );
         return;
       }
       setMessage(symbol);
@@ -36,6 +38,14 @@ export default function LoanAssetInput({ setDecimals, setLoanAssetAddress }) {
   };
 
   return (
-    <Input type="text" title="loan asset contract address" value={value} placeholder="e.g. DAI contract address: 0x6b175474e89094c44da98b954eedeac495271d0f" error={error} message={message} setValue={handleValue} />
+    <Input
+      type="text"
+      title="loan asset contract address"
+      value={value}
+      placeholder="e.g. DAI contract address: 0x6b175474e89094c44da98b954eedeac495271d0f"
+      error={error}
+      message={message}
+      setValue={handleValue}
+    />
   );
 }

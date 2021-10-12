@@ -25,6 +25,14 @@ export default function LoanAmountInput({ setLoanAmount }) {
   };
 
   return (
-    <Input type="number" title="loan amount (minimum)" value={value} placeholder="loan amount" error={error} message="" setValue={handleValue} />
+    <Input
+      type="number"
+      title="loan amount (minimum)"
+      value={value}
+      placeholder="loan amount"
+      error={error}
+      message=""
+      setValue={handleValue}
+    />
   );
 }

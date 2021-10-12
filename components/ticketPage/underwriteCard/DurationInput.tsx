@@ -4,8 +4,13 @@ import Input from '../../Input';
 
 const SECONDS_IN_DAY = 60 * 60 * 24;
 
-export default function DurationInput({ minDurationSeconds, setDurationSeconds }) {
-  const [minDurationDays] = useState(parseFloat(minDurationSeconds.toString()) / SECONDS_IN_DAY);
+export default function DurationInput({
+  minDurationSeconds,
+  setDurationSeconds,
+}) {
+  const [minDurationDays] = useState(
+    parseFloat(minDurationSeconds.toString()) / SECONDS_IN_DAY,
+  );
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
@@ -31,11 +36,21 @@ export default function DurationInput({ minDurationSeconds, setDurationSeconds }
       setError(`Minimum duration ${minDurationDays} days`);
       return;
     }
-    const valueInSeconds = ethers.BigNumber.from(Math.ceil(valueAsFloat * SECONDS_IN_DAY));
+    const valueInSeconds = ethers.BigNumber.from(
+      Math.ceil(valueAsFloat * SECONDS_IN_DAY),
+    );
     setDurationSeconds(valueInSeconds);
   };
 
   return (
-    <Input type="number" title="duration in days" value={value} placeholder={`Minimum duration: ${minDurationDays} days`} error={error} message="" setValue={handleValue} />
+    <Input
+      type="number"
+      title="duration in days"
+      value={value}
+      placeholder={`Minimum duration: ${minDurationDays} days`}
+      error={error}
+      message=""
+      setValue={handleValue}
+    />
   );
 }

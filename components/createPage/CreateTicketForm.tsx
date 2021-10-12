@@ -7,12 +7,20 @@ import LoanAmountInput from './LoanAmountInput';
 import LoanAssetInput from './LoanAssetInput';
 import DurationInput from './DurationInput';
 import {
-  jsonRpcERC721Contract, jsonRpcPawnShopContract, web3Erc721Contract, web3PawnShopContract,
+  jsonRpcERC721Contract,
+  jsonRpcPawnShopContract,
+  web3Erc721Contract,
+  web3PawnShopContract,
 } from '../../lib/contracts';
 import TransactionButton from '../ticketPage/TransactionButton';
 
 export default function CreateTicketForm({
-  account, collateralAddress, setCollateralAddress, collateralTokenID, setCollateralTokenID, setIsValidCollateral,
+  account,
+  collateralAddress,
+  setCollateralAddress,
+  collateralTokenID,
+  setCollateralTokenID,
+  setIsValidCollateral,
 }) {
   const [loanAssetContract, setLoanAssetContract] = useState(null);
   const [loanAssetDecimals, setLoanAssetDecimals] = useState(null);
@@ -30,12 +38,30 @@ export default function CreateTicketForm({
   return (
     <div id="create-ticket-form">
       <CollateralAddressInput setCollateralAddress={setCollateralAddress} />
-      <CollateralTokenIDInput account={account} collateralContractAddress={collateralAddress} setCollateralTokenID={setCollateralTokenID} setIsValidCollateral={setIsValidCollateral} setIsApproved={setIsApproved} />
-      <LoanAssetInput setDecimals={setLoanAssetDecimals} setLoanAssetAddress={setLoanAssetContract} />
+      <CollateralTokenIDInput
+        account={account}
+        collateralContractAddress={collateralAddress}
+        setCollateralTokenID={setCollateralTokenID}
+        setIsValidCollateral={setIsValidCollateral}
+        setIsApproved={setIsApproved}
+      />
+      <LoanAssetInput
+        setDecimals={setLoanAssetDecimals}
+        setLoanAssetAddress={setLoanAssetContract}
+      />
       <LoanAmountInput setLoanAmount={setLoanAmount} />
       <InterestRateInput setInterestRate={setInterestRate} />
       <DurationInput setDurationSeconds={setDuration} />
-      {isApproved && !showApproved ? '' : <AllowButton account={account} setIsApproved={handleApproved} collateralAddress={collateralAddress} tokenId={collateralTokenID} /> }
+      {isApproved && !showApproved ? (
+        ''
+      ) : (
+        <AllowButton
+          account={account}
+          setIsApproved={handleApproved}
+          collateralAddress={collateralAddress}
+          tokenId={collateralTokenID}
+        />
+      )}
       <MintTicketButton
         account={account}
         isApproved={isApproved}
@@ -51,21 +77,23 @@ export default function CreateTicketForm({
   );
 }
 
-function AllowButton({
-  account, collateralAddress, tokenId, setIsApproved,
-}) {
+function AllowButton({ account, collateralAddress, tokenId, setIsApproved }) {
   const [transactionHash, setTransactionHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
 
   const approve = async () => {
     const web3Contract = web3Erc721Contract(collateralAddress);
-    const t = await web3Contract.approve(process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_CONTRACT, tokenId);
+    const t = await web3Contract.approve(
+      process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_CONTRACT,
+      tokenId,
+    );
     setTransactionHash(t.hash);
     setWaitingForTx(true);
-    t.wait().then((receipt) => {
-      waitForApproval();
-      setWaitingForTx(true);
-    })
+    t.wait()
+      .then((receipt) => {
+        waitForApproval();
+        setWaitingForTx(true);
+      })
       .catch((err) => {
         setWaitingForTx(false);
         console.log(err);
@@ -74,7 +102,11 @@ function AllowButton({
 
   const waitForApproval = async () => {
     const contract = jsonRpcERC721Contract(collateralAddress);
-    const filter = contract.filters.Approval(account, process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_CONTRACT, tokenId);
+    const filter = contract.filters.Approval(
+      account,
+      process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_CONTRACT,
+      tokenId,
+    );
     contract.once(filter, (from, to, tokenID) => {
       setWaitingForTx(false);
       setIsApproved(true);
@@ -93,12 +125,24 @@ function AllowButton({
 }
 
 function MintTicketButton({
-  account, isApproved, collateralAddress, collateralTokenID, loanAsset, loanAssetDecimals, loanAmount, interestRate, duration,
+  account,
+  isApproved,
+  collateralAddress,
+  collateralTokenID,
+  loanAsset,
+  loanAssetDecimals,
+  loanAmount,
+  interestRate,
+  duration,
 }) {
   const [transactionHash, setTransactionHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
 
-  const disabled = () => collateralAddress == '' || collateralTokenID.eq(0) || loanAsset == '' || duration.eq(0);
+  const disabled = () =>
+    collateralAddress == '' ||
+    collateralTokenID.eq(0) ||
+    loanAsset == '' ||
+    duration.eq(0);
 
   const mint = async () => {
     const contract = web3PawnShopContract();
@@ -113,10 +157,11 @@ function MintTicketButton({
     );
     setTransactionHash(t.hash);
     setWaitingForTx(true);
-    t.wait().then((receipt) => {
-      wait();
-      setWaitingForTx(true);
-    })
+    t.wait()
+      .then((receipt) => {
+        wait();
+        setWaitingForTx(true);
+      })
       .catch((err) => {
         setWaitingForTx(false);
         console.log(err);
@@ -140,6 +185,5 @@ function MintTicketButton({
       isPending={waitingForTx}
       disabled={!isApproved}
     />
-
   );
 }

@@ -11,7 +11,7 @@ module.exports = {
           name: '[name].[ext]',
         },
       },
-    })
-    return config
+    });
+    return config;
   },
-}
+};

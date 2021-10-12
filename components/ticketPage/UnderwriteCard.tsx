@@ -7,29 +7,44 @@ import DurationInput from './underwriteCard/DurationInput';
 import UnderwriteButton from './underwriteCard/UnderwriteButton';
 import AllowButton from './underwriteCard/AllowButton';
 
-const jsonRpcProvider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER);
+const jsonRpcProvider = new ethers.providers.JsonRpcProvider(
+  process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
+);
 
-export default function UnderwriteCard({ account, ticketInfo, loanUpdatedCallback }) {
+export default function UnderwriteCard({
+  account,
+  ticketInfo,
+  loanUpdatedCallback,
+}) {
   const [pawnShop, setPawnShopContract] = useState(null);
   const [web3PawnShop, setWeb3PawnShopContract] = useState(null);
-  const [web3CollateralAssetContract, setWeb3CollateralAssetContract] = useState(null);
+  const [web3CollateralAssetContract, setWeb3CollateralAssetContract] =
+    useState(null);
   const [collateralAssetContract, setCollateralAssetContract] = useState(null);
   const [loanAssetBalance, setLoanAssetBalance] = useState('');
   const [loanAmount, setLoanAmount] = useState(ethers.BigNumber.from(0));
   const [interestRate, setInterestRate] = useState(ethers.BigNumber.from('0'));
   const [duration, setDuration] = useState(ethers.BigNumber.from('0'));
-  const [allowanceValue, setAllowanceValue] = useState(ethers.BigNumber.from('0'));
+  const [allowanceValue, setAllowanceValue] = useState(
+    ethers.BigNumber.from('0'),
+  );
   const [needsAllowance, setNeedsAllowance] = useState(false);
   // const [curTimestamp, ]
 
   const getAccountLoanAssetBalance = async (loanAsseetContract) => {
     const balance = await loanAsseetContract.balanceOf(account);
-    const humanReadableBalance = ethers.utils.formatUnits(balance, ticketInfo.loanAssetDecimals);
+    const humanReadableBalance = ethers.utils.formatUnits(
+      balance,
+      ticketInfo.loanAssetDecimals,
+    );
     setLoanAssetBalance(humanReadableBalance);
   };
 
   const setAllowance = async (assetContract) => {
-    const allowance = await assetContract.allowance(account, process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_CONTRACT);
+    const allowance = await assetContract.allowance(
+      account,
+      process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_CONTRACT,
+    );
     if (!needsAllowance) {
       setNeedsAllowance(allowanceValue.lt(loanAmount));
     }
@@ -47,7 +62,10 @@ export default function UnderwriteCard({ account, ticketInfo, loanUpdatedCallbac
     setPawnShopContract(pawnShopContract(jsonRpcProvider));
     setWeb3CollateralAssetContract(erc20Contract(ticketInfo.loanAsset, signer));
 
-    const jsonRpcLoanAssetContract = erc20Contract(ticketInfo.loanAsset, jsonRpcProvider);
+    const jsonRpcLoanAssetContract = erc20Contract(
+      ticketInfo.loanAsset,
+      jsonRpcProvider,
+    );
     setCollateralAssetContract(jsonRpcLoanAssetContract);
     getAccountLoanAssetBalance(jsonRpcLoanAssetContract);
     setAllowance(jsonRpcLoanAssetContract);
@@ -74,25 +92,39 @@ export default function UnderwriteCard({ account, ticketInfo, loanUpdatedCallbac
 
   return (
     <fieldset className="standard-fieldset" id="underwrite-card">
-      <legend>
-        underwrite
-      </legend>
-      <p>
-        {' '}
-        {explainer()}
-        {' '}
-      </p>
+      <legend>underwrite</legend>
+      <p> {explainer()} </p>
       <p id="collateral-asset-balance">
         {' '}
         You have
-        {loanAssetBalance}
-        {' '}
-        {ticketInfo.loanAssetSymbol}
+        {loanAssetBalance} {ticketInfo.loanAssetSymbol}
       </p>
-      <LoanAmountInput accountBalance={loanAssetBalance} minLoanAmount={ticketInfo.loanAmount} decimals={ticketInfo.loanAssetDecimals} loanAssetSymbol={ticketInfo.loanAssetSymbol} setLoanAmount={setLoanAmount} />
-      <InterestRateInput maxPerSecondRate={ticketInfo.perSecondInterestRate} setInterestRate={setInterestRate} />
-      <DurationInput minDurationSeconds={ticketInfo.durationSeconds} setDurationSeconds={setDuration} />
-      { !needsAllowance ? '' : <AllowButton jsonRpcContract={collateralAssetContract} web3Contract={web3CollateralAssetContract} account={account} loanAssetSymbol={ticketInfo.loanAssetSymbol} callback={() => setAllowance(collateralAssetContract)} /> }
+      <LoanAmountInput
+        accountBalance={loanAssetBalance}
+        minLoanAmount={ticketInfo.loanAmount}
+        decimals={ticketInfo.loanAssetDecimals}
+        loanAssetSymbol={ticketInfo.loanAssetSymbol}
+        setLoanAmount={setLoanAmount}
+      />
+      <InterestRateInput
+        maxPerSecondRate={ticketInfo.perSecondInterestRate}
+        setInterestRate={setInterestRate}
+      />
+      <DurationInput
+        minDurationSeconds={ticketInfo.durationSeconds}
+        setDurationSeconds={setDuration}
+      />
+      {!needsAllowance ? (
+        ''
+      ) : (
+        <AllowButton
+          jsonRpcContract={collateralAssetContract}
+          web3Contract={web3CollateralAssetContract}
+          account={account}
+          loanAssetSymbol={ticketInfo.loanAssetSymbol}
+          callback={() => setAllowance(collateralAssetContract)}
+        />
+      )}
       <UnderwriteButton
         pawnShopContract={web3PawnShop}
         jsonRPCContract={pawnShop}
