@@ -23,12 +23,22 @@ export default function DurationInput({ setDurationSeconds }) {
       return;
     }
 
-    const valueInSeconds = ethers.BigNumber.from(Math.ceil(valueAsFloat * SECONDS_IN_DAY));
+    const valueInSeconds = ethers.BigNumber.from(
+      Math.ceil(valueAsFloat * SECONDS_IN_DAY),
+    );
     console.log(valueInSeconds);
     setDurationSeconds(valueInSeconds);
   };
 
   return (
-    <Input type="number" title="duration in days (minimum)" value={value} placeholder="duration" error={error} message="" setValue={handleValue} />
+    <Input
+      type="number"
+      title="duration in days (minimum)"
+      value={value}
+      placeholder="duration"
+      error={error}
+      message=""
+      setValue={handleValue}
+    />
   );
 }

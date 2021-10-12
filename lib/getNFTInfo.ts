@@ -3,23 +3,23 @@ import { cid } from 'is-ipfs';
 import remove from 'lodash/remove';
 
 interface GetNFTInfoArgs {
-  Contract: ethers.Contract,
-  tokenId: ethers.BigNumber
+  Contract: ethers.Contract;
+  tokenId: ethers.BigNumber;
 }
 
 export interface GetNFTInfoResponse {
-  name: string
-  description: string
-  mediaUrl: string
-  mediaMimeType: string
-  address: string
-  id: ethers.BigNumber
+  name: string;
+  description: string;
+  mediaUrl: string;
+  mediaMimeType: string;
+  address: string;
+  id: ethers.BigNumber;
 }
 
 export default async function getNFTInfo({
   Contract,
   tokenId,
-}: GetNFTInfoArgs) : Promise<GetNFTInfoResponse> {
+}: GetNFTInfoArgs): Promise<GetNFTInfoResponse> {
   try {
     const tokenURI = await Contract.tokenURI(tokenId);
 

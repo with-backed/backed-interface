@@ -5,13 +5,14 @@ export default function Media({
   mediaMimeType,
   autoPlay,
 }: {
-  media: string
-  mediaMimeType: string
-  autoPlay: boolean
+  media: string;
+  mediaMimeType: string;
+  autoPlay: boolean;
 }) {
   if (mediaMimeType?.includes('text')) return <Text media={media} />;
 
-  if (mediaMimeType?.includes('video')) return <Video media={media} autoPlay={autoPlay} />;
+  if (mediaMimeType?.includes('video'))
+    return <Video media={media} autoPlay={autoPlay} />;
 
   if (mediaMimeType?.includes('audio')) return <Audio media={media} />;
 
@@ -26,8 +27,7 @@ function Video({ media, autoPlay }: { media: string; autoPlay: boolean }) {
       autoPlay={autoPlay}
       controls={!autoPlay}
       loop
-      playsInline
-    >
+      playsInline>
       <source src={media} />
     </video>
   );

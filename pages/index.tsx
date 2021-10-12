@@ -9,20 +9,13 @@ import utilStyles from '../styles/utils.module.css';
 
 export default function Home() {
   return (
-
     <div>
-      Welcome! Homepage in progress, try
-      {' '}
+      Welcome! Homepage in progress, try{' '}
       <Link href="/tickets/create"> Creating a ticket </Link>
     </div>
-
   );
 }
 
-function MintDai() {
+function MintDai() {}
 
-}
-
-function MintPunk() {
-
-}
+function MintPunk() {}

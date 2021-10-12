@@ -8,12 +8,11 @@ import NFTPawnShopArtifact from '../contracts/NFTPawnShop.json';
 import TicketPageBody from './ticketPage/TicketPageBody';
 import PawnShopHeader from './PawnShopHeader';
 
-const ConnectWallet = dynamic(
-  () => import('./ConnectWallet'),
-  { ssr: false },
-);
+const ConnectWallet = dynamic(() => import('./ConnectWallet'), { ssr: false });
 
-const _provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER);
+const _provider = new ethers.providers.JsonRpcProvider(
+  process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
+);
 
 const pawnShopContract = new ethers.Contract(
   process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_CONTRACT,
@@ -40,14 +39,22 @@ export default function Ticket({ ticketID }) {
   }, [ticketID]);
   return (
     <div id="ticket-page-wrapper">
-      <PawnShopHeader account={account} setAccount={setAccount} message={`pawn loan #${ticketID}`} />
-      {ticketInfo == null
-        ? (
-          <Dimmer active={ticketInfo == null} inverted>
-            <Loader inverted content="Loading" />
-          </Dimmer>
-        )
-      	 :		<TicketPageBody account={account} ticketInfo={ticketInfo} refresh={fetchData} />}
+      <PawnShopHeader
+        account={account}
+        setAccount={setAccount}
+        message={`pawn loan #${ticketID}`}
+      />
+      {ticketInfo == null ? (
+        <Dimmer active={ticketInfo == null} inverted>
+          <Loader inverted content="Loading" />
+        </Dimmer>
+      ) : (
+        <TicketPageBody
+          account={account}
+          ticketInfo={ticketInfo}
+          refresh={fetchData}
+        />
+      )}
     </div>
   );
 }
@@ -58,10 +65,10 @@ function LoadingOverlay({ txHash }) {
       Tx is loading
       <style jsx>
         {`
-					#loading-box {
-						display: ${txHash == '' ? 'none' : 'normal'};
-					}
-				`}
+          #loading-box {
+            display: ${txHash == '' ? 'none' : 'normal'};
+          }
+        `}
       </style>
     </div>
   );

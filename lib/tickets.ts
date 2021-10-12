@@ -4,7 +4,9 @@ import ERC20Artifact from '../contracts/ERC20.json';
 import ERC721Artifact from '../contracts/ERC721.json';
 import { TicketInfo } from './TicketInfoType';
 
-const _provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER);
+const _provider = new ethers.providers.JsonRpcProvider(
+  process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
+);
 
 const pawnShopContract = new ethers.Contract(
   process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_CONTRACT,
@@ -42,8 +44,10 @@ export async function getAllTicketIds() {
   }));
 }
 
-export async function getTicketInfo(id: string) : Promise<TicketInfo> {
-  const ticketInfo = await pawnShopContract.ticketInfo(ethers.BigNumber.from(id));
+export async function getTicketInfo(id: string): Promise<TicketInfo> {
+  const ticketInfo = await pawnShopContract.ticketInfo(
+    ethers.BigNumber.from(id),
+  );
   const { loanAsset } = ticketInfo;
   const { collateralAddress } = ticketInfo;
   const { collateralID } = ticketInfo;

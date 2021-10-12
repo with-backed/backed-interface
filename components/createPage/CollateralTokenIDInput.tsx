@@ -5,7 +5,11 @@ import { jsonRpcERC721Contract } from '../../lib/contracts';
 import Input from '../Input';
 
 export default function CollateralTokenIDInput({
-  account, collateralContractAddress, setCollateralTokenID, setIsValidCollateral, setIsApproved,
+  account,
+  collateralContractAddress,
+  setCollateralTokenID,
+  setIsValidCollateral,
+  setIsApproved,
 }) {
   const [contract, setContract] = useState(null);
   const [value, setValue] = useState('');
@@ -30,9 +34,13 @@ export default function CollateralTokenIDInput({
 
     if (contract != null) {
       let error = false;
-      const owner = await contract.ownerOf(bigNumValue).catch((e) => error = true);
+      const owner = await contract
+        .ownerOf(bigNumValue)
+        .catch((e) => (error = true));
       if (error) {
-        setError('Error fetching token info. Check contract address and token ID.');
+        setError(
+          'Error fetching token info. Check contract address and token ID.',
+        );
         setIsValidCollateral(false);
         return;
       }
@@ -50,7 +58,9 @@ export default function CollateralTokenIDInput({
       console.log('approved');
       console.log(approved);
 
-      setIsApproved(approved.includes(process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_CONTRACT));
+      setIsApproved(
+        approved.includes(process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_CONTRACT),
+      );
     }
   };
 
@@ -67,7 +77,14 @@ export default function CollateralTokenIDInput({
   }, [collateralContractAddress]);
 
   return (
-    <Input type="text" title="collateral NFT token ID" value={value} placeholder="token id" error={error} message="" setValue={handleValue} />
-
+    <Input
+      type="text"
+      title="collateral NFT token ID"
+      value={value}
+      placeholder="token id"
+      error={error}
+      message=""
+      setValue={handleValue}
+    />
   );
 }

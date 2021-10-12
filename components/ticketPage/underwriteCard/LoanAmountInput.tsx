@@ -3,11 +3,17 @@ import { useState, useEffect } from 'react';
 import Input from '../../Input';
 
 export default function LoanAmountInput({
-  accountBalance, minLoanAmount, decimals, loanAssetSymbol, setLoanAmount,
+  accountBalance,
+  minLoanAmount,
+  decimals,
+  loanAssetSymbol,
+  setLoanAmount,
 }) {
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
-  const [minAmount] = useState(ethers.utils.formatUnits(minLoanAmount, decimals));
+  const [minAmount] = useState(
+    ethers.utils.formatUnits(minLoanAmount, decimals),
+  );
 
   const handleValue = (value) => {
     setError('');
@@ -42,6 +48,14 @@ export default function LoanAmountInput({
   };
 
   return (
-    <Input type="number" title="loan amount" value={value} placeholder={`Minimum: ${minAmount} ${loanAssetSymbol}`} error={error} message="" setValue={handleValue} />
+    <Input
+      type="number"
+      title="loan amount"
+      value={value}
+      placeholder={`Minimum: ${minAmount} ${loanAssetSymbol}`}
+      error={error}
+      message=""
+      setValue={handleValue}
+    />
   );
 }

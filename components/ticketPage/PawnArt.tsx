@@ -5,7 +5,9 @@ import getNFTInfo, { GetNFTInfoResponse } from '../../lib/getNFTInfo';
 import Media from '../Media';
 import NFTPawnShopArtifact from '../../contracts/NFTPawnShop.json';
 
-const _provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER);
+const _provider = new ethers.providers.JsonRpcProvider(
+  process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
+);
 
 const pawnTicketsContract = new ethers.Contract(
   process.env.NEXT_PUBLIC_PAWN_TICKETS_CONTRACT,
@@ -20,15 +22,11 @@ const pawnLoansContract = new ethers.Contract(
 );
 
 export function PawnLoanArt({ tokenId }) {
-  return (
-    <PawnArt contract={pawnLoansContract} tokenId={tokenId} />
-  );
+  return <PawnArt contract={pawnLoansContract} tokenId={tokenId} />;
 }
 
 export function PawnTicketArt({ tokenId }) {
-  return (
-    <PawnArt contract={pawnTicketsContract} tokenId={tokenId} />
-  );
+  return <PawnArt contract={pawnTicketsContract} tokenId={tokenId} />;
 }
 
 function PawnArt({ contract, tokenId }) {
@@ -48,17 +46,13 @@ function PawnArt({ contract, tokenId }) {
 
   return (
     <div className="pawn-art">
-
-      {
-            nftInfo == null
-              ? ''
-              : (
-                <div>
-                  <PawnArtLoaded {...nftInfo} />
-
-                </div>
-              )
-        }
+      {nftInfo == null ? (
+        ''
+      ) : (
+        <div>
+          <PawnArtLoaded {...nftInfo} />
+        </div>
+      )}
     </div>
   );
 }
