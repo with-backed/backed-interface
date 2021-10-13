@@ -1,30 +1,21 @@
-import Head from 'next/head'
-import utilStyles from '../styles/utils.module.css'
-import Link from 'next/link'
-import { GetStaticProps } from 'next'
-import ConnectWallet from '../components/ConnectWallet'
+import Head from 'next/head';
+import Link from 'next/link';
+import { GetStaticProps } from 'next';
 import React, { useState, useEffect } from 'react';
-import { ethers } from "ethers";
-import { Button, Header } from 'semantic-ui-react'
+import { ethers } from 'ethers';
+import { Button, Header } from 'semantic-ui-react';
+import ConnectWallet from '../components/ConnectWallet';
+import utilStyles from '../styles/utils.module.css';
 
-
-export default function Home(){
-
+export default function Home() {
   return (
-   
-   <div>
-   Welcome! Homepage in progress, try  <Link href="/tickets/create" > Creating a ticket </Link>
-   </div>
-      
-  )
+    <div>
+      Welcome! Homepage in progress, try{' '}
+      <Link href="/tickets/create"> Creating a ticket </Link>
+    </div>
+  );
 }
 
-function MintDai(){
+function MintDai() {}
 
-}
-
-function MintPunk(){
-  
-}
-
-
+function MintPunk() {}

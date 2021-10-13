@@ -7,4 +7,4 @@ export default {
   component: InterestRateInput,
 };
 
-export const Input = () => <InterestRateInput setInterestRate={() => { }} />;
+export const Input = () => <InterestRateInput setInterestRate={() => {}} />;
