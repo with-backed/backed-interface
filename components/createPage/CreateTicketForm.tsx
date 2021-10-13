@@ -121,7 +121,7 @@ function MintTicketButton({account, isApproved, collateralAddress, collateralTok
     const wait = async () => {
         const contract = jsonRpcPawnShopContract()
         const filter = contract.filters.MintTicket(null, account, null, null, null);
-        contract.once(filter, (id, minter, maxInterest, minAount, minDuration) => {
+        contract.once(filter, (id, minter, collateralTokenId, collateralContract, maxInterest, loanAssetContract, minAount, minDuration) => {
             setWaitingForTx(false)
             window.location.assign("/tickets/" + id.toString() );
         })

@@ -34,7 +34,7 @@ interface ParsedEventProps {
     loanAssetDecimals: ethers.BigNumber,
 }
 
-function ParsedEvent({event, loanAssetDecimals}) {
+function ParsedEvent({event, loanAssetDecimals}: ParsedEventProps) {
     const [timestamp, setTimestamp] = useState(0)
 
     const getTimeStamp = async () => {
@@ -67,6 +67,18 @@ function ParsedEvent({event, loanAssetDecimals}) {
     )
 }
 
+function toLocaleDateTime(seconds) {
+    var date = new Date(0);
+    date.setUTCSeconds(seconds);
+    return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
+}
+
+function camelToSentenceCase(text){
+    const result = text.replace(/([A-Z])/g, " $1");
+    return result.charAt(0).toUpperCase() + result.slice(1);
+}
+
+
 function MintEventDetails(event: ethers.Event, loanAssetDecimals: ethers.BigNumber){
     const [minter, ]  = useState(event.args['minter'])
     const [maxInterestRate, ]  = useState(formattedAnnualRate(event.args['maxInterestRate']))
@@ -84,18 +96,6 @@ function MintEventDetails(event: ethers.Event, loanAssetDecimals: ethers.BigNumb
         </div>
     )
 }
-
-function toLocaleDateTime(seconds) {
-    var date = new Date(0);
-    date.setUTCSeconds(seconds);
-    return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
-}
-
-function camelToSentenceCase(text){
-    const result = text.replace(/([A-Z])/g, " $1");
-    return result.charAt(0).toUpperCase() + result.slice(1);
-}
-
 
 function UnderwriteEventDetails(event: ethers.Event, loanAssetDecimals: ethers.BigNumber){
     const [underwriter, ]  = useState(event.args['underwriter'])
@@ -125,58 +125,6 @@ function RepayEventDetails(event: ethers.Event, loanAssetDecimals: ethers.BigNum
             <p> paid to: <a target="_blank" href={process.env.NEXT_PUBLIC_ETHERSCAN_URL + "/address/" +  loanOwner }>  {loanOwner.slice(0,10)}... </a></p>
             <p> interest earned: {interestEarned}</p>
             <p> loan amount: {loanAmount}</p>
-        </div>
-    )
-}
-
-interface EventTextProps {
-    event: ethers.Event
-}
-
-function EventText({event} : EventTextProps) {
-    const [argValues, setArgValues] = useState([]) 
-    
-
-    useEffect(() => {
-        var argValues = Object.keys(event.args).map((k : string) => {
-            if (parseInt(k) + '' == k || k == 'id') {
-                return null
-            }
-            var value = event.args[k]
-            if (value instanceof ethers.BigNumber){
-                value = value.toString()
-            }
-            value = value + ''
-            if(value.length > 10){
-                value = value.slice(0,10) + '...'
-            }
-
-            return {arg: k, value: value}
-        })
-        argValues = argValues.filter((a) => a != null)
-
-        console.log(argValues)
-        setArgValues(argValues)
-    }, [])
-
-    return(
-        <div className='display-table'>
-            <p><b>{event.event}</b> - block #{event.blockNumber}</p>
-            {argValues.map((k, i) => <ArgValueProps arg={k.arg} value={k.value} key={i} />) }
-            <br/>
-        </div>
-    )
-}
-
-interface ArgValueProps {
-    arg: string, 
-    value: any
-}
-
-function ArgValueProps({arg, value}: ArgValueProps){
-    return(
-        <div className='display-table'>
-            <p className='float-left'>{arg}: {value}</p>
         </div>
     )
 }
