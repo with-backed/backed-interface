@@ -24,7 +24,11 @@ export default function Input({
 
   return (
     <div className="input-wrapper">
-      <h4 className="blue"> {title} </h4>
+      <h4 className="blue">
+        {' '}
+        {title}
+        {' '}
+      </h4>
       <input
         type={type}
         value={v}

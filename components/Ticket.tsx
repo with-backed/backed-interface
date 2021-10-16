@@ -9,7 +9,6 @@ import PawnShopHeader from './PawnShopHeader';
 
 const ConnectWallet = dynamic(() => import('./ConnectWallet'), { ssr: false });
 
-
 export default function Ticket({ ticketID }) {
   const [loanInfo, setLoanInfo] = useState(null);
   const [account, setAccount] = useState(null);

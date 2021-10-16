@@ -8,7 +8,6 @@ import UnderwriteButton from './underwriteCard/UnderwriteButton';
 import AllowButton from './underwriteCard/AllowButton';
 import { LoanInfo } from '../../lib/LoanInfoType';
 
-
 interface UnderwriteCardProps{
   account: string
   loanInfo: LoanInfo
@@ -39,7 +38,7 @@ export default function UnderwriteCard({
   };
 
   const setAllowance = async () => {
-    const assetContract = jsonRpcERC20Contract(loanInfo.loanAssetContractAddress)
+    const assetContract = jsonRpcERC20Contract(loanInfo.loanAssetContractAddress);
     const allowance = await assetContract.allowance(
       account,
       process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT,
@@ -79,11 +78,17 @@ export default function UnderwriteCard({
   return (
     <fieldset className="standard-fieldset" id="underwrite-card">
       <legend>underwrite</legend>
-      <p> {explainer()} </p>
+      <p>
+        {' '}
+        {explainer()}
+        {' '}
+      </p>
       <p id="collateral-asset-balance">
         {' '}
         You have
-        {loanAssetBalance} {loanInfo.loanAssetSymbol}
+        {loanAssetBalance}
+        {' '}
+        {loanInfo.loanAssetSymbol}
       </p>
       <LoanAmountInput
         accountBalance={loanAssetBalance}

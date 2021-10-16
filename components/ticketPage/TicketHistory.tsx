@@ -29,12 +29,12 @@ export default function TicketHistory({ loanInfo } : TicketHistoryProps) {
       {history == null
         ? ''
         : history.map((e: ethers.Event, i) => (
-            <ParsedEvent
-              event={e}
-              loanInfo={loanInfo}
-              key={i}
-            />
-          ))}
+          <ParsedEvent
+            event={e}
+            loanInfo={loanInfo}
+            key={i}
+          />
+        ))}
     </fieldset>
   );
 }
@@ -57,8 +57,8 @@ function ParsedEvent({ event, loanInfo }: ParsedEventProps) {
   });
   const eventDetails = () => {
     switch (event.event) {
-      case 'MintTicket':
-        return MintEventDetails(event, loanInfo);
+      case 'CreateLoan':
+        return CreateLoanEventDetails(event, loanInfo);
         break;
       case 'UnderwriteLoan':
         return UnderwriteEventDetails(event, loanInfo);
@@ -73,17 +73,25 @@ function ParsedEvent({ event, loanInfo }: ParsedEventProps) {
     <div className="event-details">
       <p>
         {' '}
-        <b> {camelToSentenceCase(event.event)} </b> -{' '}
-        {toLocaleDateTime(timestamp)}{' '}
+        <b>
+          {' '}
+          {camelToSentenceCase(event.event)}
+          {' '}
+        </b>
+        {' '}
+        -
+        {' '}
+        {toLocaleDateTime(timestamp)}
+        {' '}
       </p>
       {eventDetails()}
     </div>
   );
 }
 
-function MintEventDetails(
+function CreateLoanEventDetails(
   event: ethers.Event,
-  loanInfo: LoanInfo
+  loanInfo: LoanInfo,
 ) {
   const [minter] = useState(event.args.minter);
   const [maxInterestRate] = useState(
@@ -99,19 +107,24 @@ function MintEventDetails(
       <p>
         {' '}
         minter:
+        {' '}
         <a
           target="_blank"
           href={`${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/address/${minter}`}
-          rel="noreferrer">
+          rel="noreferrer"
+        >
           {' '}
           {minter.slice(0, 10)}
-          ...{' '}
+          ...
+          {' '}
         </a>
       </p>
       <p>
         {' '}
         max interest rate:
-        {maxInterestRate}%
+        {' '}
+        {maxInterestRate}
+        %
       </p>
       <p>
         {`minimum loan amount: ${minLoanAmount} ${loanInfo.loanAssetSymbol}`}
@@ -153,16 +166,19 @@ function UnderwriteEventDetails(
         <a
           target="_blank"
           href={`${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/address/${underwriter}`}
-          rel="noreferrer">
+          rel="noreferrer"
+        >
           {' '}
           {underwriter.slice(0, 10)}
-          ...{' '}
+          ...
+          {' '}
         </a>
       </p>
       <p>
         {' '}
         interest rate:
-        {interestRate}%
+        {interestRate}
+        %
       </p>
       <p>
         {`loan amount: ${loanAmount} ${loanInfo.loanAssetSymbol}`}
@@ -176,7 +192,7 @@ function UnderwriteEventDetails(
 
 function RepayEventDetails(
   event: ethers.Event,
-  loanInfo: LoanInfo
+  loanInfo: LoanInfo,
 ) {
   const [repayer] = useState(event.args.repayer);
   const [interestEarned] = useState(
@@ -195,10 +211,12 @@ function RepayEventDetails(
         <a
           target="_blank"
           href={`${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/address/${repayer}`}
-          rel="noreferrer">
+          rel="noreferrer"
+        >
           {' '}
           {repayer.slice(0, 10)}
-          ...{' '}
+          ...
+          {' '}
         </a>
       </p>
       <p>
@@ -207,10 +225,12 @@ function RepayEventDetails(
         <a
           target="_blank"
           href={`${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/address/${loanOwner}`}
-          rel="noreferrer">
+          rel="noreferrer"
+        >
           {' '}
           {loanOwner.slice(0, 10)}
-          ...{' '}
+          ...
+          {' '}
         </a>
       </p>
       <p>
@@ -259,7 +279,10 @@ function EventText({ event }: EventTextProps) {
   return (
     <div className="display-table">
       <p>
-        <b>{event.event}</b> - block #{event.blockNumber}
+        <b>{event.event}</b>
+        {' '}
+        - block #
+        {event.blockNumber}
       </p>
       {argValues.map((k, i) => (
         <ArgValueProps arg={k.arg} value={k.value} key={i} />
@@ -278,14 +301,16 @@ function ArgValueProps({ arg, value }: ArgValueProps) {
   return (
     <div className="display-table">
       <p className="float-left">
-        {arg}: {value}
+        {arg}
+        :
+        {value}
       </p>
     </div>
   );
 }
 
 const getTicketHistory = async (loanId) => {
-  const contract = jsonRpcLoanFacilitator()
+  const contract = jsonRpcLoanFacilitator();
 
   const mintTicketFilter = contract.filters.CreateLoan(
     loanId,
@@ -293,13 +318,13 @@ const getTicketHistory = async (loanId) => {
   );
   const closeFilter = contract.filters.Close(loanId);
   const underwriteFilter = contract.filters.UnderwriteLoan(
-    loanId
+    loanId,
   );
   const buyoutUnderwriteFilter = contract.filters.BuyoutUnderwriter(
-    loanId
+    loanId,
   );
   const repayAndCloseFilter = contract.filters.Repay(
-    loanId
+    loanId,
   );
   const seizeCollateralFilter = contract.filters.SeizeCollateral(
     loanId,

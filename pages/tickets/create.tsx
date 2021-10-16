@@ -57,7 +57,8 @@ export default function Create({}) {
       )}
       <fieldset
         id="create-explainer-fieldset"
-        className="standard-fieldset float-left">
+        className="standard-fieldset float-left"
+      >
         <legend>explainer</legend>
         <Explainer account={account} />
       </fieldset>

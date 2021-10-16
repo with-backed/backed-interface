@@ -72,7 +72,8 @@ function LeftColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
           <a
             target="_blank"
             href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT}/${loanInfo.loanId.toString()}`}
-            rel="noreferrer">
+            rel="noreferrer"
+          >
             View on OpenSea
           </a>
         </p>
@@ -80,20 +81,21 @@ function LeftColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
 
       <div>
         {' '}
-        <PawnTicketArt tokenId={loanInfo.loanId} />{' '}
+        <PawnTicketArt tokenId={loanInfo.loanId} />
+        {' '}
       </div>
-      {account == null ||
-      loanInfo.closed ||
-      loanInfo.lastAccumulatedTimestamp.toString() == '0' ||
-      owner != account ? (
-        ''
-      ) : (
-        <RepayCard
-          account={account}
-          loanInfo={loanInfo}
-          repaySuccessCallback={refresh}
-        />
-      )}
+      {account == null
+      || loanInfo.closed
+      || loanInfo.lastAccumulatedTimestamp.toString() == '0'
+      || owner != account ? (
+          ''
+        ) : (
+          <RepayCard
+            account={account}
+            loanInfo={loanInfo}
+            repaySuccessCallback={refresh}
+          />
+        )}
       <TicketHistory
         loanInfo={loanInfo}
       />
@@ -153,14 +155,16 @@ function RightColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
               <a
                 target="_blank"
                 href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT}/${loanInfo.loanId.toString()}`}
-                rel="noreferrer">
+                rel="noreferrer"
+              >
                 View on OpenSea
               </a>
             </p>
           </fieldset>
           <div id="pawn-loan-art">
             {' '}
-            <PawnLoanArt tokenId={loanInfo.loanId} />{' '}
+            <PawnLoanArt tokenId={loanInfo.loanId} />
+            {' '}
           </div>
         </div>
       )}
@@ -173,17 +177,17 @@ function RightColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
             loanInfo={loanInfo}
             loanUpdatedCallback={refresh}
           />
-          {loanInfo.loanOwner != account ||
-          timestamp == null ||
-          timestamp < endSeconds ? (
-            ''
-          ) : (
-            <SeizeCollateralCard
-              account={account}
-              loanInfo={loanInfo}
-              seizeCollateralSuccessCallback={refresh}
-            />
-          )}
+          {loanInfo.loanOwner != account
+          || timestamp == null
+          || timestamp < endSeconds ? (
+              ''
+            ) : (
+              <SeizeCollateralCard
+                account={account}
+                loanInfo={loanInfo}
+                seizeCollateralSuccessCallback={refresh}
+              />
+            )}
         </div>
       )}
     </div>

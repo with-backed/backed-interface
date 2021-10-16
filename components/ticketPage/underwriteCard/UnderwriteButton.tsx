@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { jsonRpcLoanFacilitator, web3LoanFacilitator } from '../../../lib/contracts';
 import { LoanInfo } from '../../../lib/LoanInfoType';
-import TransactionButton from '../TransactionButton'
+import TransactionButton from '../TransactionButton';
 
 interface UnderwriteButtonProps{
   loanInfo: LoanInfo;
@@ -29,25 +29,22 @@ export default function UnderwriteButton({
   const [transactionPending, setTransactionPending] = useState(false);
 
   const checkHas10PercentImprovement = () => {
-    const hasImprovement =
-      loanAmount.gte(get110Percent(loanInfo.loanAmount)) ||
-      duration.gte(get110Percent(loanInfo.durationSeconds)) ||
-      interestRate.lte(get90Percent(loanInfo.perSecondInterestRate));
+    const hasImprovement = loanAmount.gte(get110Percent(loanInfo.loanAmount))
+      || duration.gte(get110Percent(loanInfo.durationSeconds))
+      || interestRate.lte(get90Percent(loanInfo.perSecondInterestRate));
     setHas10PercentImprovement(hasImprovement);
     return hasImprovement;
   };
 
-  const get110Percent = (value: ethers.BigNumber) =>
-    value.add(value.mul(10).div(100));
+  const get110Percent = (value: ethers.BigNumber) => value.add(value.mul(10).div(100));
 
-  const get90Percent = (value: ethers.BigNumber) =>
-    value.add(value.mul(90).div(100));
+  const get90Percent = (value: ethers.BigNumber) => value.add(value.mul(90).div(100));
 
   const underwrite = async () => {
     if (disabled || !isFilled()) {
       return;
     }
-    const loanFacilitator = web3LoanFacilitator()
+    const loanFacilitator = web3LoanFacilitator();
     const t = await loanFacilitator.underwriteLoan(
       loanInfo.loanId,
       interestRate,
@@ -55,21 +52,21 @@ export default function UnderwriteButton({
       duration,
       account,
     );
-    setTransactionPending(true)
-    setTransactionHash(t.hash)
+    setTransactionPending(true);
+    setTransactionHash(t.hash);
     t.wait()
       .then((receipt) => {
         setTransactionHash(t.hash);
         waitForUnderwrite();
       })
       .catch((err) => {
-        setTransactionPending(false)
+        setTransactionPending(false);
         console.log(err);
       });
   };
 
   const waitForUnderwrite = async () => {
-    const loanFacilitator = jsonRpcLoanFacilitator()
+    const loanFacilitator = jsonRpcLoanFacilitator();
 
     const filter = loanFacilitator.filters.UnderwriteLoan(
       loanInfo.loanId,
@@ -77,13 +74,12 @@ export default function UnderwriteButton({
     );
 
     loanFacilitator.once(filter, () => {
-      setTransactionPending(false)
+      setTransactionPending(false);
       loanUpdatedCallback();
     });
   };
 
-  const isDisabled = () =>
-    loanAmount.gt(allowance) || (!checkHas10PercentImprovement() && isFilled());
+  const isDisabled = () => loanAmount.gt(allowance) || (!checkHas10PercentImprovement() && isFilled());
 
   const isFilled = () => {
     const z = ethers.BigNumber.from('0');
@@ -98,24 +94,25 @@ export default function UnderwriteButton({
 
   return (
     <div>
-      <TransactionButton 
-        text={'lend'}
+      <TransactionButton
+        text="lend"
         onClick={underwrite}
         disabled={disabled}
         txHash={transactionHash}
         isPending={transactionPending}
       />
-      {isFilled() &&
-      loanInfo.lastAccumulatedTimestamp.toString() != '0' &&
-      !has10PercentImprovement ? (
+      {isFilled()
+      && loanInfo.lastAccumulatedTimestamp.toString() != '0'
+      && !has10PercentImprovement ? (
         <p>
           {' '}
           Replacing exisiting underwriter requires improving at least one loan
-          term by at least 10%{' '}
+          term by at least 10%
+          {' '}
         </p>
-      ) : (
-        ''
-      )}
+        ) : (
+          ''
+        )}
     </div>
   );
 }

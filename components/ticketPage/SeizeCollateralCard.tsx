@@ -26,7 +26,7 @@ export default function SeizeCollateralCard({
   const repay = async () => {
     setTxHash('');
     setWaitingForTx(false);
-    
+
     const t = await web3LoanFacilitator().seizeCollateral(
       loanInfo.loanId,
       account,
@@ -44,7 +44,7 @@ export default function SeizeCollateralCard({
   };
 
   const wait = async () => {
-    const loanFacilitator = jsonRpcLoanFacilitator()
+    const loanFacilitator = jsonRpcLoanFacilitator();
     const filter = loanFacilitator.filters.SeizeCollateral(
       loanInfo.loanId,
     );
@@ -58,14 +58,22 @@ export default function SeizeCollateralCard({
     <fieldset className="standard-fieldset">
       <legend>seize collateral</legend>
       <p>
-        The loan duration is complete. The total interest and principal owed is{' '}
-        {amountOwed} {loanInfo.loanAssetSymbol}, and 0{' '}
-        {loanInfo.loanAssetSymbol} has been repaid. You are able to seize the
+        The loan duration is complete. The total interest and principal owed is
+        {' '}
+        {amountOwed}
+        {' '}
+        {loanInfo.loanAssetSymbol}
+        , and 0
+        {' '}
+        {loanInfo.loanAssetSymbol}
+        {' '}
+        has been repaid. You are able to seize the
         collateral NFT, closing the loan, or wait for repayment.
       </p>
       <div className="button-1" onClick={repay}>
         {' '}
-        seize collateral{' '}
+        seize collateral
+        {' '}
       </div>
     </fieldset>
   );

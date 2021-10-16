@@ -20,7 +20,7 @@ export default function AllowButton({
   const [waitingForTx, setWaitingForTx] = useState(false);
 
   const allow = async () => {
-    const contract = web3Erc20Contract(contractAddress)
+    const contract = web3Erc20Contract(contractAddress);
     const t = await contract.approve(
       process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT,
       ethers.BigNumber.from(2).pow(256).sub(1),
@@ -39,7 +39,7 @@ export default function AllowButton({
   };
 
   const waitForApproval = async () => {
-    const contract = jsonRpcERC20Contract(contractAddress)
+    const contract = jsonRpcERC20Contract(contractAddress);
     const filter = contract.filters.Approval(
       account,
       process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT,

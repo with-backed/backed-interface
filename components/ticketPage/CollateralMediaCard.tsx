@@ -21,13 +21,13 @@ export default function CollateralMediaCard({
   const [contractName, setContractName] = useState(null);
 
   const load = async () => {
-    const contract = jsonRpcERC721Contract(collateralAddress)
+    const contract = jsonRpcERC721Contract(collateralAddress);
 
     const contractName = await contract.name();
     setContractName(contractName);
 
     const result = await getNFTInfo({
-      contract: contract,
+      contract,
       tokenId: collateralTokenId,
     });
     setCollateralNFTInfo(result);
@@ -67,14 +67,18 @@ function CollateralMediaCardLoaded({ contractName, contractAddress, nftInfo }) {
       </div>
       <div className="collateralDetails">
         <p>{contractName}</p>
-        <p id="collateralTitle"> {nftInfo.name}</p>
+        <p id="collateralTitle">
+          {' '}
+          {nftInfo.name}
+        </p>
         <p>
           <a
             target="_blank"
             href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${
               contractAddress
             }/${nftInfo.id.toString()}`}
-            rel="noreferrer">
+            rel="noreferrer"
+          >
             {' '}
             View on OpenSea
           </a>
@@ -85,17 +89,27 @@ function CollateralMediaCardLoaded({ contractName, contractAddress, nftInfo }) {
             href={`${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/token/${
               contractAddress
             }?a=${nftInfo.id.toString()}`}
-            rel="noreferrer">
+            rel="noreferrer"
+          >
             {' '}
             View on Etherscan
           </a>
         </p>
         <p>
-          <b>Contract Address</b> {contractAddress.slice(0, 7)} ...{' '}
-          {contractAddress.slice(35, -1)}{' '}
+          <b>Contract Address</b>
+          {' '}
+          {contractAddress.slice(0, 7)}
+          {' '}
+          ...
+          {' '}
+          {contractAddress.slice(35, -1)}
+          {' '}
         </p>
         <p>
-          <b>ID</b> {nftInfo.id.toString()}{' '}
+          <b>ID</b>
+          {' '}
+          {nftInfo.id.toString()}
+          {' '}
         </p>
       </div>
     </div>

@@ -78,7 +78,9 @@ export default function CreateTicketForm({
   );
 }
 
-function AllowButton({ account, collateralAddress, tokenId, setIsApproved }) {
+function AllowButton({
+  account, collateralAddress, tokenId, setIsApproved,
+}) {
   const [transactionHash, setTransactionHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
 
@@ -139,11 +141,10 @@ function MintTicketButton({
   const [transactionHash, setTransactionHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
 
-  const disabled = () =>
-    collateralAddress == '' ||
-    collateralTokenID.eq(0) ||
-    loanAsset == '' ||
-    duration.eq(0);
+  const disabled = () => collateralAddress == ''
+    || collateralTokenID.eq(0)
+    || loanAsset == ''
+    || duration.eq(0);
 
   const mint = async () => {
     const contract = web3LoanFacilitator();

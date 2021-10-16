@@ -60,9 +60,12 @@ export default function RepayCard({
         {ethers.utils.formatUnits(
           amountOwed.toString(),
           loanInfo.loanAssetDecimals,
-        )}{' '}
-        {loanInfo.loanAssetSymbol}. On repayment, the NFT collateral will be
-        sent to the Pawn Ticket holder, {loanInfo.ticketOwner.slice(0, 10)}
+        )}
+        {' '}
+        {loanInfo.loanAssetSymbol}
+        . On repayment, the NFT collateral will be
+        sent to the Pawn Ticket holder,
+        {loanInfo.ticketOwner.slice(0, 10)}
         ...
         {loanInfo.ticketOwner.slice(34, 42)}
       </p>
@@ -114,9 +117,9 @@ function RepayButton({ loanId, repaySuccessCallback, disabled }) {
   };
 
   const wait = async () => {
-    const loanFacilitator = jsonRpcLoanFacilitator()
+    const loanFacilitator = jsonRpcLoanFacilitator();
     const filter = loanFacilitator.filters.Repay(
-      loanId
+      loanId,
     );
     loanFacilitator.once(filter, () => {
       repaySuccessCallback();

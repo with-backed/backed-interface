@@ -2,7 +2,6 @@ import { ethers } from 'ethers';
 import { jsonRpcERC20Contract, jsonRpcERC721Contract, jsonRpcLoanFacilitator } from './contracts';
 import { LoanInfo } from './LoanInfoType';
 
-
 // export async function getAllTicketIds() {
 //   const numberOfTickets = await pawnShopContract.totalSupply();
 
@@ -22,10 +21,10 @@ import { LoanInfo } from './LoanInfoType';
 // }
 
 export async function getLoanInfo(id: string): Promise<LoanInfo> {
-  const loanId = ethers.BigNumber.from(id)
-  const loanFacilitator = jsonRpcLoanFacilitator()
-  const lendTicket = jsonRpcERC721Contract(process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT)
-  const borrowTicket = jsonRpcERC721Contract(process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT)
+  const loanId = ethers.BigNumber.from(id);
+  const loanFacilitator = jsonRpcLoanFacilitator();
+  const lendTicket = jsonRpcERC721Contract(process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT);
+  const borrowTicket = jsonRpcERC721Contract(process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT);
 
   const loanInfo = await loanFacilitator.loanInfo(
     loanId,
@@ -40,24 +39,24 @@ export async function getLoanInfo(id: string): Promise<LoanInfo> {
   const { loanAmount } = loanInfo;
   const { closed } = loanInfo;
 
-  const assetContract = jsonRpcERC20Contract(loanAssetContractAddress)
+  const assetContract = jsonRpcERC20Contract(loanAssetContractAddress);
 
   const decimals = await assetContract.decimals();
   const loanAssetSymbol = await assetContract.symbol();
   let loanOwner = null;
   if (!lastAccumulatedTimestamp.eq(0)) {
     loanOwner = await lendTicket.ownerOf(loanId);
-    let interest = await loanFacilitator.interestOwed(loanId);
-    console.log(ethers.utils.formatUnits(interest, decimals).toString())
-    let scalar = await loanFacilitator.SCALAR()
-    console.log(scalar.toString())
+    const interest = await loanFacilitator.interestOwed(loanId);
+    console.log(ethers.utils.formatUnits(interest, decimals).toString());
+    const scalar = await loanFacilitator.SCALAR();
+    console.log(scalar.toString());
   }
 
   const interestOwed = await loanFacilitator.interestOwed(loanId);
   const ticketOwner = await borrowTicket.ownerOf(loanId);
 
   return {
-    loanId: loanId,
+    loanId,
     loanAssetContractAddress,
     collateralContractAddress,
     collateralTokenId,
