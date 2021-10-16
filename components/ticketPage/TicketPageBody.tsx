@@ -61,29 +61,9 @@ function LeftColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
   });
   return (
     <div id="left-elements-wrapper" className="float-left">
-      <fieldset className="standard-fieldset">
-        <legend>pawn ticket</legend>
-        <p>
-          {' '}
-          This Pawn Ticket NFT is owned by
-          {owner.slice(0, 10)}
-          ...
-          <br />
-          <a
-            target="_blank"
-            href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT}/${loanInfo.loanId.toString()}`}
-            rel="noreferrer"
-          >
-            View on OpenSea
-          </a>
-        </p>
-      </fieldset>
 
-      <div>
-        {' '}
-        <PawnTicketArt tokenId={loanInfo.loanId} />
-        {' '}
-      </div>
+    
+      <BorrowTicket title={'borrow ticket'} tokenId={loanInfo.loanId} owner={owner} />
       {account == null
       || loanInfo.closed
       || loanInfo.lastAccumulatedTimestamp.toString() == '0'
@@ -103,6 +83,50 @@ function LeftColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
   );
 }
 
+function BorrowTicket({title, tokenId, owner}: {title: string, tokenId: ethers.BigNumber, owner: string}) {
+  return(
+    <fieldset className='standard-fieldset'>
+      <legend> 
+        {title}
+      </legend>
+        <PawnTicketArt tokenId={tokenId} /> 
+      <p>
+          {`Owned by ${owner.slice(0, 10)}...`}
+          <br />
+          <a
+            target="_blank"
+            href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT}/${tokenId.toString()}`}
+            rel="noreferrer"
+          >
+            View on OpenSea
+          </a>
+        </p>
+    </fieldset>
+  )
+}
+
+function LendTicket({title, tokenId, owner}: {title: string, tokenId: ethers.BigNumber, owner: string}) {
+  return(
+    <fieldset className='standard-fieldset'>
+      <legend> 
+        {title}
+      </legend>
+        <PawnLoanArt tokenId={tokenId} /> 
+      <p>
+          {`Owned by ${owner.slice(0, 10)}...`}
+          <br />
+          <a
+            target="_blank"
+            href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT}/${tokenId.toString()}`}
+            rel="noreferrer"
+          >
+            View on OpenSea
+          </a>
+        </p>
+    </fieldset>
+  )
+}
+
 function RightColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
   const [timestamp, setTimestamp] = useState(null);
   const [endSeconds] = useState(
@@ -115,6 +139,9 @@ function RightColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
   const [owner, setOwner] = useState('');
 
   const getOwner = async () => {
+    if(loanInfo.lastAccumulatedTimestamp.eq(0)){
+      return
+    }
     const contract = jsonRpcERC721Contract(
       process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT,
     );
@@ -140,33 +167,10 @@ function RightColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
 
   return (
     <div id="right-elements-wrapper" className="float-left">
-      {loanInfo.lastAccumulatedTimestamp.toString() == '0' ? (
+      {loanInfo.lastAccumulatedTimestamp.eq(0) ? (
         ''
       ) : (
-        <div>
-          <fieldset className="standard-fieldset">
-            <legend>pawn loan</legend>
-            <p>
-              {' '}
-              This Pawn Loan NFT is owned by
-              {owner.slice(0, 10)}
-              ...
-              <br />
-              <a
-                target="_blank"
-                href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT}/${loanInfo.loanId.toString()}`}
-                rel="noreferrer"
-              >
-                View on OpenSea
-              </a>
-            </p>
-          </fieldset>
-          <div id="pawn-loan-art">
-            {' '}
-            <PawnLoanArt tokenId={loanInfo.loanId} />
-            {' '}
-          </div>
-        </div>
+          <LendTicket title={'lend ticket'} tokenId={loanInfo.loanId} owner={owner} />
       )}
       {account == null || loanInfo.closed ? (
         ''

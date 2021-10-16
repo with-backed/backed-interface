@@ -19,7 +19,7 @@ export default function UnderwriteCard({
   loanInfo,
   loanUpdatedCallback,
 }: UnderwriteCardProps) {
-  const [loanAssetBalance, setLoanAssetBalance] = useState('');
+  const [loanAssetBalance, setLoanAssetBalance] = useState('0');
   const [loanAmount, setLoanAmount] = useState(ethers.BigNumber.from(0));
   const [interestRate, setInterestRate] = useState(ethers.BigNumber.from('0'));
   const [duration, setDuration] = useState(ethers.BigNumber.from('0'));
@@ -62,14 +62,14 @@ export default function UnderwriteCard({
 
   const explainer = () => {
     if (loanInfo.lastAccumulatedTimestamp.eq(0)) {
-      return 'Meet or beat the proposed loan terms to underwrite. \
+      return 'Meet or beat the proposed loan terms to lend. \
             If repaid, you will receive payment for the loan amount + interest for the entire loan duration.\
             If not repaid, you will be able to claim the NFT collateral.';
     }
 
-    return 'This loan has an underwriter, but you can buy them out by matching their terms  \
+    return 'This loan has a lender, but you can buy them out by matching their terms  \
         and improving at least one term by at least 10%; longer duration, lower interest, or a higher amount. \
-        A buyout requires paying the loan amount and the interest accrued on the loan so far to the current underwriter. \
+        A buyout requires paying the loan amount and the interest accrued on the loan so far to the current lender. \
         \
         If repaid, you will receive payment for the loan amount + interest for the entire loan duration.\
         If not repaid, you will be able to claim the NFT collateral.';
@@ -77,18 +77,14 @@ export default function UnderwriteCard({
 
   return (
     <fieldset className="standard-fieldset" id="underwrite-card">
-      <legend>underwrite</legend>
+      <legend>lend</legend>
       <p>
         {' '}
         {explainer()}
         {' '}
       </p>
       <p id="collateral-asset-balance">
-        {' '}
-        You have
-        {loanAssetBalance}
-        {' '}
-        {loanInfo.loanAssetSymbol}
+        {`You have ${loanAssetBalance} ${loanInfo.loanAssetSymbol}`}
       </p>
       <LoanAmountInput
         accountBalance={loanAssetBalance}
