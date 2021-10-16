@@ -1,42 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
-import ERC721Artifact from '../../contracts/ERC721.json';
 import getNFTInfo, { GetNFTInfoResponse } from '../../lib/getNFTInfo';
 import Media from '../Media';
-import NFTPawnShopArtifact from '../../contracts/NFTPawnShop.json';
+import { ERC721 } from '../../abis/types';
+import { jsonRpcERC721Contract } from '../../lib/contracts';
 
-const _provider = new ethers.providers.JsonRpcProvider(
-  process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
-);
+const pawnTicketsContract = jsonRpcERC721Contract(process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT)
 
-const pawnTicketsContract = new ethers.Contract(
-  process.env.NEXT_PUBLIC_PAWN_TICKETS_CONTRACT,
-  ERC721Artifact.abi,
-  _provider,
-);
-
-const pawnLoansContract = new ethers.Contract(
-  process.env.NEXT_PUBLIC_PAWN_LOANS_CONTRACT,
-  ERC721Artifact.abi,
-  _provider,
-);
+const pawnLoansContract = jsonRpcERC721Contract(process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT)
 
 export function PawnLoanArt({ tokenId }) {
   return <PawnArt contract={pawnLoansContract} tokenId={tokenId} />;
+}
+
+interface PawnArtProps {
+  contract: ERC721
+  tokenId: ethers.BigNumber
 }
 
 export function PawnTicketArt({ tokenId }) {
   return <PawnArt contract={pawnTicketsContract} tokenId={tokenId} />;
 }
 
-function PawnArt({ contract, tokenId }) {
+function PawnArt({ contract, tokenId }: PawnArtProps) {
   const [nftInfo, setNFTInfo] = useState<GetNFTInfoResponse>(null);
-  const [owner, setOwner] = useState('');
 
   const load = async () => {
-    const result = await getNFTInfo({ Contract: contract, tokenId });
-    const owner = await contract.ownerOf(tokenId);
-    setOwner(owner);
+    const result = await getNFTInfo({ contract, tokenId });
     setNFTInfo(result);
   };
 

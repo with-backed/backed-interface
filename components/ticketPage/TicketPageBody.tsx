@@ -3,8 +3,8 @@ import { ethers } from 'ethers';
 import CollateralMediaCard from './CollateralMediaCard';
 import { PawnLoanArt, PawnTicketArt } from './PawnArt';
 import UnderwriteCard from './UnderwriteCard';
-import { getTicketInfo } from '../../lib/tickets';
-import { TicketInfo } from '../../lib/TicketInfoType';
+import { getLoanInfo } from '../../lib/loan';
+import { LoanInfo } from '../../lib/LoanInfoType';
 import RepayCard from './RepayCard';
 import TicketHistory from './TicketHistory';
 import SeizeCollateralCard from './SeizeCollateralCard';
@@ -16,42 +16,42 @@ const _provider = new ethers.providers.JsonRpcProvider(
 
 interface TicketPageBodyProps {
   account: string;
-  ticketInfo: TicketInfo;
+  loanInfo: LoanInfo;
   refresh: () => void;
 }
 
 export default function TicketPageBody({
   account,
-  ticketInfo,
+  loanInfo,
   refresh,
 }: TicketPageBodyProps) {
   return (
     <div id="ticket-page">
-      <LeftColumn account={account} ticketInfo={ticketInfo} refresh={refresh} />
+      <LeftColumn account={account} loanInfo={loanInfo} refresh={refresh} />
       <div className="float-left">
         <CollateralMediaCard
-          collateralAddress={ticketInfo.collateralAddress}
-          collateralID={ticketInfo.collateralID}
+          collateralAddress={loanInfo.collateralContractAddress}
+          collateralTokenId={loanInfo.collateralTokenId}
         />
       </div>
       <RightColumn
         account={account}
-        ticketInfo={ticketInfo}
+        loanInfo={loanInfo}
         refresh={refresh}
       />
     </div>
   );
 }
 
-function LeftColumn({ account, ticketInfo, refresh }: TicketPageBodyProps) {
+function LeftColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
   const [owner, setOwner] = useState('');
 
   const getOwner = async () => {
     const contract = jsonRpcERC721Contract(
-      process.env.NEXT_PUBLIC_PAWN_TICKETS_CONTRACT,
+      process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT,
     );
     const o = await contract.ownerOf(
-      ethers.BigNumber.from(ticketInfo.ticketNumber),
+      loanInfo.loanId,
     );
     setOwner(o);
   };
@@ -71,7 +71,7 @@ function LeftColumn({ account, ticketInfo, refresh }: TicketPageBodyProps) {
           <br />
           <a
             target="_blank"
-            href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${process.env.NEXT_PUBLIC_PAWN_TICKETS_CONTRACT}/${ticketInfo.ticketNumber}`}
+            href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT}/${loanInfo.loanId.toString()}`}
             rel="noreferrer">
             View on OpenSea
           </a>
@@ -80,34 +80,33 @@ function LeftColumn({ account, ticketInfo, refresh }: TicketPageBodyProps) {
 
       <div>
         {' '}
-        <PawnTicketArt tokenId={ticketInfo.ticketNumber} />{' '}
+        <PawnTicketArt tokenId={loanInfo.loanId} />{' '}
       </div>
       {account == null ||
-      ticketInfo.closed ||
-      ticketInfo.lastAccumulatedTimestamp.toString() == '0' ||
+      loanInfo.closed ||
+      loanInfo.lastAccumulatedTimestamp.toString() == '0' ||
       owner != account ? (
         ''
       ) : (
         <RepayCard
           account={account}
-          ticketInfo={ticketInfo}
+          loanInfo={loanInfo}
           repaySuccessCallback={refresh}
         />
       )}
       <TicketHistory
-        ticketId={ticketInfo.ticketNumber}
-        loanAssetDecimals={ticketInfo.loanAssetDecimals}
+        loanInfo={loanInfo}
       />
     </div>
   );
 }
 
-function RightColumn({ account, ticketInfo, refresh }: TicketPageBodyProps) {
+function RightColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
   const [timestamp, setTimestamp] = useState(null);
   const [endSeconds] = useState(
     parseInt(
-      ticketInfo.lastAccumulatedTimestamp
-        .add(ticketInfo.durationSeconds)
+      loanInfo.lastAccumulatedTimestamp
+        .add(loanInfo.durationSeconds)
         .toString(),
     ),
   );
@@ -115,10 +114,10 @@ function RightColumn({ account, ticketInfo, refresh }: TicketPageBodyProps) {
 
   const getOwner = async () => {
     const contract = jsonRpcERC721Contract(
-      process.env.NEXT_PUBLIC_PAWN_LOANS_CONTRACT,
+      process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT,
     );
     const o = await contract.ownerOf(
-      ethers.BigNumber.from(ticketInfo.ticketNumber),
+      loanInfo.loanId,
     );
     setOwner(o);
   };
@@ -135,11 +134,11 @@ function RightColumn({ account, ticketInfo, refresh }: TicketPageBodyProps) {
     refreshTimestamp();
     const timeOutId = setInterval(() => refreshTimestamp(), 14000);
     return () => clearInterval(timeOutId);
-  }, [ticketInfo]);
+  }, [loanInfo]);
 
   return (
     <div id="right-elements-wrapper" className="float-left">
-      {ticketInfo.lastAccumulatedTimestamp.toString() == '0' ? (
+      {loanInfo.lastAccumulatedTimestamp.toString() == '0' ? (
         ''
       ) : (
         <div>
@@ -153,7 +152,7 @@ function RightColumn({ account, ticketInfo, refresh }: TicketPageBodyProps) {
               <br />
               <a
                 target="_blank"
-                href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${process.env.NEXT_PUBLIC_PAWN_LOANS_CONTRACT}/${ticketInfo.ticketNumber}`}
+                href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT}/${loanInfo.loanId.toString()}`}
                 rel="noreferrer">
                 View on OpenSea
               </a>
@@ -161,27 +160,27 @@ function RightColumn({ account, ticketInfo, refresh }: TicketPageBodyProps) {
           </fieldset>
           <div id="pawn-loan-art">
             {' '}
-            <PawnLoanArt tokenId={ticketInfo.ticketNumber} />{' '}
+            <PawnLoanArt tokenId={loanInfo.loanId} />{' '}
           </div>
         </div>
       )}
-      {account == null || ticketInfo.closed ? (
+      {account == null || loanInfo.closed ? (
         ''
       ) : (
         <div>
           <UnderwriteCard
             account={account}
-            ticketInfo={ticketInfo}
+            loanInfo={loanInfo}
             loanUpdatedCallback={refresh}
           />
-          {ticketInfo.loanOwner != account ||
+          {loanInfo.loanOwner != account ||
           timestamp == null ||
           timestamp < endSeconds ? (
             ''
           ) : (
             <SeizeCollateralCard
               account={account}
-              ticketInfo={ticketInfo}
+              loanInfo={loanInfo}
               seizeCollateralSuccessCallback={refresh}
             />
           )}

@@ -8,11 +8,12 @@ import LoanAssetInput from './LoanAssetInput';
 import DurationInput from './DurationInput';
 import {
   jsonRpcERC721Contract,
-  jsonRpcPawnShopContract,
+  jsonRpcLoanFacilitator,
   web3Erc721Contract,
-  web3PawnShopContract,
+  web3LoanFacilitator,
 } from '../../lib/contracts';
 import TransactionButton from '../ticketPage/TransactionButton';
+import { NFTLoanFacilitator, NFTLoanFacilitator__factory } from '../../abis/types';
 
 export default function CreateTicketForm({
   account,
@@ -84,7 +85,7 @@ function AllowButton({ account, collateralAddress, tokenId, setIsApproved }) {
   const approve = async () => {
     const web3Contract = web3Erc721Contract(collateralAddress);
     const t = await web3Contract.approve(
-      process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_CONTRACT,
+      process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT,
       tokenId,
     );
     setTransactionHash(t.hash);
@@ -104,7 +105,7 @@ function AllowButton({ account, collateralAddress, tokenId, setIsApproved }) {
     const contract = jsonRpcERC721Contract(collateralAddress);
     const filter = contract.filters.Approval(
       account,
-      process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_CONTRACT,
+      process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT,
       tokenId,
     );
     contract.once(filter, (from, to, tokenID) => {
@@ -145,8 +146,8 @@ function MintTicketButton({
     duration.eq(0);
 
   const mint = async () => {
-    const contract = web3PawnShopContract();
-    const t = await contract.mintPawnTicket(
+    const contract = web3LoanFacilitator();
+    const t = await contract.createLoan(
       collateralTokenID,
       collateralAddress,
       interestRate,
@@ -169,8 +170,8 @@ function MintTicketButton({
   };
 
   const wait = async () => {
-    const contract = jsonRpcPawnShopContract();
-    const filter = contract.filters.MintTicket(null, account, null, null, null);
+    const contract = jsonRpcLoanFacilitator();
+    const filter = contract.filters.CreateLoan(null, account, null, null, null);
     contract.once(filter, (id, minter, maxInterest, minAount, minDuration) => {
       setWaitingForTx(false);
       window.location.assign(`/tickets/${id.toString()}`);

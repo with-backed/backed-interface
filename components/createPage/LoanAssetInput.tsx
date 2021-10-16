@@ -29,7 +29,7 @@ export default function LoanAssetInput({ setDecimals, setLoanAssetAddress }) {
         );
         return;
       }
-      setMessage(symbol);
+      setMessage(String(symbol));
       setDecimals(decimals);
       setLoanAssetAddress(address);
     } catch (error) {

@@ -3,35 +3,25 @@ import { ethers } from 'ethers';
 import React, { useEffect, useState } from 'react';
 import { Dimmer, Loader, Container } from 'semantic-ui-react';
 import dynamic from 'next/dynamic';
-import { getTicketInfo } from '../lib/tickets';
-import NFTPawnShopArtifact from '../contracts/NFTPawnShop.json';
+import { getLoanInfo } from '../lib/loan';
 import TicketPageBody from './ticketPage/TicketPageBody';
 import PawnShopHeader from './PawnShopHeader';
 
 const ConnectWallet = dynamic(() => import('./ConnectWallet'), { ssr: false });
 
-const _provider = new ethers.providers.JsonRpcProvider(
-  process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
-);
-
-const pawnShopContract = new ethers.Contract(
-  process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_CONTRACT,
-  NFTPawnShopArtifact.abi,
-  _provider,
-);
 
 export default function Ticket({ ticketID }) {
-  const [ticketInfo, setTicketInfo] = useState(null);
+  const [loanInfo, setLoanInfo] = useState(null);
   const [account, setAccount] = useState(null);
 
   const fetchData = async () => {
-    setTicketInfo(null);
+    setLoanInfo(null);
     console.log('fetching data');
     if (ticketID == null) {
       return;
     }
-    const ticketInfo = await getTicketInfo(`${ticketID}`);
-    setTicketInfo(ticketInfo);
+    const loanInfo = await getLoanInfo(`${ticketID}`);
+    setLoanInfo(loanInfo);
   };
 
   useEffect(() => {
@@ -44,14 +34,14 @@ export default function Ticket({ ticketID }) {
         setAccount={setAccount}
         message={`pawn loan #${ticketID}`}
       />
-      {ticketInfo == null ? (
-        <Dimmer active={ticketInfo == null} inverted>
+      {loanInfo == null ? (
+        <Dimmer active={loanInfo == null} inverted>
           <Loader inverted content="Loading" />
         </Dimmer>
       ) : (
         <TicketPageBody
           account={account}
-          ticketInfo={ticketInfo}
+          loanInfo={loanInfo}
           refresh={fetchData}
         />
       )}

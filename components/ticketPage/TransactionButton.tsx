@@ -1,3 +1,12 @@
+interface TransactionButtonProps{
+  text: string,
+  onClick: () => void,
+  txHash: string, 
+  isPending: boolean, 
+  disabled?: boolean, 
+  textSize?: string
+}
+
 export default function TransactionButton({
   text,
   onClick,
@@ -5,7 +14,7 @@ export default function TransactionButton({
   isPending,
   disabled = false,
   textSize = 'large',
-}) {
+}: TransactionButtonProps ) {
   const handleClick = () => {
     if (txHash != '' || disabled) {
       return;
@@ -29,7 +38,7 @@ export default function TransactionButton({
           {' '}
           {isPending ? 'Pending...' : 'Success!'}{' '}
           <a
-            href={`${process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_CONTRACT}/tx/${txHash}`}
+            href={`${process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT}/tx/${txHash}`}
             target="_blank"
             rel="noreferrer">
             {' '}

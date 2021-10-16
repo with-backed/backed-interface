@@ -59,7 +59,7 @@ export default function CollateralTokenIDInput({
       console.log(approved);
 
       setIsApproved(
-        approved.includes(process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_CONTRACT),
+        approved.includes(process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT),
       );
     }
   };
