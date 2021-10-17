@@ -50,11 +50,7 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "file-loader": "^6.2.0",
     "prettier": "^2.4.1",
-<<<<<<< HEAD
-    "storybook-css-modules-preset": "^1.1.1",
-=======
     "typechain": "^5.2.0",
->>>>>>> 269399c (Refactor re contract renaming, add TypeChain)
     "typescript": "^4.1.3",
     "url-loader": "^4.1.1"
   }

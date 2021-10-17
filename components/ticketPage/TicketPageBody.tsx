@@ -175,11 +175,6 @@ function RightColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
         ''
       ) : (
         <div>
-          <UnderwriteCard
-            account={account}
-            loanInfo={loanInfo}
-            loanUpdatedCallback={refresh}
-          />
           {loanInfo.loanOwner != account
           || timestamp == null
           || timestamp < endSeconds ? (
@@ -191,6 +186,11 @@ function RightColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
                 seizeCollateralSuccessCallback={refresh}
               />
             )}
+          <UnderwriteCard
+            account={account}
+            loanInfo={loanInfo}
+            loanUpdatedCallback={refresh}
+          />
         </div>
       )}
     </div>

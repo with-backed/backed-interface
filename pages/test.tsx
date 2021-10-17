@@ -103,6 +103,8 @@ function MintPunk({account}: {account: string}){
         txHash={txHash}
         isPending={txPending}
         />
+        <p>{`PUNK contract address ${process.env.NEXT_PUBLIC_MOCK_PUNK_CONTRACT} (you will 
+        need this when creating a loan)`}</p>
         {id == null ? '' : <p>{`Minted PUNK id ${id.toString()}`}</p>}
         </div>
     )
@@ -148,11 +150,15 @@ function MintDAI({account}: {account: string}){
 
 
     return(
+        <div>
         <TransactionButton 
         text="mint"
         onClick={mint}
         txHash={txHash}
         isPending={txPending}
         />
+        <p>{`DAI contract address ${process.env.NEXT_PUBLIC_MOCK_DAI_CONTRACT} (you will 
+        need this when creating a loan)`}</p>
+        </div>
     )
 }

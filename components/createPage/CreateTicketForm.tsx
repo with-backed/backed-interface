@@ -181,7 +181,7 @@ function MintTicketButton({
 
   return (
     <TransactionButton
-      text="Mint Pawn Ticket"
+      text="Create Loan"
       onClick={mint}
       txHash={transactionHash}
       isPending={waitingForTx}
