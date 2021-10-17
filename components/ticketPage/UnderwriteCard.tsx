@@ -29,7 +29,7 @@ export default function UnderwriteCard({
   const [needsAllowance, setNeedsAllowance] = useState(false);
 
   const getAccountLoanAssetBalance = async () => {
-    const loanAssetContract = jsonRpcERC20Contract(loanInfo.loanAssetContractAddress)
+    const loanAssetContract = jsonRpcERC20Contract(loanInfo.loanAssetContractAddress);
     const balance = await loanAssetContract.balanceOf(account);
     const humanReadableBalance = ethers.utils.formatUnits(
       balance,
@@ -54,7 +54,7 @@ export default function UnderwriteCard({
     if (account == null) {
       return;
     }
-    getAccountLoanAssetBalance()
+    getAccountLoanAssetBalance();
     setAllowance();
   }, [account]);
 

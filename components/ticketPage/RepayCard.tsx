@@ -56,7 +56,7 @@ export default function RepayCard({
       <legend>repay</legend>
       <p>
         {' '}
-        The current cost to repay this loan is 
+        The current cost to repay this loan is
         {' '}
         {ethers.utils.formatUnits(
           amountOwed.toString(),
