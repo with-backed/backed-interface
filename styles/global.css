@@ -284,10 +284,16 @@ a{
    margin: 0px;
    font-family: Inter, Helvetica;
  }
+
  .clicked-button>p>a{
     /* text-decoration: none; */
     color: rgba(117, 24, 124, 1);
     font-weight: normal;
+    font-family: 'Times New Roman', Times, serif;
+ }
+
+ .clicked-button>.times{
+  font-family: 'Times New Roman', Times, serif;
  }
 
  .disabled-button{
