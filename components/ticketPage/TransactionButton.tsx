@@ -44,7 +44,7 @@ export default function TransactionButton({
           {isPending ? 'Pending...' : 'Success!'}
           {' '}
           <a
-            href={`${process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT}/tx/${txHash}`}
+            href={`${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/tx/${txHash}`}
             target="_blank"
             rel="noreferrer"
           >

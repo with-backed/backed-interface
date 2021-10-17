@@ -5,7 +5,7 @@ import Input from '../Input';
 import { formattedAnnualRate } from '../../lib/interest';
 
 const SECONDS_IN_YEAR = 31_536_000;
-const INTEREST_RATE_PERCENT_DECIMALS = 10;
+const INTEREST_RATE_PERCENT_DECIMALS = 8;
 const MIN_RATE = 1 / Math.pow(10, INTEREST_RATE_PERCENT_DECIMALS);
 
 export default function InterestRateInput({ setInterestRate }) {
