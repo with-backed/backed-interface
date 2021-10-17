@@ -12,7 +12,7 @@ export default function Home() {
     <div>
       Welcome! Homepage in progress, try
       {' '}
-      <Link href="/tickets/create"> Creating a ticket </Link>
+      <Link href="/loans/create"> Creating a ticket </Link>
     </div>
   );
 }
