@@ -17,7 +17,7 @@ export default function Test({}) {
       <PawnShopHeader
         account={account}
         setAccount={setAccount}
-        message="create a loan"
+        message="get a PUNK and DAI"
       />
 
       <fieldset className="standard-fieldset float-left">
