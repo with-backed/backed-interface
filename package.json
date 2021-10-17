@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "yarn typechain --target ethers-v5 --out-dir ./abis/types './abis/*.json' && next dev",
-    "build": "next build",
+    "build": "yarn typechain --target ethers-v5 --out-dir ./abis/types './abis/*.json' && next build",
     "start": "next start",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
