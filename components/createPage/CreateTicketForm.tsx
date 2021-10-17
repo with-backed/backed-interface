@@ -175,7 +175,7 @@ function MintTicketButton({
     const filter = contract.filters.CreateLoan(null, account, null, null, null);
     contract.once(filter, (id, minter, maxInterest, minAount, minDuration) => {
       setWaitingForTx(false);
-      window.location.assign(`/tickets/${id.toString()}`);
+      window.location.assign(`/loans/${id.toString()}`);
     });
   };
 
