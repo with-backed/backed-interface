@@ -56,7 +56,8 @@ export default function RepayCard({
       <legend>repay</legend>
       <p>
         {' '}
-        The current cost to repay this loan is
+        The current cost to repay this loan is 
+        {' '}
         {ethers.utils.formatUnits(
           amountOwed.toString(),
           loanInfo.loanAssetDecimals,
@@ -65,6 +66,7 @@ export default function RepayCard({
         {loanInfo.loanAssetSymbol}
         . On repayment, the NFT collateral will be
         sent to the Pawn Ticket holder,
+        {' '}
         {loanInfo.ticketOwner.slice(0, 10)}
         ...
         {loanInfo.ticketOwner.slice(34, 42)}

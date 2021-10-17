@@ -51,7 +51,7 @@ export default function Create({}) {
         <div className="float-left">
           <CollateralMediaCard
             collateralAddress={collateralAddress}
-            collateralID={collateralTokenID}
+            collateralTokenId={collateralTokenID}
           />
         </div>
       )}
