@@ -3,8 +3,8 @@ import { ethers } from 'ethers';
 import CollateralMediaCard from './CollateralMediaCard';
 import { PawnLoanArt, PawnTicketArt } from './PawnArt';
 import UnderwriteCard from './UnderwriteCard';
-import { getTicketInfo } from '../../lib/tickets';
-import { TicketInfo } from '../../lib/TicketInfoType';
+import { getLoanInfo } from '../../lib/loan';
+import { LoanInfo } from '../../lib/LoanInfoType';
 import RepayCard from './RepayCard';
 import TicketHistory from './TicketHistory';
 import SeizeCollateralCard from './SeizeCollateralCard';
@@ -16,42 +16,42 @@ const _provider = new ethers.providers.JsonRpcProvider(
 
 interface TicketPageBodyProps {
   account: string;
-  ticketInfo: TicketInfo;
+  loanInfo: LoanInfo;
   refresh: () => void;
 }
 
 export default function TicketPageBody({
   account,
-  ticketInfo,
+  loanInfo,
   refresh,
 }: TicketPageBodyProps) {
   return (
     <div id="ticket-page">
-      <LeftColumn account={account} ticketInfo={ticketInfo} refresh={refresh} />
+      <LeftColumn account={account} loanInfo={loanInfo} refresh={refresh} />
       <div className="float-left">
         <CollateralMediaCard
-          collateralAddress={ticketInfo.collateralAddress}
-          collateralID={ticketInfo.collateralID}
+          collateralAddress={loanInfo.collateralContractAddress}
+          collateralTokenId={loanInfo.collateralTokenId}
         />
       </div>
       <RightColumn
         account={account}
-        ticketInfo={ticketInfo}
+        loanInfo={loanInfo}
         refresh={refresh}
       />
     </div>
   );
 }
 
-function LeftColumn({ account, ticketInfo, refresh }: TicketPageBodyProps) {
+function LeftColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
   const [owner, setOwner] = useState('');
 
   const getOwner = async () => {
     const contract = jsonRpcERC721Contract(
-      process.env.NEXT_PUBLIC_PAWN_TICKETS_CONTRACT,
+      process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT,
     );
     const o = await contract.ownerOf(
-      ethers.BigNumber.from(ticketInfo.ticketNumber),
+      loanInfo.loanId,
     );
     setOwner(o);
   };
@@ -61,64 +61,91 @@ function LeftColumn({ account, ticketInfo, refresh }: TicketPageBodyProps) {
   });
   return (
     <div id="left-elements-wrapper" className="float-left">
-      <fieldset className="standard-fieldset">
-        <legend>pawn ticket</legend>
-        <p>
-          {' '}
-          This Pawn Ticket NFT is owned by
-          {owner.slice(0, 10)}
-          ...
-          <br />
-          <a
-            target="_blank"
-            href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${process.env.NEXT_PUBLIC_PAWN_TICKETS_CONTRACT}/${ticketInfo.ticketNumber}`}
-            rel="noreferrer">
-            View on OpenSea
-          </a>
-        </p>
-      </fieldset>
 
-      <div>
-        {' '}
-        <PawnTicketArt tokenId={ticketInfo.ticketNumber} />{' '}
-      </div>
-      {account == null ||
-      ticketInfo.closed ||
-      ticketInfo.lastAccumulatedTimestamp.toString() == '0' ||
-      owner != account ? (
-        ''
-      ) : (
-        <RepayCard
-          account={account}
-          ticketInfo={ticketInfo}
-          repaySuccessCallback={refresh}
-        />
-      )}
+      <BorrowTicket title="borrow ticket" tokenId={loanInfo.loanId} owner={owner} />
+      {account == null
+      || loanInfo.closed
+      || loanInfo.lastAccumulatedTimestamp.toString() == '0'
+      || owner != account ? (
+          ''
+        ) : (
+          <RepayCard
+            account={account}
+            loanInfo={loanInfo}
+            repaySuccessCallback={refresh}
+          />
+        )}
       <TicketHistory
-        ticketId={ticketInfo.ticketNumber}
-        loanAssetDecimals={ticketInfo.loanAssetDecimals}
+        loanInfo={loanInfo}
       />
     </div>
   );
 }
 
-function RightColumn({ account, ticketInfo, refresh }: TicketPageBodyProps) {
+function BorrowTicket({ title, tokenId, owner }: { title: string, tokenId: ethers.BigNumber, owner: string }) {
+  return (
+    <fieldset className="standard-fieldset">
+      <legend>
+        {title}
+      </legend>
+      <PawnTicketArt tokenId={tokenId} />
+      <p>
+        {`Owned by ${owner.slice(0, 10)}...`}
+        <br />
+        <a
+          target="_blank"
+          href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT}/${tokenId.toString()}`}
+          rel="noreferrer"
+        >
+          View on OpenSea
+        </a>
+      </p>
+    </fieldset>
+  );
+}
+
+function LendTicket({ title, tokenId, owner }: { title: string, tokenId: ethers.BigNumber, owner: string }) {
+  return (
+    <fieldset className="standard-fieldset">
+      <legend>
+        {title}
+      </legend>
+      <PawnLoanArt tokenId={tokenId} />
+      <p>
+        {`Owned by ${owner.slice(0, 10)}...`}
+        <br />
+        <a
+          target="_blank"
+          href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT}/${tokenId.toString()}`}
+          rel="noreferrer"
+        >
+          View on OpenSea
+        </a>
+      </p>
+    </fieldset>
+  );
+}
+
+function RightColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
   const [timestamp, setTimestamp] = useState(null);
   const [endSeconds] = useState(
     parseInt(
-      ticketInfo.lastAccumulatedTimestamp
-        .add(ticketInfo.durationSeconds)
+      loanInfo.lastAccumulatedTimestamp
+        .add(loanInfo.durationSeconds)
         .toString(),
     ),
   );
   const [owner, setOwner] = useState('');
 
   const getOwner = async () => {
+    if (loanInfo.lastAccumulatedTimestamp.eq(0)) {
+      return;
+    }
     const contract = jsonRpcERC721Contract(
-      process.env.NEXT_PUBLIC_PAWN_LOANS_CONTRACT,
+      process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT,
     );
     const o = await contract.ownerOf(
-      ethers.BigNumber.from(ticketInfo.ticketNumber),
+      loanInfo.loanId,
     );
     setOwner(o);
   };
@@ -135,56 +162,35 @@ function RightColumn({ account, ticketInfo, refresh }: TicketPageBodyProps) {
     refreshTimestamp();
     const timeOutId = setInterval(() => refreshTimestamp(), 14000);
     return () => clearInterval(timeOutId);
-  }, [ticketInfo]);
+  }, [loanInfo]);
 
   return (
     <div id="right-elements-wrapper" className="float-left">
-      {ticketInfo.lastAccumulatedTimestamp.toString() == '0' ? (
+      {loanInfo.lastAccumulatedTimestamp.eq(0) ? (
         ''
       ) : (
-        <div>
-          <fieldset className="standard-fieldset">
-            <legend>pawn loan</legend>
-            <p>
-              {' '}
-              This Pawn Loan NFT is owned by
-              {owner.slice(0, 10)}
-              ...
-              <br />
-              <a
-                target="_blank"
-                href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${process.env.NEXT_PUBLIC_PAWN_LOANS_CONTRACT}/${ticketInfo.ticketNumber}`}
-                rel="noreferrer">
-                View on OpenSea
-              </a>
-            </p>
-          </fieldset>
-          <div id="pawn-loan-art">
-            {' '}
-            <PawnLoanArt tokenId={ticketInfo.ticketNumber} />{' '}
-          </div>
-        </div>
+        <LendTicket title="lend ticket" tokenId={loanInfo.loanId} owner={owner} />
       )}
-      {account == null || ticketInfo.closed ? (
+      {account == null || loanInfo.closed ? (
         ''
       ) : (
         <div>
+          {loanInfo.loanOwner != account
+          || timestamp == null
+          || timestamp < endSeconds ? (
+              ''
+            ) : (
+              <SeizeCollateralCard
+                account={account}
+                loanInfo={loanInfo}
+                seizeCollateralSuccessCallback={refresh}
+              />
+            )}
           <UnderwriteCard
             account={account}
-            ticketInfo={ticketInfo}
+            loanInfo={loanInfo}
             loanUpdatedCallback={refresh}
           />
-          {ticketInfo.loanOwner != account ||
-          timestamp == null ||
-          timestamp < endSeconds ? (
-            ''
-          ) : (
-            <SeizeCollateralCard
-              account={account}
-              ticketInfo={ticketInfo}
-              seizeCollateralSuccessCallback={refresh}
-            />
-          )}
         </div>
       )}
     </div>

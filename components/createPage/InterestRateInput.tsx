@@ -61,19 +61,21 @@ export default function InterestRateInput({ setInterestRate }) {
           <p className="float-left">
             {' '}
             actual annual rate:
-            {formattedAnnualRate(actualRate)}% APY{' '}
+            {formattedAnnualRate(actualRate)}
+            % APY
+            {' '}
           </p>
           <Popup
             className="float-left times"
             content="The pawn shop contract stores the interest rate as interest per second. When the rate is stored per second on submit and converted back to annual for display, it will vary slightly from what you input."
-            trigger={
+            trigger={(
               <Icon
                 id="interest-rate-explainer-icon"
                 size="small"
                 circular
                 name="question"
               />
-            }
+            )}
           />
         </div>
       )}

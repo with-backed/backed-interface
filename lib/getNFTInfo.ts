@@ -1,9 +1,10 @@
 import { ethers } from 'ethers';
 import { cid } from 'is-ipfs';
 import remove from 'lodash/remove';
+import { ERC721 } from '../abis/types';
 
 interface GetNFTInfoArgs {
-  Contract: ethers.Contract;
+  contract: ERC721;
   tokenId: ethers.BigNumber;
 }
 
@@ -12,16 +13,15 @@ export interface GetNFTInfoResponse {
   description: string;
   mediaUrl: string;
   mediaMimeType: string;
-  address: string;
   id: ethers.BigNumber;
 }
 
 export default async function getNFTInfo({
-  Contract,
+  contract,
   tokenId,
 }: GetNFTInfoArgs): Promise<GetNFTInfoResponse> {
   try {
-    const tokenURI = await Contract.tokenURI(tokenId);
+    const tokenURI = await contract.tokenURI(tokenId);
 
     const resolvedTokenURI = isIPFS(tokenURI)
       ? makeIPFSUrl(tokenURI)
@@ -42,7 +42,6 @@ export default async function getNFTInfo({
       description: metadata?.description,
       mediaUrl,
       mediaMimeType,
-      address: Contract.address,
       id: tokenId,
     };
   } catch {

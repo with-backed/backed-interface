@@ -1,39 +1,34 @@
 import { ethers } from 'ethers';
 import { useState } from 'react';
-import { TicketInfo } from '../../lib/TicketInfoType';
-import { web3PawnShopContract, pawnShopContract } from '../../lib/contracts';
+import { LoanInfo } from '../../lib/LoanInfoType';
+import { web3LoanFacilitator, jsonRpcLoanFacilitator } from '../../lib/contracts';
 
 interface SeizeCollateralCardProps {
   account: string;
-  ticketInfo: TicketInfo;
+  loanInfo: LoanInfo;
   seizeCollateralSuccessCallback: () => void;
 }
 
-const jsonRpcProvider = new ethers.providers.JsonRpcProvider(
-  process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
-);
-
 export default function SeizeCollateralCard({
   account,
-  ticketInfo,
+  loanInfo,
   seizeCollateralSuccessCallback,
 }: SeizeCollateralCardProps) {
   const [amountOwed] = useState(
     ethers.utils.formatUnits(
-      ticketInfo.interestOwed.add(ticketInfo.loanAmount).toString(),
-      ticketInfo.loanAssetDecimals,
+      loanInfo.interestOwed.add(loanInfo.loanAmount).toString(),
+      loanInfo.loanAssetDecimals,
     ),
   );
   const [txHash, setTxHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
-  const [web3PawnShop] = useState(web3PawnShopContract);
-  const [jsonRpcPawnShop] = useState(pawnShopContract(jsonRpcProvider));
 
   const repay = async () => {
     setTxHash('');
     setWaitingForTx(false);
-    const t = await web3PawnShop.seizeCollateral(
-      ethers.BigNumber.from(ticketInfo.ticketNumber),
+
+    const t = await web3LoanFacilitator().seizeCollateral(
+      loanInfo.loanId,
       account,
     );
     t.wait()
@@ -49,10 +44,11 @@ export default function SeizeCollateralCard({
   };
 
   const wait = async () => {
-    const filter = jsonRpcPawnShop.filters.SeizeCollateral(
-      ethers.BigNumber.from(ticketInfo.ticketNumber),
+    const loanFacilitator = jsonRpcLoanFacilitator();
+    const filter = loanFacilitator.filters.SeizeCollateral(
+      loanInfo.loanId,
     );
-    jsonRpcPawnShop.once(filter, () => {
+    loanFacilitator.once(filter, () => {
       seizeCollateralSuccessCallback();
       setWaitingForTx(false);
     });
@@ -62,14 +58,22 @@ export default function SeizeCollateralCard({
     <fieldset className="standard-fieldset">
       <legend>seize collateral</legend>
       <p>
-        The loan duration is complete. The total interest and principal owed is{' '}
-        {amountOwed} {ticketInfo.loanAssetSymbol}, and 0{' '}
-        {ticketInfo.loanAssetSymbol} has been repaid. You are able to seize the
+        The loan duration is complete. The total interest and principal owed is
+        {' '}
+        {amountOwed}
+        {' '}
+        {loanInfo.loanAssetSymbol}
+        , and 0
+        {' '}
+        {loanInfo.loanAssetSymbol}
+        {' '}
+        has been repaid. You are able to seize the
         collateral NFT, closing the loan, or wait for repayment.
       </p>
       <div className="button-1" onClick={repay}>
         {' '}
-        seize collateral{' '}
+        seize collateral
+        {' '}
       </div>
     </fieldset>
   );

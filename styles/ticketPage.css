@@ -4,10 +4,9 @@
     padding-bottom: 200px;
 }
 .pawn-art{
-    height: 400px;
-    width: 400px;
+    height: 380px;
+    width: 380px;
     background-color: #F7F7F7;
-    margin-bottom: 45px;
 }
 
 #gallery-button{
@@ -49,4 +48,8 @@
     text-decoration: none;
     color: gray;
     font-size: 12px;
+}
+
+.borrow-ticket-fieldset{
+    margin: auto;
 }

@@ -1,0 +1,15 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  width: 100%;
+}
+
+@media (max-width: 42em) {
+  .grid {
+    /* On mobile devices we only want one column. */
+    grid-template-columns: 1fr;
+    /* On narrower viewports we shouldn't take up too much space. */
+    gap: 1rem;
+  }
+}

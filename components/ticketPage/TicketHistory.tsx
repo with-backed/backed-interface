@@ -1,18 +1,19 @@
 import { ethers } from 'ethers';
 import { useState, useEffect } from 'react';
-import { pawnShopContract } from '../../lib/contracts';
+import { jsonRpcLoanFacilitator } from '../../lib/contracts';
 import { formattedAnnualRate } from '../../lib/interest';
 import { secondsToDays } from '../../lib/duration';
+import { LoanInfo } from '../../lib/LoanInfoType';
 
-const jsonRpcProvider = new ethers.providers.JsonRpcProvider(
-  process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
-);
+interface TicketHistoryProps {
+  loanInfo: LoanInfo;
+}
 
-export default function TicketHistory({ ticketId, loanAssetDecimals }) {
+export default function TicketHistory({ loanInfo } : TicketHistoryProps) {
   const [history, setHistory] = useState(null);
 
   const setup = async () => {
-    const history = await getTicketHistory(ticketId);
+    const history = await getTicketHistory(loanInfo.loanId);
     console.log('0000');
     console.log(history);
     setHistory(history);
@@ -28,22 +29,22 @@ export default function TicketHistory({ ticketId, loanAssetDecimals }) {
       {history == null
         ? ''
         : history.map((e: ethers.Event, i) => (
-            <ParsedEvent
-              event={e}
-              loanAssetDecimals={loanAssetDecimals}
-              key={i}
-            />
-          ))}
+          <ParsedEvent
+            event={e}
+            loanInfo={loanInfo}
+            key={i}
+          />
+        ))}
     </fieldset>
   );
 }
 
 interface ParsedEventProps {
   event: ethers.Event;
-  loanAssetDecimals: ethers.BigNumber;
+  loanInfo: LoanInfo;
 }
 
-function ParsedEvent({ event, loanAssetDecimals }: ParsedEventProps) {
+function ParsedEvent({ event, loanInfo }: ParsedEventProps) {
   const [timestamp, setTimestamp] = useState(0);
 
   const getTimeStamp = async () => {
@@ -56,14 +57,14 @@ function ParsedEvent({ event, loanAssetDecimals }: ParsedEventProps) {
   });
   const eventDetails = () => {
     switch (event.event) {
-      case 'MintTicket':
-        return MintEventDetails(event, loanAssetDecimals);
+      case 'CreateLoan':
+        return CreateLoanEventDetails(event, loanInfo);
         break;
       case 'UnderwriteLoan':
-        return UnderwriteEventDetails(event, loanAssetDecimals);
+        return UnderwriteEventDetails(event, loanInfo);
         break;
       case 'Repay':
-        return RepayEventDetails(event, loanAssetDecimals);
+        return RepayEventDetails(event, loanInfo);
         break;
     }
   };
@@ -72,8 +73,16 @@ function ParsedEvent({ event, loanAssetDecimals }: ParsedEventProps) {
     <div className="event-details">
       <p>
         {' '}
-        <b> {camelToSentenceCase(event.event)} </b> -{' '}
-        {toLocaleDateTime(timestamp)}{' '}
+        <b>
+          {' '}
+          {camelToSentenceCase(event.event)}
+          {' '}
+        </b>
+        {' '}
+        -
+        {' '}
+        {toLocaleDateTime(timestamp)}
+        {' '}
       </p>
       {eventDetails()}
     </div>
@@ -92,16 +101,16 @@ function camelToSentenceCase(text){
 }
 
 
-function MintEventDetails(
+function CreateLoanEventDetails(
   event: ethers.Event,
-  loanAssetDecimals: ethers.BigNumber,
+  loanInfo: LoanInfo,
 ) {
   const [minter] = useState(event.args.minter);
   const [maxInterestRate] = useState(
     formattedAnnualRate(event.args.maxInterestRate),
   );
   const [minLoanAmount] = useState(
-    ethers.utils.formatUnits(event.args.minLoanAmount, loanAssetDecimals),
+    ethers.utils.formatUnits(event.args.minLoanAmount, loanInfo.loanAssetDecimals),
   );
   const [minDuration] = useState(secondsToDays(event.args.minDurationSeconds));
 
@@ -110,29 +119,30 @@ function MintEventDetails(
       <p>
         {' '}
         minter:
+        {' '}
         <a
           target="_blank"
           href={`${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/address/${minter}`}
-          rel="noreferrer">
+          rel="noreferrer"
+        >
           {' '}
           {minter.slice(0, 10)}
-          ...{' '}
+          ...
+          {' '}
         </a>
       </p>
       <p>
         {' '}
         max interest rate:
-        {maxInterestRate}%
+        {' '}
+        {maxInterestRate}
+        %
       </p>
       <p>
-        {' '}
-        minimum loan amount:
-        {minLoanAmount}
+        {`minimum loan amount: ${minLoanAmount} ${loanInfo.loanAssetSymbol}`}
       </p>
       <p>
-        {' '}
-        minimum duration:
-        {minDuration}
+        {`minimum duration: ${minDuration} days`}
       </p>
     </div>
   );
@@ -140,12 +150,12 @@ function MintEventDetails(
 
 function UnderwriteEventDetails(
   event: ethers.Event,
-  loanAssetDecimals: ethers.BigNumber,
+  loanInfo: LoanInfo,
 ) {
   const [underwriter] = useState(event.args.underwriter);
   const [interestRate] = useState(formattedAnnualRate(event.args.interestRate));
   const [loanAmount] = useState(
-    ethers.utils.formatUnits(event.args.loanAmount, loanAssetDecimals),
+    ethers.utils.formatUnits(event.args.loanAmount, loanInfo.loanAssetDecimals),
   );
   const [duration] = useState(secondsToDays(event.args.durationSeconds));
 
@@ -153,30 +163,29 @@ function UnderwriteEventDetails(
     <div className="event-details">
       <p>
         {' '}
-        underwriter:
+        lender:
         <a
           target="_blank"
           href={`${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/address/${underwriter}`}
-          rel="noreferrer">
+          rel="noreferrer"
+        >
           {' '}
           {underwriter.slice(0, 10)}
-          ...{' '}
+          ...
+          {' '}
         </a>
       </p>
       <p>
         {' '}
         interest rate:
-        {interestRate}%
+        {interestRate}
+        %
       </p>
       <p>
-        {' '}
-        loan amount:
-        {loanAmount}
+        {`loan amount: ${loanAmount} ${loanInfo.loanAssetSymbol}`}
       </p>
       <p>
-        {' '}
-        duration:
-        {duration}
+        {`duration: ${duration} days`}
       </p>
     </div>
   );
@@ -184,14 +193,14 @@ function UnderwriteEventDetails(
 
 function RepayEventDetails(
   event: ethers.Event,
-  loanAssetDecimals: ethers.BigNumber,
+  loanInfo: LoanInfo,
 ) {
   const [repayer] = useState(event.args.repayer);
   const [interestEarned] = useState(
-    ethers.utils.formatUnits(event.args.interestEarned, loanAssetDecimals),
+    ethers.utils.formatUnits(event.args.interestEarned, loanInfo.loanAssetDecimals),
   );
   const [loanAmount] = useState(
-    ethers.utils.formatUnits(event.args.loanAmount, loanAssetDecimals),
+    ethers.utils.formatUnits(event.args.loanAmount, loanInfo.loanAssetDecimals),
   );
   const [loanOwner] = useState(event.args.loanOwner);
 
@@ -203,10 +212,12 @@ function RepayEventDetails(
         <a
           target="_blank"
           href={`${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/address/${repayer}`}
-          rel="noreferrer">
+          rel="noreferrer"
+        >
           {' '}
           {repayer.slice(0, 10)}
-          ...{' '}
+          ...
+          {' '}
         </a>
       </p>
       <p>
@@ -215,10 +226,12 @@ function RepayEventDetails(
         <a
           target="_blank"
           href={`${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/address/${loanOwner}`}
-          rel="noreferrer">
+          rel="noreferrer"
+        >
           {' '}
           {loanOwner.slice(0, 10)}
-          ...{' '}
+          ...
+          {' '}
         </a>
       </p>
       <p>
@@ -236,30 +249,25 @@ function RepayEventDetails(
 }
 
 
-const getTicketHistory = async (ticketId) => {
-  const contract = pawnShopContract(jsonRpcProvider);
+const getTicketHistory = async (loanId) => {
+  const contract = jsonRpcLoanFacilitator();
 
-  const mintTicketFilter = contract.filters.MintTicket(
-    ethers.BigNumber.from(ticketId),
+  const mintTicketFilter = contract.filters.CreateLoan(
+    loanId,
     null,
   );
-  const closeFilter = contract.filters.Close(ethers.BigNumber.from(ticketId));
+  const closeFilter = contract.filters.Close(loanId);
   const underwriteFilter = contract.filters.UnderwriteLoan(
-    ethers.BigNumber.from(ticketId),
-    null,
+    loanId,
   );
   const buyoutUnderwriteFilter = contract.filters.BuyoutUnderwriter(
-    ethers.BigNumber.from(ticketId),
-    null,
-    null,
+    loanId,
   );
   const repayAndCloseFilter = contract.filters.Repay(
-    ethers.BigNumber.from(ticketId),
-    null,
-    null,
+    loanId,
   );
   const seizeCollateralFilter = contract.filters.SeizeCollateral(
-    ethers.BigNumber.from(ticketId),
+    loanId,
   );
 
   const filters = [

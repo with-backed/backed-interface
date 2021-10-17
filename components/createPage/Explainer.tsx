@@ -3,9 +3,9 @@ export default function Explainer({ account }) {
     <div id="create-ticket-explainer">
       <p>
         {' '}
-        Mint your pawn ticket! This transaction will (1) transfer your NFT to
+        Mint your loan! This transaction will (1) transfer your NFT to
         the pawn shop, (2) set your minimum loan terms to offer to underwriters,
-        and (3) transfer to you a pawn ticket NFT.
+        and (3) transfer to you a Borrow Ticket NFT.
       </p>
       <p>
         If someone accepts your terms, underwriting the loan, the loan amount
