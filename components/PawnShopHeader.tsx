@@ -21,7 +21,11 @@ export default function PawnShopHeader({ account, setAccount, message }) {
         />
       </div>
       <div id="pawnShopHeaderDivider">
-        <h2> {message} </h2>
+        <h2>
+          {' '}
+          {message}
+          {' '}
+        </h2>
       </div>
     </div>
   );

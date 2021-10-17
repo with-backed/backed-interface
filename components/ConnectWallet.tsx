@@ -51,16 +51,19 @@ export default function ConnectWallet({
             <div
               onClick={getAccount}
               id="connect-addr-button"
-              className={`button-${buttonType}`}>
+              className={`button-${buttonType}`}
+            >
               {' '}
-              Connect Address{' '}
+              Connect Address
+              {' '}
             </div>
           ) : (
             <div className="float-right">
               <p className="float-left century button-2">
                 {' '}
                 {account.slice(0, 10)}
-                ...{' '}
+                ...
+                {' '}
               </p>
             </div>
           )}
@@ -71,17 +74,23 @@ export default function ConnectWallet({
           Please use
           <a href="https://metamask.io/" target="_blank" rel="noreferrer">
             {' '}
-            Metamask{' '}
-          </a>{' '}
+            Metamask
+            {' '}
+          </a>
+          {' '}
           +
           <a
             href="https://www.google.com/chrome/"
             target="_blank"
-            rel="noreferrer">
+            rel="noreferrer"
+          >
             {' '}
-            Chrome{' '}
-          </a>{' '}
-          to connect{' '}
+            Chrome
+            {' '}
+          </a>
+          {' '}
+          to connect
+          {' '}
         </div>
       )}
     </div>

@@ -1,9 +1,9 @@
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
-import { TicketInfo } from '../../lib/TicketInfoType';
+import { LoanInfo } from '../../lib/LoanInfoType';
 import {
-  web3PawnShopContract,
-  pawnShopContract,
+  web3LoanFacilitator,
+  jsonRpcLoanFacilitator,
   jsonRpcERC20Contract,
   web3Erc20Contract,
 } from '../../lib/contracts';
@@ -12,7 +12,7 @@ import TransactionButton from './TransactionButton';
 
 interface RepayCardProps {
   account: string;
-  ticketInfo: TicketInfo;
+  loanInfo: LoanInfo;
   repaySuccessCallback: () => void;
 }
 
@@ -22,7 +22,7 @@ const jsonRpcProvider = new ethers.providers.JsonRpcProvider(
 
 export default function RepayCard({
   account,
-  ticketInfo,
+  loanInfo,
   repaySuccessCallback,
 }: RepayCardProps) {
   const [disabled, setDisabled] = useState(false);
@@ -31,14 +31,14 @@ export default function RepayCard({
   );
   const [needsAllowance, setNeedsAllowance] = useState(false);
   const [amountOwed] = useState(
-    ticketInfo.interestOwed.add(ticketInfo.loanAmount),
+    loanInfo.interestOwed.add(loanInfo.loanAmount),
   );
 
   const setAllowance = async () => {
-    const contract = jsonRpcERC20Contract(ticketInfo.loanAsset);
+    const contract = jsonRpcERC20Contract(loanInfo.loanAssetContractAddress);
     const allowance = await contract.allowance(
       account,
-      process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_CONTRACT,
+      process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT,
     );
     if (!needsAllowance) {
       setNeedsAllowance(allowance.lt(amountOwed));
@@ -57,28 +57,32 @@ export default function RepayCard({
       <p>
         {' '}
         The current cost to repay this loan is
+        {' '}
         {ethers.utils.formatUnits(
           amountOwed.toString(),
-          ticketInfo.loanAssetDecimals,
-        )}{' '}
-        {ticketInfo.loanAssetSymbol}. On repayment, the NFT collateral will be
-        sent to the Pawn Ticket holder, {ticketInfo.ticketOwner.slice(0, 10)}
+          loanInfo.loanAssetDecimals,
+        )}
+        {' '}
+        {loanInfo.loanAssetSymbol}
+        . On repayment, the NFT collateral will be
+        sent to the Pawn Ticket holder,
+        {' '}
+        {loanInfo.ticketOwner.slice(0, 10)}
         ...
-        {ticketInfo.ticketOwner.slice(34, 42)}
+        {loanInfo.ticketOwner.slice(34, 42)}
       </p>
       {!needsAllowance ? (
         ''
       ) : (
         <AllowButton
-          jsonRpcContract={jsonRpcERC20Contract(ticketInfo.loanAsset)}
-          web3Contract={web3Erc20Contract(ticketInfo.loanAsset)}
+          contractAddress={loanInfo.loanAssetContractAddress}
           account={account}
-          loanAssetSymbol={ticketInfo.loanAssetSymbol}
+          symbol={loanInfo.loanAssetSymbol}
           callback={setAllowance}
         />
       )}
       <RepayButton
-        ticketNumber={ticketInfo.ticketNumber}
+        loanId={loanInfo.loanId}
         repaySuccessCallback={repaySuccessCallback}
         disabled={disabled}
       />
@@ -86,15 +90,19 @@ export default function RepayCard({
   );
 }
 
-function RepayButton({ ticketNumber, repaySuccessCallback, disabled }) {
+interface RepayButtonProps {
+  loanId: ethers.BigNumber
+  repaySuccessCallback: () => void
+  disabled: boolean
+}
+
+function RepayButton({ loanId, repaySuccessCallback, disabled }) {
   const [txHash, setTxHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
-  const [web3PawnShop] = useState(web3PawnShopContract);
-  const [jsonRpcPawnShop] = useState(pawnShopContract(jsonRpcProvider));
 
   const repay = async () => {
-    const t = await web3PawnShop.repayAndCloseTicket(
-      ethers.BigNumber.from(ticketNumber),
+    const t = await web3LoanFacilitator().repayAndCloseLoan(
+      loanId,
     );
     setWaitingForTx(true);
     setTxHash(t.hash);
@@ -111,14 +119,11 @@ function RepayButton({ ticketNumber, repaySuccessCallback, disabled }) {
   };
 
   const wait = async () => {
-    const filter = jsonRpcPawnShop.filters.Repay(
-      ethers.BigNumber.from(ticketNumber),
-      null,
-      null,
-      null,
-      null,
+    const loanFacilitator = jsonRpcLoanFacilitator();
+    const filter = loanFacilitator.filters.Repay(
+      loanId,
     );
-    jsonRpcPawnShop.once(filter, () => {
+    loanFacilitator.once(filter, () => {
       repaySuccessCallback();
       setWaitingForTx(false);
     });

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
-import ERC721Artifact from '../../contracts/ERC721.json';
 import getNFTInfo, { GetNFTInfoResponse } from '../../lib/getNFTInfo';
 import Media from '../Media';
+import { jsonRpcERC721Contract } from '../../lib/contracts';
 
 const _provider = new ethers.providers.JsonRpcProvider(
   process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
@@ -10,36 +10,32 @@ const _provider = new ethers.providers.JsonRpcProvider(
 
 interface CollateralCardArgs {
   collateralAddress: string;
-  collateralID: ethers.BigNumber;
+  collateralTokenId: ethers.BigNumber;
 }
 
 export default function CollateralMediaCard({
   collateralAddress,
-  collateralID,
+  collateralTokenId,
 }: CollateralCardArgs) {
   const [CollateralNFTInfo, setCollateralNFTInfo] = React.useState(null);
   const [contractName, setContractName] = useState(null);
 
   const load = async () => {
-    console.log(`id ${collateralID.toString()}`);
+    const contract = jsonRpcERC721Contract(collateralAddress);
 
-    const collateralContract = new ethers.Contract(
-      collateralAddress,
-      ERC721Artifact.abi,
-      _provider,
-    );
-    const contractName = await collateralContract.name();
+    const contractName = await contract.name();
     setContractName(contractName);
+
     const result = await getNFTInfo({
-      Contract: collateralContract,
-      tokenId: collateralID,
+      contract,
+      tokenId: collateralTokenId,
     });
     setCollateralNFTInfo(result);
   };
 
   React.useEffect(() => {
     load();
-  }, [collateralAddress, collateralID]);
+  }, [collateralAddress, collateralTokenId]);
 
   return (
     <fieldset className="collateral_card standard-fieldset">
@@ -50,6 +46,7 @@ export default function CollateralMediaCard({
         ) : (
           <CollateralMediaCardLoaded
             contractName={contractName}
+            contractAddress={collateralAddress}
             nftInfo={CollateralNFTInfo}
           />
         )}
@@ -58,7 +55,7 @@ export default function CollateralMediaCard({
   );
 }
 
-function CollateralMediaCardLoaded({ contractName, nftInfo }) {
+function CollateralMediaCardLoaded({ contractName, contractAddress, nftInfo }) {
   return (
     <div>
       <div className="collateral-media nfte__media">
@@ -70,14 +67,18 @@ function CollateralMediaCardLoaded({ contractName, nftInfo }) {
       </div>
       <div className="collateralDetails">
         <p>{contractName}</p>
-        <p id="collateralTitle"> {nftInfo.name}</p>
+        <p id="collateralTitle">
+          {' '}
+          {nftInfo.name}
+        </p>
         <p>
           <a
             target="_blank"
             href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${
-              nftInfo.address
+              contractAddress
             }/${nftInfo.id.toString()}`}
-            rel="noreferrer">
+            rel="noreferrer"
+          >
             {' '}
             View on OpenSea
           </a>
@@ -86,19 +87,29 @@ function CollateralMediaCardLoaded({ contractName, nftInfo }) {
           <a
             target="_blank"
             href={`${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/token/${
-              nftInfo.address
+              contractAddress
             }?a=${nftInfo.id.toString()}`}
-            rel="noreferrer">
+            rel="noreferrer"
+          >
             {' '}
             View on Etherscan
           </a>
         </p>
         <p>
-          <b>Contract Address</b> {nftInfo.address.slice(0, 7)} ...{' '}
-          {nftInfo.address.slice(35, -1)}{' '}
+          <b>Contract Address</b>
+          {' '}
+          {contractAddress.slice(0, 7)}
+          {' '}
+          ...
+          {' '}
+          {contractAddress.slice(35, -1)}
+          {' '}
         </p>
         <p>
-          <b>ID</b> {nftInfo.id.toString()}{' '}
+          <b>ID</b>
+          {' '}
+          {nftInfo.id.toString()}
+          {' '}
         </p>
       </div>
     </div>

@@ -51,13 +51,14 @@ export default function Create({}) {
         <div className="float-left">
           <CollateralMediaCard
             collateralAddress={collateralAddress}
-            collateralID={collateralTokenID}
+            collateralTokenId={collateralTokenID}
           />
         </div>
       )}
       <fieldset
         id="create-explainer-fieldset"
-        className="standard-fieldset float-left">
+        className="standard-fieldset float-left"
+      >
         <legend>explainer</legend>
         <Explainer account={account} />
       </fieldset>

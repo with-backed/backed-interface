@@ -1,21 +1,28 @@
 import { useState } from 'react';
 import { ethers } from 'ethers';
 import TransactionButton from '../TransactionButton';
+import { jsonRpcERC20Contract, web3Erc20Contract } from '../../../lib/contracts';
+
+interface AllowButtonProps{
+  contractAddress: string
+  account: string
+  symbol: string
+  callbackk: () => void
+}
 
 export default function AllowButton({
-  jsonRpcContract,
-  web3Contract,
+  contractAddress,
   account,
-  loanAssetSymbol,
+  symbol,
   callback,
 }) {
-  const [txHash, setTxHash] = useState(false);
+  const [txHash, setTxHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
 
   const allow = async () => {
-    console.log(ethers.BigNumber.from(2).pow(256).sub(1));
-    const t = await web3Contract.approve(
-      process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_CONTRACT,
+    const contract = web3Erc20Contract(contractAddress);
+    const t = await contract.approve(
+      process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT,
       ethers.BigNumber.from(2).pow(256).sub(1),
     );
     setWaitingForTx(true);
@@ -32,12 +39,13 @@ export default function AllowButton({
   };
 
   const waitForApproval = async () => {
-    const filter = jsonRpcContract.filters.Approval(
+    const contract = jsonRpcERC20Contract(contractAddress);
+    const filter = contract.filters.Approval(
       account,
-      process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_CONTRACT,
+      process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT,
       null,
     );
-    jsonRpcContract.once(filter, (owner, spender, amount) => {
+    contract.once(filter, (owner, spender, amount) => {
       callback();
       setWaitingForTx(false);
     });
@@ -46,7 +54,7 @@ export default function AllowButton({
   return (
     <div id="allowance-button-wrapper">
       <TransactionButton
-        text={`allow pawn shop to move your ${loanAssetSymbol}`}
+        text={`allow pawn shop to move your ${symbol}`}
         onClick={allow}
         txHash={txHash}
         isPending={waitingForTx}
