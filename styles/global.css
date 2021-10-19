@@ -20,6 +20,10 @@ a {
   text-decoration: none;
 }
 
+#home-link>a {
+  text-decoration: none;
+}
+
 a:hover {
   text-decoration: underline;
 }
@@ -174,7 +178,7 @@ a{
 
  #pawnShopHeader{
    text-align: center;
-   margin-top: 40px
+   margin-top: 40px;
    
  }
 
@@ -304,10 +308,23 @@ a{
 
  #header-connect-address-wrapper{
   
-  float: right;
-  width: 150px;
-  text-align: right;
+  margin: auto;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  width: 220px;
   
+ }
+
+ #connect-wallet-button {
+  margin: auto;
+  background-color: #0000EE;
+  border-radius: 6px;
+  width: 220px;
+  text-align: center;
+  padding: 10px;
+  color: white;
+  cursor: pointer;
+  font-family: Inter, Helvetica;
  }
 
  .button-2{

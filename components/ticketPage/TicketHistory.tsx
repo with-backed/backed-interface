@@ -281,7 +281,8 @@ const getTicketHistory = async (loanId) => {
 
   let allEvents = [];
   for (let i = 0; i < filters.length; i++) {
-    const results = await contract.queryFilter(filters[i]);
+    const results = await contract.queryFilter(filters[i], 
+      9478454);
     allEvents = allEvents.concat(results);
   }
   allEvents.sort((a, b) => b.blockNumber - a.blockNumber);
