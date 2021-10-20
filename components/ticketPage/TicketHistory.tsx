@@ -4,6 +4,8 @@ import { jsonRpcLoanFacilitator } from '../../lib/contracts';
 import { formattedAnnualRate } from '../../lib/interest';
 import { secondsToDays } from '../../lib/duration';
 import { LoanInfo } from '../../lib/LoanInfoType';
+import { NFTLoanFacilitator } from '../../abis/types';
+import { BuyoutUnderwriterEvent } from '../../abis/types/NFTLoanFacilitator';
 
 interface TicketHistoryProps {
   loanInfo: LoanInfo;
@@ -66,11 +68,18 @@ function ParsedEvent({ event, loanInfo }: ParsedEventProps) {
       case 'Repay':
         return RepayEventDetails(event, loanInfo);
         break;
+      case 'BuyoutUnderwriter':
+        return BuyoutEventDetails(event as BuyoutUnderwriterEvent, loanInfo)
     }
   };
 
   return (
     <div className="event-details">
+      <a
+        href={`${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/tx/${event.transactionHash}`}
+        target="_blank"
+        rel="noreferrer"
+      >
       <p>
         {' '}
         <b>
@@ -79,11 +88,12 @@ function ParsedEvent({ event, loanInfo }: ParsedEventProps) {
           {' '}
         </b>
         {' '}
-        -
+        
         {' '}
         {toLocaleDateTime(timestamp)}
         {' '}
       </p>
+      </a>
       {eventDetails()}
     </div>
   );
@@ -243,6 +253,59 @@ function RepayEventDetails(
         {' '}
         loan amount:
         {loanAmount}
+      </p>
+    </div>
+  );
+}
+
+function BuyoutEventDetails(
+  event: BuyoutUnderwriterEvent,
+  loanInfo: LoanInfo,
+) {
+  const [underwriter] = useState(event.args.underwriter);
+  const [replacedLender] = useState(event.args.replacedLoanOwner)
+  const [interest] = useState(
+    ethers.utils.formatUnits(event.args.interestEarned, loanInfo.loanAssetDecimals),
+  );
+  const [amount] = useState(
+    ethers.utils.formatUnits(event.args.replacedAmount, loanInfo.loanAssetDecimals),
+  );
+
+  return (
+    <div className="event-details">
+      <p>
+        {' '}
+        new lender:
+        <a
+          target="_blank"
+          href={`${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/address/${underwriter}`}
+          rel="noreferrer"
+        >
+          {' '}
+          {underwriter.slice(0, 10)}
+          ...
+          {' '}
+        </a>
+      </p>
+      <p>
+        {' '}
+        bought out lender:
+        <a
+          target="_blank"
+          href={`${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/address/${replacedLender}`}
+          rel="noreferrer"
+        >
+          {' '}
+          {replacedLender.slice(0, 10)}
+          ...
+          {' '}
+        </a>
+      </p>
+      <p>
+        {`interest paid: ${interest} ${loanInfo.loanAssetSymbol}`}
+      </p>
+      <p>
+        {`loan amount: ${amount} ${loanInfo.loanAssetSymbol}`}
       </p>
     </div>
   );

@@ -367,3 +367,9 @@ a{
 .small-text{
   font-size: 15px;
 }
+
+
+.event-details>a{
+  text-decoration: none;
+  color: black;
+}
