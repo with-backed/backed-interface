@@ -22,7 +22,7 @@ export default function UnderwriteButton({
   loanAmount,
   duration,
   loanUpdatedCallback,
-}) {
+} : UnderwriteButtonProps) {
   const [disabled, setDisabled] = useState(false);
   const [has10PercentImprovement, setHas10PercentImprovement] = useState(false);
   const [transactionHash, setTransactionHash] = useState('');
@@ -38,7 +38,7 @@ export default function UnderwriteButton({
 
   const get110Percent = (value: ethers.BigNumber) => value.add(value.mul(10).div(100));
 
-  const get90Percent = (value: ethers.BigNumber) => value.add(value.mul(90).div(100));
+  const get90Percent = (value: ethers.BigNumber) => value.mul(90).div(100);
 
   const underwrite = async () => {
     if (disabled || !isFilled()) {
@@ -82,9 +82,7 @@ export default function UnderwriteButton({
   const isDisabled = () => loanAmount.gt(allowance) || (!checkHas10PercentImprovement() && isFilled());
 
   const isFilled = () => {
-    const z = ethers.BigNumber.from('0');
-    console.log(duration.toString());
-    return !loanAmount.eq(z) && !interestRate.eq(z) && !duration.eq(z);
+    return !loanAmount.eq(0) && !interestRate.eq(0) && !duration.eq(0);
   };
 
   useEffect(() => {

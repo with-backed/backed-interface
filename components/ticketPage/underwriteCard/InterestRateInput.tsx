@@ -37,7 +37,9 @@ export default function InterestRateInput({
     const interestRatePerSecond = ethers.BigNumber.from(
       Math.floor(valueAsFloat * Math.pow(10, INTEREST_RATE_PERCENT_DECIMALS)),
     ).div(SECONDS_IN_YEAR);
+    
     setActualRate(interestRatePerSecond);
+
     if (interestRatePerSecond.gt(maxInterestRate)) {
       setInterestRate(ethers.BigNumber.from(0));
       setError(
@@ -54,7 +56,8 @@ export default function InterestRateInput({
       return;
     }
 
-    // setMessage(`actual rate: ${formattedAnnualRate(interestRatePerSecond)}% APY`)
+    setMessage(`actual rate: ${formattedAnnualRate(interestRatePerSecond)}% APR`)
+    
     setInterestRate(interestRatePerSecond);
   };
 
@@ -69,7 +72,7 @@ export default function InterestRateInput({
         message={message}
         setValue={handleValue}
       />
-      {actualRate.toString() == '0' ? (
+      {actualRate.eq(0) ? (
         ''
       ) : (
         <div id="interest-rate-explainer">
@@ -77,7 +80,7 @@ export default function InterestRateInput({
             {' '}
             actual annual rate:
             {formattedAnnualRate(actualRate)}
-            % APY
+            % APR
             {' '}
           </p>
           <Popup

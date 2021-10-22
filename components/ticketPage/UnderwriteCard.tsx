@@ -21,10 +21,10 @@ export default function UnderwriteCard({
 }: UnderwriteCardProps) {
   const [loanAssetBalance, setLoanAssetBalance] = useState('0');
   const [loanAmount, setLoanAmount] = useState(ethers.BigNumber.from(0));
-  const [interestRate, setInterestRate] = useState(ethers.BigNumber.from('0'));
-  const [duration, setDuration] = useState(ethers.BigNumber.from('0'));
+  const [interestRate, setInterestRate] = useState(ethers.BigNumber.from(0));
+  const [duration, setDuration] = useState(ethers.BigNumber.from(0));
   const [allowanceValue, setAllowanceValue] = useState(
-    ethers.BigNumber.from('0'),
+    ethers.BigNumber.from(0),
   );
   const [needsAllowance, setNeedsAllowance] = useState(false);
 
