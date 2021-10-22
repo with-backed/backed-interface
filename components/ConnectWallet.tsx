@@ -20,12 +20,10 @@ export default function ConnectWallet({
       method: 'eth_requestAccounts',
     });
     let account = ethers.utils.getAddress(accounts[0]);
-    // setAccount(account)
     addressSetCallback(account);
     window.ethereum.on('accountsChanged', (accounts) => {
       console.log('accounts changed');
       account = ethers.utils.getAddress(accounts[0]);
-      // setAccount(account)
       addressSetCallback(account);
     });
   };
@@ -47,26 +45,17 @@ export default function ConnectWallet({
     <div>
       {providerAvailable ? (
         <div>
-          {account == null ? (
+        
             <div
               onClick={getAccount}
-              id="connect-addr-button"
-              className={`button-${buttonType}`}
+              id="connect-wallet-button"
             >
-              {' '}
-              Connect Address
-              {' '}
+              { account == null ? 
+              "Connect Wallet"
+              : `connected ${account.slice(0, 7)}...`
+              }
             </div>
-          ) : (
-            <div className="float-right">
-              <p className="float-left century button-2">
-                {' '}
-                {account.slice(0, 10)}
-                ...
-                {' '}
-              </p>
-            </div>
-          )}
+         
         </div>
       ) : (
         <div id="use-metamask">

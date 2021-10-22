@@ -6,18 +6,16 @@ const ConnectWallet = dynamic(() => import('./ConnectWallet'), { ssr: false });
 export default function PawnShopHeader({ account, setAccount, message }) {
   return (
     <div id="pawnShopHeader">
-      <Link href="/">
-        <div id="gallery-button" className="float-left button-2">
-          ← gallery
-        </div>
-      </Link>
-
-      <h1>💸✨🎸 nft pawn shop 💍✨💸</h1>
+      <h1 id='home-link'> 
+        <Link href="/">
+          💸✨🎸 nft pawn shop 💍✨💸
+        </Link>  
+      </h1>
       <div id="header-connect-address-wrapper">
         <ConnectWallet
           account={account}
           addressSetCallback={setAccount}
-          buttonType={2}
+          buttonType={1}
         />
       </div>
       <div id="pawnShopHeaderDivider">
