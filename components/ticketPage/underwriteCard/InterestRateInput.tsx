@@ -37,7 +37,7 @@ export default function InterestRateInput({
     const interestRatePerSecond = ethers.BigNumber.from(
       Math.floor(valueAsFloat * Math.pow(10, INTEREST_RATE_PERCENT_DECIMALS)),
     ).div(SECONDS_IN_YEAR);
-    
+
     setActualRate(interestRatePerSecond);
 
     if (interestRatePerSecond.gt(maxInterestRate)) {
@@ -55,8 +55,6 @@ export default function InterestRateInput({
       setError(`Minimum rate ${MIN_RATE}%`);
       return;
     }
-
-    setMessage(`actual rate: ${formattedAnnualRate(interestRatePerSecond)}% APR`)
     
     setInterestRate(interestRatePerSecond);
   };
