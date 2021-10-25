@@ -19,6 +19,10 @@ export default function ConnectWallet({
     const accounts = await window.ethereum.request({
       method: 'eth_requestAccounts',
     });
+    await window.ethereum.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: '0x4' }]
+    })
     let account = ethers.utils.getAddress(accounts[0]);
     addressSetCallback(account);
     window.ethereum.on('accountsChanged', (accounts) => {
