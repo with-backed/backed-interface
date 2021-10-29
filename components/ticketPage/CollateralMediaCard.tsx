@@ -62,7 +62,7 @@ function CollateralMediaCardLoaded({ contractName, contractAddress, nftInfo }) {
         <Media
           media={nftInfo.mediaUrl}
           mediaMimeType={nftInfo.mediaMimeType}
-          autoPlay={false}
+          autoPlay={true}
         />
       </div>
       <div className="collateralDetails">

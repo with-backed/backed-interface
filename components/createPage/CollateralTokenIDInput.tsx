@@ -70,7 +70,6 @@ export default function CollateralTokenIDInput({
       setContract(null);
       handleNewValue(value, null);
     }
-    console.log('handle');
   }, [collateralContractAddress]);
 
   return (

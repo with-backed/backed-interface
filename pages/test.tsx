@@ -84,7 +84,6 @@ function MintPunk({ account }: { account: string }) {
       null,
     );
     punk.once(filter, (from, to, tokenId) => {
-      console.log(`token id ${tokenId}`);
       setTxPending(false);
       setId(tokenId);
     });

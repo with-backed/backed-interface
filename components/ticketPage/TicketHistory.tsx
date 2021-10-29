@@ -16,8 +16,6 @@ export default function TicketHistory({ loanInfo } : TicketHistoryProps) {
 
   const setup = async () => {
     const history = await getTicketHistory(loanInfo.loanId);
-    console.log('0000');
-    console.log(history);
     setHistory(history);
   };
 
@@ -345,7 +343,7 @@ const getTicketHistory = async (loanId) => {
   let allEvents = [];
   for (let i = 0; i < filters.length; i++) {
     const results = await contract.queryFilter(filters[i], 
-      9478454);
+      parseInt(process.env.NEXT_PUBLIC_FACILITATOR_START_BLOCK));
     allEvents = allEvents.concat(results);
   }
   allEvents.sort((a, b) => b.blockNumber - a.blockNumber);

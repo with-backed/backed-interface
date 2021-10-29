@@ -13,7 +13,6 @@ export default function Input({
   const [v, setV] = useState('');
 
   const handleChange = (event) => {
-    console.log(`event value ${event.target.value}`);
     setV(event.target.value);
   };
 

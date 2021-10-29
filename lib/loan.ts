@@ -46,10 +46,8 @@ export async function getLoanInfo(id: string): Promise<LoanInfo> {
   let loanOwner = null;
   if (!lastAccumulatedTimestamp.eq(0)) {
     loanOwner = await lendTicket.ownerOf(loanId);
-    const interest = await loanFacilitator.interestOwed(loanId);
-    console.log(ethers.utils.formatUnits(interest, decimals).toString());
-    const scalar = await loanFacilitator.SCALAR();
-    console.log(scalar.toString());
+    // const interest = await loanFacilitator.interestOwed(loanId);
+    // const scalar = await loanFacilitator.SCALAR();
   }
 
   const interestOwed = await loanFacilitator.interestOwed(loanId);

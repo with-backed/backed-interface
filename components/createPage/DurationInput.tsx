@@ -26,7 +26,6 @@ export default function DurationInput({ setDurationSeconds }) {
     const valueInSeconds = ethers.BigNumber.from(
       Math.ceil(valueAsFloat * SECONDS_IN_DAY),
     );
-    console.log(valueInSeconds);
     setDurationSeconds(valueInSeconds);
   };
 
