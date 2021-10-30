@@ -1,0 +1,17 @@
+{ 
+    "tokens":
+    [
+        {
+            "address":"0xCD8a1C3ba11CF5ECfa6267617243239504a98d90",
+            "symbol":"DAI" 
+        },
+        {
+            "address":"0x",
+            "symbol":"USDC" 
+        },
+        {
+            "address":"0x",
+            "symbol":"WETH" 
+        }
+    ]
+}

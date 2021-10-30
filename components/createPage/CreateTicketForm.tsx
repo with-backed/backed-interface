@@ -50,6 +50,7 @@ export default function CreateTicketForm({
         setDecimals={setLoanAssetDecimals}
         setLoanAssetAddress={setLoanAssetContract}
       />
+
       <LoanAmountInput setLoanAmount={setLoanAmount} />
       <InterestRateInput setInterestRate={setInterestRate} />
       <DurationInput setDurationSeconds={setDuration} />
@@ -147,6 +148,9 @@ function MintTicketButton({
     || duration.eq(0);
 
   const mint = async () => {
+    if(disabled()){
+      return
+    }
     const contract = web3LoanFacilitator();
     const t = await contract.createLoan(
       collateralTokenID,
