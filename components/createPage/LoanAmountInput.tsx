@@ -10,7 +10,7 @@ export default function LoanAmountInput({ setLoanAmount }) {
     setError('');
     setValue(value);
 
-    if (value == '') {
+    if (value === '') {
       setLoanAmount(ethers.BigNumber.from(0));
       return;
     }
