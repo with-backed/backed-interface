@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { ChangeEvent, useCallback, useState } from 'react';
+import React, { ChangeEvent, useCallback, useState } from 'react';
 import { Popup, Icon } from 'semantic-ui-react';
 import Input from 'components/Input';
 import { formattedAnnualRate } from '../../lib/interest';
@@ -17,7 +17,7 @@ export default function InterestRateInput({ setInterestRate }) {
     setError('');
     setValue(value);
 
-    if (value == '') {
+    if (value === '') {
       setInterestRate(ethers.BigNumber.from(0));
       setActualRate(ethers.BigNumber.from('0'));
       return;
@@ -30,11 +30,11 @@ export default function InterestRateInput({ setInterestRate }) {
     }
 
     const interestRatePerSecond = ethers.BigNumber.from(
-      Math.floor(valueAsFloat * Math.pow(10, INTEREST_RATE_PERCENT_DECIMALS)),
+      Math.floor(valueAsFloat * (10 ** INTEREST_RATE_PERCENT_DECIMALS)),
     ).div(SECONDS_IN_YEAR);
     setActualRate(interestRatePerSecond);
 
-    if (valueAsFloat < MIN_RATE && valueAsFloat != 0) {
+    if (valueAsFloat < MIN_RATE && valueAsFloat !== 0) {
       setInterestRate(ethers.BigNumber.from(0));
       setError(`Minimum rate ${MIN_RATE}%`);
       return;
@@ -53,7 +53,7 @@ export default function InterestRateInput({ setInterestRate }) {
         error={error}
         onChange={handleChange}
       />
-      {actualRate.toString() == '0' ? (
+      {actualRate.toString() === '0' ? (
         ''
       ) : (
         <div id="interest-rate-explainer">
