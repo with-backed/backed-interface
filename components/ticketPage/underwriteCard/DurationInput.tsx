@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { ChangeEvent, useCallback, useState } from 'react';
+import React, { ChangeEvent, useCallback, useState } from 'react';
 import Input from 'components/Input';
 
 const SECONDS_IN_DAY = 60 * 60 * 24;
@@ -18,7 +18,7 @@ export default function DurationInput({
     setError('');
     setValue(value);
 
-    if (value == '') {
+    if (value === '') {
       setDurationSeconds(ethers.BigNumber.from(0));
       return;
     }
