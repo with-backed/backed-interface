@@ -8,11 +8,11 @@ export default function DurationInput({ setDurationSeconds }) {
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
 
-  const handleChange = useCallback(({ target: { value }}: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = useCallback(({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
     setError('');
     setValue(value);
 
-    if (value == '') {
+    if (value === '') {
       setDurationSeconds(ethers.BigNumber.from(0));
       return;
     }
@@ -27,7 +27,7 @@ export default function DurationInput({ setDurationSeconds }) {
       Math.ceil(valueAsFloat * SECONDS_IN_DAY),
     );
     setDurationSeconds(valueInSeconds);
-  }, [])
+  }, []);
 
   return (
     <Input

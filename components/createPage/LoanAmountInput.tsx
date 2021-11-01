@@ -6,7 +6,7 @@ export default function LoanAmountInput({ setLoanAmount }) {
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
 
-  const handleChange = useCallback(({ target: { value }}: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = useCallback(({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
     setError('');
     setValue(value);
 
@@ -22,7 +22,7 @@ export default function LoanAmountInput({ setLoanAmount }) {
       return;
     }
     setLoanAmount(valueAsFloat);
-  }, [])
+  }, []);
 
   return (
     <Input

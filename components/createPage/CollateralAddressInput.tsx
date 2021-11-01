@@ -8,13 +8,13 @@ export default function CollateralAddressInput({ setCollateralAddress }) {
 
   const handleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value.trim();
-    if (newValue == value) {
+    if (newValue === value) {
       return;
     }
     setError('');
     setValue(newValue);
 
-    if (newValue == '') {
+    if (newValue === '') {
       setCollateralAddress('');
       return;
     }

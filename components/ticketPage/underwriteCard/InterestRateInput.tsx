@@ -17,7 +17,7 @@ export default function InterestRateInput({
   const [maxInterestRate] = useState(maxPerSecondRate);
   const [actualRate, setActualRate] = useState(ethers.BigNumber.from('0'));
 
-  const handleChange = useCallback(({ target: { value }}: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = useCallback(({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
     setError('');
     setValue(value);
 
@@ -54,7 +54,7 @@ export default function InterestRateInput({
       setError(`Minimum rate ${MIN_RATE}%`);
       return;
     }
-    
+
     setInterestRate(interestRatePerSecond);
   }, []);
 

@@ -15,7 +15,7 @@ export default function LoanAmountInput({
     ethers.utils.formatUnits(minLoanAmount, decimals),
   );
 
-  const handleChange = useCallback(({ target: { value }}: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = useCallback(({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
     setError('');
     setValue(value);
 
@@ -45,7 +45,7 @@ export default function LoanAmountInput({
 
     const atomicUnits = ethers.utils.parseUnits(value, decimals);
     setLoanAmount(atomicUnits);
-  }, [])
+  }, []);
 
   return (
     <Input

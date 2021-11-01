@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import React, { ChangeEvent, useCallback, useState } from 'react';
-import { jsonRpcERC20Contract } from '../../lib/contracts';
 import Input from 'components/Input';
+import { jsonRpcERC20Contract } from '../../lib/contracts';
 
 export default function LoanAssetInput({ setDecimals, setLoanAssetAddress }) {
   const [message, setMessage] = useState('');
@@ -34,7 +34,7 @@ export default function LoanAssetInput({ setDecimals, setLoanAssetAddress }) {
     } catch (error) {
       setError('invalid address');
     }
-  }, [])
+  }, []);
 
   return (
     <Input

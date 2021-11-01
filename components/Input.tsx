@@ -20,11 +20,9 @@ export default function Input({
   value,
   onChange,
 }: InputProps) {
-  const debouncedHandleChange = useMemo(() => {
-    return debounce((event: ChangeEvent<HTMLInputElement>) => {
-      onChange(event);
-    }, WAIT_DURATION_IN_MILLISECONDS)
-  }, []);
+  const debouncedHandleChange = useMemo(() => debounce((event: ChangeEvent<HTMLInputElement>) => {
+    onChange(event);
+  }, WAIT_DURATION_IN_MILLISECONDS), []);
 
   return (
     <div className="input-wrapper">
@@ -38,8 +36,8 @@ export default function Input({
         onChange={debouncedHandleChange}
         onWheel={(e) => e.currentTarget.blur()}
       />
-      {error == '' ? '' : <p className="error">{error}</p>}
-      {message == '' ? '' : <p className="message">{message}</p>}
+      {error === '' ? '' : <p className="error">{error}</p>}
+      {message === '' ? '' : <p className="message">{message}</p>}
     </div>
   );
 }

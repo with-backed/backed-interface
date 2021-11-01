@@ -6,14 +6,14 @@ import { formattedAnnualRate } from '../../lib/interest';
 
 const SECONDS_IN_YEAR = 31_536_000;
 const INTEREST_RATE_PERCENT_DECIMALS = 8;
-const MIN_RATE = 1 / Math.pow(10, INTEREST_RATE_PERCENT_DECIMALS);
+const MIN_RATE = 1 / (10 ** INTEREST_RATE_PERCENT_DECIMALS);
 
 export default function InterestRateInput({ setInterestRate }) {
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
   const [actualRate, setActualRate] = useState(ethers.BigNumber.from('0'));
 
-  const handleChange = useCallback(({target: { value }}: ChangeEvent<HTMLInputElement>)=> {
+  const handleChange = useCallback(({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
     setError('');
     setValue(value);
 
@@ -41,7 +41,7 @@ export default function InterestRateInput({ setInterestRate }) {
     }
 
     setInterestRate(interestRatePerSecond);
-  }, [])
+  }, []);
 
   return (
     <div>
