@@ -1,16 +1,15 @@
-import { showThrottleMessage } from '@ethersproject/providers';
 import { ethers } from 'ethers';
-import React, { useState } from 'react';
+import React, { ChangeEvent, useCallback, useState } from 'react';
 import { jsonRpcERC20Contract } from '../../lib/contracts';
-import Input from '../Input';
+import Input from 'components/Input';
 
 export default function LoanAssetInput({ setDecimals, setLoanAssetAddress }) {
   const [message, setMessage] = useState('');
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
 
-  const handleValue = async (newValue) => {
-    newValue = newValue.trim();
+  const handleChange = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value.trim();
     if (newValue == value) {
       return;
     }
@@ -35,7 +34,7 @@ export default function LoanAssetInput({ setDecimals, setLoanAssetAddress }) {
     } catch (error) {
       setError('invalid address');
     }
-  };
+  }, [])
 
   return (
     <Input
@@ -45,7 +44,7 @@ export default function LoanAssetInput({ setDecimals, setLoanAssetAddress }) {
       placeholder="e.g. DAI contract address: 0x6b175474e89094c44da98b954eedeac495271d0f"
       error={error}
       message={message}
-      setValue={handleValue}
+      onChange={handleChange}
     />
   );
 }

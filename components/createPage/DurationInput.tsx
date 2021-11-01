@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
-import { useState, useEffect } from 'react';
-import Input from '../Input';
+import React, { ChangeEvent, useCallback, useState } from 'react';
+import Input from 'components/Input';
 
 const SECONDS_IN_DAY = 60 * 60 * 24;
 
@@ -8,7 +8,7 @@ export default function DurationInput({ setDurationSeconds }) {
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
 
-  const handleValue = (value) => {
+  const handleChange = useCallback(({ target: { value }}: ChangeEvent<HTMLInputElement>) => {
     setError('');
     setValue(value);
 
@@ -26,9 +26,8 @@ export default function DurationInput({ setDurationSeconds }) {
     const valueInSeconds = ethers.BigNumber.from(
       Math.ceil(valueAsFloat * SECONDS_IN_DAY),
     );
-    console.log(valueInSeconds);
     setDurationSeconds(valueInSeconds);
-  };
+  }, [])
 
   return (
     <Input
@@ -37,8 +36,7 @@ export default function DurationInput({ setDurationSeconds }) {
       value={value}
       placeholder="duration"
       error={error}
-      message=""
-      setValue={handleValue}
+      onChange={handleChange}
     />
   );
 }

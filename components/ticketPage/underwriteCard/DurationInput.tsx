@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
-import { useState, useEffect } from 'react';
-import Input from '../../Input';
+import { ChangeEvent, useCallback, useState } from 'react';
+import Input from 'components/Input';
 
 const SECONDS_IN_DAY = 60 * 60 * 24;
 
@@ -13,11 +13,9 @@ export default function DurationInput({
   );
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
-  const [message, setMessage] = useState('');
 
-  const handleValue = (value) => {
+  const handleChange = useCallback(({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
     setError('');
-    setMessage('');
     setValue(value);
 
     if (value == '') {
@@ -40,7 +38,7 @@ export default function DurationInput({
       Math.ceil(valueAsFloat * SECONDS_IN_DAY),
     );
     setDurationSeconds(valueInSeconds);
-  };
+  }, [])
 
   return (
     <Input
@@ -49,8 +47,7 @@ export default function DurationInput({
       value={value}
       placeholder={`Minimum duration: ${minDurationDays} days`}
       error={error}
-      message=""
-      setValue={handleValue}
+      onChange={handleChange}
     />
   );
 }

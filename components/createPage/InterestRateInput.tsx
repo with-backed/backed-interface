@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
-import { useState, useEffect } from 'react';
+import { ChangeEvent, useCallback, useState } from 'react';
 import { Popup, Icon } from 'semantic-ui-react';
-import Input from '../Input';
+import Input from 'components/Input';
 import { formattedAnnualRate } from '../../lib/interest';
 
 const SECONDS_IN_YEAR = 31_536_000;
@@ -13,7 +13,7 @@ export default function InterestRateInput({ setInterestRate }) {
   const [error, setError] = useState('');
   const [actualRate, setActualRate] = useState(ethers.BigNumber.from('0'));
 
-  const handleValue = (value) => {
+  const handleChange = useCallback(({target: { value }}: ChangeEvent<HTMLInputElement>)=> {
     setError('');
     setValue(value);
 
@@ -41,7 +41,7 @@ export default function InterestRateInput({ setInterestRate }) {
     }
 
     setInterestRate(interestRatePerSecond);
-  };
+  }, [])
 
   return (
     <div>
@@ -51,8 +51,7 @@ export default function InterestRateInput({ setInterestRate }) {
         value={value}
         placeholder="interest rate"
         error={error}
-        message=""
-        setValue={handleValue}
+        onChange={handleChange}
       />
       {actualRate.toString() == '0' ? (
         ''

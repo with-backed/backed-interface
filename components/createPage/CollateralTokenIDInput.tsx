@@ -1,6 +1,5 @@
-import { info } from 'console';
 import { ethers } from 'ethers';
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { jsonRpcERC721Contract } from '../../lib/contracts';
 import Input from '../Input';
 
@@ -15,13 +14,16 @@ export default function CollateralTokenIDInput({
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
 
-  const handleValue = (newValue) => {
+  const handleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value;
     if (newValue == value) {
       return;
     }
     handleNewValue(newValue, contract);
-  };
+  }, [])
 
+  // TODO: @wilsoncusack, this can probably be refactored to be reactive to 
+  // changes in value instead of manually called.
   const handleNewValue = async (newValue, contract) => {
     setError('');
     setValue(newValue);
@@ -80,8 +82,7 @@ export default function CollateralTokenIDInput({
       value={value}
       placeholder="token id"
       error={error}
-      message=""
-      setValue={handleValue}
+      onChange={handleChange}
     />
   );
 }
