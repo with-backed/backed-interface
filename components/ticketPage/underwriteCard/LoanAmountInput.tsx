@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { ChangeEvent, useCallback, useState } from 'react';
+import React, { ChangeEvent, useCallback, useState } from 'react';
 import Input from 'components/Input';
 
 export default function LoanAmountInput({
@@ -19,7 +19,7 @@ export default function LoanAmountInput({
     setError('');
     setValue(value);
 
-    if (value == '') {
+    if (value === '') {
       setLoanAmount(ethers.BigNumber.from(0));
       return;
     }
