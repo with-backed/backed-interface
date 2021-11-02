@@ -1,17 +1,16 @@
-import { showThrottleMessage } from '@ethersproject/providers';
 import { ethers } from 'ethers';
-import React, { useState } from 'react';
+import React, { ChangeEvent, useCallback, useState } from 'react';
+import Input from 'components/Input';
 import { jsonRpcERC20Contract } from '../../lib/contracts';
-import Input from '../Input';
 
 export default function LoanAssetInput({ setDecimals, setLoanAssetAddress }) {
   const [message, setMessage] = useState('');
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
 
-  const handleValue = async (newValue) => {
-    newValue = newValue.trim();
-    if (newValue == value) {
+  const handleChange = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value.trim();
+    if (newValue === value) {
       return;
     }
     setError('');
@@ -21,7 +20,9 @@ export default function LoanAssetInput({ setDecimals, setLoanAssetAddress }) {
       const address = ethers.utils.getAddress(newValue);
       const contract = jsonRpcERC20Contract(address);
       let error = false;
+      // eslint-disable-next-line no-return-assign,@typescript-eslint/no-unused-vars
       const symbol = await contract.symbol().catch((e) => (error = true));
+      // eslint-disable-next-line no-return-assign,@typescript-eslint/no-unused-vars
       const decimals = await contract.decimals().catch((e) => (error = true));
       if (error) {
         setError(
@@ -35,17 +36,16 @@ export default function LoanAssetInput({ setDecimals, setLoanAssetAddress }) {
     } catch (error) {
       setError('invalid address');
     }
-  };
+  }, []);
 
   return (
     <Input
       type="text"
       title="loan asset contract address"
-      value={value}
       placeholder="e.g. DAI contract address: 0x6b175474e89094c44da98b954eedeac495271d0f"
       error={error}
       message={message}
-      setValue={handleValue}
+      onChange={handleChange}
     />
   );
 }

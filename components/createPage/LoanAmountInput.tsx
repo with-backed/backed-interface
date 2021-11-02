@@ -1,16 +1,14 @@
 import { ethers } from 'ethers';
-import { useState, useEffect } from 'react';
-import Input from '../Input';
+import React, { ChangeEvent, useCallback, useState } from 'react';
+import Input from 'components/Input';
 
 export default function LoanAmountInput({ setLoanAmount }) {
-  const [value, setValue] = useState('');
   const [error, setError] = useState('');
 
-  const handleValue = (value) => {
+  const handleChange = useCallback(({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
     setError('');
-    setValue(value);
 
-    if (value == '') {
+    if (value === '') {
       setLoanAmount(ethers.BigNumber.from(0));
       return;
     }
@@ -22,17 +20,15 @@ export default function LoanAmountInput({ setLoanAmount }) {
       return;
     }
     setLoanAmount(valueAsFloat);
-  };
+  }, []);
 
   return (
     <Input
       type="number"
       title="loan amount (minimum)"
-      value={value}
       placeholder="loan amount"
       error={error}
-      message=""
-      setValue={handleValue}
+      onChange={handleChange}
     />
   );
 }

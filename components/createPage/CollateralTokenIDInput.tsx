@@ -1,8 +1,10 @@
-import { info } from 'console';
+import { ERC721 } from 'abis/types';
 import { ethers } from 'ethers';
-import React, { useEffect, useState } from 'react';
+import React, {
+  ChangeEvent, useCallback, useEffect, useState,
+} from 'react';
+import Input from 'components/Input';
 import { jsonRpcERC721Contract } from '../../lib/contracts';
-import Input from '../Input';
 
 export default function CollateralTokenIDInput({
   account,
@@ -11,77 +13,73 @@ export default function CollateralTokenIDInput({
   setIsValidCollateral,
   setIsApproved,
 }) {
-  const [contract, setContract] = useState(null);
+  const [contract, setContract] = useState<ERC721 | null>(null);
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
 
-  const handleValue = (newValue) => {
-    if (newValue == value) {
-      return;
-    }
-    handleNewValue(newValue, contract);
-  };
+  useEffect(() => {
+    const handleNewValue = async () => {
+      setError('');
 
-  const handleNewValue = async (newValue, contract) => {
-    setError('');
-    setValue(newValue);
+      if (value === '') {
+        return;
+      }
 
-    if (newValue == '') {
-      return;
-    }
+      const bigNumValue = ethers.BigNumber.from(value);
 
-    const bigNumValue = ethers.BigNumber.from(newValue);
+      if (contract !== null) {
+        const owner = await contract
+          .ownerOf(bigNumValue)
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          .catch((_error) => {
+            setError(
+              'Error fetching token info. Check contract address and token ID.',
+            );
+            setIsValidCollateral(false);
+          });
 
-    if (contract != null) {
-      let error = false;
-      const owner = await contract
-        .ownerOf(bigNumValue)
-        .catch((e) => (error = true));
-      if (error) {
-        setError(
-          'Error fetching token info. Check contract address and token ID.',
+        if (owner !== account) {
+          setError('Connected address does not own this NFT');
+          setIsValidCollateral(false);
+          return;
+        }
+        setIsValidCollateral(true);
+        setCollateralTokenID(bigNumValue);
+
+        const approved = await contract.getApproved(bigNumValue);
+
+        setIsApproved(
+          approved.includes(process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT),
         );
-        setIsValidCollateral(false);
-        return;
       }
+    };
+    handleNewValue();
+  }, [contract, value]);
 
-      if (owner != account) {
-        setError('Connected address does not own this NFT');
-        setIsValidCollateral(false);
-        return;
-      }
-      setIsValidCollateral(true);
-      setCollateralTokenID(bigNumValue);
-
-      const approved = await contract.getApproved(bigNumValue);
-
-      setIsApproved(
-        approved.includes(process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT),
-      );
+  const handleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value;
+    if (newValue === value) {
+      return;
     }
-  };
+    setValue(newValue);
+  }, []);
 
   useEffect(() => {
-    if (collateralContractAddress != '') {
+    if (collateralContractAddress !== '') {
       const contract = jsonRpcERC721Contract(collateralContractAddress);
       setContract(contract);
-      handleNewValue(value, contract);
     } else {
       setContract(null);
-      handleNewValue(value, null);
     }
-    console.log('handle');
   }, [collateralContractAddress]);
 
   return (
     <Input
       type="text"
       title="collateral NFT token ID"
-      value={value}
       placeholder="token id"
       error={error}
-      message=""
-      setValue={handleValue}
+      onChange={handleChange}
     />
   );
 }

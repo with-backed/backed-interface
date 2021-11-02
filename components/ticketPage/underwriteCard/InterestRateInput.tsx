@@ -1,28 +1,25 @@
 import { ethers } from 'ethers';
-import { useState, useEffect } from 'react';
+import React, { ChangeEvent, useCallback, useState } from 'react';
 import { Popup, Icon } from 'semantic-ui-react';
-import Input from '../../Input';
+import Input from 'components/Input';
 import { formattedAnnualRate } from '../../../lib/interest';
 
 const SECONDS_IN_YEAR = 31_536_000;
 const INTEREST_RATE_PERCENT_DECIMALS = 8;
-const MIN_RATE = 1 / Math.pow(10, INTEREST_RATE_PERCENT_DECIMALS);
+const MIN_RATE = 1 / (10 ** INTEREST_RATE_PERCENT_DECIMALS);
 
 export default function InterestRateInput({
   maxPerSecondRate,
   setInterestRate,
 }) {
-  const [value, setValue] = useState('');
   const [error, setError] = useState('');
-  const [message, setMessage] = useState('');
   const [maxInterestRate] = useState(maxPerSecondRate);
   const [actualRate, setActualRate] = useState(ethers.BigNumber.from('0'));
 
-  const handleValue = (value) => {
+  const handleChange = useCallback(({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
     setError('');
-    setValue(value);
 
-    if (value == '') {
+    if (value === '') {
       setInterestRate(ethers.BigNumber.from(0));
       setActualRate(ethers.BigNumber.from('0'));
       return;
@@ -35,7 +32,7 @@ export default function InterestRateInput({
     }
 
     const interestRatePerSecond = ethers.BigNumber.from(
-      Math.floor(valueAsFloat * Math.pow(10, INTEREST_RATE_PERCENT_DECIMALS)),
+      Math.floor(valueAsFloat * (10 ** INTEREST_RATE_PERCENT_DECIMALS)),
     ).div(SECONDS_IN_YEAR);
 
     setActualRate(interestRatePerSecond);
@@ -50,25 +47,23 @@ export default function InterestRateInput({
       return;
     }
 
-    if (valueAsFloat < MIN_RATE && valueAsFloat != 0) {
+    if (valueAsFloat < MIN_RATE && valueAsFloat !== 0) {
       setInterestRate(ethers.BigNumber.from(0));
       setError(`Minimum rate ${MIN_RATE}%`);
       return;
     }
-    
+
     setInterestRate(interestRatePerSecond);
-  };
+  }, []);
 
   return (
     <div>
       <Input
         type="number"
         title="annual interest rate"
-        value={value}
         placeholder={`Max: ${formattedAnnualRate(maxPerSecondRate)}%`}
         error={error}
-        message={message}
-        setValue={handleValue}
+        onChange={handleChange}
       />
       {actualRate.eq(0) ? (
         ''
