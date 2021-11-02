@@ -17,26 +17,11 @@ export default function Input({
   placeholder,
   error,
   message,
-<<<<<<< HEAD
-  setValue,
-}) {
-  const [v, setV] = useState('');
-
-  const handleChange = (event) => {
-    setV(event.target.value);
-  };
-
-  useEffect(() => {
-    const timeOutId = setTimeout(() => setValue(v), 500);
-    return () => clearTimeout(timeOutId);
-  }, [v, error, message]);
-=======
   onChange,
 }: InputProps) {
   const debouncedHandleChange = useMemo(() => debounce((event: ChangeEvent<HTMLInputElement>) => {
     onChange(event);
   }, WAIT_DURATION_IN_MILLISECONDS), []);
->>>>>>> df0882d103f3b34dbc482a8d8133e2ad7a265d0a
 
   return (
     <div className="input-wrapper">
