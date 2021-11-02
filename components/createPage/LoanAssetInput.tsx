@@ -20,12 +20,12 @@ export default function LoanAssetInput({ setDecimals, setLoanAssetAddress }) {
     setLoanAsset(address)
   }, [])
 
-  const setLoanAsset = async (address: string) => {
+  const setLoanAsset = useCallback(async (address: string) => {
     const contract = jsonRpcERC20Contract(address);
     const decimals = await contract.decimals().catch((e) => console.log(e));
     setDecimals(decimals);
     setLoanAssetAddress(address);
-  }
+  }, [])
 
   useEffect(() => {
     loadAssets()
