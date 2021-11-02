@@ -9,17 +9,16 @@ export default function LoanAssetInput({ setDecimals, setLoanAssetAddress }) {
   const [error, setError] = useState('');
   const [loanAssetOptions, setLoanAssetOptions] = useState<LoanAsset[]>([])
 
-  const loadAssets = async () => {
+  const loadAssets = useCallback(async () => {
     const assets  = await getLoanAssets()
     setLoanAssetOptions(assets)
     setLoanAsset(assets[0].address)
-  }
+  }, [])
 
-  const handleChange = async (event) => {
+  const handleChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
     const address = ethers.utils.getAddress(event.target.value);
     setLoanAsset(address)
-    
-  }
+  }, [])
 
   const setLoanAsset = async (address: string) => {
     const contract = jsonRpcERC20Contract(address);
