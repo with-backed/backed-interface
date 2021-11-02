@@ -17,7 +17,6 @@ export default function Input({
   placeholder,
   error,
   message,
-  value,
   onChange,
 }: InputProps) {
   const debouncedHandleChange = useMemo(() => debounce((event: ChangeEvent<HTMLInputElement>) => {
@@ -31,7 +30,6 @@ export default function Input({
       </h4>
       <input
         type={type}
-        value={value}
         placeholder={placeholder}
         onChange={debouncedHandleChange}
         onWheel={(e) => e.currentTarget.blur()}
