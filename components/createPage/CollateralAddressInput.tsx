@@ -30,7 +30,6 @@ export default function CollateralAddressInput({ setCollateralAddress }) {
     <Input
       type="text"
       title="collateral NFT contract address"
-      value={value}
       placeholder="NFT contract address, e.g. 0x69c40e500b84660cb2ab09cB9614fa2387F95F64"
       error={error}
       onChange={handleChange}

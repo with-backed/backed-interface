@@ -77,7 +77,6 @@ export default function CollateralTokenIDInput({
     <Input
       type="text"
       title="collateral NFT token ID"
-      value={value}
       placeholder="token id"
       error={error}
       onChange={handleChange}

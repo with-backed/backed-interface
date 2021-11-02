@@ -11,12 +11,10 @@ export default function DurationInput({
   const [minDurationDays] = useState(
     parseFloat(minDurationSeconds.toString()) / SECONDS_IN_DAY,
   );
-  const [value, setValue] = useState('');
   const [error, setError] = useState('');
 
   const handleChange = useCallback(({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
     setError('');
-    setValue(value);
 
     if (value === '') {
       setDurationSeconds(ethers.BigNumber.from(0));
@@ -44,7 +42,6 @@ export default function DurationInput({
     <Input
       type="number"
       title="duration in days"
-      value={value}
       placeholder={`Minimum duration: ${minDurationDays} days`}
       error={error}
       onChange={handleChange}

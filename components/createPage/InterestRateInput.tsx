@@ -9,13 +9,11 @@ const INTEREST_RATE_PERCENT_DECIMALS = 8;
 const MIN_RATE = 1 / (10 ** INTEREST_RATE_PERCENT_DECIMALS);
 
 export default function InterestRateInput({ setInterestRate }) {
-  const [value, setValue] = useState('');
   const [error, setError] = useState('');
   const [actualRate, setActualRate] = useState(ethers.BigNumber.from('0'));
 
   const handleChange = useCallback(({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
     setError('');
-    setValue(value);
 
     if (value === '') {
       setInterestRate(ethers.BigNumber.from(0));
@@ -48,7 +46,6 @@ export default function InterestRateInput({ setInterestRate }) {
       <Input
         type="number"
         title="interest rate (max)"
-        value={value}
         placeholder="interest rate"
         error={error}
         onChange={handleChange}

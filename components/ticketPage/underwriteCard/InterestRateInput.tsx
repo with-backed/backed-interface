@@ -12,14 +12,12 @@ export default function InterestRateInput({
   maxPerSecondRate,
   setInterestRate,
 }) {
-  const [value, setValue] = useState('');
   const [error, setError] = useState('');
   const [maxInterestRate] = useState(maxPerSecondRate);
   const [actualRate, setActualRate] = useState(ethers.BigNumber.from('0'));
 
   const handleChange = useCallback(({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
     setError('');
-    setValue(value);
 
     if (value === '') {
       setInterestRate(ethers.BigNumber.from(0));
@@ -63,7 +61,6 @@ export default function InterestRateInput({
       <Input
         type="number"
         title="annual interest rate"
-        value={value}
         placeholder={`Max: ${formattedAnnualRate(maxPerSecondRate)}%`}
         error={error}
         onChange={handleChange}
