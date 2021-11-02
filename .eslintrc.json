@@ -1,11 +1,3 @@
 {
-  "extends": ["airbnb", "airbnb-typescript"],
-  "parserOptions": {
-    "project": "./tsconfig.json"
-  },
-  "rules": {
-    "react/require-default-props": "off",
-    "react/prop-types": "off",
-    "@typescript-eslint/no-shadow": "off"
-  }
+  "extends": "next/core-web-vitals"
 }

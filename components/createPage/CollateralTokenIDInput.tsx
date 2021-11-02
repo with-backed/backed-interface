@@ -30,7 +30,6 @@ export default function CollateralTokenIDInput({
       if (contract !== null) {
         const owner = await contract
           .ownerOf(bigNumValue)
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           .catch((_error) => {
             setError(
               'Error fetching token info. Check contract address and token ID.',

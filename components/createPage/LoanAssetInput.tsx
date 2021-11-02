@@ -20,9 +20,7 @@ export default function LoanAssetInput({ setDecimals, setLoanAssetAddress }) {
       const address = ethers.utils.getAddress(newValue);
       const contract = jsonRpcERC20Contract(address);
       let error = false;
-      // eslint-disable-next-line no-return-assign,@typescript-eslint/no-unused-vars
       const symbol = await contract.symbol().catch((e) => (error = true));
-      // eslint-disable-next-line no-return-assign,@typescript-eslint/no-unused-vars
       const decimals = await contract.decimals().catch((e) => (error = true));
       if (error) {
         setError(
