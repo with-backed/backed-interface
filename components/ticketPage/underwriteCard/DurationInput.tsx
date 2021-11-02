@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
-import { useState, useEffect } from 'react';
-import Input from '../../Input';
+import React, { ChangeEvent, useCallback, useState } from 'react';
+import Input from 'components/Input';
 
 const SECONDS_IN_DAY = 60 * 60 * 24;
 
@@ -11,16 +11,12 @@ export default function DurationInput({
   const [minDurationDays] = useState(
     parseFloat(minDurationSeconds.toString()) / SECONDS_IN_DAY,
   );
-  const [value, setValue] = useState('');
   const [error, setError] = useState('');
-  const [message, setMessage] = useState('');
 
-  const handleValue = (value) => {
+  const handleChange = useCallback(({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
     setError('');
-    setMessage('');
-    setValue(value);
 
-    if (value == '') {
+    if (value === '') {
       setDurationSeconds(ethers.BigNumber.from(0));
       return;
     }
@@ -40,17 +36,15 @@ export default function DurationInput({
       Math.ceil(valueAsFloat * SECONDS_IN_DAY),
     );
     setDurationSeconds(valueInSeconds);
-  };
+  }, []);
 
   return (
     <Input
       type="number"
       title="duration in days"
-      value={value}
       placeholder={`Minimum duration: ${minDurationDays} days`}
       error={error}
-      message=""
-      setValue={handleValue}
+      onChange={handleChange}
     />
   );
 }
