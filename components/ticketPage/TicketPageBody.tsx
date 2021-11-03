@@ -8,6 +8,8 @@ import RepayCard from 'components/ticketPage/RepayCard';
 import TicketHistory from 'components/ticketPage/TicketHistory';
 import SeizeCollateralCard from 'components/ticketPage/SeizeCollateralCard';
 import { jsonRpcERC721Contract } from 'lib/contracts';
+import { ThreeColumn } from 'components/layouts/ThreeColumn';
+import { Fieldset } from 'components/Fieldset';
 
 const _provider = new ethers.providers.JsonRpcProvider(
   process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
@@ -25,20 +27,18 @@ export default function TicketPageBody({
   refresh,
 }: TicketPageBodyProps) {
   return (
-    <div id="ticket-page">
+    <ThreeColumn>
       <LeftColumn account={account} loanInfo={loanInfo} refresh={refresh} />
-      <div className="float-left">
-        <CollateralMediaCard
-          collateralAddress={loanInfo.collateralContractAddress}
-          collateralTokenId={loanInfo.collateralTokenId}
-        />
-      </div>
+      <CollateralMediaCard
+        collateralAddress={loanInfo.collateralContractAddress}
+        collateralTokenId={loanInfo.collateralTokenId}
+      />
       <RightColumn
         account={account}
         loanInfo={loanInfo}
         refresh={refresh}
       />
-    </div>
+    </ThreeColumn>
   );
 }
 
@@ -63,17 +63,17 @@ function LeftColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
 
       <BorrowTicket title="borrow ticket" tokenId={loanInfo.loanId} owner={owner} />
       {account == null
-      || loanInfo.closed
-      || loanInfo.lastAccumulatedTimestamp.toString() == '0'
-      || owner != account ? (
-          ''
-        ) : (
-          <RepayCard
-            account={account}
-            loanInfo={loanInfo}
-            repaySuccessCallback={refresh}
-          />
-        )}
+        || loanInfo.closed
+        || loanInfo.lastAccumulatedTimestamp.toString() == '0'
+        || owner != account ? (
+        ''
+      ) : (
+        <RepayCard
+          account={account}
+          loanInfo={loanInfo}
+          repaySuccessCallback={refresh}
+        />
+      )}
       <TicketHistory
         loanInfo={loanInfo}
       />
@@ -83,10 +83,7 @@ function LeftColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
 
 function BorrowTicket({ title, tokenId, owner }: { title: string, tokenId: ethers.BigNumber, owner: string }) {
   return (
-    <fieldset className="standard-fieldset">
-      <legend>
-        {title}
-      </legend>
+    <Fieldset legend={title}>
       <PawnTicketArt tokenId={tokenId} />
       <p>
         {`Owned by ${owner.slice(0, 10)}...`}
@@ -99,16 +96,13 @@ function BorrowTicket({ title, tokenId, owner }: { title: string, tokenId: ether
           View on OpenSea
         </a>
       </p>
-    </fieldset>
+    </Fieldset>
   );
 }
 
 function LendTicket({ title, tokenId, owner }: { title: string, tokenId: ethers.BigNumber, owner: string }) {
   return (
-    <fieldset className="standard-fieldset">
-      <legend>
-        {title}
-      </legend>
+    <Fieldset legend={title}>
       <PawnLoanArt tokenId={tokenId} />
       <p>
         {`Owned by ${owner.slice(0, 10)}...`}
@@ -121,7 +115,7 @@ function LendTicket({ title, tokenId, owner }: { title: string, tokenId: ethers.
           View on OpenSea
         </a>
       </p>
-    </fieldset>
+    </Fieldset>
   );
 }
 
@@ -175,16 +169,16 @@ function RightColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
       ) : (
         <div>
           {loanInfo.loanOwner != account
-          || timestamp == null
-          || timestamp < endSeconds ? (
-              ''
-            ) : (
-              <SeizeCollateralCard
-                account={account}
-                loanInfo={loanInfo}
-                seizeCollateralSuccessCallback={refresh}
-              />
-            )}
+            || timestamp == null
+            || timestamp < endSeconds ? (
+            ''
+          ) : (
+            <SeizeCollateralCard
+              account={account}
+              loanInfo={loanInfo}
+              seizeCollateralSuccessCallback={refresh}
+            />
+          )}
           <UnderwriteCard
             account={account}
             loanInfo={loanInfo}

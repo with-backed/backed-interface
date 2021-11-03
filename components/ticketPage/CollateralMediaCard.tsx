@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import getNFTInfo from 'lib/getNFTInfo';
+import { Fieldset } from 'components/Fieldset';
 import Media from 'components/Media';
 import { jsonRpcERC721Contract } from 'lib/contracts';
 
@@ -34,9 +35,7 @@ export default function CollateralMediaCard({
   }, [load]);
 
   return (
-    <fieldset className="collateral_card standard-fieldset">
-      <legend>collateral</legend>
-      <div>
+    <Fieldset legend="collateral">
         {CollateralNFTInfo == null ? (
           <div className="collateral-media"> </div>
         ) : (
@@ -46,8 +45,7 @@ export default function CollateralMediaCard({
             nftInfo={CollateralNFTInfo}
           />
         )}
-      </div>
-    </fieldset>
+    </Fieldset>
   );
 }
 

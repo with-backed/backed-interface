@@ -3,14 +3,14 @@ import { Dimmer, Loader } from 'semantic-ui-react';
 import { getLoanInfo } from 'lib/loan';
 import TicketPageBody from 'components/ticketPage/TicketPageBody';
 import PawnShopHeader from 'components/PawnShopHeader';
+import { PageWrapper } from './layouts/PageWrapper';
 
 export default function Ticket({ ticketID }) {
   const [loanInfo, setLoanInfo] = useState(null);
   const [account, setAccount] = useState(null);
-
+  console.log({ ticketID })
   const fetchData = useCallback(() => {
     setLoanInfo(null);
-    console.log('fetching data');
     if (ticketID == null) {
       return;
     }
@@ -21,7 +21,7 @@ export default function Ticket({ ticketID }) {
     fetchData();
   }, [fetchData]);
   return (
-    <div id="ticket-page-wrapper">
+    <PageWrapper>
       <PawnShopHeader
         account={account}
         setAccount={setAccount}
@@ -38,7 +38,7 @@ export default function Ticket({ ticketID }) {
           refresh={fetchData}
         />
       )}
-    </div>
+    </PageWrapper>
   );
 }
 
