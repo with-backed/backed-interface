@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useMemo, useState, useEffect } from 'react';
 import { ethers } from 'ethers';
-import { jsonRpcLoanFacilitator, web3LoanFacilitator } from '../../../lib/contracts';
-import { LoanInfo } from '../../../lib/LoanInfoType';
-import TransactionButton from '../TransactionButton';
+import { jsonRpcLoanFacilitator, web3LoanFacilitator } from 'lib/contracts';
+import { LoanInfo } from 'lib/LoanInfoType';
+import TransactionButton from 'components/ticketPage/TransactionButton';
 
 interface UnderwriteButtonProps{
   loanInfo: LoanInfo;
@@ -23,25 +23,44 @@ export default function UnderwriteButton({
   duration,
   loanUpdatedCallback,
 } : UnderwriteButtonProps) {
-  const [disabled, setDisabled] = useState(false);
   const [has10PercentImprovement, setHas10PercentImprovement] = useState(false);
   const [transactionHash, setTransactionHash] = useState('');
   const [transactionPending, setTransactionPending] = useState(false);
 
-  const checkHas10PercentImprovement = () => {
+  const get110Percent = useCallback((value: ethers.BigNumber) => value.add(value.mul(10).div(100)), []);
+
+  const get90Percent = useCallback((value: ethers.BigNumber) => value.mul(90).div(100), []);
+
+  const checkHas10PercentImprovement = useCallback(() => {
     const hasImprovement = loanAmount.gte(get110Percent(loanInfo.loanAmount))
       || duration.gte(get110Percent(loanInfo.durationSeconds))
       || interestRate.lte(get90Percent(loanInfo.perSecondInterestRate));
     setHas10PercentImprovement(hasImprovement);
     return hasImprovement;
-  };
+  }, [duration, get110Percent, get90Percent, interestRate, loanAmount, loanInfo.durationSeconds, loanInfo.loanAmount, loanInfo.perSecondInterestRate]);
 
-  const get110Percent = (value: ethers.BigNumber) => value.add(value.mul(10).div(100));
+  const isFilled = useCallback(() => {
+    return !loanAmount.eq(0) && !interestRate.eq(0) && !duration.eq(0);
+  }, [duration, interestRate, loanAmount])
 
-  const get90Percent = (value: ethers.BigNumber) => value.mul(90).div(100);
+  const waitForUnderwrite = useCallback(async () => {
+    const loanFacilitator = jsonRpcLoanFacilitator();
 
-  const underwrite = async () => {
-    if (disabled || !isFilled()) {
+    const filter = loanFacilitator.filters.UnderwriteLoan(
+      loanInfo.loanId,
+      account,
+    );
+
+    loanFacilitator.once(filter, () => {
+      setTransactionPending(false);
+      loanUpdatedCallback();
+    });
+  }, [account, loanInfo.loanId, loanUpdatedCallback]);
+
+  const isDisabled = useMemo(() => loanAmount.gt(allowance) || (!checkHas10PercentImprovement() && isFilled()), [allowance, checkHas10PercentImprovement, isFilled, loanAmount]);
+
+  const underwrite = useCallback(async () => {
+    if (isDisabled || !isFilled()) {
       return;
     }
     const loanFacilitator = web3LoanFacilitator();
@@ -63,39 +82,18 @@ export default function UnderwriteButton({
         setTransactionPending(false);
         console.log(err);
       });
-  };
-
-  const waitForUnderwrite = async () => {
-    const loanFacilitator = jsonRpcLoanFacilitator();
-
-    const filter = loanFacilitator.filters.UnderwriteLoan(
-      loanInfo.loanId,
-      account,
-    );
-
-    loanFacilitator.once(filter, () => {
-      setTransactionPending(false);
-      loanUpdatedCallback();
-    });
-  };
-
-  const isDisabled = () => loanAmount.gt(allowance) || (!checkHas10PercentImprovement() && isFilled());
-
-  const isFilled = () => {
-    return !loanAmount.eq(0) && !interestRate.eq(0) && !duration.eq(0);
-  };
+  }, [account, duration, interestRate, isDisabled, isFilled, loanAmount, loanInfo.loanId, waitForUnderwrite]);
 
   useEffect(() => {
-    setDisabled(isDisabled());
     checkHas10PercentImprovement();
-  });
+  }, [checkHas10PercentImprovement]);
 
   return (
     <div>
       <TransactionButton
         text="lend"
         onClick={underwrite}
-        disabled={disabled}
+        disabled={isDisabled}
         txHash={transactionHash}
         isPending={transactionPending}
       />

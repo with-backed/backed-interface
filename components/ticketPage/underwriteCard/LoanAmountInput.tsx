@@ -43,7 +43,7 @@ export default function LoanAmountInput({
 
     const atomicUnits = ethers.utils.parseUnits(value, decimals);
     setLoanAmount(atomicUnits);
-  }, []);
+  }, [accountBalance, decimals, loanAssetSymbol, minAmount, setLoanAmount]);
 
   return (
     <Input
