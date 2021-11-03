@@ -20,7 +20,7 @@ export default function LoanAmountInput({ setLoanAmount }) {
       return;
     }
     setLoanAmount(valueAsFloat);
-  }, []);
+  }, [setLoanAmount]);
 
   return (
     <Input

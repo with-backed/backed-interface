@@ -24,7 +24,7 @@ export default function CollateralAddressInput({ setCollateralAddress }) {
     } catch (error) {
       setError('invalid address');
     }
-  }, []);
+  }, [setCollateralAddress, value]);
 
   return (
     <Input

@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ethers } from 'ethers';
-import getNFTInfo, { GetNFTInfoResponse } from '../../lib/getNFTInfo';
-import Media from '../Media';
-import { ERC721 } from '../../abis/types';
-import { jsonRpcERC721Contract } from '../../lib/contracts';
+import getNFTInfo, { GetNFTInfoResponse } from 'lib/getNFTInfo';
+import Media from 'components/Media';
+import { ERC721 } from 'abis/types';
+import { jsonRpcERC721Contract } from 'lib/contracts';
 
 const pawnTicketsContract = jsonRpcERC721Contract(process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT);
 
@@ -25,14 +25,14 @@ export function PawnTicketArt({ tokenId }) {
 function PawnArt({ contract, tokenId }: PawnArtProps) {
   const [nftInfo, setNFTInfo] = useState<GetNFTInfoResponse>(null);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     const result = await getNFTInfo({ contract, tokenId });
     setNFTInfo(result);
-  };
+  }, [contract, tokenId]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     load();
-  }, []);
+  }, [load]);
 
   return (
     <div className="pawn-art">

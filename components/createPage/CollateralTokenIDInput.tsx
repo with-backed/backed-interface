@@ -4,7 +4,7 @@ import React, {
   ChangeEvent, useCallback, useEffect, useState,
 } from 'react';
 import Input from 'components/Input';
-import { jsonRpcERC721Contract } from '../../lib/contracts';
+import { jsonRpcERC721Contract } from 'lib/contracts';
 
 export default function CollateralTokenIDInput({
   account,
@@ -53,7 +53,7 @@ export default function CollateralTokenIDInput({
       }
     };
     handleNewValue();
-  }, [contract, value]);
+  }, [contract, value, account, setCollateralTokenID, setIsApproved, setIsValidCollateral]);
 
   const handleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
@@ -61,7 +61,7 @@ export default function CollateralTokenIDInput({
       return;
     }
     setValue(newValue);
-  }, []);
+  }, [value]);
 
   useEffect(() => {
     if (collateralContractAddress !== '') {

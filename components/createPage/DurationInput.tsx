@@ -25,7 +25,7 @@ export default function DurationInput({ setDurationSeconds }) {
       Math.ceil(valueAsFloat * SECONDS_IN_DAY),
     );
     setDurationSeconds(valueInSeconds);
-  }, []);
+  }, [setDurationSeconds]);
 
   return (
     <Input

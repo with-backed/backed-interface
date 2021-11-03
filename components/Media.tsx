@@ -44,7 +44,7 @@ function Text({ media }: { media: string }) {
     fetch(media)
       .then((r) => r.text())
       .then((r) => setContent(r));
-  }, []);
+  }, [media]);
 
   return (
     <div className="nfte__media-content nfte__media-content--text pl1 pr1 pt1 pb1">

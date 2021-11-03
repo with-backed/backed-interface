@@ -1,31 +1,25 @@
-import { GetServerSideProps } from 'next';
-import { ethers } from 'ethers';
-import React, { useEffect, useState } from 'react';
-import { Dimmer, Loader, Container } from 'semantic-ui-react';
-import dynamic from 'next/dynamic';
-import { getLoanInfo } from '../lib/loan';
-import TicketPageBody from './ticketPage/TicketPageBody';
-import PawnShopHeader from './PawnShopHeader';
-
-const ConnectWallet = dynamic(() => import('./ConnectWallet'), { ssr: false });
+import React, { useCallback, useEffect, useState } from 'react';
+import { Dimmer, Loader } from 'semantic-ui-react';
+import { getLoanInfo } from 'lib/loan';
+import TicketPageBody from 'components/ticketPage/TicketPageBody';
+import PawnShopHeader from 'components/PawnShopHeader';
 
 export default function Ticket({ ticketID }) {
   const [loanInfo, setLoanInfo] = useState(null);
   const [account, setAccount] = useState(null);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(() => {
     setLoanInfo(null);
     console.log('fetching data');
     if (ticketID == null) {
       return;
     }
-    const loanInfo = await getLoanInfo(`${ticketID}`);
-    setLoanInfo(loanInfo);
-  };
+    getLoanInfo(`${ticketID}`).then(loanInfo => setLoanInfo(loanInfo));
+  }, [ticketID]);
 
   useEffect(() => {
     fetchData();
-  }, [ticketID]);
+  }, [fetchData]);
   return (
     <div id="ticket-page-wrapper">
       <PawnShopHeader

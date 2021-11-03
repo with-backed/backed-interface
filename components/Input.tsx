@@ -21,7 +21,7 @@ export default function Input({
 }: InputProps) {
   const debouncedHandleChange = useMemo(() => debounce((event: ChangeEvent<HTMLInputElement>) => {
     onChange(event);
-  }, WAIT_DURATION_IN_MILLISECONDS), []);
+  }, WAIT_DURATION_IN_MILLISECONDS), [onChange]);
 
   return (
     <div className="input-wrapper">

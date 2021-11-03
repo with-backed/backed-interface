@@ -1,11 +1,10 @@
 import { ethers } from 'ethers';
-import { useState, useEffect } from 'react';
-import { jsonRpcLoanFacilitator } from '../../lib/contracts';
-import { formattedAnnualRate } from '../../lib/interest';
-import { secondsToDays } from '../../lib/duration';
-import { LoanInfo } from '../../lib/LoanInfoType';
-import { NFTLoanFacilitator } from '../../abis/types';
-import { BuyoutUnderwriterEvent } from '../../abis/types/NFTLoanFacilitator';
+import { useCallback, useState, useEffect } from 'react';
+import { jsonRpcLoanFacilitator } from 'lib/contracts';
+import { formattedAnnualRate } from 'lib/interest';
+import { secondsToDays } from 'lib/duration';
+import { LoanInfo } from 'lib/LoanInfoType';
+import { BuyoutUnderwriterEvent } from 'abis/types/NFTLoanFacilitator';
 
 interface TicketHistoryProps {
   loanInfo: LoanInfo;
@@ -14,14 +13,14 @@ interface TicketHistoryProps {
 export default function TicketHistory({ loanInfo } : TicketHistoryProps) {
   const [history, setHistory] = useState(null);
 
-  const setup = async () => {
+  const setup = useCallback(async () => {
     const history = await getTicketHistory(loanInfo.loanId);
     setHistory(history);
-  };
+  }, [loanInfo.loanId]);
 
   useEffect(() => {
     setup();
-  }, []);
+  }, [setup]);
 
   return (
     <fieldset className="standard-fieldset">

@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ethers } from 'ethers';
-import CollateralMediaCard from './CollateralMediaCard';
-import { PawnLoanArt, PawnTicketArt } from './PawnArt';
-import UnderwriteCard from './UnderwriteCard';
-import { getLoanInfo } from '../../lib/loan';
-import { LoanInfo } from '../../lib/LoanInfoType';
-import RepayCard from './RepayCard';
-import TicketHistory from './TicketHistory';
-import SeizeCollateralCard from './SeizeCollateralCard';
-import { erc721Contract, jsonRpcERC721Contract } from '../../lib/contracts';
+import CollateralMediaCard from 'components/ticketPage/CollateralMediaCard';
+import { PawnLoanArt, PawnTicketArt } from 'components/ticketPage/PawnArt';
+import UnderwriteCard from 'components/ticketPage/UnderwriteCard';
+import { LoanInfo } from 'lib/LoanInfoType';
+import RepayCard from 'components/ticketPage/RepayCard';
+import TicketHistory from 'components/ticketPage/TicketHistory';
+import SeizeCollateralCard from 'components/ticketPage/SeizeCollateralCard';
+import { jsonRpcERC721Contract } from 'lib/contracts';
 
 const _provider = new ethers.providers.JsonRpcProvider(
   process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
@@ -46,7 +45,7 @@ export default function TicketPageBody({
 function LeftColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
   const [owner, setOwner] = useState('');
 
-  const getOwner = async () => {
+  const getOwner = useCallback(async () => {
     const contract = jsonRpcERC721Contract(
       process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT,
     );
@@ -54,11 +53,11 @@ function LeftColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
       loanInfo.loanId,
     );
     setOwner(o);
-  };
+  }, [loanInfo.loanId]);
 
   useEffect(() => {
     getOwner();
-  });
+  }, [getOwner]);
   return (
     <div id="left-elements-wrapper" className="float-left">
 
@@ -137,7 +136,7 @@ function RightColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
   );
   const [owner, setOwner] = useState('');
 
-  const getOwner = async () => {
+  const getOwner = useCallback(async () => {
     if (loanInfo.lastAccumulatedTimestamp.eq(0)) {
       return;
     }
@@ -148,21 +147,21 @@ function RightColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
       loanInfo.loanId,
     );
     setOwner(o);
-  };
+  }, [loanInfo.lastAccumulatedTimestamp, loanInfo.loanId]);
 
-  const refreshTimestamp = async () => {
+  const refreshTimestamp = useCallback(async () => {
     const height = await _provider.getBlockNumber();
     const block = await _provider.getBlock(height);
     setTimestamp(block.timestamp);
     console.log(`timestamp ${block.timestamp}`);
-  };
+  }, []);
 
   useEffect(() => {
     getOwner();
     refreshTimestamp();
     const timeOutId = setInterval(() => refreshTimestamp(), 14000);
     return () => clearInterval(timeOutId);
-  }, [loanInfo]);
+  }, [getOwner, refreshTimestamp]);
 
   return (
     <div id="right-elements-wrapper" className="float-left">

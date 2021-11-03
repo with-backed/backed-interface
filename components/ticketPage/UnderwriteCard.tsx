@@ -1,12 +1,12 @@
 import { ethers } from 'ethers';
-import { useState, useEffect } from 'react';
-import LoanAmountInput from './underwriteCard/LoanAmountInput';
-import { loanFacilitator, erc20Contract, jsonRpcERC20Contract } from '../../lib/contracts';
-import InterestRateInput from './underwriteCard/InterestRateInput';
-import DurationInput from './underwriteCard/DurationInput';
-import UnderwriteButton from './underwriteCard/UnderwriteButton';
-import AllowButton from './underwriteCard/AllowButton';
-import { LoanInfo } from '../../lib/LoanInfoType';
+import { useCallback, useState, useEffect } from 'react';
+import LoanAmountInput from 'components/ticketPage/underwriteCard/LoanAmountInput';
+import { jsonRpcERC20Contract } from 'lib/contracts';
+import InterestRateInput from 'components/ticketPage/underwriteCard/InterestRateInput';
+import DurationInput from 'components/ticketPage/underwriteCard/DurationInput';
+import UnderwriteButton from 'components/ticketPage/underwriteCard/UnderwriteButton';
+import AllowButton from 'components/ticketPage/underwriteCard/AllowButton';
+import { LoanInfo } from 'lib/LoanInfoType';
 
 interface UnderwriteCardProps{
   account: string
@@ -28,7 +28,7 @@ export default function UnderwriteCard({
   );
   const [needsAllowance, setNeedsAllowance] = useState(false);
 
-  const getAccountLoanAssetBalance = async () => {
+  const getAccountLoanAssetBalance = useCallback(async () => {
     const loanAssetContract = jsonRpcERC20Contract(loanInfo.loanAssetContractAddress);
     const balance = await loanAssetContract.balanceOf(account);
     const humanReadableBalance = ethers.utils.formatUnits(
@@ -36,9 +36,9 @@ export default function UnderwriteCard({
       loanInfo.loanAssetDecimals,
     );
     setLoanAssetBalance(humanReadableBalance);
-  };
+  }, [account, loanInfo.loanAssetContractAddress, loanInfo.loanAssetDecimals]);
 
-  const setAllowance = async () => {
+  const setAllowance = useCallback(async () => {
     const assetContract = jsonRpcERC20Contract(loanInfo.loanAssetContractAddress);
     const allowance = await assetContract.allowance(
       account,
@@ -48,7 +48,7 @@ export default function UnderwriteCard({
       setNeedsAllowance(allowanceValue.lt(loanAmount));
     }
     setAllowanceValue(allowance);
-  };
+  }, [account, allowanceValue, loanAmount, loanInfo.loanAssetContractAddress, needsAllowance]);
 
   useEffect(() => {
     if (account == null) {
@@ -56,11 +56,11 @@ export default function UnderwriteCard({
     }
     getAccountLoanAssetBalance();
     setAllowance();
-  }, [account]);
+  }, [account, getAccountLoanAssetBalance, setAllowance]);
 
   useEffect(() => {
     setNeedsAllowance(allowanceValue.lt(loanAmount));
-  }, [loanAmount]);
+  }, [ allowanceValue, loanAmount]);
 
   const explainer = () => {
     if (loanInfo.lastAccumulatedTimestamp.eq(0)) {
