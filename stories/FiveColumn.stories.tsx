@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { GridItem } from './helpers';
-import FiveColumn from '../components/layouts/FiveColumn';
+import { FiveColumn } from '../components/layouts/FiveColumn';
 
 export default {
   title: 'layouts/FiveColumn',
