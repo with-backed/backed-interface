@@ -3,12 +3,13 @@
   --black: #000000;
   --dark-grey: #dddddd;
   --light-grey: #eeeeee;
-  --lightest: #f7f7f7;
+  --lightest-grey: #f7f7f7;
   --primary-blue: #0000ee;
   --primary-purple: #75187c;
   --red: #d12424;
   --white: #ffffff;
   --yellow: #fffed1;
+  --border-radius: 10px;
 }
 
 html,
