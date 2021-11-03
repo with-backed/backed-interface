@@ -56,7 +56,6 @@ export default function Create({ }) {
             />
         )}
         <Fieldset
-          id="create-explainer-fieldset"
           legend="explainer"
         >
           <Explainer account={account} />
