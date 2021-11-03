@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 import React, { ChangeEvent, useCallback, useState } from 'react';
 import { Popup, Icon } from 'semantic-ui-react';
 import Input from 'components/Input';
-import { formattedAnnualRate } from '../../../lib/interest';
+import { formattedAnnualRate } from 'lib/interest';
 
 const SECONDS_IN_YEAR = 31_536_000;
 const INTEREST_RATE_PERCENT_DECIMALS = 8;
@@ -54,7 +54,7 @@ export default function InterestRateInput({
     }
 
     setInterestRate(interestRatePerSecond);
-  }, []);
+  }, [maxInterestRate, maxPerSecondRate, setInterestRate]);
 
   return (
     <div>
