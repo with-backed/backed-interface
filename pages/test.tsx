@@ -17,11 +17,11 @@ export default function Test({}) {
       <PawnShopHeader
         account={account}
         setAccount={setAccount}
-        message="get a PUNK and DAI"
+        message="get an NFT and DAI"
       />
 
       <fieldset className="standard-fieldset float-left">
-        <legend> mint a PUNK </legend>
+        <legend> mint an NFT </legend>
         {account == null ? (
           <ConnectWallet
             account={account}
@@ -99,10 +99,10 @@ function MintPunk({ account }: { account: string }) {
         isPending={txPending}
       />
       <p>
-        {`PUNK contract address ${process.env.NEXT_PUBLIC_MOCK_PUNK_CONTRACT} (you will 
+        {`NFT contract address ${process.env.NEXT_PUBLIC_MOCK_PUNK_CONTRACT} (you will 
         need this when creating a loan)`}
       </p>
-      {id == null ? '' : <p>{`Minted PUNK id ${id.toString()}`}</p>}
+      {id == null ? '' : <p>{`Minted token ID ${id.toString()}`}</p>}
     </div>
   );
 }

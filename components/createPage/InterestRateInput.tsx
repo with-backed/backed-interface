@@ -55,11 +55,7 @@ export default function InterestRateInput({ setInterestRate }) {
       ) : (
         <div id="interest-rate-explainer">
           <p className="float-left">
-            {' '}
-            actual annual rate:
-            {formattedAnnualRate(actualRate)}
-            % APY
-            {' '}
+            actual annual rate: {formattedAnnualRate(actualRate)}% APR
           </p>
           <Popup
             className="float-left times"

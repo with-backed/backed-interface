@@ -1,49 +1,49 @@
 import { ethers } from 'ethers';
-import React, { ChangeEvent, useCallback, useState } from 'react';
-import Input from 'components/Input';
+import React, { ChangeEvent, useCallback, useState, useEffect } from 'react';
+import { LoanAsset, getLoanAssets } from '../../lib/loanAssets';
 import { jsonRpcERC20Contract } from '../../lib/contracts';
 
 export default function LoanAssetInput({ setDecimals, setLoanAssetAddress }) {
   const [message, setMessage] = useState('');
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
+  const [loanAssetOptions, setLoanAssetOptions] = useState<LoanAsset[]>([])
 
-  const handleChange = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value.trim();
-    if (newValue === value) {
-      return;
-    }
-    setError('');
-    setValue(newValue);
+  const loadAssets = useCallback(async () => {
+    const assets  = await getLoanAssets()
+    setLoanAssetOptions(assets)
+    setLoanAsset(assets[0].address)
+  }, [])
 
-    try {
-      const address = ethers.utils.getAddress(newValue);
-      const contract = jsonRpcERC20Contract(address);
-      let error = false;
-      const symbol = await contract.symbol().catch((e) => (error = true));
-      const decimals = await contract.decimals().catch((e) => (error = true));
-      if (error) {
-        setError(
-          'Error fetching loan asset info, please ensure you have entered an ERC20 contract address',
-        );
-        return;
-      }
-      setMessage(String(symbol));
-      setDecimals(decimals);
-      setLoanAssetAddress(address);
-    } catch (error) {
-      setError('invalid address');
-    }
-  }, []);
+  const handleChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
+    const address = ethers.utils.getAddress(event.target.value);
+    setLoanAsset(address)
+  }, [])
+
+  const setLoanAsset = useCallback(async (address: string) => {
+    const contract = jsonRpcERC20Contract(address);
+    const decimals = await contract.decimals().catch((e) => console.log(e));
+    setDecimals(decimals);
+    setLoanAssetAddress(address);
+  }, [])
+
+  useEffect(() => {
+    loadAssets()
+  }, [])
 
   return (
-    <Input
-      type="text"
-      title="loan asset contract address"
-      placeholder="e.g. DAI contract address: 0x6b175474e89094c44da98b954eedeac495271d0f"
-      error={error}
-      message={message}
-      onChange={handleChange}
-    />
+    <div className="input-wrapper">
+      <h4 className="blue">
+          loan asset
+      </h4>
+
+      <select onChange={handleChange}>
+        {
+          loanAssetOptions.map((a, i) => {
+          return  <option key={i} value={a.address}>{a.symbol}</option>
+          })
+        }
+      </select>
+    </div>
   );
 }

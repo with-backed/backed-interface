@@ -245,6 +245,19 @@ a{
     height: 40px;
  }
 
+ select{
+  border: 2px solid #0000EE;
+  padding: 5px;
+  padding-left: 15px;
+  width: 330px;
+  font-size: 14px;
+  height: 40px;
+}
+
+select::after {
+  padding-right: 20px;
+}
+
  .input-wrapper{
   margin-left: 20px;
   width: 330px;

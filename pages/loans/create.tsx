@@ -19,7 +19,7 @@ export default function Create({}) {
   const [isValidCollateral, setIsValidCollateral] = useState(false);
 
   return (
-    <div id="ticket-page-wrapper">
+    <div id="ticket-page">
       <PawnShopHeader
         account={account}
         setAccount={setAccount}
