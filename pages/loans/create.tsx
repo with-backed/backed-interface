@@ -9,9 +9,10 @@ import { Fieldset } from 'components/Fieldset';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { PageWrapper } from 'components/layouts/PageWrapper';
 
-const ConnectWallet = dynamic(() => import('components/ConnectWallet'), {
-  ssr: false,
-});
+const ConnectWallet = dynamic(
+  () => import('components/ConnectWallet').then(mod => mod.ConnectWallet),
+  { ssr: false }
+);
 
 export default function Create({ }) {
   const [account, setAccount] = useState(null);
@@ -34,7 +35,6 @@ export default function Create({ }) {
             <ConnectWallet
               account={account}
               addressSetCallback={setAccount}
-              buttonType={1}
             />
           ) : (
             <CreateTicketForm

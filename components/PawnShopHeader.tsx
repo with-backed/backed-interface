@@ -1,7 +1,10 @@
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 
-const ConnectWallet = dynamic(() => import('./ConnectWallet'), { ssr: false });
+const ConnectWallet = dynamic(
+  () => import('components/ConnectWallet').then(mod => mod.ConnectWallet),
+  { ssr: false }
+);
 
 export default function PawnShopHeader({ account, setAccount, message }) {
   return (
@@ -15,7 +18,6 @@ export default function PawnShopHeader({ account, setAccount, message }) {
         <ConnectWallet
           account={account}
           addressSetCallback={setAccount}
-          buttonType={1}
         />
       </div>
       <div id="pawnShopHeaderDivider">

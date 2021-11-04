@@ -1,13 +1,14 @@
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
 import { ethers } from 'ethers';
-import PawnShopHeader from '../components/PawnShopHeader';
-import { MockDAI__factory, MockPUNK__factory } from '../abis/types';
-import TransactionButton from '../components/ticketPage/TransactionButton';
+import PawnShopHeader from 'components/PawnShopHeader';
+import { MockDAI__factory, MockPUNK__factory } from 'abis/types';
+import TransactionButton from 'components/ticketPage/TransactionButton';
 
-const ConnectWallet = dynamic(() => import('../components/ConnectWallet'), {
-  ssr: false,
-});
+const ConnectWallet = dynamic(
+  () => import('components/ConnectWallet').then(mod => mod.ConnectWallet),
+  { ssr: false }
+);
 
 export default function Test({}) {
   const [account, setAccount] = useState(null);
@@ -26,7 +27,6 @@ export default function Test({}) {
           <ConnectWallet
             account={account}
             addressSetCallback={setAccount}
-            buttonType={1}
           />
         )
           : (
@@ -40,7 +40,6 @@ export default function Test({}) {
           <ConnectWallet
             account={account}
             addressSetCallback={setAccount}
-            buttonType={1}
           />
         )
           : (
