@@ -1,15 +1,21 @@
-import Head from 'next/head';
+import { GetServerSideProps } from 'next';
+import { Ticket } from 'components/Ticket';
 
-import { useRouter } from 'next/router';
-import Ticket from '../../components/Ticket';
+type TicketsProps = {
+  id: string;
+}
 
-export default function Tickets() {
-  const router = useRouter();
-  const { id } = router.query;
+export const getServerSideProps: GetServerSideProps<TicketsProps> = async (context) => {
+  const id = context.params?.id as string;
+  return {
+    props: {
+      id,
+    }
+  };
+};
 
+export default function Tickets({ id }: TicketsProps) {
   return (
-    <div>
-      <Ticket ticketID={id} />
-    </div>
+    <Ticket ticketID={id} />
   );
 }

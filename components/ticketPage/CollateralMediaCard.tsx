@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import getNFTInfo from 'lib/getNFTInfo';
 import { Fieldset } from 'components/Fieldset';
-import Media from 'components/Media';
+import { Media } from 'components/Media';
 import { jsonRpcERC721Contract } from 'lib/contracts';
 
 interface CollateralCardArgs {
@@ -36,15 +36,15 @@ export default function CollateralMediaCard({
 
   return (
     <Fieldset legend="collateral">
-        {CollateralNFTInfo == null ? (
-          <div className="collateral-media"> </div>
-        ) : (
-          <CollateralMediaCardLoaded
-            contractName={contractName}
-            contractAddress={collateralAddress}
-            nftInfo={CollateralNFTInfo}
-          />
-        )}
+      {CollateralNFTInfo == null ? (
+        <div className="collateral-media"> </div>
+      ) : (
+        <CollateralMediaCardLoaded
+          contractName={contractName}
+          contractAddress={collateralAddress}
+          nftInfo={CollateralNFTInfo}
+        />
+      )}
     </Fieldset>
   );
 }
@@ -67,9 +67,8 @@ function CollateralMediaCardLoaded({ contractName, contractAddress, nftInfo }) {
         <p>
           <a
             target="_blank"
-            href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${
-              contractAddress
-            }/${nftInfo.id.toString()}`}
+            href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${contractAddress
+              }/${nftInfo.id.toString()}`}
             rel="noreferrer"
           >
             View on OpenSea
@@ -78,9 +77,8 @@ function CollateralMediaCardLoaded({ contractName, contractAddress, nftInfo }) {
         <p>
           <a
             target="_blank"
-            href={`${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/token/${
-              contractAddress
-            }?a=${nftInfo.id.toString()}`}
+            href={`${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/token/${contractAddress
+              }?a=${nftInfo.id.toString()}`}
             rel="noreferrer"
           >
             View on Etherscan

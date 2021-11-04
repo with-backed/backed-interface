@@ -13,13 +13,7 @@
 .nfte__media {
     margin: auto;
     aspect-ratio: 1/1;
-    
-  }
-
-.nfte__media-content {
-    max-height: 400px;
-    max-width: 380px;
-  }
+}
 
 .collateral-media{
     max-height: 400px;

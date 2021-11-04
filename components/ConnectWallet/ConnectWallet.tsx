@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import { ethers } from 'ethers';
-import { env } from 'process';
 
 declare global {
   interface Window {
@@ -8,19 +7,22 @@ declare global {
   }
 }
 
-export default function ConnectWallet({
+type ConnectWalletProps = {
+  account?: string | null;
+  addressSetCallback: (address: string) => void;
+}
+
+export const ConnectWallet: FunctionComponent<ConnectWalletProps> = ({
   account,
   addressSetCallback,
-  buttonType,
-}) {
-  // const [account, setAccount] = useState(passedAccount)
+}) => {
   const [providerAvailable, setProviderAvailable] = useState(false);
 
   const getAccount = async () => {
     const accounts = await window.ethereum.request({
       method: 'eth_requestAccounts',
     });
-    if(process.env.NEXT_PUBLIC_ENV != 'local'){
+    if (process.env.NEXT_PUBLIC_ENV != 'local') {
       await window.ethereum.request({
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: process.env.NEXT_PUBLIC_CHAIN_ID }]
@@ -41,6 +43,7 @@ export default function ConnectWallet({
       return;
     }
     setProviderAvailable(true);
+    // This currently isn't used, is it still necessary?
     const provider = new ethers.providers.Web3Provider(window.ethereum);
   };
 
@@ -52,41 +55,31 @@ export default function ConnectWallet({
     <div>
       {providerAvailable ? (
         <div>
-        
-            <div
-              onClick={getAccount}
-              id="connect-wallet-button"
-            >
-              { account == null ? 
+          <div
+            onClick={getAccount}
+            id="connect-wallet-button"
+          >
+            {account == null ?
               "Connect Wallet"
               : `connected ${account.slice(0, 7)}...`
-              }
-            </div>
-         
+            }
+          </div>
         </div>
       ) : (
         <div id="use-metamask">
-          {' '}
           Please use
           <a href="https://metamask.io/" target="_blank" rel="noreferrer">
-            {' '}
             Metamask
-            {' '}
           </a>
-          {' '}
           +
           <a
             href="https://www.google.com/chrome/"
             target="_blank"
             rel="noreferrer"
           >
-            {' '}
             Chrome
-            {' '}
           </a>
-          {' '}
           to connect
-          {' '}
         </div>
       )}
     </div>

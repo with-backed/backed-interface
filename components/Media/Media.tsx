@@ -1,27 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import styles from './Media.module.css';
 
-export default function Media({
-  media,
-  mediaMimeType,
-  autoPlay,
-}: {
+type MediaProps = {
   media: string;
   mediaMimeType: string;
   autoPlay: boolean;
-}) {
+}
+
+export const Media: FunctionComponent<MediaProps> = ({
+  media,
+  mediaMimeType,
+  autoPlay,
+}) => {
   if (mediaMimeType?.includes('text')) return <Text media={media} />;
 
   if (mediaMimeType?.includes('video')) return <Video media={media} autoPlay={autoPlay} />;
 
   if (mediaMimeType?.includes('audio')) return <Audio media={media} />;
 
-  return <img className="nfte__media-content" src={media} />;
-}
+  return <img className={styles['media-content']} src={media} />;
+};
 
 function Video({ media, autoPlay }: { media: string; autoPlay: boolean }) {
   return (
     <video
-      className="nfte__media-content"
+      className={styles['media-content']}
       muted
       autoPlay={autoPlay}
       controls={!autoPlay}
@@ -34,7 +37,7 @@ function Video({ media, autoPlay }: { media: string; autoPlay: boolean }) {
 }
 
 function Audio({ media }: { media: string }) {
-  return <audio className="nfte__media-content" controls src={media} />;
+  return <audio className={styles['media-content']} controls src={media} />;
 }
 
 function Text({ media }: { media: string }) {
@@ -47,7 +50,7 @@ function Text({ media }: { media: string }) {
   }, [media]);
 
   return (
-    <div className="nfte__media-content nfte__media-content--text pl1 pr1 pt1 pb1">
+    <div className={`${styles['media-content']} pl1 pr1 pt1 pb1`}>
       {content}
     </div>
   );

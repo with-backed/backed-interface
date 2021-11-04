@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
 import { ethers } from 'ethers';
-import PawnShopHeader from 'components/PawnShopHeader';
+import { PawnShopHeader } from 'components/PawnShopHeader';
 import CreateTicketForm from 'components/createPage/CreateTicketForm';
 import Explainer from 'components/createPage/Explainer';
 import CollateralMediaCard from 'components/ticketPage/CollateralMediaCard';
@@ -9,9 +9,10 @@ import { Fieldset } from 'components/Fieldset';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { PageWrapper } from 'components/layouts/PageWrapper';
 
-const ConnectWallet = dynamic(() => import('components/ConnectWallet'), {
-  ssr: false,
-});
+const ConnectWallet = dynamic(
+  () => import('components/ConnectWallet').then(mod => mod.ConnectWallet),
+  { ssr: false }
+);
 
 export default function Create({ }) {
   const [account, setAccount] = useState(null);
@@ -34,7 +35,6 @@ export default function Create({ }) {
             <ConnectWallet
               account={account}
               addressSetCallback={setAccount}
-              buttonType={1}
             />
           ) : (
             <CreateTicketForm
@@ -50,10 +50,10 @@ export default function Create({ }) {
         {!isValidCollateral ? (
           ''
         ) : (
-            <CollateralMediaCard
-              collateralAddress={collateralAddress}
-              collateralTokenId={collateralTokenID}
-            />
+          <CollateralMediaCard
+            collateralAddress={collateralAddress}
+            collateralTokenId={collateralTokenID}
+          />
         )}
         <Fieldset
           legend="explainer"

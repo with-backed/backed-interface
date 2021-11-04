@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import React, { ChangeEvent, useCallback, useState } from 'react';
-import Input from 'components/Input';
+import { Input } from 'components/Input';
 
 const SECONDS_IN_DAY = 60 * 60 * 24;
 
