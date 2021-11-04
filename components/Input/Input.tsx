@@ -1,4 +1,4 @@
-import React, { ChangeEvent, InputHTMLAttributes, useMemo } from 'react';
+import React, { ChangeEvent, FunctionComponent, InputHTMLAttributes, useMemo } from 'react';
 import debounce from 'lodash/debounce';
 
 // Carried over from earlier implementation; we can play with this value and
@@ -11,14 +11,14 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   message?: React.ReactNode;
 }
 
-export default function Input({
+export const Input: FunctionComponent<InputProps> = ({
   type,
   title,
   placeholder,
   error,
   message,
   onChange,
-}: InputProps) {
+}) => {
   const debouncedHandleChange = useMemo(() => debounce((event: ChangeEvent<HTMLInputElement>) => {
     onChange(event);
   }, WAIT_DURATION_IN_MILLISECONDS), [onChange]);

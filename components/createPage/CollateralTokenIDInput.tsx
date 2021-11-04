@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import React, {
   ChangeEvent, useCallback, useEffect, useState,
 } from 'react';
-import Input from 'components/Input';
+import { Input } from 'components/Input';
 import { jsonRpcERC721Contract } from 'lib/contracts';
 
 export default function CollateralTokenIDInput({
