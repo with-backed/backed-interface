@@ -1,14 +1,18 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Dimmer, Loader } from 'semantic-ui-react';
 import { getLoanInfo } from 'lib/loan';
 import TicketPageBody from 'components/ticketPage/TicketPageBody';
 import PawnShopHeader from 'components/PawnShopHeader';
-import { PageWrapper } from './layouts/PageWrapper';
+import { PageWrapper } from 'components/layouts/PageWrapper';
 
-export default function Ticket({ ticketID }) {
+type TicketProps = {
+  ticketID: string | null;
+}
+
+export const Ticket: FunctionComponent<TicketProps> = ({ ticketID }) => {
   const [loanInfo, setLoanInfo] = useState(null);
   const [account, setAccount] = useState(null);
-  console.log({ ticketID })
+  
   const fetchData = useCallback(() => {
     setLoanInfo(null);
     if (ticketID == null) {
@@ -39,20 +43,5 @@ export default function Ticket({ ticketID }) {
         />
       )}
     </PageWrapper>
-  );
-}
-
-function LoadingOverlay({ txHash }) {
-  return (
-    <div id="loading-box">
-      Tx is loading
-      <style jsx>
-        {`
-          #loading-box {
-            display: ${txHash == '' ? 'none' : 'normal'};
-          }
-        `}
-      </style>
-    </div>
   );
 }
