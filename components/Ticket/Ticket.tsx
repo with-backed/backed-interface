@@ -2,7 +2,7 @@ import React, { FunctionComponent, useCallback, useEffect, useState } from 'reac
 import { Dimmer, Loader } from 'semantic-ui-react';
 import { getLoanInfo } from 'lib/loan';
 import TicketPageBody from 'components/ticketPage/TicketPageBody';
-import PawnShopHeader from 'components/PawnShopHeader';
+import { PawnShopHeader } from 'components/PawnShopHeader';
 import { PageWrapper } from 'components/layouts/PageWrapper';
 
 type TicketProps = {
@@ -12,7 +12,7 @@ type TicketProps = {
 export const Ticket: FunctionComponent<TicketProps> = ({ ticketID }) => {
   const [loanInfo, setLoanInfo] = useState(null);
   const [account, setAccount] = useState(null);
-  
+
   const fetchData = useCallback(() => {
     setLoanInfo(null);
     if (ticketID == null) {

@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
 import { ethers } from 'ethers';
-import PawnShopHeader from 'components/PawnShopHeader';
+import { PawnShopHeader } from 'components/PawnShopHeader';
 import { MockDAI__factory, MockPUNK__factory } from 'abis/types';
 import TransactionButton from 'components/ticketPage/TransactionButton';
 
@@ -10,7 +10,7 @@ const ConnectWallet = dynamic(
   { ssr: false }
 );
 
-export default function Test({}) {
+export default function Test() {
   const [account, setAccount] = useState(null);
 
   return (

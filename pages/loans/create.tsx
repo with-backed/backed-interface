@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
 import { ethers } from 'ethers';
-import PawnShopHeader from 'components/PawnShopHeader';
+import { PawnShopHeader } from 'components/PawnShopHeader';
 import CreateTicketForm from 'components/createPage/CreateTicketForm';
 import Explainer from 'components/createPage/Explainer';
 import CollateralMediaCard from 'components/ticketPage/CollateralMediaCard';
@@ -50,10 +50,10 @@ export default function Create({ }) {
         {!isValidCollateral ? (
           ''
         ) : (
-            <CollateralMediaCard
-              collateralAddress={collateralAddress}
-              collateralTokenId={collateralTokenID}
-            />
+          <CollateralMediaCard
+            collateralAddress={collateralAddress}
+            collateralTokenId={collateralTokenID}
+          />
         )}
         <Fieldset
           legend="explainer"

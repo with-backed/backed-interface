@@ -1,3 +1,4 @@
+import React, { FunctionComponent } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 
@@ -6,13 +7,23 @@ const ConnectWallet = dynamic(
   { ssr: false }
 );
 
-export default function PawnShopHeader({ account, setAccount, message }) {
+type PawnShopHeaderProps = {
+  account?: string;
+  setAccount: (account: string) => void;
+  message: string;
+};
+
+export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
+  account,
+  setAccount,
+  message
+}) => {
   return (
     <div id="pawnShopHeader">
-      <h1 id='home-link'> 
+      <h1 id='home-link'>
         <Link href="/">
           💸✨🎸 nft pawn shop 💍✨💸
-        </Link>  
+        </Link>
       </h1>
       <div id="header-connect-address-wrapper">
         <ConnectWallet
@@ -22,9 +33,7 @@ export default function PawnShopHeader({ account, setAccount, message }) {
       </div>
       <div id="pawnShopHeaderDivider">
         <h2>
-          {' '}
           {message}
-          {' '}
         </h2>
       </div>
     </div>
