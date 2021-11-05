@@ -65,7 +65,7 @@ export const ConnectWallet: FunctionComponent<ConnectWalletProps> = ({
       setProviderAvailable(false);
       return;
     }
-    //setProviderAvailable(true);
+    setProviderAvailable(true);
     // This currently isn't used, is it still necessary?
     const provider = new ethers.providers.Web3Provider(window.ethereum);
   }, []);
