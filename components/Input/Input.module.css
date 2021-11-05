@@ -7,12 +7,12 @@
   border: none;
   height: 40px;
   width: 100%;
-  border: 2px solid #0000ee;
+  border: 2px solid var(--primary-blue);
 }
 
 .errorInput {
   composes: input;
-  border: 2px solid #d12424;
+  border: 2px solid var(--red);
 }
 
 .label {
@@ -20,14 +20,14 @@
   font-family: Helvetica, Arial, sans-serif;
   font-size: 15px;
   font-weight: 700;
-  color: #0000ee;
+  color: var(--primary-blue);
 }
 
 .errorLabel {
   composes: label;
-  color: #d12424;
+  color: var(--red);
 }
 
 .errorMessage {
-  color: #d12424;
+  color: var(--red);
 }
