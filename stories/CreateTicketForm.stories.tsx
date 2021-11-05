@@ -1,5 +1,5 @@
 import React from 'react';
-import CreateTicketForm from '../components/createPage/CreateTicketForm';
+import CreateTicketForm from 'components/createPage/CreateTicketForm';
 
 export default {
   title: 'createPage/CreateTicketForm',

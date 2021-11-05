@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { GridItem } from './helpers';
-import { ThreeColumn } from '../components/layouts/ThreeColumn';
+import { GridItem } from 'stories/helpers';
+import { ThreeColumn } from 'components/layouts/ThreeColumn';
 
 export default {
   title: 'layouts/ThreeColumn',

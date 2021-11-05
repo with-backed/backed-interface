@@ -1,5 +1,6 @@
 import React, { ChangeEvent, FunctionComponent, InputHTMLAttributes, useMemo } from 'react';
 import debounce from 'lodash/debounce';
+import styles from './Input.module.css';
 
 // Carried over from earlier implementation; we can play with this value and
 // see what provides the best feel.
@@ -12,30 +13,30 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 export const Input: FunctionComponent<InputProps> = ({
-  type,
-  title,
-  placeholder,
+  onChange,
   error,
   message,
-  onChange,
+  title,
+  ...props
 }) => {
   const debouncedHandleChange = useMemo(() => debounce((event: ChangeEvent<HTMLInputElement>) => {
     onChange(event);
   }, WAIT_DURATION_IN_MILLISECONDS), [onChange]);
-
+  const hasError = Boolean(error);
+  const hasMessage = Boolean(message);
   return (
-    <div className="input-wrapper">
-      <h4 className="blue">
+    <div className={styles.wrapper}>
+      <label className={hasError ? styles.errorLabel : styles.label}>
         {title}
-      </h4>
-      <input
-        type={type}
-        placeholder={placeholder}
-        onChange={debouncedHandleChange}
-        onWheel={(e) => e.currentTarget.blur()}
-      />
-      {error === '' ? '' : <p className="error">{error}</p>}
-      {message === '' ? '' : <p className="message">{message}</p>}
+        <input
+          aria-invalid={hasError}
+          className={hasError ? styles.errorInput : styles.input}
+          onChange={debouncedHandleChange}
+          {...props}
+        />
+      </label>
+      {hasError && <p className={styles.errorMessage}>{error}</p>}
+      {hasMessage && <p>{message}</p>}
     </div>
   );
 }
