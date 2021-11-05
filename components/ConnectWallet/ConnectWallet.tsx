@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, memo, useCallback, useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import { Button } from 'components/Button';
 
@@ -7,6 +7,28 @@ declare global {
     ethereum: any;
   }
 }
+
+type ExternalLinkProps = {
+  href: string;
+  display: React.ReactNode;
+}
+const ExternalLink = memo(function ExternalLink({ display, href }: ExternalLinkProps) {
+  return (
+    <a href={href} target="_blank" rel="noreferrer">
+      {display}
+    </a>
+  )
+});
+
+const NoProvider = memo(function NoProvider() {
+  const metamaskLink = <ExternalLink href="https://metamask.io" display="Metamask" />;
+  const chromeLink = <ExternalLink href="https://www.google.com/chrome/" display="Chrome" />;
+  return (
+    <p>
+      Please use {metamaskLink} + {chromeLink} to connect.
+    </p>
+  )
+});
 
 type ConnectWalletProps = {
   account?: string | null;
@@ -19,7 +41,7 @@ export const ConnectWallet: FunctionComponent<ConnectWalletProps> = ({
 }) => {
   const [providerAvailable, setProviderAvailable] = useState(false);
 
-  const getAccount = async () => {
+  const getAccount = useCallback(async () => {
     const accounts = await window.ethereum.request({
       method: 'eth_requestAccounts',
     });
@@ -36,39 +58,25 @@ export const ConnectWallet: FunctionComponent<ConnectWalletProps> = ({
       account = ethers.utils.getAddress(accounts[0]);
       addressSetCallback(account);
     });
-  };
+  }, [addressSetCallback]);
 
-  const setup = async () => {
+  const setup = useCallback(async () => {
     if (window.ethereum == null) {
       setProviderAvailable(false);
       return;
     }
-    setProviderAvailable(true);
+    //setProviderAvailable(true);
     // This currently isn't used, is it still necessary?
     const provider = new ethers.providers.Web3Provider(window.ethereum);
-  };
+  }, []);
 
-  useState(() => {
+  useEffect(() => {
     setup();
-  });
+  }, [setup]);
 
   if (!providerAvailable) {
     return (
-      <div id="use-metamask">
-        Please use
-        <a href="https://metamask.io/" target="_blank" rel="noreferrer">
-          Metamask
-        </a>
-        +
-        <a
-          href="https://www.google.com/chrome/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Chrome
-        </a>
-        to connect
-      </div>
+      <NoProvider />
     )
   }
 
