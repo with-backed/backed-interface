@@ -1,5 +1,6 @@
 import React, { FunctionComponent, useState } from 'react';
 import { ethers } from 'ethers';
+import { Button } from 'components/Button';
 
 declare global {
   interface Window {
@@ -51,37 +52,35 @@ export const ConnectWallet: FunctionComponent<ConnectWalletProps> = ({
     setup();
   });
 
+  if (!providerAvailable) {
+    return (
+      <div id="use-metamask">
+        Please use
+        <a href="https://metamask.io/" target="_blank" rel="noreferrer">
+          Metamask
+        </a>
+        +
+        <a
+          href="https://www.google.com/chrome/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Chrome
+        </a>
+        to connect
+      </div>
+    )
+  }
+
+  if (!account) {
+    return (
+      <Button onClick={getAccount}>Connect Wallet</Button>
+    )
+  }
+
   return (
-    <div>
-      {providerAvailable ? (
-        <div>
-          <div
-            onClick={getAccount}
-            id="connect-wallet-button"
-          >
-            {account == null ?
-              "Connect Wallet"
-              : `connected ${account.slice(0, 7)}...`
-            }
-          </div>
-        </div>
-      ) : (
-        <div id="use-metamask">
-          Please use
-          <a href="https://metamask.io/" target="_blank" rel="noreferrer">
-            Metamask
-          </a>
-          +
-          <a
-            href="https://www.google.com/chrome/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Chrome
-          </a>
-          to connect
-        </div>
-      )}
+    <div id="connect-wallet-button">
+      connected {account.slice(0, 7)}...
     </div>
   );
 }

@@ -10,6 +10,10 @@
   --white: #ffffff;
   --yellow: #fffed1;
   --border-radius: 10px;
+  --button-radius: 6px;
+  --button-padding: 10px;
+  /* We set this globally on html and body, may also need it in other places */
+  --line-height: 1.6;
 }
 
 html,
@@ -18,7 +22,7 @@ body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu,
     Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-  line-height: 1.6;
+  line-height: var(--line-height);
   font-size: 18px;
   background-color:rgba(255, 255, 255, 1);
 }
@@ -350,7 +354,6 @@ select::after {
   text-align: center;
   padding: 10px;
   color: white;
-  cursor: pointer;
   font-family: Inter, Helvetica;
  }
 
