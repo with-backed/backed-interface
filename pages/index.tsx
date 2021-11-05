@@ -9,7 +9,7 @@ export default function Home() {
       </p>
       <p>
       {
-        process.env.NEXT_PUBLIC_ENV == 'local' ? 
+        process.env.NEXT_PUBLIC_ENV == 'rinkeby' ? 
         <Link href="/test">Get Rinkeby DAI and an NFT!</Link>
         : ''
       }
