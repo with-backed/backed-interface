@@ -1,0 +1,33 @@
+.wrapper {
+  width: 100%; 
+}
+
+.input {
+  padding: 5px;
+  border: none;
+  height: 40px;
+  width: 100%;
+  border: 2px solid #0000ee;
+}
+
+.errorInput {
+  composes: input;
+  border: 2px solid #d12424;
+}
+
+.label {
+  margin-bottom: 5px;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0000ee;
+}
+
+.errorLabel {
+  composes: label;
+  color: #d12424;
+}
+
+.errorMessage {
+  color: #d12424;
+}
