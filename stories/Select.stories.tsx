@@ -9,7 +9,7 @@ export default {
 
 const handleChange = (_event: ChangeEvent<HTMLSelectElement>) => { };
 
-export const InputStyles = () => {
+export const SelectStyles = () => {
   return (
     <Select title="Breakfast ingredients" onChange={handleChange}>
       <option>Bacon</option>

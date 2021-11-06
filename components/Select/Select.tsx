@@ -1,15 +1,15 @@
 import React, { SelectHTMLAttributes } from 'react';
-import styles from './Select.module.css';
+import inputStyles from 'components/Input/Input.module.css';
 
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> { }
 
 export const Select = ({ title, ...props }: SelectProps) => {
   return (
-    <div className={styles.wrapper}>
-      <label className={styles.label}>
+    <div className={inputStyles.wrapper}>
+      <label className={inputStyles.label}>
         {title}
         <select
-          className={styles.select}
+          className={inputStyles.input}
           {...props}
         />
       </label>

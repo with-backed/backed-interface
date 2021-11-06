@@ -8,6 +8,7 @@
   height: 40px;
   width: 100%;
   border: 2px solid var(--primary-blue);
+  background-color: var(--white);
 }
 
 .errorInput {
