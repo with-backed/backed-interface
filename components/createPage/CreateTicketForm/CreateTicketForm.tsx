@@ -1,28 +1,36 @@
 import { ethers } from 'ethers';
-import { useState } from 'react';
-import InterestRateInput from './InterestRateInput';
-import CollateralAddressInput from './CollateralAddressInput';
-import CollateralTokenIDInput from './CollateralTokenIDInput';
-import LoanAmountInput from './LoanAmountInput';
-import LoanAssetInput from './LoanAssetInput';
-import DurationInput from './DurationInput';
+import React, { useCallback, useState } from 'react';
+import InterestRateInput from 'components/createPage/InterestRateInput';
+import CollateralAddressInput from 'components/createPage/CollateralAddressInput';
+import CollateralTokenIDInput from 'components/createPage/CollateralTokenIDInput';
+import LoanAmountInput from 'components/createPage/LoanAmountInput';
+import LoanAssetInput from 'components/createPage/LoanAssetInput';
+import DurationInput from 'components/createPage/DurationInput';
 import {
   jsonRpcERC721Contract,
   jsonRpcLoanFacilitator,
   web3Erc721Contract,
   web3LoanFacilitator,
-} from '../../lib/contracts';
-import TransactionButton from '../ticketPage/TransactionButton';
-import { NFTLoanFacilitator, NFTLoanFacilitator__factory } from '../../abis/types';
+} from 'lib/contracts';
+import TransactionButton from 'components/ticketPage/TransactionButton';
+import { FormWrapper } from 'components/layouts/FormWrapper';
 
-export default function CreateTicketForm({
+export type CreateTicketFormProps = {
+  account: string | null;
+  collateralAddress: string | null;
+  setCollateralAddress: (value: string) => void;
+  collateralTokenID?: ethers.BigNumber;
+  setCollateralTokenID: (value: ethers.BigNumber) => void;
+  setIsValidCollateral: (value: boolean) => void;
+}
+export function CreateTicketForm({
   account,
   collateralAddress,
   setCollateralAddress,
   collateralTokenID,
   setCollateralTokenID,
   setIsValidCollateral,
-}) {
+}: CreateTicketFormProps) {
   const [loanAssetContract, setLoanAssetContract] = useState(null);
   const [loanAssetDecimals, setLoanAssetDecimals] = useState(null);
   const [loanAmount, setLoanAmount] = useState(0);
@@ -31,13 +39,13 @@ export default function CreateTicketForm({
   const [isApproved, setIsApproved] = useState(true);
   const [showApproved, setShowApproved] = useState(false);
 
-  const handleApproved = () => {
+  const handleApproved = useCallback(() => {
     setShowApproved(true);
     setIsApproved(true);
-  };
+  }, [setShowApproved, setIsApproved]);
 
   return (
-    <div id="create-ticket-form">
+    <FormWrapper>
       <CollateralAddressInput setCollateralAddress={setCollateralAddress} />
       <CollateralTokenIDInput
         account={account}
@@ -55,7 +63,7 @@ export default function CreateTicketForm({
       <InterestRateInput setInterestRate={setInterestRate} />
       <DurationInput setDurationSeconds={setDuration} />
       {isApproved && !showApproved ? (
-        ''
+        null
       ) : (
         <AllowButton
           account={account}
@@ -75,17 +83,36 @@ export default function CreateTicketForm({
         interestRate={interestRate}
         duration={duration}
       />
-    </div>
+    </FormWrapper>
   );
 }
 
+type AllowButtonProps = {
+  account?: string;
+  collateralAddress?: string;
+  tokenId?: ethers.BigNumber;
+  setIsApproved: (value: boolean) => void;
+}
 function AllowButton({
   account, collateralAddress, tokenId, setIsApproved,
-}) {
+}: AllowButtonProps) {
   const [transactionHash, setTransactionHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
 
-  const approve = async () => {
+  const waitForApproval = useCallback(async () => {
+    const contract = jsonRpcERC721Contract(collateralAddress);
+    const filter = contract.filters.Approval(
+      account,
+      process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT,
+      tokenId,
+    );
+    contract.once(filter, () => {
+      setWaitingForTx(false);
+      setIsApproved(true);
+    });
+  }, [account, collateralAddress, setIsApproved, tokenId]);
+
+  const approve = useCallback(async () => {
     const web3Contract = web3Erc721Contract(collateralAddress);
     const t = await web3Contract.approve(
       process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT,
@@ -94,28 +121,15 @@ function AllowButton({
     setTransactionHash(t.hash);
     setWaitingForTx(true);
     t.wait()
-      .then((receipt) => {
+      .then(() => {
         waitForApproval();
         setWaitingForTx(true);
       })
       .catch((err) => {
         setWaitingForTx(false);
-        console.log(err);
+        console.error(err);
       });
-  };
-
-  const waitForApproval = async () => {
-    const contract = jsonRpcERC721Contract(collateralAddress);
-    const filter = contract.filters.Approval(
-      account,
-      process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT,
-      tokenId,
-    );
-    contract.once(filter, (from, to, tokenID) => {
-      setWaitingForTx(false);
-      setIsApproved(true);
-    });
-  };
+  }, [collateralAddress, tokenId, waitForApproval]);
 
   return (
     <TransactionButton
@@ -128,6 +142,17 @@ function AllowButton({
   );
 }
 
+type MintTicketButtonProps = {
+  account?: string;
+  isApproved?: boolean;
+  collateralAddress?: string;
+  collateralTokenID?: ethers.BigNumber;
+  loanAsset: any;
+  loanAssetDecimals: any;
+  loanAmount: any;
+  interestRate: any;
+  duration: any;
+};
 function MintTicketButton({
   account,
   isApproved,
@@ -138,7 +163,7 @@ function MintTicketButton({
   loanAmount,
   interestRate,
   duration,
-}) {
+}: MintTicketButtonProps) {
   const [transactionHash, setTransactionHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
 
@@ -148,7 +173,7 @@ function MintTicketButton({
     || duration.eq(0);
 
   const mint = async () => {
-    if(disabled()){
+    if (disabled()) {
       return
     }
     const contract = web3LoanFacilitator();
@@ -164,20 +189,20 @@ function MintTicketButton({
     setTransactionHash(t.hash);
     setWaitingForTx(true);
     t.wait()
-      .then((receipt) => {
+      .then(() => {
         wait();
         setWaitingForTx(true);
       })
       .catch((err) => {
         setWaitingForTx(false);
-        console.log(err);
+        console.error(err);
       });
   };
 
   const wait = async () => {
     const contract = jsonRpcLoanFacilitator();
     const filter = contract.filters.CreateLoan(null, account, null, null, null);
-    contract.once(filter, (id, minter, maxInterest, minAount, minDuration) => {
+    contract.once(filter, (id) => {
       setWaitingForTx(false);
       window.location.assign(`/loans/${id.toString()}`);
     });

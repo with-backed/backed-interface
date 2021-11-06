@@ -2,7 +2,12 @@ import { ethers } from 'ethers';
 import React, { ChangeEvent, useCallback, useState } from 'react';
 import { Input } from 'components/Input';
 
-export default function CollateralAddressInput({ setCollateralAddress }) {
+type CollateralAddressInputProps = {
+  setCollateralAddress: (value: string) => void;
+}
+export default function CollateralAddressInput({
+  setCollateralAddress
+}: CollateralAddressInputProps) {
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
 

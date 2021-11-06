@@ -1,0 +1,5 @@
+.form-wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  row-gap: 0.75rem;
+}
