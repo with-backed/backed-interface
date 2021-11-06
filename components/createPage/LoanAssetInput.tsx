@@ -2,6 +2,7 @@ import { ethers } from 'ethers';
 import React, { ChangeEvent, useCallback, useState, useEffect } from 'react';
 import { LoanAsset, getLoanAssets } from 'lib/loanAssets';
 import { jsonRpcERC20Contract } from 'lib/contracts';
+import { Select } from 'components/Select';
 
 export default function LoanAssetInput({ setDecimals, setLoanAssetAddress }) {
   const [loanAssetOptions, setLoanAssetOptions] = useState<LoanAsset[]>([])
@@ -19,7 +20,7 @@ export default function LoanAssetInput({ setDecimals, setLoanAssetAddress }) {
   }, [setLoanAsset])
 
   const loadAssets = useCallback(async () => {
-    const assets  = await getLoanAssets()
+    const assets = await getLoanAssets()
     setLoanAssetOptions(assets)
     setLoanAsset(assets[0].address)
   }, [setLoanAsset])
@@ -29,18 +30,12 @@ export default function LoanAssetInput({ setDecimals, setLoanAssetAddress }) {
   }, [loadAssets])
 
   return (
-    <div className="input-wrapper">
-      <h4 className="blue">
-          loan asset
-      </h4>
-
-      <select onChange={handleChange}>
-        {
-          loanAssetOptions.map((a, i) => {
-          return  <option key={i} value={a.address}>{a.symbol}</option>
-          })
-        }
-      </select>
-    </div>
+    <>
+      <Select onChange={handleChange} title="loan asset">
+        {loanAssetOptions.map(({ symbol, address }) => {
+          return <option value={address} key={address}>{symbol}</option>
+        })}
+      </Select>
+    </>
   );
 }
