@@ -10,6 +10,7 @@ import SeizeCollateralCard from 'components/ticketPage/SeizeCollateralCard';
 import { jsonRpcERC721Contract } from 'lib/contracts';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { Fieldset } from 'components/Fieldset';
+import LoanDurationCard from './LoanDurationCard';
 
 const _provider = new ethers.providers.JsonRpcProvider(
   process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
@@ -29,15 +30,8 @@ export default function TicketPageBody({
   return (
     <ThreeColumn>
       <LeftColumn account={account} loanInfo={loanInfo} refresh={refresh} />
-      <CollateralMediaCard
-        collateralAddress={loanInfo.collateralContractAddress}
-        collateralTokenId={loanInfo.collateralTokenId}
-      />
-      <RightColumn
-        account={account}
-        loanInfo={loanInfo}
-        refresh={refresh}
-      />
+      <CenterColumn account={account} loanInfo={loanInfo} refresh={refresh} />
+      <RightColumn account={account} loanInfo={loanInfo} refresh={refresh} />
     </ThreeColumn>
   );
 }
@@ -49,9 +43,7 @@ function LeftColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
     const contract = jsonRpcERC721Contract(
       process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT,
     );
-    const o = await contract.ownerOf(
-      loanInfo.loanId,
-    );
+    const o = await contract.ownerOf(loanInfo.loanId);
     setOwner(o);
   }, [loanInfo.loanId]);
 
@@ -60,12 +52,15 @@ function LeftColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
   }, [getOwner]);
   return (
     <div id="left-elements-wrapper" className="float-left">
-
-      <BorrowTicket title="borrow ticket" tokenId={loanInfo.loanId} owner={owner} />
-      {account == null
-        || loanInfo.closed
-        || loanInfo.lastAccumulatedTimestamp.toString() == '0'
-        || owner != account ? (
+      <BorrowTicket
+        title="borrow ticket"
+        tokenId={loanInfo.loanId}
+        owner={owner}
+      />
+      {account == null ||
+      loanInfo.closed ||
+      loanInfo.lastAccumulatedTimestamp.toString() == '0' ||
+      owner != account ? (
         ''
       ) : (
         <RepayCard
@@ -74,14 +69,20 @@ function LeftColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
           repaySuccessCallback={refresh}
         />
       )}
-      <TicketHistory
-        loanInfo={loanInfo}
-      />
+      <TicketHistory loanInfo={loanInfo} />
     </div>
   );
 }
 
-function BorrowTicket({ title, tokenId, owner }: { title: string, tokenId: ethers.BigNumber, owner: string }) {
+function BorrowTicket({
+  title,
+  tokenId,
+  owner,
+}: {
+  title: string;
+  tokenId: ethers.BigNumber;
+  owner: string;
+}) {
   return (
     <Fieldset legend={title}>
       <PawnTicketArt tokenId={tokenId} />
@@ -90,9 +91,10 @@ function BorrowTicket({ title, tokenId, owner }: { title: string, tokenId: ether
         <br />
         <a
           target="_blank"
-          href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT}/${tokenId.toString()}`}
-          rel="noreferrer"
-        >
+          href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${
+            process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT
+          }/${tokenId.toString()}`}
+          rel="noreferrer">
           View on OpenSea
         </a>
       </p>
@@ -100,7 +102,15 @@ function BorrowTicket({ title, tokenId, owner }: { title: string, tokenId: ether
   );
 }
 
-function LendTicket({ title, tokenId, owner }: { title: string, tokenId: ethers.BigNumber, owner: string }) {
+function LendTicket({
+  title,
+  tokenId,
+  owner,
+}: {
+  title: string;
+  tokenId: ethers.BigNumber;
+  owner: string;
+}) {
   return (
     <Fieldset legend={title}>
       <PawnLoanArt tokenId={tokenId} />
@@ -109,13 +119,29 @@ function LendTicket({ title, tokenId, owner }: { title: string, tokenId: ethers.
         <br />
         <a
           target="_blank"
-          href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT}/${tokenId.toString()}`}
-          rel="noreferrer"
-        >
+          href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${
+            process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT
+          }/${tokenId.toString()}`}
+          rel="noreferrer">
           View on OpenSea
         </a>
       </p>
     </Fieldset>
+  );
+}
+
+function CenterColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
+  return (
+    <div>
+      <CollateralMediaCard
+        collateralAddress={loanInfo.collateralContractAddress}
+        collateralTokenId={loanInfo.collateralTokenId}
+      />
+      <LoanDurationCard
+        lastAccumulatedInterest={loanInfo.lastAccumulatedTimestamp}
+        loanDuration={loanInfo.durationSeconds}
+      />
+    </div>
   );
 }
 
@@ -137,9 +163,7 @@ function RightColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
     const contract = jsonRpcERC721Contract(
       process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT,
     );
-    const o = await contract.ownerOf(
-      loanInfo.loanId,
-    );
+    const o = await contract.ownerOf(loanInfo.loanId);
     setOwner(o);
   }, [loanInfo.lastAccumulatedTimestamp, loanInfo.loanId]);
 
@@ -162,15 +186,19 @@ function RightColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
       {loanInfo.lastAccumulatedTimestamp.eq(0) ? (
         ''
       ) : (
-        <LendTicket title="lend ticket" tokenId={loanInfo.loanId} owner={owner} />
+        <LendTicket
+          title="lend ticket"
+          tokenId={loanInfo.loanId}
+          owner={owner}
+        />
       )}
       {account == null || loanInfo.closed ? (
         ''
       ) : (
         <div>
-          {loanInfo.loanOwner != account
-            || timestamp == null
-            || timestamp < endSeconds ? (
+          {loanInfo.loanOwner != account ||
+          timestamp == null ||
+          timestamp < endSeconds ? (
             ''
           ) : (
             <SeizeCollateralCard

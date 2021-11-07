@@ -1,0 +1,22 @@
+.loan-duration-card {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.date-box {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 8px;
+}
+
+.date-number {
+  width: 100%;
+  text-align: center;
+  padding: 10px 0;
+  font-weight: bold;
+  background: white;
+  margin-bottom: 6px;
+}

@@ -61,36 +61,30 @@ function CollateralMediaCardLoaded({ contractName, contractAddress, nftInfo }) {
       </div>
       <div className="collateralDetails">
         <p>{contractName}</p>
-        <p id="collateralTitle">
-          {nftInfo.name}
-        </p>
+        <p id="collateralTitle">{nftInfo.name}</p>
         <p>
           <a
             target="_blank"
-            href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${contractAddress
-              }/${nftInfo.id.toString()}`}
-            rel="noreferrer"
-          >
+            href={`${
+              process.env.NEXT_PUBLIC_OPENSEA_URL
+            }/assets/${contractAddress}/${nftInfo.id.toString()}`}
+            rel="noreferrer">
             View on OpenSea
           </a>
         </p>
         <p>
           <a
             target="_blank"
-            href={`${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/token/${contractAddress
-              }?a=${nftInfo.id.toString()}`}
-            rel="noreferrer"
-          >
+            href={`${
+              process.env.NEXT_PUBLIC_ETHERSCAN_URL
+            }/token/${contractAddress}?a=${nftInfo.id.toString()}`}
+            rel="noreferrer">
             View on Etherscan
           </a>
         </p>
         <p>
           <b>Contract Address</b>
-          {contractAddress.slice(0, 7)}
-          {' '}
-          ...
-          {' '}
-          {contractAddress.slice(35, -1)}
+          {contractAddress.slice(0, 7)} ... {contractAddress.slice(35, -1)}
         </p>
         <p>
           <b>ID</b>
