@@ -51,23 +51,31 @@ export default function LoanDurationCard({
   );
 
   return (
-    <Fieldset legend="loan duration">
+    <Fieldset legend="loan duration" style={{ marginTop: '20px' }}>
       <div className="loan-duration-card">
         <div className="date-box">
           <div className="date-number">{days}</div>
-          <div>days</div>
+          <div>
+            <p>Days</p>
+          </div>
         </div>
         <div className="date-box">
           <div className="date-number">{hours}</div>
-          <div>hours</div>
+          <div>
+            <p>Hours</p>
+          </div>
         </div>
         <div className="date-box">
           <div className="date-number">{minutes}</div>
-          <div>minutes</div>
+          <div>
+            <p>Minutes</p>
+          </div>
         </div>
         <div className="date-box">
           <div className="date-number">{seconds}</div>
-          <div>seconds</div>
+          <div>
+            <p>Seconds</p>
+          </div>
         </div>
       </div>
     </Fieldset>
