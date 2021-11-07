@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import moment from 'moment';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Fieldset } from 'components/Fieldset';
 
 interface LoanDurationCardProps {
@@ -8,15 +8,34 @@ interface LoanDurationCardProps {
   loanDuration: ethers.BigNumber;
 }
 
-const getCurrentUnixTime = () => new Date().getTime() / 1000;
+const getCurrentUnixTime = (): ethers.BigNumber =>
+  ethers.BigNumber.from(Math.floor(new Date().getTime() / 1000));
 
-const getDaysHoursMinutesSeconds = (duration: moment.Duration) => {
+const computeInitialRemaining = (
+  lastAccumulatedInterest: ethers.BigNumber,
+  loanDuration: ethers.BigNumber,
+  now: ethers.BigNumber,
+): ethers.BigNumber => {
+  if (lastAccumulatedInterest.add(loanDuration).lt(now))
+    return ethers.BigNumber.from(0);
+  return lastAccumulatedInterest.add(loanDuration).sub(now);
+};
+
+interface LoanCountdown {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+}
+
+const getDaysHoursMinutesSeconds = (
+  duration: moment.Duration,
+): LoanCountdown => {
   const days = Math.floor(duration.asDays());
 
   const hours = Math.floor(
     duration.subtract(moment.duration(days, 'days')).asHours(),
   );
-
   const minutes = Math.floor(
     duration.subtract(moment.duration(hours, 'hours')).asMinutes(),
   );
@@ -31,23 +50,35 @@ export default function LoanDurationCard({
   loanDuration,
 }: LoanDurationCardProps) {
   const [remainingSeconds, setRemainingSeconds] = useState(
-    Math.round(
-      lastAccumulatedInterest.add(loanDuration).toNumber() -
-        getCurrentUnixTime(),
+    computeInitialRemaining(
+      lastAccumulatedInterest,
+      loanDuration,
+      getCurrentUnixTime(),
     ),
   );
 
-  const refreshTimestamp = useCallback(() => {
-    setRemainingSeconds((prev) => prev - 1);
-  }, []);
+  const refreshTimestamp = useCallback(
+    (intervalId) => {
+      if (remainingSeconds.lte(ethers.BigNumber.from(0))) {
+        clearInterval(intervalId);
+        return;
+      }
+      setRemainingSeconds((prev) => prev.sub(1));
+    },
+    [remainingSeconds],
+  );
 
   useEffect(() => {
-    const timeOutId = setInterval(() => refreshTimestamp(), 1000);
+    const timeOutId = setInterval(() => refreshTimestamp(timeOutId), 1000);
     return () => clearInterval(timeOutId);
   }, [refreshTimestamp]);
 
-  const { days, hours, minutes, seconds } = getDaysHoursMinutesSeconds(
-    moment.duration(remainingSeconds, 'seconds'),
+  const { days, hours, minutes, seconds } = useMemo(
+    () =>
+      getDaysHoursMinutesSeconds(
+        moment.duration(remainingSeconds.toNumber(), 'seconds'),
+      ),
+    [remainingSeconds],
   );
 
   return (
