@@ -12,7 +12,7 @@ import {
   web3Erc721Contract,
   web3LoanFacilitator,
 } from 'lib/contracts';
-import TransactionButton from 'components/ticketPage/TransactionButton';
+import { TransactionButton } from 'components/ticketPage/TransactionButton';
 import { FormWrapper } from 'components/layouts/FormWrapper';
 
 export type CreateTicketFormProps = {

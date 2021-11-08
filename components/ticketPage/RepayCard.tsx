@@ -1,24 +1,19 @@
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
-import { LoanInfo } from '../../lib/LoanInfoType';
+import { LoanInfo } from 'lib/LoanInfoType';
 import {
   web3LoanFacilitator,
   jsonRpcLoanFacilitator,
   jsonRpcERC20Contract,
-  web3Erc20Contract,
-} from '../../lib/contracts';
+} from 'lib/contracts';
 import AllowButton from './underwriteCard/AllowButton';
-import TransactionButton from './TransactionButton';
+import { TransactionButton } from 'components/ticketPage/TransactionButton';
 
 interface RepayCardProps {
   account: string;
   loanInfo: LoanInfo;
   repaySuccessCallback: () => void;
 }
-
-const jsonRpcProvider = new ethers.providers.JsonRpcProvider(
-  process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
-);
 
 export default function RepayCard({
   account,
@@ -55,7 +50,6 @@ export default function RepayCard({
     <fieldset className="standard-fieldset">
       <legend>repay</legend>
       <p>
-        {' '}
         The current cost to repay this loan is
         {' '}
         {ethers.utils.formatUnits(
@@ -96,7 +90,7 @@ interface RepayButtonProps {
   disabled: boolean
 }
 
-function RepayButton({ loanId, repaySuccessCallback, disabled }) {
+function RepayButton({ loanId, repaySuccessCallback, disabled }: RepayButtonProps) {
   const [txHash, setTxHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
 

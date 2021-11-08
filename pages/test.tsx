@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { ethers } from 'ethers';
 import { PawnShopHeader } from 'components/PawnShopHeader';
 import { MockDAI__factory, MockPUNK__factory } from 'abis/types';
-import TransactionButton from 'components/ticketPage/TransactionButton';
+import { TransactionButton } from 'components/ticketPage/TransactionButton';
 import { PageWrapper } from 'components/layouts/PageWrapper';
 import { Fieldset } from 'components/Fieldset';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';

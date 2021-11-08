@@ -1,4 +1,6 @@
-interface TransactionButtonProps{
+import React, { useCallback } from 'react';
+
+interface TransactionButtonProps {
   text: string,
   onClick: () => void,
   txHash: string,
@@ -7,7 +9,7 @@ interface TransactionButtonProps{
   textSize?: string
 }
 
-export default function TransactionButton({
+export function TransactionButton({
   text,
   onClick,
   txHash,
@@ -15,20 +17,19 @@ export default function TransactionButton({
   disabled = false,
   textSize = 'large',
 }: TransactionButtonProps) {
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     if (txHash != '' || disabled) {
       return;
     }
     onClick();
-  };
+  }, [disabled, txHash, onClick]);
 
   return (
     <div
-      className={`${
-        txHash == ''
-          ? `button-1 ${disabled ? 'disabled-button' : ''}`
-          : 'clicked-button'
-      }${textSize != 'large' ? ' small-text' : ''}`}
+      className={`${txHash == ''
+        ? `button-1 ${disabled ? 'disabled-button' : ''}`
+        : 'clicked-button'
+        }${textSize != 'large' ? ' small-text' : ''}`}
       onClick={handleClick}
     >
       <p className="inter">
