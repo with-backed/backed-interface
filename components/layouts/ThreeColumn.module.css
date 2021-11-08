@@ -1,7 +1,7 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
+  gap: var(--gap);
   width: 100%;
 }
 
@@ -9,7 +9,5 @@
   .grid {
     /* On mobile devices we only want one column. */
     grid-template-columns: 1fr;
-    /* On narrower viewports we shouldn't take up too much space. */
-    gap: 1rem;
   }
 }

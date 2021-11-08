@@ -19,6 +19,7 @@
   --fieldset-padding: 24px;
   --serif: 'Times New Roman', Times, serif;
   --sans: Inter, Helvetica, sans-serif;
+  --gap: 1.25rem;
 }
 
 html,
