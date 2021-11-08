@@ -45,7 +45,7 @@ const getDaysHoursMinutesSeconds = (
   return { days, hours, minutes, seconds };
 };
 
-export default function LoanDurationCard({
+export function LoanDurationCard({
   lastAccumulatedInterest,
   loanDuration,
 }: LoanDurationCardProps) {

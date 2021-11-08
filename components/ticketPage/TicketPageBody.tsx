@@ -10,7 +10,7 @@ import SeizeCollateralCard from 'components/ticketPage/SeizeCollateralCard';
 import { jsonRpcERC721Contract } from 'lib/contracts';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { Fieldset } from 'components/Fieldset';
-import LoanDurationCard from './LoanDurationCard';
+import { LoanDurationCard } from './LoanDurationCard';
 
 const _provider = new ethers.providers.JsonRpcProvider(
   process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
