@@ -42,7 +42,7 @@ export default function InterestRateInput({ setInterestRate }) {
   }, [setInterestRate]);
 
   const message = useMemo(() => {
-    if (actualRate.toString() === '0') {
+    if (actualRate.eq(0)) {
       return null;
     }
 
