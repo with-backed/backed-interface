@@ -10,7 +10,8 @@
 }
 
 .button:disabled {
-  color: var(--darkest-gray);
-  background-color: var(--lightest-grey);
+  color: var(--darkest-grey);
+  background-color: var(--light-grey);
+  border: 1px solid var(--darkest-grey);
   cursor: not-allowed;
 }
