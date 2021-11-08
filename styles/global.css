@@ -1,11 +1,13 @@
 :root {
   --beige: #f4eae8;
   --black: #000000;
+  --darkest-grey: #9e9e9e;
   --dark-grey: #dddddd;
   --light-grey: #eeeeee;
   --lightest-grey: #f7f7f7;
   --primary-blue: #0000ee;
   --primary-purple: #75187c;
+  --secondary-purple: rgba(117, 24, 124, 0.2);
   --red: #d12424;
   --white: #ffffff;
   --yellow: #fffed1;
@@ -287,42 +289,6 @@ select::after {
   cursor: pointer;
   margin-bottom: 15px;
   font-family: Inter, Helvetica;
- }
-
- .clicked-button{
-  background-color: rgba(117, 24, 124, 0.2);
-  border-radius: 6px;
-  width: 330px;
-  height: 70px;
-  margin-left: 20px;
-  text-align: center;
-  padding: 10px;
-  color: rgba(117, 24, 124, 1);
-  font-family: 'Times New Roman', Times, serif;
-  font-weight: normal;
-  cursor: pointer;
-  margin-bottom: 15px;
- }
- .clicked-button>p{
-   margin: 0px;
-   font-family: Inter, Helvetica;
- }
-
- .clicked-button>p>a{
-    /* text-decoration: none; */
-    color: rgba(117, 24, 124, 1);
-    font-weight: normal;
-    font-family: 'Times New Roman', Times, serif;
- }
-
- .clicked-button>.times{
-  font-family: 'Times New Roman', Times, serif;
- }
-
- .disabled-button{
-  color: rgba(158, 158, 158, 1);
-  background-color:rgba(238, 238, 238, 1);
-  cursor: text;
  }
 
  #header-connect-address-wrapper{

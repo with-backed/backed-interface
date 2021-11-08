@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { ethers } from 'ethers';
-import TransactionButton from '../TransactionButton';
-import { jsonRpcERC20Contract, web3Erc20Contract } from '../../../lib/contracts';
+import { TransactionButton } from 'components/ticketPage/TransactionButton';
+import { jsonRpcERC20Contract, web3Erc20Contract } from 'lib/contracts';
 
-interface AllowButtonProps{
+interface AllowButtonProps {
   contractAddress: string
   account: string
   symbol: string
-  callbackk: () => void
+  callback: () => void
 }
 
 export default function AllowButton({
@@ -15,7 +15,7 @@ export default function AllowButton({
   account,
   symbol,
   callback,
-}) {
+}: AllowButtonProps) {
   const [txHash, setTxHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
 

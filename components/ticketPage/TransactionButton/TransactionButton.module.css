@@ -1,0 +1,13 @@
+.submitted {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--button-padding);
+  width: 100%;
+  border: none;
+  border-radius: var(--button-radius);
+  background-color: var(--secondary-purple);
+  color: var(--primary-purple);
+  line-height: 1.6;
+}

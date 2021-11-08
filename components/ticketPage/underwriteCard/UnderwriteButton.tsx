@@ -2,9 +2,9 @@ import { useCallback, useMemo, useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { jsonRpcLoanFacilitator, web3LoanFacilitator } from 'lib/contracts';
 import { LoanInfo } from 'lib/LoanInfoType';
-import TransactionButton from 'components/ticketPage/TransactionButton';
+import { TransactionButton } from 'components/ticketPage/TransactionButton';
 
-interface UnderwriteButtonProps{
+interface UnderwriteButtonProps {
   loanInfo: LoanInfo;
   account: string;
   allowance: ethers.BigNumber;
@@ -22,7 +22,7 @@ export default function UnderwriteButton({
   loanAmount,
   duration,
   loanUpdatedCallback,
-} : UnderwriteButtonProps) {
+}: UnderwriteButtonProps) {
   const [has10PercentImprovement, setHas10PercentImprovement] = useState(false);
   const [transactionHash, setTransactionHash] = useState('');
   const [transactionPending, setTransactionPending] = useState(false);
@@ -98,17 +98,15 @@ export default function UnderwriteButton({
         isPending={transactionPending}
       />
       {isFilled()
-      && loanInfo.lastAccumulatedTimestamp.toString() != '0'
-      && !has10PercentImprovement ? (
+        && loanInfo.lastAccumulatedTimestamp.toString() != '0'
+        && !has10PercentImprovement ? (
         <p>
-          {' '}
           Replacing exisiting underwriter requires improving at least one loan
           term by at least 10%
-          {' '}
         </p>
-        ) : (
-          ''
-        )}
+      ) : (
+        null
+      )}
     </div>
   );
 }
