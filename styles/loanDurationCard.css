@@ -4,6 +4,10 @@
   justify-content: space-between;
 }
 
+.loan-duration-card p {
+  font-size: 16px;
+}
+
 .date-box {
   width: 100%;
   display: flex;
@@ -16,7 +20,10 @@
   width: 100%;
   text-align: center;
   padding: 10px 0;
-  font-weight: bold;
+  font-weight: 600;
+  font-style: normal;
+  font-family: Inter, Helvetica;
+  font-size: 20px;
   background: white;
   margin-bottom: 6px;
 }
