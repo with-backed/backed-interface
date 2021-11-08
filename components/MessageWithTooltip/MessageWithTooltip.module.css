@@ -1,0 +1,26 @@
+.wrapper {
+  display: flex;
+  align-items: baseline;
+  font-family: var(--serif);
+  gap: 0.5rem;
+}
+
+.tooltip-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: thin var(--dark-grey) solid;
+  background-color: var(--light-grey);
+  font-weight: bold;
+  border-radius: 1rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  cursor: pointer;
+}
+
+.tooltip {
+  border: thin var(--dark-grey) solid;
+  background-color: var(--lightest-grey);
+  padding: var(--button-padding);
+  border-radius: var(--border-radius);
+}
