@@ -36,6 +36,13 @@ export const TransactionButtonStyles = () => {
         txHash={txHash}
         isPending={true}
       />
+      <h2>Success</h2>
+      <TransactionButton
+        text="Click me"
+        onClick={handleClick}
+        txHash={txHash}
+        isPending={false}
+      />
     </>
   );
 }

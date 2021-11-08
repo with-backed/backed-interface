@@ -8,3 +8,9 @@
   line-height: 1.6;
   cursor: pointer;
 }
+
+.button:disabled {
+  color: var(--darkest-gray);
+  background-color: var(--lightest-grey);
+  cursor: not-allowed;
+}
