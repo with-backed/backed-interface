@@ -1,6 +1,5 @@
 import { ethers } from 'ethers';
 import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
-import { Popup, Icon } from 'semantic-ui-react';
 import { Input } from 'components/Input';
 import { formattedAnnualRate } from 'lib/interest';
 import { MessageWithTooltip } from 'components/MessageWithTooltip';
