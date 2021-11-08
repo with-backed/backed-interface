@@ -1,8 +1,9 @@
-export default function Explainer({ account }) {
+import React from 'react';
+
+export default function Explainer() {
   return (
-    <div id="create-ticket-explainer">
+    <>
       <p>
-        {' '}
         Mint your loan! This transaction will (1) transfer your NFT to
         the pawn shop, (2) set your minimum loan terms to offer to underwriters,
         and (3) transfer to you a Borrow Ticket NFT.
@@ -21,6 +22,6 @@ export default function Explainer({ account }) {
         do not pay the loan back by the end of the loan term, the underwriter
         can seize your collateral.
       </p>
-    </div>
+    </>
   );
 }
