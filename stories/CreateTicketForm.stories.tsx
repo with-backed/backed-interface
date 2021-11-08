@@ -1,18 +1,18 @@
 import React from 'react';
-import CreateTicketForm from 'components/createPage/CreateTicketForm';
+import { CreateTicketForm, CreateTicketFormProps } from 'components/createPage/CreateTicketForm';
 
 export default {
   title: 'createPage/CreateTicketForm',
   component: CreateTicketForm,
 };
 
-const props = {
-  account: null,
-  collateralAddress: null,
-  setCollateralAddress: null,
-  collateralTokenID: null,
-  setCollateralTokenID: null,
-  setIsValidCollateral: null,
+const props: CreateTicketFormProps = {
+  account: undefined,
+  collateralAddress: '',
+  setCollateralAddress: undefined,
+  collateralTokenID: undefined,
+  setCollateralTokenID: undefined,
+  setIsValidCollateral: undefined,
 };
 
 export const Form = () => <CreateTicketForm {...props} />;

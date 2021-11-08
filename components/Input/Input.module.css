@@ -8,6 +8,7 @@
   height: 40px;
   width: 100%;
   border: 2px solid var(--primary-blue);
+  background-color: var(--white);
 }
 
 .errorInput {
@@ -16,7 +17,6 @@
 }
 
 .label {
-  margin-bottom: 5px;
   font-family: Helvetica, Arial, sans-serif;
   font-size: 15px;
   font-weight: 700;

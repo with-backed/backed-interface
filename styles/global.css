@@ -276,18 +276,6 @@ select::after {
   padding-right: 20px;
 }
 
- .input-wrapper{
-  margin-left: 20px;
-  width: 330px;
-  margin-bottom: 15px;
- }
-
- .input-wrapper>h4{
-   margin-bottom: 5px;
-   font-family: Helvetica, Arial, sans-serif;
-   font-size: 15px;
- }
-
  .button-1{
   background-color: #0000EE;
   border-radius: 6px;
