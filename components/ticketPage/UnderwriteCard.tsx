@@ -103,9 +103,7 @@ export function UnderwriteCard({
           minDurationSeconds={loanInfo.durationSeconds}
           setDurationSeconds={setDuration}
         />
-        {!needsAllowance ? (
-          ''
-        ) : (
+        {needsAllowance && (
           <AllowButton
             contractAddress={loanInfo.loanAssetContractAddress}
             account={account}
