@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tooltip, TooltipReference, useTooltipState } from "reakit/Tooltip";
+import { Tooltip, TooltipArrow, TooltipReference, useTooltipState } from "reakit/Tooltip";
 import styles from './MessageWithTooltip.module.css';
 
 function TooltipIcon() {

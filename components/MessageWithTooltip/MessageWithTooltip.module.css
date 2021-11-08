@@ -20,7 +20,8 @@
 
 .tooltip {
   border: thin var(--dark-grey) solid;
-  background-color: var(--lightest-grey);
+  background-color: var(--white);
   padding: var(--button-padding);
   border-radius: var(--border-radius);
+  max-width: 30em;
 }
