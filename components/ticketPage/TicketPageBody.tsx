@@ -11,6 +11,7 @@ import { jsonRpcERC721Contract } from 'lib/contracts';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { Fieldset } from 'components/Fieldset';
 import { LoanDurationCard } from './LoanDurationCard/LoanDurationCard';
+import { Column } from 'components/Column';
 
 const _provider = new ethers.providers.JsonRpcProvider(
   process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
@@ -51,16 +52,16 @@ function LeftColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
     getOwner();
   }, [getOwner]);
   return (
-    <div id="left-elements-wrapper" className="float-left">
+    <Column>
       <BorrowTicket
         title="borrow ticket"
         tokenId={loanInfo.loanId}
         owner={owner}
       />
       {account == null ||
-      loanInfo.closed ||
-      loanInfo.lastAccumulatedTimestamp.toString() == '0' ||
-      owner != account ? (
+        loanInfo.closed ||
+        loanInfo.lastAccumulatedTimestamp.toString() == '0' ||
+        owner != account ? (
         ''
       ) : (
         <RepayCard
@@ -70,7 +71,7 @@ function LeftColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
         />
       )}
       <TicketHistory loanInfo={loanInfo} />
-    </div>
+    </Column>
   );
 }
 
@@ -91,9 +92,8 @@ function BorrowTicket({
         <br />
         <a
           target="_blank"
-          href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${
-            process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT
-          }/${tokenId.toString()}`}
+          href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT
+            }/${tokenId.toString()}`}
           rel="noreferrer">
           View on OpenSea
         </a>
@@ -119,9 +119,8 @@ function LendTicket({
         <br />
         <a
           target="_blank"
-          href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${
-            process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT
-          }/${tokenId.toString()}`}
+          href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT
+            }/${tokenId.toString()}`}
           rel="noreferrer">
           View on OpenSea
         </a>
@@ -130,9 +129,9 @@ function LendTicket({
   );
 }
 
-function CenterColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
+function CenterColumn({ loanInfo }: TicketPageBodyProps) {
   return (
-    <div>
+    <Column>
       <CollateralMediaCard
         collateralAddress={loanInfo.collateralContractAddress}
         collateralTokenId={loanInfo.collateralTokenId}
@@ -141,7 +140,7 @@ function CenterColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
         lastAccumulatedInterest={loanInfo.lastAccumulatedTimestamp}
         loanDuration={loanInfo.durationSeconds}
       />
-    </div>
+    </Column>
   );
 }
 
@@ -182,7 +181,7 @@ function RightColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
   }, [getOwner, refreshTimestamp]);
 
   return (
-    <div id="right-elements-wrapper" className="float-left">
+    <Column>
       {loanInfo.lastAccumulatedTimestamp.eq(0) ? (
         ''
       ) : (
@@ -197,8 +196,8 @@ function RightColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
       ) : (
         <div>
           {loanInfo.loanOwner != account ||
-          timestamp == null ||
-          timestamp < endSeconds ? (
+            timestamp == null ||
+            timestamp < endSeconds ? (
             ''
           ) : (
             <SeizeCollateralCard
@@ -214,6 +213,6 @@ function RightColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
           />
         </div>
       )}
-    </div>
+    </Column>
   );
 }
