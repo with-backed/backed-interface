@@ -2,6 +2,7 @@ import { ethers } from 'ethers';
 import moment from 'moment';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Fieldset } from 'components/Fieldset';
+import styles from './LoanDurationCard.module.css';
 
 interface LoanDurationCardProps {
   lastAccumulatedInterest: ethers.BigNumber;
@@ -83,27 +84,27 @@ export function LoanDurationCard({
 
   return (
     <Fieldset legend="loan duration" style={{ marginTop: '20px' }}>
-      <div className="loan-duration-card">
-        <div className="date-box">
-          <div className="date-number">{days}</div>
+      <div className={styles.loanDurationCard}>
+        <div className={styles.dateBox}>
+          <div className={styles.dateNumber}>{days}</div>
           <div>
             <p>Days</p>
           </div>
         </div>
-        <div className="date-box">
-          <div className="date-number">{hours}</div>
+        <div className={styles.dateBox}>
+          <div className={styles.dateNumber}>{hours}</div>
           <div>
             <p>Hours</p>
           </div>
         </div>
-        <div className="date-box">
-          <div className="date-number">{minutes}</div>
+        <div className={styles.dateBox}>
+          <div className={styles.dateNumber}>{minutes}</div>
           <div>
             <p>Minutes</p>
           </div>
         </div>
-        <div className="date-box">
-          <div className="date-number">{seconds}</div>
+        <div className={styles.dateBox}>
+          <div className={styles.dateNumber}>{seconds}</div>
           <div>
             <p>Seconds</p>
           </div>

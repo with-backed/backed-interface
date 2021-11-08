@@ -1,14 +1,14 @@
-.loan-duration-card {
+.loanDurationCard {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 
-.loan-duration-card p {
+.loanDurationCard p {
   font-size: 16px;
 }
 
-.date-box {
+.dateBox {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -16,7 +16,7 @@
   margin: 8px;
 }
 
-.date-number {
+.dateNumber {
   width: 100%;
   text-align: center;
   padding: 10px 0;
