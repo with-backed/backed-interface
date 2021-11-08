@@ -16,6 +16,7 @@
   --button-padding: 10px;
   /* We set this globally on html and body, may also need it in other places */
   --line-height: 1.6;
+  --fieldset-padding: 24px;
 }
 
 html,

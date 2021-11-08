@@ -3,4 +3,5 @@
   background-color: var(--lightest-grey);
   border-radius: var(--border-radius);
   width: 100%;
+  padding: 0 var(--fieldset-padding) var(--fieldset-padding);
 }
