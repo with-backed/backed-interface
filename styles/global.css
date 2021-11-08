@@ -244,18 +244,6 @@ a{
    float: left;
  }
 
- .standard-fieldset{
-  border: none;
-  background-color: #F7F7F7;
-  border-radius: 10px;;
-  margin: 0px 0px 40px 0px;
-  width: 400px;
- }
-
- .standard-fieldset>p{
-   padding: 20px;
- }
-
  legend{
    font-family: 'Inter', sans-serif;
  }

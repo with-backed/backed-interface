@@ -2,15 +2,15 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import CollateralMediaCard from 'components/ticketPage/CollateralMediaCard';
 import { PawnLoanArt, PawnTicketArt } from 'components/ticketPage/PawnArt';
-import UnderwriteCard from 'components/ticketPage/UnderwriteCard';
+import { UnderwriteCard } from 'components/ticketPage/UnderwriteCard';
 import { LoanInfo } from 'lib/LoanInfoType';
-import RepayCard from 'components/ticketPage/RepayCard';
+import { RepayCard } from 'components/ticketPage/RepayCard';
 import TicketHistory from 'components/ticketPage/TicketHistory';
 import SeizeCollateralCard from 'components/ticketPage/SeizeCollateralCard';
 import { jsonRpcERC721Contract } from 'lib/contracts';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { Fieldset } from 'components/Fieldset';
-import { LoanDurationCard } from './LoanDurationCard/LoanDurationCard';
+import { LoanDurationCard } from 'components/ticketPage/LoanDurationCard/LoanDurationCard';
 import { Column } from 'components/Column';
 
 const _provider = new ethers.providers.JsonRpcProvider(
@@ -182,23 +182,19 @@ function RightColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
 
   return (
     <Column>
-      {loanInfo.lastAccumulatedTimestamp.eq(0) ? (
-        ''
-      ) : (
+      {!loanInfo.lastAccumulatedTimestamp.eq(0) && (
         <LendTicket
           title="lend ticket"
           tokenId={loanInfo.loanId}
           owner={owner}
         />
       )}
-      {account == null || loanInfo.closed ? (
-        ''
-      ) : (
+      {Boolean(account) && !loanInfo.closed && (
         <div>
           {loanInfo.loanOwner != account ||
             timestamp == null ||
             timestamp < endSeconds ? (
-            ''
+            null
           ) : (
             <SeizeCollateralCard
               account={account}

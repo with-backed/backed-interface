@@ -7,14 +7,16 @@ import DurationInput from 'components/ticketPage/underwriteCard/DurationInput';
 import UnderwriteButton from 'components/ticketPage/underwriteCard/UnderwriteButton';
 import AllowButton from 'components/ticketPage/underwriteCard/AllowButton';
 import { LoanInfo } from 'lib/LoanInfoType';
+import { Fieldset } from 'components/Fieldset';
+import { FormWrapper } from 'components/layouts/FormWrapper';
 
-interface UnderwriteCardProps{
+interface UnderwriteCardProps {
   account: string
   loanInfo: LoanInfo
   loanUpdatedCallback: () => void
 }
 
-export default function UnderwriteCard({
+export function UnderwriteCard({
   account,
   loanInfo,
   loanUpdatedCallback,
@@ -60,7 +62,7 @@ export default function UnderwriteCard({
 
   useEffect(() => {
     setNeedsAllowance(allowanceValue.lt(loanAmount));
-  }, [ allowanceValue, loanAmount]);
+  }, [allowanceValue, loanAmount]);
 
   const explainer = () => {
     if (loanInfo.lastAccumulatedTimestamp.eq(0)) {
@@ -78,50 +80,49 @@ export default function UnderwriteCard({
   };
 
   return (
-    <fieldset className="standard-fieldset" id="underwrite-card">
-      <legend>lend</legend>
+    <Fieldset legend="lend">
       <p>
-        {' '}
         {explainer()}
-        {' '}
       </p>
       <p id="collateral-asset-balance">
         {`You have ${loanAssetBalance} ${loanInfo.loanAssetSymbol}`}
       </p>
-      <LoanAmountInput
-        accountBalance={loanAssetBalance}
-        minLoanAmount={loanInfo.loanAmount}
-        decimals={loanInfo.loanAssetDecimals}
-        loanAssetSymbol={loanInfo.loanAssetSymbol}
-        setLoanAmount={setLoanAmount}
-      />
-      <InterestRateInput
-        maxPerSecondRate={loanInfo.perSecondInterestRate}
-        setInterestRate={setInterestRate}
-      />
-      <DurationInput
-        minDurationSeconds={loanInfo.durationSeconds}
-        setDurationSeconds={setDuration}
-      />
-      {!needsAllowance ? (
-        ''
-      ) : (
-        <AllowButton
-          contractAddress={loanInfo.loanAssetContractAddress}
-          account={account}
-          symbol={loanInfo.loanAssetSymbol}
-          callback={() => setAllowance()}
+      <FormWrapper>
+        <LoanAmountInput
+          accountBalance={loanAssetBalance}
+          minLoanAmount={loanInfo.loanAmount}
+          decimals={loanInfo.loanAssetDecimals}
+          loanAssetSymbol={loanInfo.loanAssetSymbol}
+          setLoanAmount={setLoanAmount}
         />
-      )}
-      <UnderwriteButton
-        loanInfo={loanInfo}
-        account={account}
-        allowance={allowanceValue}
-        interestRate={interestRate}
-        loanAmount={loanAmount}
-        duration={duration}
-        loanUpdatedCallback={loanUpdatedCallback}
-      />
-    </fieldset>
+        <InterestRateInput
+          maxPerSecondRate={loanInfo.perSecondInterestRate}
+          setInterestRate={setInterestRate}
+        />
+        <DurationInput
+          minDurationSeconds={loanInfo.durationSeconds}
+          setDurationSeconds={setDuration}
+        />
+        {!needsAllowance ? (
+          ''
+        ) : (
+          <AllowButton
+            contractAddress={loanInfo.loanAssetContractAddress}
+            account={account}
+            symbol={loanInfo.loanAssetSymbol}
+            callback={() => setAllowance()}
+          />
+        )}
+        <UnderwriteButton
+          loanInfo={loanInfo}
+          account={account}
+          allowance={allowanceValue}
+          interestRate={interestRate}
+          loanAmount={loanAmount}
+          duration={duration}
+          loanUpdatedCallback={loanUpdatedCallback}
+        />
+      </FormWrapper>
+    </Fieldset>
   );
 }
