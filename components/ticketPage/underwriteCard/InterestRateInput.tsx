@@ -1,8 +1,9 @@
 import { ethers } from 'ethers';
-import React, { ChangeEvent, useCallback, useState } from 'react';
+import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { Popup, Icon } from 'semantic-ui-react';
 import { Input } from 'components/Input';
 import { formattedAnnualRate } from 'lib/interest';
+import { MessageWithTooltip } from 'components/MessageWithTooltip';
 
 const SECONDS_IN_YEAR = 31_536_000;
 const INTEREST_RATE_PERCENT_DECIMALS = 8;
@@ -56,6 +57,25 @@ export default function InterestRateInput({
     setInterestRate(interestRatePerSecond);
   }, [maxInterestRate, maxPerSecondRate, setInterestRate]);
 
+  const message = useMemo(() => {
+    if (actualRate.eq(0)) {
+      return null;
+    }
+
+    return (
+      <MessageWithTooltip
+        message={`actual annual rate: ${formattedAnnualRate(actualRate)} % APR`}
+        content={
+          <p>
+            The pawn shop contract stores the interest rate as interest per second.
+            When the rate is stored per second on submit and converted back to annual
+            for display, it will vary slightly from what you input.
+          </p>
+        }
+      />
+    )
+  }, [actualRate]);
+
   return (
     <div>
       <Input
@@ -64,32 +84,8 @@ export default function InterestRateInput({
         placeholder={`Max: ${formattedAnnualRate(maxPerSecondRate)}%`}
         error={error}
         onChange={handleChange}
+        message={message}
       />
-      {actualRate.eq(0) ? (
-        ''
-      ) : (
-        <div id="interest-rate-explainer">
-          <p className="float-left">
-            {' '}
-            actual annual rate:
-            {formattedAnnualRate(actualRate)}
-            % APR
-            {' '}
-          </p>
-          <Popup
-            className="float-left times"
-            content="The pawn shop contract stores the interest rate as interest per second. When the rate is stored per second on submit and converted back to annual for display, it will vary slightly from what you input."
-            trigger={(
-              <Icon
-                id="interest-rate-explainer-icon"
-                size="small"
-                circular
-                name="question"
-              />
-            )}
-          />
-        </div>
-      )}
     </div>
   );
 }
