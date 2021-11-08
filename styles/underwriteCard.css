@@ -31,16 +31,3 @@
 #allowance-button-wrapper{
     margin-bottom: 15px;
 }
-
-#interest-rate-explainer{
-    padding-left: 20px;
-    height: 50px;
-}
-
-#interest-rate-explainer>p{
-    margin-top: 3px;
-}
-
-#interest-rate-explainer-icon{
-    margin-left: 5px;
-}

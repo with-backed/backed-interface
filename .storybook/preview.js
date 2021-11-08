@@ -3,7 +3,6 @@ import '../styles/global.css';
 import '../styles/ticketPage.css';
 import '../styles/collateralCard.css';
 import '../styles/underwriteCard.css';
-import '../styles/createPage.css';
 
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },

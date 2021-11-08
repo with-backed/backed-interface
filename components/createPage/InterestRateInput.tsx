@@ -1,8 +1,8 @@
 import { ethers } from 'ethers';
-import React, { ChangeEvent, useCallback, useState } from 'react';
-import { Popup, Icon } from 'semantic-ui-react';
+import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { Input } from 'components/Input';
 import { formattedAnnualRate } from 'lib/interest';
+import { MessageWithTooltip } from 'components/MessageWithTooltip';
 
 const SECONDS_IN_YEAR = 31_536_000;
 const INTEREST_RATE_PERCENT_DECIMALS = 8;
@@ -41,36 +41,33 @@ export default function InterestRateInput({ setInterestRate }) {
     setInterestRate(interestRatePerSecond);
   }, [setInterestRate]);
 
-  return (
-    <div>
-      <Input
-        type="number"
-        title="interest rate (max)"
-        placeholder="interest rate"
-        error={error}
-        onChange={handleChange}
-      />
-      {actualRate.toString() === '0' ? (
-        ''
-      ) : (
-        <div id="interest-rate-explainer">
-          <p className="float-left">
-            actual annual rate: {formattedAnnualRate(actualRate)}% APR
+  const message = useMemo(() => {
+    if (actualRate.eq(0)) {
+      return null;
+    }
+
+    return (
+      <MessageWithTooltip
+        message={`actual annual rate: ${formattedAnnualRate(actualRate)}% APR`}
+        content={
+          <p>
+            The pawn shop contract stores the interest rate as interest per second.
+            When the rate is stored per second on submit and converted back to annual
+            for display, it will vary slightly from what you input.
           </p>
-          <Popup
-            className="float-left times"
-            content="The pawn shop contract stores the interest rate as interest per second. When the rate is stored per second on submit and converted back to annual for display, it will vary slightly from what you input."
-            trigger={(
-              <Icon
-                id="interest-rate-explainer-icon"
-                size="small"
-                circular
-                name="question"
-              />
-            )}
-          />
-        </div>
-      )}
-    </div>
+        }
+      />
+    );
+  }, [actualRate]);
+
+  return (
+    <Input
+      type="number"
+      title="interest rate (max)"
+      placeholder="interest rate"
+      error={error}
+      onChange={handleChange}
+      message={message}
+    />
   );
 }

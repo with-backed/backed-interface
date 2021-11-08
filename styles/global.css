@@ -17,6 +17,8 @@
   /* We set this globally on html and body, may also need it in other places */
   --line-height: 1.6;
   --fieldset-padding: 24px;
+  --serif: 'Times New Roman', Times, serif;
+  --sans: Inter, Helvetica, sans-serif;
 }
 
 html,
