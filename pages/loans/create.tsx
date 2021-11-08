@@ -58,7 +58,7 @@ export default function Create({ }) {
         <Fieldset
           legend="explainer"
         >
-          <Explainer account={account} />
+          <Explainer />
         </Fieldset>
       </ThreeColumn>
     </PageWrapper>
