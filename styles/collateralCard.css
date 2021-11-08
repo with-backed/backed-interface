@@ -1,15 +1,3 @@
-.collateral_card{
-    min-height: 518px;
-    width: 400px;
-    margin-left: 25px;
-    margin-top: 0px;
-    /* background: radial-gradient(76.18% 76.18% at 26.9% 23.82%, hsl(var(--collateral-color),90%,90%) 0%, hsl(var(--loan-assett-color),90%,90%) 100%); */
-}
-
-.collateral_card>legend{
-    font-size: 18px;
-}
-
 .nfte__media {
     margin: auto;
     aspect-ratio: 1/1;
