@@ -32,7 +32,7 @@ export const Ticket: FunctionComponent<TicketProps> = ({ ticketID }) => {
         message={`pawn loan #${ticketID}`}
       />
       {!loanInfo ? (
-        <Dimmer active={loanInfo === null} inverted>
+        <Dimmer active={!loanInfo} inverted>
           <Loader inverted content="Loading" />
         </Dimmer>
       ) : (
