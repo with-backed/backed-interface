@@ -76,7 +76,7 @@ const EventDetailList: FunctionComponent<Pick<ParsedEventProps, "event">> = ({
   );
 }
 
-function CreateLoanEvent({ event, loanInfo: { loanAssetDecimals } }: ParsedEventProps) {
+function CreateLoanEvent({ event, loanInfo: { loanAssetDecimals, loanAssetSymbol } }: ParsedEventProps) {
   const { maxInterestRate, minDurationSeconds, minLoanAmount, minter } = event.args;
 
   const minterLink = useMemo(() => (
@@ -101,13 +101,13 @@ function CreateLoanEvent({ event, loanInfo: { loanAssetDecimals } }: ParsedEvent
     <EventDetailList event={event}>
       <li>minter: {minterLink}</li>
       <li>max interest rate: {formattedMaxInterestRate}</li>
-      <li>minimum loan amount: {formattedMinLoanAmount}</li>
+      <li>minimum loan amount: {formattedMinLoanAmount} {loanAssetSymbol}</li>
       <li>minimum duration: {minDuration}</li>
     </EventDetailList>
   );
 };
 
-function UnderwriteLoanEvent({ event, loanInfo: { loanAssetDecimals } }: ParsedEventProps) {
+function UnderwriteLoanEvent({ event, loanInfo: { loanAssetDecimals, loanAssetSymbol } }: ParsedEventProps) {
   const { durationSeconds, interestRate, loanAmount, underwriter } = event.args;
 
   const underwriterLink = useMemo(() => (
@@ -128,13 +128,13 @@ function UnderwriteLoanEvent({ event, loanInfo: { loanAssetDecimals } }: ParsedE
     <EventDetailList event={event}>
       <li>lender: {underwriterLink}</li>
       <li>interest rate: {formattedInterestRate}</li>
-      <li>loan amount: {formattedLoanAmount}</li>
+      <li>loan amount: {formattedLoanAmount} {loanAssetSymbol}</li>
       <li>duration: {formattedDuration}</li>
     </EventDetailList>
   );
 }
 
-function BuyoutUnderwriterEvent({ event, loanInfo: { loanAssetDecimals } }: ParsedEventProps) {
+function BuyoutUnderwriterEvent({ event, loanInfo: { loanAssetDecimals, loanAssetSymbol } }: ParsedEventProps) {
   const { interestEarned, replacedAmount, replacedLoanOwner, underwriter } = event.args;
 
   const newLenderLink = useMemo(() => (
@@ -162,12 +162,12 @@ function BuyoutUnderwriterEvent({ event, loanInfo: { loanAssetDecimals } }: Pars
       <li>new lender: {newLenderLink}</li>
       <li>bought-out lender: {replacedLenderLink}</li>
       <li>interest paid: {formattedInterestPaid}</li>
-      <li>loan amount: {formattedLoanAmount}</li>
+      <li>loan amount: {formattedLoanAmount} {loanAssetSymbol}</li>
     </EventDetailList>
   )
 }
 
-function RepayLoanEvent({ event, loanInfo: { loanAssetDecimals } }: ParsedEventProps) {
+function RepayLoanEvent({ event, loanInfo: { loanAssetDecimals, loanAssetSymbol } }: ParsedEventProps) {
   const { interestEarned, loanAmount, loanOwner, repayer } = event.args;
 
   const repayerLink = useMemo(() => (
@@ -195,7 +195,7 @@ function RepayLoanEvent({ event, loanInfo: { loanAssetDecimals } }: ParsedEventP
       <li>repayer: {repayerLink}</li>
       <li>paid to: {loanOwnerLink}</li>
       <li>interest earned: {formattedInterestEarned}</li>
-      <li>loan amount: {formattedLoanAmount}</li>
+      <li>loan amount: {formattedLoanAmount} {loanAssetSymbol}</li>
     </EventDetailList>
   )
 }
