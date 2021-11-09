@@ -37,63 +37,6 @@ export function TicketHistory({ loanInfo }: TicketHistoryProps) {
   );
 }
 
-function RepayEventDetails(
-  event: ethers.Event,
-  loanInfo: LoanInfo,
-) {
-  const [repayer] = useState(event.args.repayer);
-  const [interestEarned] = useState(
-    ethers.utils.formatUnits(event.args.interestEarned, loanInfo.loanAssetDecimals),
-  );
-  const [loanAmount] = useState(
-    ethers.utils.formatUnits(event.args.loanAmount, loanInfo.loanAssetDecimals),
-  );
-  const [loanOwner] = useState(event.args.loanOwner);
-
-  return (
-    <div className="event-details">
-      <p>
-        {' '}
-        repayer:
-        <a
-          target="_blank"
-          href={`${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/address/${repayer}`}
-          rel="noreferrer"
-        >
-          {' '}
-          {repayer.slice(0, 10)}
-          ...
-          {' '}
-        </a>
-      </p>
-      <p>
-        {' '}
-        paid to:
-        <a
-          target="_blank"
-          href={`${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/address/${loanOwner}`}
-          rel="noreferrer"
-        >
-          {' '}
-          {loanOwner.slice(0, 10)}
-          ...
-          {' '}
-        </a>
-      </p>
-      <p>
-        {' '}
-        interest earned:
-        {interestEarned}
-      </p>
-      <p>
-        {' '}
-        loan amount:
-        {loanAmount}
-      </p>
-    </div>
-  );
-}
-
 const getTicketHistory = async (loanId) => {
   const contract = jsonRpcLoanFacilitator();
 
