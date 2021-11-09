@@ -36,9 +36,7 @@ export default function CollateralMediaCard({
 
   return (
     <Fieldset legend="collateral">
-      {CollateralNFTInfo == null ? (
-        <div className="collateral-media"> </div>
-      ) : (
+      {Boolean(CollateralNFTInfo) && (
         <CollateralMediaCardLoaded
           contractName={contractName}
           contractAddress={collateralAddress}
@@ -65,9 +63,8 @@ function CollateralMediaCardLoaded({ contractName, contractAddress, nftInfo }) {
         <p>
           <a
             target="_blank"
-            href={`${
-              process.env.NEXT_PUBLIC_OPENSEA_URL
-            }/assets/${contractAddress}/${nftInfo.id.toString()}`}
+            href={`${process.env.NEXT_PUBLIC_OPENSEA_URL
+              }/assets/${contractAddress}/${nftInfo.id.toString()}`}
             rel="noreferrer">
             View on OpenSea
           </a>
@@ -75,9 +72,8 @@ function CollateralMediaCardLoaded({ contractName, contractAddress, nftInfo }) {
         <p>
           <a
             target="_blank"
-            href={`${
-              process.env.NEXT_PUBLIC_ETHERSCAN_URL
-            }/token/${contractAddress}?a=${nftInfo.id.toString()}`}
+            href={`${process.env.NEXT_PUBLIC_ETHERSCAN_URL
+              }/token/${contractAddress}?a=${nftInfo.id.toString()}`}
             rel="noreferrer">
             View on Etherscan
           </a>

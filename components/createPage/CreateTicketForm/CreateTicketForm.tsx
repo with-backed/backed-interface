@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import InterestRateInput from 'components/createPage/InterestRateInput';
 import CollateralAddressInput from 'components/createPage/CollateralAddressInput';
 import CollateralTokenIDInput from 'components/createPage/CollateralTokenIDInput';
@@ -167,13 +167,15 @@ function MintTicketButton({
   const [transactionHash, setTransactionHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
 
-  const disabled = () => collateralAddress == ''
-    || collateralTokenID.eq(0)
-    || loanAsset == ''
-    || duration.eq(0);
+  const disabled = useMemo(() => {
+    return collateralAddress.length === 0
+      || collateralTokenID.eq(0)
+      || loanAsset === ''
+      || duration.eq(0);
+  }, [collateralAddress, collateralTokenID, duration, loanAsset]);
 
   const mint = async () => {
-    if (disabled()) {
+    if (disabled) {
       return
     }
     const contract = web3LoanFacilitator();

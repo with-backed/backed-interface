@@ -31,7 +31,7 @@ export default function Create({ }) {
       />
       <ThreeColumn>
         <Fieldset legend="pawn your NFT">
-          {account == null ? (
+          {!account ? (
             <ConnectWallet
               account={account}
               addressSetCallback={setAccount}

@@ -25,15 +25,13 @@ export default function TicketHistory({ loanInfo }: TicketHistoryProps) {
 
   return (
     <Fieldset legend="activity">
-      {history == null
-        ? ''
-        : history.map((e: ethers.Event, i) => (
-          <ParsedEvent
-            event={e}
-            loanInfo={loanInfo}
-            key={i}
-          />
-        ))}
+      {Boolean(history) && history.map((e: ethers.Event, i) => (
+        <ParsedEvent
+          event={e}
+          loanInfo={loanInfo}
+          key={i}
+        />
+      ))}
     </Fieldset>
   );
 }

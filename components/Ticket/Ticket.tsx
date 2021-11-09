@@ -15,7 +15,7 @@ export const Ticket: FunctionComponent<TicketProps> = ({ ticketID }) => {
 
   const fetchData = useCallback(() => {
     setLoanInfo(null);
-    if (ticketID == null) {
+    if (!ticketID) {
       return;
     }
     getLoanInfo(`${ticketID}`).then(loanInfo => setLoanInfo(loanInfo));
@@ -31,8 +31,8 @@ export const Ticket: FunctionComponent<TicketProps> = ({ ticketID }) => {
         setAccount={setAccount}
         message={`pawn loan #${ticketID}`}
       />
-      {loanInfo == null ? (
-        <Dimmer active={loanInfo == null} inverted>
+      {!loanInfo ? (
+        <Dimmer active={loanInfo === null} inverted>
           <Loader inverted content="Loading" />
         </Dimmer>
       ) : (

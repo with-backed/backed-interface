@@ -36,9 +36,7 @@ function PawnArt({ contract, tokenId }: PawnArtProps) {
 
   return (
     <div className="pawn-art">
-      {nftInfo == null ? (
-        ''
-      ) : (
+      {Boolean(nftInfo) && (
         <div>
           <PawnArtLoaded {...nftInfo} />
         </div>

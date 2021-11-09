@@ -61,7 +61,7 @@ export const ConnectWallet: FunctionComponent<ConnectWalletProps> = ({
   }, [addressSetCallback]);
 
   const setup = useCallback(async () => {
-    if (window.ethereum == null) {
+    if (!window.ethereum) {
       setProviderAvailable(false);
       return;
     }

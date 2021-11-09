@@ -43,7 +43,7 @@ export default function Test({ mockDAIContract, mockPunkContract }: TestProps) {
       />
       <ThreeColumn>
         <Fieldset legend="mint an NFT">
-          {account == null ? (
+          {!account ? (
             <ConnectWallet
               account={account}
               addressSetCallback={setAccount}
@@ -54,7 +54,7 @@ export default function Test({ mockDAIContract, mockPunkContract }: TestProps) {
             )}
         </Fieldset>
         <Fieldset legend="mint DAI">
-          {account == null ? (
+          {!account ? (
             <ConnectWallet
               account={account}
               addressSetCallback={setAccount}
@@ -105,7 +105,7 @@ function MintPunk({ account, mockPunkContract }: MintPunkProps) {
       account,
       null,
     );
-    punk.once(filter, (from, to, tokenId) => {
+    punk.once(filter, (_from, _to, tokenId) => {
       console.log(`token id ${tokenId}`);
       setTxPending(false);
       setId(tokenId);

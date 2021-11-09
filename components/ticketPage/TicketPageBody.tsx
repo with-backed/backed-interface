@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ethers } from 'ethers';
 import CollateralMediaCard from 'components/ticketPage/CollateralMediaCard';
 import { PawnLoanArt, PawnTicketArt } from 'components/ticketPage/PawnArt';
@@ -48,6 +48,13 @@ function LeftColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
     setOwner(o);
   }, [loanInfo.loanId]);
 
+  const showRepayCard = useMemo(() => {
+    return Boolean(account)
+      && !loanInfo.closed
+      && !loanInfo.lastAccumulatedTimestamp.eq(0)
+      && owner === account;
+  }, [account, loanInfo, owner]);
+
   useEffect(() => {
     getOwner();
   }, [getOwner]);
@@ -58,12 +65,7 @@ function LeftColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
         tokenId={loanInfo.loanId}
         owner={owner}
       />
-      {account == null ||
-        loanInfo.closed ||
-        loanInfo.lastAccumulatedTimestamp.toString() == '0' ||
-        owner != account ? (
-        ''
-      ) : (
+      {showRepayCard && (
         <RepayCard
           account={account}
           loanInfo={loanInfo}
@@ -173,6 +175,12 @@ function RightColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
     console.log(`timestamp ${block.timestamp}`);
   }, []);
 
+  const showSeizeCollateralCard = useMemo(() => {
+    return loanInfo.loanOwner === account
+      && Boolean(timestamp)
+      && timestamp >= endSeconds;
+  }, [account, endSeconds, loanInfo, timestamp]);
+
   useEffect(() => {
     getOwner();
     refreshTimestamp();
@@ -191,11 +199,7 @@ function RightColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
       )}
       {Boolean(account) && !loanInfo.closed && (
         <div>
-          {loanInfo.loanOwner != account ||
-            timestamp == null ||
-            timestamp < endSeconds ? (
-            null
-          ) : (
+          {showSeizeCollateralCard && (
             <SeizeCollateralCard
               account={account}
               loanInfo={loanInfo}

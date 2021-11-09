@@ -26,12 +26,12 @@ export default async function getNFTInfo({
     const resolvedTokenURI = isIPFS(tokenURI)
       ? makeIPFSUrl(tokenURI)
       : tokenURI;
-    
+
     const tokenURIRes = await fetch(resolvedTokenURI);
 
     const metadata = await tokenURIRes.json();
 
-    const imageURL = metadata?.animation_url == null ? metadata?.image : metadata?.animation_url
+    const imageURL = metadata?.animation_url || metadata?.image;
 
     const mediaUrl = isIPFS(imageURL)
       ? makeIPFSUrl(imageURL)

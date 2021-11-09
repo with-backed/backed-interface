@@ -53,7 +53,7 @@ export function UnderwriteCard({
   }, [account, allowanceValue, loanAmount, loanInfo.loanAssetContractAddress, needsAllowance]);
 
   useEffect(() => {
-    if (account == null) {
+    if (!account) {
       return;
     }
     getAccountLoanAssetBalance();
