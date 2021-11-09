@@ -1,27 +1,3 @@
-#underwrite-card{
-    width: 400px;
-}
-
-#underwrite-card>p{
-    padding: 20px;
-    padding-bottom: 5px;
-}
-
-#underwrite-card>#collateral-asset-balance{
-    padding-top: 0px;
-    padding-left: 20px;
-}
-
-#underwrite-card>input{
-    margin-left: 20px;
-    width: 290px;
-}
-
-#right-elements-wrapper{
-    margin-left: 25px;
-    width: 400px;
-}
-
 #allowance-button{
     font-size: 15px;
     padding: 12px;

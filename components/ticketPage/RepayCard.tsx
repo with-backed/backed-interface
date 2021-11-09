@@ -1,13 +1,14 @@
 import { ethers } from 'ethers';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { LoanInfo } from 'lib/LoanInfoType';
 import {
   web3LoanFacilitator,
   jsonRpcLoanFacilitator,
   jsonRpcERC20Contract,
 } from 'lib/contracts';
-import AllowButton from './underwriteCard/AllowButton';
+import AllowButton from 'components/ticketPage/underwriteCard/AllowButton';
 import { TransactionButton } from 'components/ticketPage/TransactionButton';
+import { Fieldset } from 'components/Fieldset';
 
 interface RepayCardProps {
   account: string;
@@ -15,7 +16,7 @@ interface RepayCardProps {
   repaySuccessCallback: () => void;
 }
 
-export default function RepayCard({
+export function RepayCard({
   account,
   loanInfo,
   repaySuccessCallback,
@@ -46,28 +47,25 @@ export default function RepayCard({
     setAllowance();
   });
 
+  const { repayAmount, ticketHolder } = useMemo(() => {
+    const repayAmount = ethers.utils.formatUnits(
+      amountOwed.toString(),
+      loanInfo.loanAssetDecimals,
+    );
+    const ticketHolder =
+      loanInfo.ticketOwner.slice(0, 10)
+      + '...'
+      + loanInfo.ticketOwner.slice(34, 42);
+    return { repayAmount, ticketHolder };
+  }, [amountOwed, loanInfo]);
+
   return (
-    <fieldset className="standard-fieldset">
-      <legend>repay</legend>
+    <Fieldset legend="repay">
       <p>
-        The current cost to repay this loan is
-        {' '}
-        {ethers.utils.formatUnits(
-          amountOwed.toString(),
-          loanInfo.loanAssetDecimals,
-        )}
-        {' '}
-        {loanInfo.loanAssetSymbol}
-        . On repayment, the NFT collateral will be
-        sent to the Pawn Ticket holder,
-        {' '}
-        {loanInfo.ticketOwner.slice(0, 10)}
-        ...
-        {loanInfo.ticketOwner.slice(34, 42)}
+        The current cost to repay this loan is {repayAmount}.
+        On repayment, the NFT collateral will be sent to the Pawn Ticket holder, {ticketHolder}.
       </p>
-      {!needsAllowance ? (
-        ''
-      ) : (
+      {needsAllowance && (
         <AllowButton
           contractAddress={loanInfo.loanAssetContractAddress}
           account={account}
@@ -80,7 +78,7 @@ export default function RepayCard({
         repaySuccessCallback={repaySuccessCallback}
         disabled={disabled}
       />
-    </fieldset>
+    </Fieldset>
   );
 }
 

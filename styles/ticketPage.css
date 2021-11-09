@@ -4,47 +4,9 @@
     background-color: #F7F7F7;
 }
 
-#gallery-button{
-    width: 150px
-}
-
-#loading-box{
-    background-color: white;
-    height: 400px;
-    width: 400px;
-    padding: 100px;
-    position: fixed;
-    margin-left: 32%;
-    margin-top: 20%;
-    box-shadow: 0px 0px 500px rgba(0, 0, 0, 0.50);
-}
-
-
-#left-elements-wrapper{
-    width: 400px;
-}
-
 .event-details {
     margin-bottom: 15px;
 }
 .event-details>p{
     margin: 0px;
-}
-
-.pawn-art-owned-by{
-    /* padding: 1px; */
-    padding: 0px 2px 0px 2px;
-    border: 1px solid gray;
-    border-radius: 2px;
-    margin-top: 5px;
-}
-
-.pawn-art-owned-by>a{
-    text-decoration: none;
-    color: gray;
-    font-size: 12px;
-}
-
-.borrow-ticket-fieldset{
-    margin: auto;
 }

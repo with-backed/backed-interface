@@ -1,15 +1,13 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 2rem;
+  gap: var(--gap);
   width: 100%;
 }
 
 @media (max-width: 65em) {
   .grid {
     grid-template-columns: repeat(2, 1fr);
-    /* On narrower viewports we shouldn't take up too much space. */
-    gap: 1rem;
   }
 }
 

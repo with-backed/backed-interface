@@ -1,7 +1,9 @@
 import { ethers } from 'ethers';
 import { useState } from 'react';
-import { LoanInfo } from '../../lib/LoanInfoType';
-import { web3LoanFacilitator, jsonRpcLoanFacilitator } from '../../lib/contracts';
+import { LoanInfo } from 'lib/LoanInfoType';
+import { web3LoanFacilitator, jsonRpcLoanFacilitator } from 'lib/contracts';
+import { Fieldset } from 'components/Fieldset';
+import { Button } from 'components/Button';
 
 interface SeizeCollateralCardProps {
   account: string;
@@ -54,27 +56,17 @@ export default function SeizeCollateralCard({
     });
   };
 
+  const totalOwed = `${amountOwed} ${loanInfo.loanAssetSymbol}`;
+
   return (
-    <fieldset className="standard-fieldset">
-      <legend>seize collateral</legend>
+    <Fieldset legend="seize collateral">
       <p>
-        The loan duration is complete. The total interest and principal owed is
-        {' '}
-        {amountOwed}
-        {' '}
-        {loanInfo.loanAssetSymbol}
-        , and 0
-        {' '}
-        {loanInfo.loanAssetSymbol}
-        {' '}
+        The loan duration is complete. The total interest and principal owed is {totalOwed},
+        and 0 {loanInfo.loanAssetSymbol}
         has been repaid. You are able to seize the
         collateral NFT, closing the loan, or wait for repayment.
       </p>
-      <div className="button-1" onClick={repay}>
-        {' '}
-        seize collateral
-        {' '}
-      </div>
-    </fieldset>
+      <Button onClick={repay}>seize collateral</Button>
+    </Fieldset>
   );
 }

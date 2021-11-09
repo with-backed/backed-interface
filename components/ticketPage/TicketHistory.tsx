@@ -5,12 +5,13 @@ import { formattedAnnualRate } from 'lib/interest';
 import { secondsToDays } from 'lib/duration';
 import { LoanInfo } from 'lib/LoanInfoType';
 import { BuyoutUnderwriterEvent } from 'abis/types/NFTLoanFacilitator';
+import { Fieldset } from 'components/Fieldset';
 
 interface TicketHistoryProps {
   loanInfo: LoanInfo;
 }
 
-export default function TicketHistory({ loanInfo } : TicketHistoryProps) {
+export default function TicketHistory({ loanInfo }: TicketHistoryProps) {
   const [history, setHistory] = useState(null);
 
   const setup = useCallback(async () => {
@@ -23,8 +24,7 @@ export default function TicketHistory({ loanInfo } : TicketHistoryProps) {
   }, [setup]);
 
   return (
-    <fieldset className="standard-fieldset">
-      <legend> activity </legend>
+    <Fieldset legend="activity">
       {history == null
         ? ''
         : history.map((e: ethers.Event, i) => (
@@ -34,7 +34,7 @@ export default function TicketHistory({ loanInfo } : TicketHistoryProps) {
             key={i}
           />
         ))}
-    </fieldset>
+    </Fieldset>
   );
 }
 
@@ -77,19 +77,9 @@ function ParsedEvent({ event, loanInfo }: ParsedEventProps) {
         target="_blank"
         rel="noreferrer"
       >
-      <p>
-        {' '}
-        <b>
-          {' '}
-          {camelToSentenceCase(event.event)}
-          {' '}
-        </b>
-        {' '}
-        
-        {' '}
-        {toLocaleDateTime(timestamp)}
-        {' '}
-      </p>
+        <p>
+          <b>{camelToSentenceCase(event.event)}</b> {toLocaleDateTime(timestamp)}
+        </p>
       </a>
       {eventDetails()}
     </div>
@@ -97,14 +87,14 @@ function ParsedEvent({ event, loanInfo }: ParsedEventProps) {
 }
 
 function toLocaleDateTime(seconds) {
-    var date = new Date(0);
-    date.setUTCSeconds(seconds);
-    return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
+  var date = new Date(0);
+  date.setUTCSeconds(seconds);
+  return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
 }
 
-function camelToSentenceCase(text){
-    const result = text.replace(/([A-Z])/g, " $1");
-    return result.charAt(0).toUpperCase() + result.slice(1);
+function camelToSentenceCase(text) {
+  const result = text.replace(/([A-Z])/g, " $1");
+  return result.charAt(0).toUpperCase() + result.slice(1);
 }
 
 
@@ -124,7 +114,6 @@ function CreateLoanEventDetails(
   return (
     <div className="event-details">
       <p>
-        {' '}
         minter:
         {' '}
         <a
@@ -341,7 +330,7 @@ const getTicketHistory = async (loanId) => {
 
   let allEvents = [];
   for (let i = 0; i < filters.length; i++) {
-    const results = await contract.queryFilter(filters[i], 
+    const results = await contract.queryFilter(filters[i],
       parseInt(process.env.NEXT_PUBLIC_FACILITATOR_START_BLOCK));
     allEvents = allEvents.concat(results);
   }
