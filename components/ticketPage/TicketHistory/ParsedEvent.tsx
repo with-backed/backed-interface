@@ -1,4 +1,4 @@
-import { EtherscanAddressLink } from 'components/EtherscanLink';
+import { EtherscanAddressLink, EtherscanTransactionLink } from 'components/EtherscanLink';
 import { ethers } from 'ethers';
 import { secondsToDays } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
@@ -50,14 +50,10 @@ function EventHeader({ event }: Pick<ParsedEventProps, "event">) {
   }, [getTimestamp]);
   return (
     <h3 className={styles['event-header']}>
-      <a
-        href={`${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/tx/${event.transactionHash}`}
-        target="_blank"
-        rel="noreferrer"
-      >
+      <EtherscanTransactionLink transactionHash={event.transactionHash}>
         <b>{camelToSentenceCase(event.event)}</b> {timestamp}
-      </a>
-    </h3>
+      </EtherscanTransactionLink>
+    </h3 >
   )
 }
 
