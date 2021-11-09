@@ -37,7 +37,7 @@ export function TicketHistory({ loanInfo }: TicketHistoryProps) {
   );
 }
 
-const getTicketHistory = async (loanId) => {
+const getTicketHistory = async (loanId: ethers.BigNumber) => {
   const contract = jsonRpcLoanFacilitator();
 
   const mintTicketFilter = contract.filters.CreateLoan(
