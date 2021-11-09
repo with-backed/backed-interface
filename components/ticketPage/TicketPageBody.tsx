@@ -5,7 +5,7 @@ import { PawnLoanArt, PawnTicketArt } from 'components/ticketPage/PawnArt';
 import { UnderwriteCard } from 'components/ticketPage/UnderwriteCard';
 import { LoanInfo } from 'lib/LoanInfoType';
 import { RepayCard } from 'components/ticketPage/RepayCard';
-import TicketHistory from 'components/ticketPage/TicketHistory';
+import { TicketHistory } from 'components/ticketPage/TicketHistory';
 import SeizeCollateralCard from 'components/ticketPage/SeizeCollateralCard';
 import { jsonRpcERC721Contract } from 'lib/contracts';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
@@ -190,7 +190,7 @@ function RightColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
         />
       )}
       {Boolean(account) && !loanInfo.closed && (
-        <div>
+        <>
           {loanInfo.loanOwner != account ||
             timestamp == null ||
             timestamp < endSeconds ? (
@@ -207,7 +207,7 @@ function RightColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
             loanInfo={loanInfo}
             loanUpdatedCallback={refresh}
           />
-        </div>
+        </>
       )}
     </Column>
   );
