@@ -96,9 +96,9 @@ function CreateLoanEvent({ event, loanInfo: { loanAssetDecimals, loanAssetSymbol
   return (
     <EventDetailList event={event}>
       <li>minter: {minterLink}</li>
-      <li>max interest rate: {formattedMaxInterestRate}</li>
+      <li>max interest rate: {formattedMaxInterestRate}%</li>
       <li>minimum loan amount: {formattedMinLoanAmount} {loanAssetSymbol}</li>
-      <li>minimum duration: {minDuration}</li>
+      <li>minimum duration: {minDuration} days</li>
     </EventDetailList>
   );
 };
@@ -123,9 +123,9 @@ function UnderwriteLoanEvent({ event, loanInfo: { loanAssetDecimals, loanAssetSy
   return (
     <EventDetailList event={event}>
       <li>lender: {underwriterLink}</li>
-      <li>interest rate: {formattedInterestRate}</li>
+      <li>interest rate: {formattedInterestRate}%</li>
       <li>loan amount: {formattedLoanAmount} {loanAssetSymbol}</li>
-      <li>duration: {formattedDuration}</li>
+      <li>duration: {formattedDuration} days</li>
     </EventDetailList>
   );
 }
@@ -157,7 +157,7 @@ function BuyoutUnderwriterEvent({ event, loanInfo: { loanAssetDecimals, loanAsse
     <EventDetailList event={event}>
       <li>new lender: {newLenderLink}</li>
       <li>bought-out lender: {replacedLenderLink}</li>
-      <li>interest paid: {formattedInterestPaid}</li>
+      <li>interest paid: {formattedInterestPaid} {loanAssetSymbol}</li>
       <li>loan amount: {formattedLoanAmount} {loanAssetSymbol}</li>
     </EventDetailList>
   )
@@ -190,7 +190,7 @@ function RepayLoanEvent({ event, loanInfo: { loanAssetDecimals, loanAssetSymbol 
     <EventDetailList event={event}>
       <li>repayer: {repayerLink}</li>
       <li>paid to: {loanOwnerLink}</li>
-      <li>interest earned: {formattedInterestEarned}</li>
+      <li>interest earned: {formattedInterestEarned} {loanAssetSymbol}</li>
       <li>loan amount: {formattedLoanAmount} {loanAssetSymbol}</li>
     </EventDetailList>
   )
