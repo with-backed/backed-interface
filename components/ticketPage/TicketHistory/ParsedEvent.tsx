@@ -76,7 +76,7 @@ function CreateLoanEvent({ event, loanInfo: { loanAssetDecimals, loanAssetSymbol
   const { maxInterestRate, minDurationSeconds, minLoanAmount, minter } = event.args;
 
   const minterLink = useMemo(() => (
-    <EtherscanAddressLink address={minter}>
+    <EtherscanAddressLink address={minter} title={minter}>
       {minter?.slice(0, 10)}...
     </EtherscanAddressLink>
   ), [minter]);
@@ -107,7 +107,7 @@ function UnderwriteLoanEvent({ event, loanInfo: { loanAssetDecimals, loanAssetSy
   const { durationSeconds, interestRate, loanAmount, underwriter } = event.args;
 
   const underwriterLink = useMemo(() => (
-    <EtherscanAddressLink address={underwriter}>
+    <EtherscanAddressLink address={underwriter} title={underwriter}>
       {underwriter?.slice(0, 10)}...
     </EtherscanAddressLink>
   ), [underwriter]);
@@ -134,13 +134,13 @@ function BuyoutUnderwriterEvent({ event, loanInfo: { loanAssetDecimals, loanAsse
   const { interestEarned, replacedAmount, replacedLoanOwner, underwriter } = event.args;
 
   const newLenderLink = useMemo(() => (
-    <EtherscanAddressLink address={underwriter}>
+    <EtherscanAddressLink address={underwriter} title={underwriter}>
       {underwriter.slice(0, 10)}...
     </EtherscanAddressLink>
   ), [underwriter]);
 
   const replacedLenderLink = useMemo(() => (
-    <EtherscanAddressLink address={replacedLoanOwner}>
+    <EtherscanAddressLink address={replacedLoanOwner} title={replacedLoanOwner}>
       {replacedLoanOwner.slice(0, 10)}...
     </EtherscanAddressLink>
   ), [replacedLoanOwner]);
@@ -167,13 +167,13 @@ function RepayLoanEvent({ event, loanInfo: { loanAssetDecimals, loanAssetSymbol 
   const { interestEarned, loanAmount, loanOwner, repayer } = event.args;
 
   const repayerLink = useMemo(() => (
-    <EtherscanAddressLink address={repayer}>
+    <EtherscanAddressLink address={repayer} title={repayer}>
       {repayer.slice(0, 10)}...
     </EtherscanAddressLink>
   ), [repayer]);
 
   const loanOwnerLink = useMemo(() => (
-    <EtherscanAddressLink address={loanOwner}>
+    <EtherscanAddressLink address={loanOwner} title={loanOwner}>
       {loanOwner.slice(0, 10)}...
     </EtherscanAddressLink>
   ), [loanOwner]);

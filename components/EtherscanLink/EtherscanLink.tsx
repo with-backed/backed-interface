@@ -27,13 +27,13 @@ const EtherscanLink: FunctionComponent<EtherscanLinkProps> = ({
 interface EtherscanAddressProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   address: string,
 }
-export const EtherscanAddressLink: FunctionComponent<EtherscanAddressProps> = ({ address, children }) => {
-  return <EtherscanLink address={address}>{children}</EtherscanLink>;
+export const EtherscanAddressLink: FunctionComponent<EtherscanAddressProps> = ({ address, children, ...props }) => {
+  return <EtherscanLink address={address} {...props}>{children}</EtherscanLink>;
 }
 
 interface EtherscanTransactionProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   transactionHash: string,
 }
-export const EtherscanTransactionLink: FunctionComponent<EtherscanTransactionProps> = ({ transactionHash, children }) => {
-  return <EtherscanLink transactionHash={transactionHash}>{children}</EtherscanLink>;
+export const EtherscanTransactionLink: FunctionComponent<EtherscanTransactionProps> = ({ transactionHash, children, ...props }) => {
+  return <EtherscanLink transactionHash={transactionHash} {...props}>{children}</EtherscanLink>;
 }
