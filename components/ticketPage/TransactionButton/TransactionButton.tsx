@@ -4,13 +4,13 @@ import React, { useCallback } from 'react';
 import styles from './TransactionButton.module.css';
 
 interface TransactionButtonProps {
-  text: string,
-  onClick: () => void,
-  txHash: string,
-  isPending: boolean,
-  disabled?: boolean,
+  text: string;
+  onClick: () => void;
+  txHash: string;
+  isPending: boolean;
+  disabled?: boolean;
   /** @deprecated Unclear whether this is still required */
-  textSize?: 'large' | 'small'
+  textSize?: 'large' | 'small';
 }
 
 export function TransactionButton({
@@ -45,6 +45,8 @@ export function TransactionButton({
   }
 
   return (
-    <Button onClick={handleClick} disabled={disabled}>{text}</Button>
-  )
+    <Button onClick={handleClick} disabled={disabled}>
+      {text}
+    </Button>
+  );
 }

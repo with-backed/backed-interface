@@ -4,9 +4,9 @@ export default function Explainer() {
   return (
     <>
       <p>
-        Mint your loan! This transaction will (1) transfer your NFT to
-        the pawn shop, (2) set your minimum loan terms to offer to underwriters,
-        and (3) transfer to you a Borrow Ticket NFT.
+        Mint your loan! This transaction will (1) transfer your NFT to the pawn
+        shop, (2) set your minimum loan terms to offer to underwriters, and (3)
+        transfer to you a Borrow Ticket NFT.
       </p>
       <p>
         If someone accepts your terms, underwriting the loan, the loan amount

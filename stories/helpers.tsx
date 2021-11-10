@@ -10,8 +10,7 @@ export const GridItem: FunctionComponent = ({ children }) => (
       justifyContent: 'center',
       fontSize: '3em',
       fontWeight: 'bold',
-    }}
-  >
+    }}>
     {children}
   </div>
 );

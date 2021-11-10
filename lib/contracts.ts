@@ -1,6 +1,9 @@
 import { ethers } from 'ethers';
 import {
-  ERC20__factory, ERC721, ERC721__factory, NFTLoanFacilitator__factory,
+  ERC20__factory,
+  ERC721,
+  ERC721__factory,
+  NFTLoanFacilitator__factory,
 } from '../abis/types';
 
 const jsonRpcProvider = new ethers.providers.JsonRpcProvider(
@@ -29,7 +32,7 @@ export function web3Erc721Contract(address: string) {
   return erc721Contract(address, signer);
 }
 
-export function jsonRpcERC721Contract(address: string) : ERC721 {
+export function jsonRpcERC721Contract(address: string): ERC721 {
   return erc721Contract(address, jsonRpcProvider);
 }
 
@@ -40,7 +43,10 @@ export function jsonRpcERC20Contract(address: string) {
 export function loanFacilitator(
   provider: ethers.providers.Provider | ethers.Signer,
 ) {
-  return NFTLoanFacilitator__factory.connect(process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT, provider);
+  return NFTLoanFacilitator__factory.connect(
+    process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT,
+    provider,
+  );
 }
 
 export function erc20Contract(

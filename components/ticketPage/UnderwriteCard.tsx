@@ -11,9 +11,9 @@ import { Fieldset } from 'components/Fieldset';
 import { FormWrapper } from 'components/layouts/FormWrapper';
 
 interface UnderwriteCardProps {
-  account: string
-  loanInfo: LoanInfo
-  loanUpdatedCallback: () => void
+  account: string;
+  loanInfo: LoanInfo;
+  loanUpdatedCallback: () => void;
 }
 
 export function UnderwriteCard({
@@ -31,7 +31,9 @@ export function UnderwriteCard({
   const [needsAllowance, setNeedsAllowance] = useState(false);
 
   const getAccountLoanAssetBalance = useCallback(async () => {
-    const loanAssetContract = jsonRpcERC20Contract(loanInfo.loanAssetContractAddress);
+    const loanAssetContract = jsonRpcERC20Contract(
+      loanInfo.loanAssetContractAddress,
+    );
     const balance = await loanAssetContract.balanceOf(account);
     const humanReadableBalance = ethers.utils.formatUnits(
       balance,
@@ -41,7 +43,9 @@ export function UnderwriteCard({
   }, [account, loanInfo.loanAssetContractAddress, loanInfo.loanAssetDecimals]);
 
   const setAllowance = useCallback(async () => {
-    const assetContract = jsonRpcERC20Contract(loanInfo.loanAssetContractAddress);
+    const assetContract = jsonRpcERC20Contract(
+      loanInfo.loanAssetContractAddress,
+    );
     const allowance = await assetContract.allowance(
       account,
       process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT,
@@ -50,7 +54,13 @@ export function UnderwriteCard({
       setNeedsAllowance(allowanceValue.lt(loanAmount));
     }
     setAllowanceValue(allowance);
-  }, [account, allowanceValue, loanAmount, loanInfo.loanAssetContractAddress, needsAllowance]);
+  }, [
+    account,
+    allowanceValue,
+    loanAmount,
+    loanInfo.loanAssetContractAddress,
+    needsAllowance,
+  ]);
 
   useEffect(() => {
     if (account == null) {
@@ -81,9 +91,7 @@ export function UnderwriteCard({
 
   return (
     <Fieldset legend="lend">
-      <p>
-        {explainer()}
-      </p>
+      <p>{explainer()}</p>
       <p id="collateral-asset-balance">
         {`You have ${loanAssetBalance} ${loanInfo.loanAssetSymbol}`}
       </p>

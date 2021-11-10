@@ -1,4 +1,10 @@
-import React, { FunctionComponent, memo, useCallback, useEffect, useState } from 'react';
+import React, {
+  FunctionComponent,
+  memo,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { ethers } from 'ethers';
 import { Button } from 'components/Button';
 
@@ -11,29 +17,36 @@ declare global {
 type ExternalLinkProps = {
   href: string;
   display: React.ReactNode;
-}
-const ExternalLink = memo(function ExternalLink({ display, href }: ExternalLinkProps) {
+};
+const ExternalLink = memo(function ExternalLink({
+  display,
+  href,
+}: ExternalLinkProps) {
   return (
     <a href={href} target="_blank" rel="noreferrer">
       {display}
     </a>
-  )
+  );
 });
 
 const NoProvider = memo(function NoProvider() {
-  const metamaskLink = <ExternalLink href="https://metamask.io" display="Metamask" />;
-  const chromeLink = <ExternalLink href="https://www.google.com/chrome/" display="Chrome" />;
+  const metamaskLink = (
+    <ExternalLink href="https://metamask.io" display="Metamask" />
+  );
+  const chromeLink = (
+    <ExternalLink href="https://www.google.com/chrome/" display="Chrome" />
+  );
   return (
     <p>
       Please use {metamaskLink} + {chromeLink} to connect.
     </p>
-  )
+  );
 });
 
 type ConnectWalletProps = {
   account?: string | null;
   addressSetCallback: (address: string) => void;
-}
+};
 
 export const ConnectWallet: FunctionComponent<ConnectWalletProps> = ({
   account,
@@ -48,8 +61,8 @@ export const ConnectWallet: FunctionComponent<ConnectWalletProps> = ({
     if (process.env.NEXT_PUBLIC_ENV != 'local') {
       await window.ethereum.request({
         method: 'wallet_switchEthereumChain',
-        params: [{ chainId: process.env.NEXT_PUBLIC_CHAIN_ID }]
-      })
+        params: [{ chainId: process.env.NEXT_PUBLIC_CHAIN_ID }],
+      });
     }
     let account = ethers.utils.getAddress(accounts[0]);
     addressSetCallback(account);
@@ -75,20 +88,14 @@ export const ConnectWallet: FunctionComponent<ConnectWalletProps> = ({
   }, [setup]);
 
   if (!providerAvailable) {
-    return (
-      <NoProvider />
-    )
+    return <NoProvider />;
   }
 
   if (!account) {
-    return (
-      <Button onClick={getAccount}>Connect Wallet</Button>
-    )
+    return <Button onClick={getAccount}>Connect Wallet</Button>;
   }
 
   return (
-    <div id="connect-wallet-button">
-      connected {account.slice(0, 7)}...
-    </div>
+    <div id="connect-wallet-button">connected {account.slice(0, 7)}...</div>
   );
-}
+};

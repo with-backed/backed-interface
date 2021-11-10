@@ -1,5 +1,8 @@
 import React from 'react';
-import { CreateTicketForm, CreateTicketFormProps } from 'components/createPage/CreateTicketForm';
+import {
+  CreateTicketForm,
+  CreateTicketFormProps,
+} from 'components/createPage/CreateTicketForm';
 
 export default {
   title: 'createPage/CreateTicketForm',

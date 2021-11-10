@@ -14,4 +14,4 @@ export const SelectStyles = () => {
       content={<p>This should explain things</p>}
     />
   );
-}
+};

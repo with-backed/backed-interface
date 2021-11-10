@@ -14,36 +14,39 @@ export default function LoanAmountInput({
     ethers.utils.formatUnits(minLoanAmount, decimals),
   );
 
-  const handleChange = useCallback(({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
-    setError('');
+  const handleChange = useCallback(
+    ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
+      setError('');
 
-    if (value === '') {
-      setLoanAmount(ethers.BigNumber.from(0));
-      return;
-    }
+      if (value === '') {
+        setLoanAmount(ethers.BigNumber.from(0));
+        return;
+      }
 
-    const valueAsFloat = parseFloat(value);
+      const valueAsFloat = parseFloat(value);
 
-    if (valueAsFloat < 0) {
-      setError('Rate cannot be negative');
-      return;
-    }
+      if (valueAsFloat < 0) {
+        setError('Rate cannot be negative');
+        return;
+      }
 
-    if (valueAsFloat < parseFloat(minAmount)) {
-      setLoanAmount(ethers.BigNumber.from(0));
-      setError(`Must be greater than or equal to ${minAmount}`);
-      return;
-    }
+      if (valueAsFloat < parseFloat(minAmount)) {
+        setLoanAmount(ethers.BigNumber.from(0));
+        setError(`Must be greater than or equal to ${minAmount}`);
+        return;
+      }
 
-    if (valueAsFloat > parseFloat(accountBalance)) {
-      setLoanAmount(ethers.BigNumber.from(0));
-      setError(`Amount exceeds your ${loanAssetSymbol} balance`);
-      return;
-    }
+      if (valueAsFloat > parseFloat(accountBalance)) {
+        setLoanAmount(ethers.BigNumber.from(0));
+        setError(`Amount exceeds your ${loanAssetSymbol} balance`);
+        return;
+      }
 
-    const atomicUnits = ethers.utils.parseUnits(value, decimals);
-    setLoanAmount(atomicUnits);
-  }, [accountBalance, decimals, loanAssetSymbol, minAmount, setLoanAmount]);
+      const atomicUnits = ethers.utils.parseUnits(value, decimals);
+      setLoanAmount(atomicUnits);
+    },
+    [accountBalance, decimals, loanAssetSymbol, minAmount, setLoanAmount],
+  );
 
   return (
     <Input

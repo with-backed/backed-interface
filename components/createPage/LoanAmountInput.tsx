@@ -5,22 +5,25 @@ import { Input } from 'components/Input';
 export default function LoanAmountInput({ setLoanAmount }) {
   const [error, setError] = useState('');
 
-  const handleChange = useCallback(({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
-    setError('');
+  const handleChange = useCallback(
+    ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
+      setError('');
 
-    if (value === '') {
-      setLoanAmount(ethers.BigNumber.from(0));
-      return;
-    }
+      if (value === '') {
+        setLoanAmount(ethers.BigNumber.from(0));
+        return;
+      }
 
-    const valueAsFloat = parseFloat(value);
+      const valueAsFloat = parseFloat(value);
 
-    if (valueAsFloat < 0) {
-      setError('Rate cannot be negative');
-      return;
-    }
-    setLoanAmount(valueAsFloat);
-  }, [setLoanAmount]);
+      if (valueAsFloat < 0) {
+        setError('Rate cannot be negative');
+        return;
+      }
+      setLoanAmount(valueAsFloat);
+    },
+    [setLoanAmount],
+  );
 
   return (
     <Input

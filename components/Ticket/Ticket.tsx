@@ -1,4 +1,9 @@
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, {
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { Dimmer, Loader } from 'semantic-ui-react';
 import { getLoanInfo } from 'lib/loan';
 import TicketPageBody from 'components/ticketPage/TicketPageBody';
@@ -7,7 +12,7 @@ import { PageWrapper } from 'components/layouts/PageWrapper';
 
 type TicketProps = {
   ticketID: string | null;
-}
+};
 
 export const Ticket: FunctionComponent<TicketProps> = ({ ticketID }) => {
   const [loanInfo, setLoanInfo] = useState(null);
@@ -18,7 +23,7 @@ export const Ticket: FunctionComponent<TicketProps> = ({ ticketID }) => {
     if (ticketID == null) {
       return;
     }
-    getLoanInfo(`${ticketID}`).then(loanInfo => setLoanInfo(loanInfo));
+    getLoanInfo(`${ticketID}`).then((loanInfo) => setLoanInfo(loanInfo));
   }, [ticketID]);
 
   useEffect(() => {
@@ -44,4 +49,4 @@ export const Ticket: FunctionComponent<TicketProps> = ({ ticketID }) => {
       )}
     </PageWrapper>
   );
-}
+};

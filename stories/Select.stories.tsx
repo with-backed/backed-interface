@@ -7,7 +7,7 @@ export default {
   component: Select,
 };
 
-const handleChange = (_event: ChangeEvent<HTMLSelectElement>) => { };
+const handleChange = (_event: ChangeEvent<HTMLSelectElement>) => {};
 
 export const SelectStyles = () => {
   return (
@@ -17,4 +17,4 @@ export const SelectStyles = () => {
       <option>Jam</option>
     </Select>
   );
-}
+};

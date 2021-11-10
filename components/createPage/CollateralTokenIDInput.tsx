@@ -1,8 +1,6 @@
 import { ERC721 } from 'abis/types';
 import { ethers } from 'ethers';
-import React, {
-  ChangeEvent, useCallback, useEffect, useState,
-} from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { Input } from 'components/Input';
 import { jsonRpcERC721Contract } from 'lib/contracts';
 
@@ -28,14 +26,12 @@ export default function CollateralTokenIDInput({
       const bigNumValue = ethers.BigNumber.from(value);
 
       if (contract !== null) {
-        const owner = await contract
-          .ownerOf(bigNumValue)
-          .catch((_error) => {
-            setError(
-              'Error fetching token info. Check contract address and token ID.',
-            );
-            setIsValidCollateral(false);
-          });
+        const owner = await contract.ownerOf(bigNumValue).catch((_error) => {
+          setError(
+            'Error fetching token info. Check contract address and token ID.',
+          );
+          setIsValidCollateral(false);
+        });
 
         if (owner !== account) {
           setError('Connected address does not own this NFT');
@@ -48,20 +44,32 @@ export default function CollateralTokenIDInput({
         const approved = await contract.getApproved(bigNumValue);
 
         setIsApproved(
-          approved.includes(process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT),
+          approved.includes(
+            process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT,
+          ),
         );
       }
     };
     handleNewValue();
-  }, [contract, value, account, setCollateralTokenID, setIsApproved, setIsValidCollateral]);
+  }, [
+    contract,
+    value,
+    account,
+    setCollateralTokenID,
+    setIsApproved,
+    setIsValidCollateral,
+  ]);
 
-  const handleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value;
-    if (newValue === value) {
-      return;
-    }
-    setValue(newValue);
-  }, [value]);
+  const handleChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const newValue = event.target.value;
+      if (newValue === value) {
+        return;
+      }
+      setValue(newValue);
+    },
+    [value],
+  );
 
   useEffect(() => {
     if (collateralContractAddress !== '') {

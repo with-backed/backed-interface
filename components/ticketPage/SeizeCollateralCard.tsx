@@ -47,9 +47,7 @@ export default function SeizeCollateralCard({
 
   const wait = async () => {
     const loanFacilitator = jsonRpcLoanFacilitator();
-    const filter = loanFacilitator.filters.SeizeCollateral(
-      loanInfo.loanId,
-    );
+    const filter = loanFacilitator.filters.SeizeCollateral(loanInfo.loanId);
     loanFacilitator.once(filter, () => {
       seizeCollateralSuccessCallback();
       setWaitingForTx(false);
@@ -61,10 +59,10 @@ export default function SeizeCollateralCard({
   return (
     <Fieldset legend="seize collateral">
       <p>
-        The loan duration is complete. The total interest and principal owed is {totalOwed},
-        and 0 {loanInfo.loanAssetSymbol}
-        has been repaid. You are able to seize the
-        collateral NFT, closing the loan, or wait for repayment.
+        The loan duration is complete. The total interest and principal owed is{' '}
+        {totalOwed}, and 0 {loanInfo.loanAssetSymbol}
+        has been repaid. You are able to seize the collateral NFT, closing the
+        loan, or wait for repayment.
       </p>
       <Button onClick={repay}>seize collateral</Button>
     </Fieldset>

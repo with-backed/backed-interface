@@ -4,10 +4,10 @@ import { TransactionButton } from 'components/ticketPage/TransactionButton';
 import { jsonRpcERC20Contract, web3Erc20Contract } from 'lib/contracts';
 
 interface AllowButtonProps {
-  contractAddress: string
-  account: string
-  symbol: string
-  callback: () => void
+  contractAddress: string;
+  account: string;
+  symbol: string;
+  callback: () => void;
 }
 
 export default function AllowButton({

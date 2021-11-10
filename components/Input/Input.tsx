@@ -1,4 +1,9 @@
-import React, { ChangeEvent, FunctionComponent, InputHTMLAttributes, useMemo } from 'react';
+import React, {
+  ChangeEvent,
+  FunctionComponent,
+  InputHTMLAttributes,
+  useMemo,
+} from 'react';
 import debounce from 'lodash/debounce';
 import styles from './Input.module.css';
 
@@ -19,9 +24,13 @@ export const Input: FunctionComponent<InputProps> = ({
   title,
   ...props
 }) => {
-  const debouncedHandleChange = useMemo(() => debounce((event: ChangeEvent<HTMLInputElement>) => {
-    onChange(event);
-  }, WAIT_DURATION_IN_MILLISECONDS), [onChange]);
+  const debouncedHandleChange = useMemo(
+    () =>
+      debounce((event: ChangeEvent<HTMLInputElement>) => {
+        onChange(event);
+      }, WAIT_DURATION_IN_MILLISECONDS),
+    [onChange],
+  );
   const hasError = Boolean(error);
   const hasMessage = Boolean(message);
   return (
@@ -39,4 +48,4 @@ export const Input: FunctionComponent<InputProps> = ({
       {hasMessage && <p>{message}</p>}
     </div>
   );
-}
+};

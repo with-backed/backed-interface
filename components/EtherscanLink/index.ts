@@ -1,5 +1,5 @@
 export {
   EtherscanAddressLink,
   EtherscanTokenLink,
-  EtherscanTransactionLink
+  EtherscanTransactionLink,
 } from './EtherscanLink';
