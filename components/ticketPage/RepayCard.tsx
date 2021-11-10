@@ -26,9 +26,7 @@ export function RepayCard({
     ethers.BigNumber.from('0'),
   );
   const [needsAllowance, setNeedsAllowance] = useState(false);
-  const [amountOwed] = useState(
-    loanInfo.interestOwed.add(loanInfo.loanAmount),
-  );
+  const [amountOwed] = useState(loanInfo.interestOwed.add(loanInfo.loanAmount));
 
   const setAllowance = async () => {
     const contract = jsonRpcERC20Contract(loanInfo.loanAssetContractAddress);
@@ -53,17 +51,17 @@ export function RepayCard({
       loanInfo.loanAssetDecimals,
     );
     const ticketHolder =
-      loanInfo.ticketOwner.slice(0, 10)
-      + '...'
-      + loanInfo.ticketOwner.slice(34, 42);
+      loanInfo.ticketOwner.slice(0, 10) +
+      '...' +
+      loanInfo.ticketOwner.slice(34, 42);
     return { repayAmount, ticketHolder };
   }, [amountOwed, loanInfo]);
 
   return (
     <Fieldset legend="repay">
       <p>
-        The current cost to repay this loan is {repayAmount}.
-        On repayment, the NFT collateral will be sent to the Pawn Ticket holder, {ticketHolder}.
+        The current cost to repay this loan is {repayAmount}. On repayment, the
+        NFT collateral will be sent to the Pawn Ticket holder, {ticketHolder}.
       </p>
       {needsAllowance && (
         <AllowButton
@@ -83,19 +81,21 @@ export function RepayCard({
 }
 
 interface RepayButtonProps {
-  loanId: ethers.BigNumber
-  repaySuccessCallback: () => void
-  disabled: boolean
+  loanId: ethers.BigNumber;
+  repaySuccessCallback: () => void;
+  disabled: boolean;
 }
 
-function RepayButton({ loanId, repaySuccessCallback, disabled }: RepayButtonProps) {
+function RepayButton({
+  loanId,
+  repaySuccessCallback,
+  disabled,
+}: RepayButtonProps) {
   const [txHash, setTxHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
 
   const repay = async () => {
-    const t = await web3LoanFacilitator().repayAndCloseLoan(
-      loanId,
-    );
+    const t = await web3LoanFacilitator().repayAndCloseLoan(loanId);
     setWaitingForTx(true);
     setTxHash(t.hash);
     t.wait()
@@ -112,9 +112,7 @@ function RepayButton({ loanId, repaySuccessCallback, disabled }: RepayButtonProp
 
   const wait = async () => {
     const loanFacilitator = jsonRpcLoanFacilitator();
-    const filter = loanFacilitator.filters.Repay(
-      loanId,
-    );
+    const filter = loanFacilitator.filters.Repay(loanId);
     loanFacilitator.once(filter, () => {
       repaySuccessCallback();
       setWaitingForTx(false);

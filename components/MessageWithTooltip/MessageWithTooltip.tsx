@@ -1,5 +1,10 @@
 import React from 'react';
-import { Tooltip, TooltipArrow, TooltipReference, useTooltipState } from "reakit/Tooltip";
+import {
+  Tooltip,
+  TooltipArrow,
+  TooltipReference,
+  useTooltipState,
+} from 'reakit/Tooltip';
 import styles from './MessageWithTooltip.module.css';
 
 function TooltipIcon() {
@@ -10,7 +15,10 @@ type MessageWithTooltipProps = {
   message: React.ReactNode;
   content: React.ReactNode;
 };
-export function MessageWithTooltip({ message, content }: MessageWithTooltipProps) {
+export function MessageWithTooltip({
+  message,
+  content,
+}: MessageWithTooltipProps) {
   const tooltip = useTooltipState();
   return (
     <div className={styles.wrapper}>

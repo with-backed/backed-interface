@@ -10,32 +10,40 @@ const EtherscanLink: FunctionComponent<EtherscanLinkProps> = ({
 }) => {
   const href = `${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/${path}`;
   return (
-    <a
-      target="_blank"
-      rel="noreferrer"
-      {...props}
-      href={href}
-    >
+    <a target="_blank" rel="noreferrer" {...props} href={href}>
       {children}
     </a>
-  )
-}
+  );
+};
 
-interface EtherscanAddressLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
-  address: string,
+interface EtherscanAddressLinkProps
+  extends AnchorHTMLAttributes<HTMLAnchorElement> {
+  address: string;
 }
-export const EtherscanAddressLink: FunctionComponent<EtherscanAddressLinkProps> = ({ address, children, ...props }) => {
-  return <EtherscanLink path={`/address/${address}`} {...props}>{children}</EtherscanLink>;
-}
+export const EtherscanAddressLink: FunctionComponent<EtherscanAddressLinkProps> =
+  ({ address, children, ...props }) => {
+    return (
+      <EtherscanLink path={`/address/${address}`} {...props}>
+        {children}
+      </EtherscanLink>
+    );
+  };
 
-interface EtherscanTransactionLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
-  transactionHash: string,
+interface EtherscanTransactionLinkProps
+  extends AnchorHTMLAttributes<HTMLAnchorElement> {
+  transactionHash: string;
 }
-export const EtherscanTransactionLink: FunctionComponent<EtherscanTransactionLinkProps> = ({ transactionHash, children, ...props }) => {
-  return <EtherscanLink path={`/tx/${transactionHash}`} {...props}>{children}</EtherscanLink>;
-}
+export const EtherscanTransactionLink: FunctionComponent<EtherscanTransactionLinkProps> =
+  ({ transactionHash, children, ...props }) => {
+    return (
+      <EtherscanLink path={`/tx/${transactionHash}`} {...props}>
+        {children}
+      </EtherscanLink>
+    );
+  };
 
-interface EtherscanTokenLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
+interface EtherscanTokenLinkProps
+  extends AnchorHTMLAttributes<HTMLAnchorElement> {
   contractAddress: string;
   assetId: string;
 }
@@ -45,5 +53,9 @@ export const EtherscanTokenLink: FunctionComponent<EtherscanTokenLinkProps> = ({
   children,
   ...props
 }) => {
-  return <EtherscanLink path={`/token/${contractAddress}?a=${assetId}`} {...props}>{children}</EtherscanLink>
-}
+  return (
+    <EtherscanLink path={`/token/${contractAddress}?a=${assetId}`} {...props}>
+      {children}
+    </EtherscanLink>
+  );
+};

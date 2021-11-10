@@ -59,9 +59,9 @@ function LeftColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
         owner={owner}
       />
       {account == null ||
-        loanInfo.closed ||
-        loanInfo.lastAccumulatedTimestamp.toString() == '0' ||
-        owner != account ? (
+      loanInfo.closed ||
+      loanInfo.lastAccumulatedTimestamp.toString() == '0' ||
+      owner != account ? (
         ''
       ) : (
         <RepayCard
@@ -92,8 +92,9 @@ function BorrowTicket({
         <br />
         <a
           target="_blank"
-          href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT
-            }/${tokenId.toString()}`}
+          href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${
+            process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT
+          }/${tokenId.toString()}`}
           rel="noreferrer">
           View on OpenSea
         </a>
@@ -119,8 +120,9 @@ function LendTicket({
         <br />
         <a
           target="_blank"
-          href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT
-            }/${tokenId.toString()}`}
+          href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${
+            process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT
+          }/${tokenId.toString()}`}
           rel="noreferrer">
           View on OpenSea
         </a>
@@ -192,10 +194,8 @@ function RightColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
       {Boolean(account) && !loanInfo.closed && (
         <>
           {loanInfo.loanOwner != account ||
-            timestamp == null ||
-            timestamp < endSeconds ? (
-            null
-          ) : (
+          timestamp == null ||
+          timestamp < endSeconds ? null : (
             <SeizeCollateralCard
               account={account}
               loanInfo={loanInfo}

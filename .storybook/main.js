@@ -11,11 +11,8 @@ module.exports = {
     'storybook-css-modules-preset',
   ],
   webpackFinal: async (config, { configType }) => {
-    config.resolve.modules = [
-      path.resolve(__dirname, ".."),
-      "node_modules",
-    ]
+    config.resolve.modules = [path.resolve(__dirname, '..'), 'node_modules'];
 
     return config;
-  }
+  },
 };

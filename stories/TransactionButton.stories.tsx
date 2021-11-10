@@ -7,8 +7,8 @@ export default {
   component: TransactionButton,
 };
 
-function handleClick() { };
-const txHash = "0xtxHash";
+function handleClick() {}
+const txHash = '0xtxHash';
 
 export const TransactionButtonStyles = () => {
   return (
@@ -45,4 +45,4 @@ export const TransactionButtonStyles = () => {
       />
     </>
   );
-}
+};

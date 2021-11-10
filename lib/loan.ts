@@ -1,5 +1,9 @@
 import { ethers } from 'ethers';
-import { jsonRpcERC20Contract, jsonRpcERC721Contract, jsonRpcLoanFacilitator } from './contracts';
+import {
+  jsonRpcERC20Contract,
+  jsonRpcERC721Contract,
+  jsonRpcLoanFacilitator,
+} from './contracts';
 import { LoanInfo } from './LoanInfoType';
 
 // export async function getAllTicketIds() {
@@ -23,12 +27,14 @@ import { LoanInfo } from './LoanInfoType';
 export async function getLoanInfo(id: string): Promise<LoanInfo> {
   const loanId = ethers.BigNumber.from(id);
   const loanFacilitator = jsonRpcLoanFacilitator();
-  const lendTicket = jsonRpcERC721Contract(process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT);
-  const borrowTicket = jsonRpcERC721Contract(process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT);
-
-  const loanInfo = await loanFacilitator.loanInfo(
-    loanId,
+  const lendTicket = jsonRpcERC721Contract(
+    process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT,
   );
+  const borrowTicket = jsonRpcERC721Contract(
+    process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT,
+  );
+
+  const loanInfo = await loanFacilitator.loanInfo(loanId);
   const { loanAssetContractAddress } = loanInfo;
   const { collateralContractAddress } = loanInfo;
   const { collateralTokenId } = loanInfo;

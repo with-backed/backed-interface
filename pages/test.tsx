@@ -10,14 +10,14 @@ import { Fieldset } from 'components/Fieldset';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
 
 const ConnectWallet = dynamic(
-  () => import('components/ConnectWallet').then(mod => mod.ConnectWallet),
-  { ssr: false }
+  () => import('components/ConnectWallet').then((mod) => mod.ConnectWallet),
+  { ssr: false },
 );
 
 type TestProps = {
   mockDAIContract: string;
   mockPunkContract: string;
-}
+};
 
 export const getServerSideProps: GetServerSideProps<TestProps> = async () => {
   const mockDAIContract = process.env.NEXT_PUBLIC_MOCK_DAI_CONTRACT;
@@ -27,9 +27,9 @@ export const getServerSideProps: GetServerSideProps<TestProps> = async () => {
     props: {
       mockDAIContract,
       mockPunkContract,
-    }
-  }
-}
+    },
+  };
+};
 
 export default function Test({ mockDAIContract, mockPunkContract }: TestProps) {
   const [account, setAccount] = useState(null);
@@ -44,25 +44,17 @@ export default function Test({ mockDAIContract, mockPunkContract }: TestProps) {
       <ThreeColumn>
         <Fieldset legend="mint an NFT">
           {account == null ? (
-            <ConnectWallet
-              account={account}
-              addressSetCallback={setAccount}
-            />
-          )
-            : (
-              <MintPunk account={account} mockPunkContract={mockPunkContract} />
-            )}
+            <ConnectWallet account={account} addressSetCallback={setAccount} />
+          ) : (
+            <MintPunk account={account} mockPunkContract={mockPunkContract} />
+          )}
         </Fieldset>
         <Fieldset legend="mint DAI">
           {account == null ? (
-            <ConnectWallet
-              account={account}
-              addressSetCallback={setAccount}
-            />
-          )
-            : (
-              <MintDAI account={account} mockDAIContract={mockDAIContract} />
-            )}
+            <ConnectWallet account={account} addressSetCallback={setAccount} />
+          ) : (
+            <MintDAI account={account} mockDAIContract={mockDAIContract} />
+          )}
         </Fieldset>
       </ThreeColumn>
     </PageWrapper>
@@ -100,11 +92,7 @@ function MintPunk({ account, mockPunkContract }: MintPunkProps) {
       process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
     );
     const punk = MockPUNK__factory.connect(mockPunkContract, provider);
-    const filter = punk.filters.Transfer(
-      null,
-      account,
-      null,
-    );
+    const filter = punk.filters.Transfer(null, account, null);
     punk.once(filter, (from, to, tokenId) => {
       console.log(`token id ${tokenId}`);
       setTxPending(false);
@@ -121,8 +109,8 @@ function MintPunk({ account, mockPunkContract }: MintPunkProps) {
         isPending={txPending}
       />
       <p>
-        NFT contract address {mockPunkContract} (you will
-        need this when creating a loan)
+        NFT contract address {mockPunkContract} (you will need this when
+        creating a loan)
       </p>
       {Boolean(id) && <p>Minted token ID {id.toString()}</p>}
     </div>
@@ -132,7 +120,7 @@ function MintPunk({ account, mockPunkContract }: MintPunkProps) {
 type MintDAIProps = {
   account: string;
   mockDAIContract: string;
-}
+};
 function MintDAI({ account, mockDAIContract }: MintDAIProps) {
   const [txHash, setTxHash] = useState('');
   const [txPending, setTxPending] = useState(false);
@@ -159,11 +147,7 @@ function MintDAI({ account, mockDAIContract }: MintDAIProps) {
       process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
     );
     const dai = MockDAI__factory.connect(mockDAIContract, provider);
-    const filter = dai.filters.Transfer(
-      null,
-      account,
-      null,
-    );
+    const filter = dai.filters.Transfer(null, account, null);
     dai.once(filter, (from, to, value) => {
       setTxPending(false);
     });
@@ -178,8 +162,8 @@ function MintDAI({ account, mockDAIContract }: MintDAIProps) {
         isPending={txPending}
       />
       <p>
-        DAI contract address {mockDAIContract} (you will
-        need this when creating a loan)
+        DAI contract address {mockDAIContract} (you will need this when creating
+        a loan)
       </p>
     </div>
   );

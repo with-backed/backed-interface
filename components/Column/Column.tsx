@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import style from './Column.module.css';
 
-interface ColumnProps { };
+interface ColumnProps {}
 export const Column: FunctionComponent<ColumnProps> = ({
   children,
   ...props

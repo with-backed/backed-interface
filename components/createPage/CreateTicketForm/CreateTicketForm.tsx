@@ -22,7 +22,7 @@ export type CreateTicketFormProps = {
   collateralTokenID?: ethers.BigNumber;
   setCollateralTokenID: (value: ethers.BigNumber) => void;
   setIsValidCollateral: (value: boolean) => void;
-}
+};
 export function CreateTicketForm({
   account,
   collateralAddress,
@@ -62,9 +62,7 @@ export function CreateTicketForm({
       <LoanAmountInput setLoanAmount={setLoanAmount} />
       <InterestRateInput setInterestRate={setInterestRate} />
       <DurationInput setDurationSeconds={setDuration} />
-      {isApproved && !showApproved ? (
-        null
-      ) : (
+      {isApproved && !showApproved ? null : (
         <AllowButton
           account={account}
           setIsApproved={handleApproved}
@@ -92,9 +90,12 @@ type AllowButtonProps = {
   collateralAddress?: string;
   tokenId?: ethers.BigNumber;
   setIsApproved: (value: boolean) => void;
-}
+};
 function AllowButton({
-  account, collateralAddress, tokenId, setIsApproved,
+  account,
+  collateralAddress,
+  tokenId,
+  setIsApproved,
 }: AllowButtonProps) {
   const [transactionHash, setTransactionHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
@@ -167,14 +168,15 @@ function MintTicketButton({
   const [transactionHash, setTransactionHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
 
-  const disabled = () => collateralAddress == ''
-    || collateralTokenID.eq(0)
-    || loanAsset == ''
-    || duration.eq(0);
+  const disabled = () =>
+    collateralAddress == '' ||
+    collateralTokenID.eq(0) ||
+    loanAsset == '' ||
+    duration.eq(0);
 
   const mint = async () => {
     if (disabled()) {
-      return
+      return;
     }
     const contract = web3LoanFacilitator();
     const t = await contract.createLoan(

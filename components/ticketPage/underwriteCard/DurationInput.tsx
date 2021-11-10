@@ -13,30 +13,33 @@ export default function DurationInput({
   );
   const [error, setError] = useState('');
 
-  const handleChange = useCallback(({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
-    setError('');
+  const handleChange = useCallback(
+    ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
+      setError('');
 
-    if (value === '') {
-      setDurationSeconds(ethers.BigNumber.from(0));
-      return;
-    }
+      if (value === '') {
+        setDurationSeconds(ethers.BigNumber.from(0));
+        return;
+      }
 
-    const valueAsFloat = parseFloat(value);
-    if (valueAsFloat < 0) {
-      setError('Rate cannot be negative');
-      return;
-    }
+      const valueAsFloat = parseFloat(value);
+      if (valueAsFloat < 0) {
+        setError('Rate cannot be negative');
+        return;
+      }
 
-    if (valueAsFloat < minDurationDays) {
-      setDurationSeconds(ethers.BigNumber.from(0));
-      setError(`Minimum duration ${minDurationDays} days`);
-      return;
-    }
-    const valueInSeconds = ethers.BigNumber.from(
-      Math.ceil(valueAsFloat * SECONDS_IN_DAY),
-    );
-    setDurationSeconds(valueInSeconds);
-  }, [minDurationDays, setDurationSeconds]);
+      if (valueAsFloat < minDurationDays) {
+        setDurationSeconds(ethers.BigNumber.from(0));
+        setError(`Minimum duration ${minDurationDays} days`);
+        return;
+      }
+      const valueInSeconds = ethers.BigNumber.from(
+        Math.ceil(valueAsFloat * SECONDS_IN_DAY),
+      );
+      setDurationSeconds(valueInSeconds);
+    },
+    [minDurationDays, setDurationSeconds],
+  );
 
   return (
     <Input

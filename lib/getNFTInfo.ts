@@ -26,16 +26,17 @@ export default async function getNFTInfo({
     const resolvedTokenURI = isIPFS(tokenURI)
       ? makeIPFSUrl(tokenURI)
       : tokenURI;
-    
+
     const tokenURIRes = await fetch(resolvedTokenURI);
 
     const metadata = await tokenURIRes.json();
 
-    const imageURL = metadata?.animation_url == null ? metadata?.image : metadata?.animation_url
+    const imageURL =
+      metadata?.animation_url == null
+        ? metadata?.image
+        : metadata?.animation_url;
 
-    const mediaUrl = isIPFS(imageURL)
-      ? makeIPFSUrl(imageURL)
-      : imageURL;
+    const mediaUrl = isIPFS(imageURL) ? makeIPFSUrl(imageURL) : imageURL;
 
     const mediaMimeType = await getMimeType(mediaUrl);
 
@@ -47,7 +48,7 @@ export default async function getNFTInfo({
       id: tokenId,
     };
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return null;
   }
 }

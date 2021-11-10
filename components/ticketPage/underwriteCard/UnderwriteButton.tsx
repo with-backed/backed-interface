@@ -27,21 +27,37 @@ export default function UnderwriteButton({
   const [transactionHash, setTransactionHash] = useState('');
   const [transactionPending, setTransactionPending] = useState(false);
 
-  const get110Percent = useCallback((value: ethers.BigNumber) => value.add(value.mul(10).div(100)), []);
+  const get110Percent = useCallback(
+    (value: ethers.BigNumber) => value.add(value.mul(10).div(100)),
+    [],
+  );
 
-  const get90Percent = useCallback((value: ethers.BigNumber) => value.mul(90).div(100), []);
+  const get90Percent = useCallback(
+    (value: ethers.BigNumber) => value.mul(90).div(100),
+    [],
+  );
 
   const checkHas10PercentImprovement = useCallback(() => {
-    const hasImprovement = loanAmount.gte(get110Percent(loanInfo.loanAmount))
-      || duration.gte(get110Percent(loanInfo.durationSeconds))
-      || interestRate.lte(get90Percent(loanInfo.perSecondInterestRate));
+    const hasImprovement =
+      loanAmount.gte(get110Percent(loanInfo.loanAmount)) ||
+      duration.gte(get110Percent(loanInfo.durationSeconds)) ||
+      interestRate.lte(get90Percent(loanInfo.perSecondInterestRate));
     setHas10PercentImprovement(hasImprovement);
     return hasImprovement;
-  }, [duration, get110Percent, get90Percent, interestRate, loanAmount, loanInfo.durationSeconds, loanInfo.loanAmount, loanInfo.perSecondInterestRate]);
+  }, [
+    duration,
+    get110Percent,
+    get90Percent,
+    interestRate,
+    loanAmount,
+    loanInfo.durationSeconds,
+    loanInfo.loanAmount,
+    loanInfo.perSecondInterestRate,
+  ]);
 
   const isFilled = useCallback(() => {
     return !loanAmount.eq(0) && !interestRate.eq(0) && !duration.eq(0);
-  }, [duration, interestRate, loanAmount])
+  }, [duration, interestRate, loanAmount]);
 
   const waitForUnderwrite = useCallback(async () => {
     const loanFacilitator = jsonRpcLoanFacilitator();
@@ -57,7 +73,12 @@ export default function UnderwriteButton({
     });
   }, [account, loanInfo.loanId, loanUpdatedCallback]);
 
-  const isDisabled = useMemo(() => loanAmount.gt(allowance) || (!checkHas10PercentImprovement() && isFilled()), [allowance, checkHas10PercentImprovement, isFilled, loanAmount]);
+  const isDisabled = useMemo(
+    () =>
+      loanAmount.gt(allowance) ||
+      (!checkHas10PercentImprovement() && isFilled()),
+    [allowance, checkHas10PercentImprovement, isFilled, loanAmount],
+  );
 
   const underwrite = useCallback(async () => {
     if (isDisabled || !isFilled()) {
@@ -82,7 +103,16 @@ export default function UnderwriteButton({
         setTransactionPending(false);
         console.log(err);
       });
-  }, [account, duration, interestRate, isDisabled, isFilled, loanAmount, loanInfo.loanId, waitForUnderwrite]);
+  }, [
+    account,
+    duration,
+    interestRate,
+    isDisabled,
+    isFilled,
+    loanAmount,
+    loanInfo.loanId,
+    waitForUnderwrite,
+  ]);
 
   useEffect(() => {
     checkHas10PercentImprovement();
@@ -97,16 +127,14 @@ export default function UnderwriteButton({
         txHash={transactionHash}
         isPending={transactionPending}
       />
-      {isFilled()
-        && loanInfo.lastAccumulatedTimestamp.toString() != '0'
-        && !has10PercentImprovement ? (
+      {isFilled() &&
+      loanInfo.lastAccumulatedTimestamp.toString() != '0' &&
+      !has10PercentImprovement ? (
         <p>
           Replacing exisiting underwriter requires improving at least one loan
           term by at least 10%
         </p>
-      ) : (
-        null
-      )}
+      ) : null}
     </div>
   );
 }

@@ -67,14 +67,15 @@ function CollateralMediaCardLoaded({ contractName, contractAddress, nftInfo }) {
         <p>
           <a
             target="_blank"
-            href={`${process.env.NEXT_PUBLIC_OPENSEA_URL
-              }/assets/${contractAddress}/${assetId}`}
+            href={`${process.env.NEXT_PUBLIC_OPENSEA_URL}/assets/${contractAddress}/${assetId}`}
             rel="noreferrer">
             View on OpenSea
           </a>
         </p>
         <p>
-          <EtherscanTokenLink contractAddress={contractAddress} assetId={assetId}>
+          <EtherscanTokenLink
+            contractAddress={contractAddress}
+            assetId={assetId}>
             View on Etherscan
           </EtherscanTokenLink>
         </p>

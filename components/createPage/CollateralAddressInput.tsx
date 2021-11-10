@@ -4,32 +4,35 @@ import { Input } from 'components/Input';
 
 type CollateralAddressInputProps = {
   setCollateralAddress: (value: string) => void;
-}
+};
 export default function CollateralAddressInput({
-  setCollateralAddress
+  setCollateralAddress,
 }: CollateralAddressInputProps) {
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
 
-  const handleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value.trim();
-    if (newValue === value) {
-      return;
-    }
-    setError('');
-    setValue(newValue);
+  const handleChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const newValue = event.target.value.trim();
+      if (newValue === value) {
+        return;
+      }
+      setError('');
+      setValue(newValue);
 
-    if (newValue === '') {
-      setCollateralAddress('');
-      return;
-    }
-    try {
-      const address = ethers.utils.getAddress(newValue);
-      setCollateralAddress(address);
-    } catch (error) {
-      setError('invalid address');
-    }
-  }, [setCollateralAddress, value]);
+      if (newValue === '') {
+        setCollateralAddress('');
+        return;
+      }
+      try {
+        const address = ethers.utils.getAddress(newValue);
+        setCollateralAddress(address);
+      } catch (error) {
+        setError('invalid address');
+      }
+    },
+    [setCollateralAddress, value],
+  );
 
   return (
     <Input

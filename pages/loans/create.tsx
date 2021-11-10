@@ -10,11 +10,11 @@ import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { PageWrapper } from 'components/layouts/PageWrapper';
 
 const ConnectWallet = dynamic(
-  () => import('components/ConnectWallet').then(mod => mod.ConnectWallet),
-  { ssr: false }
+  () => import('components/ConnectWallet').then((mod) => mod.ConnectWallet),
+  { ssr: false },
 );
 
-export default function Create({ }) {
+export default function Create({}) {
   const [account, setAccount] = useState(null);
   const [collateralAddress, setCollateralAddress] = useState('');
   const [collateralTokenID, setCollateralTokenID] = useState(
@@ -32,10 +32,7 @@ export default function Create({ }) {
       <ThreeColumn>
         <Fieldset legend="pawn your NFT">
           {account == null ? (
-            <ConnectWallet
-              account={account}
-              addressSetCallback={setAccount}
-            />
+            <ConnectWallet account={account} addressSetCallback={setAccount} />
           ) : (
             <CreateTicketForm
               account={account}
@@ -55,9 +52,7 @@ export default function Create({ }) {
             collateralTokenId={collateralTokenID}
           />
         )}
-        <Fieldset
-          legend="explainer"
-        >
+        <Fieldset legend="explainer">
           <Explainer />
         </Fieldset>
       </ThreeColumn>

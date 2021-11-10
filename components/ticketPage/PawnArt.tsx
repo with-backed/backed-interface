@@ -5,17 +5,21 @@ import { Media } from 'components/Media';
 import { ERC721 } from 'abis/types';
 import { jsonRpcERC721Contract } from 'lib/contracts';
 
-const pawnTicketsContract = jsonRpcERC721Contract(process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT);
+const pawnTicketsContract = jsonRpcERC721Contract(
+  process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT,
+);
 
-const pawnLoansContract = jsonRpcERC721Contract(process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT);
+const pawnLoansContract = jsonRpcERC721Contract(
+  process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT,
+);
 
 export function PawnLoanArt({ tokenId }) {
   return <PawnArt contract={pawnLoansContract} tokenId={tokenId} />;
 }
 
 interface PawnArtProps {
-  contract: ERC721
-  tokenId: ethers.BigNumber
+  contract: ERC721;
+  tokenId: ethers.BigNumber;
 }
 
 export function PawnTicketArt({ tokenId }) {
