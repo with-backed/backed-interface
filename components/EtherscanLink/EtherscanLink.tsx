@@ -1,17 +1,14 @@
 import React, { AnchorHTMLAttributes, FunctionComponent } from 'react';
 
 interface EtherscanLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
-  address?: string,
-  transactionHash?: string,
+  path: string;
 }
 const EtherscanLink: FunctionComponent<EtherscanLinkProps> = ({
   children,
-  address,
-  transactionHash,
+  path,
   ...props
 }) => {
-  const kind = address ? 'address' : 'tx';
-  const href = `${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/${kind}/${address || transactionHash}`;
+  const href = `${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/${path}`;
   return (
     <a
       target="_blank"
@@ -24,16 +21,29 @@ const EtherscanLink: FunctionComponent<EtherscanLinkProps> = ({
   )
 }
 
-interface EtherscanAddressProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
+interface EtherscanAddressLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   address: string,
 }
-export const EtherscanAddressLink: FunctionComponent<EtherscanAddressProps> = ({ address, children, ...props }) => {
-  return <EtherscanLink address={address} {...props}>{children}</EtherscanLink>;
+export const EtherscanAddressLink: FunctionComponent<EtherscanAddressLinkProps> = ({ address, children, ...props }) => {
+  return <EtherscanLink path={`/address/${address}`} {...props}>{children}</EtherscanLink>;
 }
 
-interface EtherscanTransactionProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
+interface EtherscanTransactionLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   transactionHash: string,
 }
-export const EtherscanTransactionLink: FunctionComponent<EtherscanTransactionProps> = ({ transactionHash, children, ...props }) => {
-  return <EtherscanLink transactionHash={transactionHash} {...props}>{children}</EtherscanLink>;
+export const EtherscanTransactionLink: FunctionComponent<EtherscanTransactionLinkProps> = ({ transactionHash, children, ...props }) => {
+  return <EtherscanLink path={`/tx/${transactionHash}`} {...props}>{children}</EtherscanLink>;
+}
+
+interface EtherscanTokenLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
+  contractAddress: string;
+  assetId: string;
+}
+export const EtherscanTokenLink: FunctionComponent<EtherscanTokenLinkProps> = ({
+  contractAddress,
+  assetId,
+  children,
+  ...props
+}) => {
+  return <EtherscanLink path={`/token/${contractAddress}?a=${assetId}`} {...props}>{children}</EtherscanLink>
 }

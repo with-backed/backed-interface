@@ -1,4 +1,5 @@
 import { Button } from 'components/Button';
+import { EtherscanTransactionLink } from 'components/EtherscanLink';
 import React, { useCallback } from 'react';
 import styles from './TransactionButton.module.css';
 
@@ -27,11 +28,17 @@ export function TransactionButton({
   }, [disabled, txHash, onClick]);
 
   if (txHash.length > 0) {
+    const message = isPending ? 'Pending...' : 'Success!';
+    const transactionLink = (
+      <EtherscanTransactionLink transactionHash={txHash}>
+        view transaction
+      </EtherscanTransactionLink>
+    );
     return (
       <div className={styles.submitted}>
         <span className="inter">{text}</span>
         <span className="times">
-          {isPending ? 'Pending...' : 'Success!'} <TransactionLink txHash={txHash} />
+          {message} {transactionLink}
         </span>
       </div>
     );
@@ -39,20 +46,5 @@ export function TransactionButton({
 
   return (
     <Button onClick={handleClick} disabled={disabled}>{text}</Button>
-  )
-}
-
-type TransactionLinkProps = {
-  txHash: string;
-}
-function TransactionLink({ txHash }: TransactionLinkProps) {
-  return (
-    <a
-      href={`${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/tx/${txHash}`}
-      target="_blank"
-      rel="noreferrer"
-    >
-      view transaction
-    </a>
   )
 }

@@ -4,6 +4,7 @@ import getNFTInfo from 'lib/getNFTInfo';
 import { Fieldset } from 'components/Fieldset';
 import { Media } from 'components/Media';
 import { jsonRpcERC721Contract } from 'lib/contracts';
+import { EtherscanTokenLink } from 'components/EtherscanLink';
 
 interface CollateralCardArgs {
   collateralAddress: string;
@@ -50,6 +51,7 @@ export default function CollateralMediaCard({
 }
 
 function CollateralMediaCardLoaded({ contractName, contractAddress, nftInfo }) {
+  const assetId = nftInfo.id.toString();
   return (
     <div>
       <div className="collateral-media nfte__media">
@@ -65,22 +67,16 @@ function CollateralMediaCardLoaded({ contractName, contractAddress, nftInfo }) {
         <p>
           <a
             target="_blank"
-            href={`${
-              process.env.NEXT_PUBLIC_OPENSEA_URL
-            }/assets/${contractAddress}/${nftInfo.id.toString()}`}
+            href={`${process.env.NEXT_PUBLIC_OPENSEA_URL
+              }/assets/${contractAddress}/${assetId}`}
             rel="noreferrer">
             View on OpenSea
           </a>
         </p>
         <p>
-          <a
-            target="_blank"
-            href={`${
-              process.env.NEXT_PUBLIC_ETHERSCAN_URL
-            }/token/${contractAddress}?a=${nftInfo.id.toString()}`}
-            rel="noreferrer">
+          <EtherscanTokenLink contractAddress={contractAddress} assetId={assetId}>
             View on Etherscan
-          </a>
+          </EtherscanTokenLink>
         </p>
         <p>
           <b>Contract Address</b>
@@ -88,7 +84,7 @@ function CollateralMediaCardLoaded({ contractName, contractAddress, nftInfo }) {
         </p>
         <p>
           <b>ID</b>
-          {nftInfo.id.toString()}
+          {assetId}
         </p>
       </div>
     </div>
