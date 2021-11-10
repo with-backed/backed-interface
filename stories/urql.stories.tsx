@@ -20,7 +20,7 @@ const Querier = () => {
 
   if (fetching) return <p>Loading...</p>;
   if (error) return <p>Oh no... {error.message}</p>;
-  console.log({ data });
+
   return (
     <ol>
       {data.loans.map((loan) => (
