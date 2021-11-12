@@ -10,7 +10,6 @@ export default {
 };
 
 const props: CreateTicketFormProps = {
-  account: undefined,
   collateralAddress: '',
   setCollateralAddress: undefined,
   collateralTokenID: undefined,

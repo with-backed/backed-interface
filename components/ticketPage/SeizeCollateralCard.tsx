@@ -1,21 +1,21 @@
 import { ethers } from 'ethers';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { LoanInfo } from 'lib/LoanInfoType';
 import { web3LoanFacilitator, jsonRpcLoanFacilitator } from 'lib/contracts';
 import { Fieldset } from 'components/Fieldset';
 import { Button } from 'components/Button';
+import { AccountContext } from 'context/account';
 
 interface SeizeCollateralCardProps {
-  account: string;
   loanInfo: LoanInfo;
   seizeCollateralSuccessCallback: () => void;
 }
 
 export default function SeizeCollateralCard({
-  account,
   loanInfo,
   seizeCollateralSuccessCallback,
 }: SeizeCollateralCardProps) {
+  const { account } = useContext(AccountContext);
   const [amountOwed] = useState(
     ethers.utils.formatUnits(
       loanInfo.interestOwed.add(loanInfo.loanAmount).toString(),

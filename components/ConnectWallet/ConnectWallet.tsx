@@ -2,11 +2,13 @@ import React, {
   FunctionComponent,
   memo,
   useCallback,
+  useContext,
   useEffect,
   useState,
 } from 'react';
 import { ethers } from 'ethers';
 import { Button } from 'components/Button';
+import { AccountContext } from 'context/account';
 
 declare global {
   interface Window {
@@ -43,15 +45,8 @@ const NoProvider = memo(function NoProvider() {
   );
 });
 
-type ConnectWalletProps = {
-  account?: string | null;
-  addressSetCallback: (address: string) => void;
-};
-
-export const ConnectWallet: FunctionComponent<ConnectWalletProps> = ({
-  account,
-  addressSetCallback,
-}) => {
+export const ConnectWallet = () => {
+  const { account, setAccount } = useContext(AccountContext);
   const [providerAvailable, setProviderAvailable] = useState(false);
 
   const getAccount = useCallback(async () => {
@@ -65,13 +60,13 @@ export const ConnectWallet: FunctionComponent<ConnectWalletProps> = ({
       });
     }
     let account = ethers.utils.getAddress(accounts[0]);
-    addressSetCallback(account);
+    setAccount(account);
     window.ethereum.on('accountsChanged', (accounts) => {
       console.log('accounts changed');
       account = ethers.utils.getAddress(accounts[0]);
-      addressSetCallback(account);
+      setAccount(account);
     });
-  }, [addressSetCallback]);
+  }, [setAccount]);
 
   const setup = useCallback(async () => {
     if (window.ethereum == null) {

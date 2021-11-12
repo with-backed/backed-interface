@@ -1,21 +1,21 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { ethers } from 'ethers';
 import { TransactionButton } from 'components/ticketPage/TransactionButton';
 import { jsonRpcERC20Contract, web3Erc20Contract } from 'lib/contracts';
+import { AccountContext } from 'context/account';
 
 interface AllowButtonProps {
   contractAddress: string;
-  account: string;
   symbol: string;
   callback: () => void;
 }
 
 export default function AllowButton({
   contractAddress,
-  account,
   symbol,
   callback,
 }: AllowButtonProps) {
+  const { account } = useContext(AccountContext);
   const [txHash, setTxHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
 

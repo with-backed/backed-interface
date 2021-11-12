@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import InterestRateInput from 'components/createPage/InterestRateInput';
 import CollateralAddressInput from 'components/createPage/CollateralAddressInput';
 import CollateralTokenIDInput from 'components/createPage/CollateralTokenIDInput';
@@ -14,9 +14,9 @@ import {
 } from 'lib/contracts';
 import { TransactionButton } from 'components/ticketPage/TransactionButton';
 import { FormWrapper } from 'components/layouts/FormWrapper';
+import { AccountContext } from 'context/account';
 
 export type CreateTicketFormProps = {
-  account: string | null;
   collateralAddress: string | null;
   setCollateralAddress: (value: string) => void;
   collateralTokenID?: ethers.BigNumber;
@@ -24,7 +24,6 @@ export type CreateTicketFormProps = {
   setIsValidCollateral: (value: boolean) => void;
 };
 export function CreateTicketForm({
-  account,
   collateralAddress,
   setCollateralAddress,
   collateralTokenID,
@@ -48,7 +47,6 @@ export function CreateTicketForm({
     <FormWrapper>
       <CollateralAddressInput setCollateralAddress={setCollateralAddress} />
       <CollateralTokenIDInput
-        account={account}
         collateralContractAddress={collateralAddress}
         setCollateralTokenID={setCollateralTokenID}
         setIsValidCollateral={setIsValidCollateral}
@@ -64,14 +62,12 @@ export function CreateTicketForm({
       <DurationInput setDurationSeconds={setDuration} />
       {isApproved && !showApproved ? null : (
         <AllowButton
-          account={account}
           setIsApproved={handleApproved}
           collateralAddress={collateralAddress}
           tokenId={collateralTokenID}
         />
       )}
       <MintTicketButton
-        account={account}
         isApproved={isApproved}
         collateralAddress={collateralAddress}
         collateralTokenID={collateralTokenID}
@@ -86,17 +82,16 @@ export function CreateTicketForm({
 }
 
 type AllowButtonProps = {
-  account?: string;
   collateralAddress?: string;
   tokenId?: ethers.BigNumber;
   setIsApproved: (value: boolean) => void;
 };
 function AllowButton({
-  account,
   collateralAddress,
   tokenId,
   setIsApproved,
 }: AllowButtonProps) {
+  const { account } = useContext(AccountContext);
   const [transactionHash, setTransactionHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
 
@@ -144,7 +139,6 @@ function AllowButton({
 }
 
 type MintTicketButtonProps = {
-  account?: string;
   isApproved?: boolean;
   collateralAddress?: string;
   collateralTokenID?: ethers.BigNumber;
@@ -155,7 +149,6 @@ type MintTicketButtonProps = {
   duration: any;
 };
 function MintTicketButton({
-  account,
   isApproved,
   collateralAddress,
   collateralTokenID,
@@ -165,6 +158,7 @@ function MintTicketButton({
   interestRate,
   duration,
 }: MintTicketButtonProps) {
+  const { account } = useContext(AccountContext);
   const [transactionHash, setTransactionHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
 

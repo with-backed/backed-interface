@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import CollateralMediaCard from 'components/ticketPage/CollateralMediaCard';
 import { PawnLoanArt, PawnTicketArt } from 'components/ticketPage/PawnArt';
@@ -12,32 +12,32 @@ import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { Fieldset } from 'components/Fieldset';
 import { LoanDurationCard } from 'components/ticketPage/LoanDurationCard/LoanDurationCard';
 import { Column } from 'components/Column';
+import { AccountContext } from 'context/account';
 
 const _provider = new ethers.providers.JsonRpcProvider(
   process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
 );
 
 interface TicketPageBodyProps {
-  account: string;
   loanInfo: LoanInfo;
   refresh: () => void;
 }
 
 export default function TicketPageBody({
-  account,
   loanInfo,
   refresh,
 }: TicketPageBodyProps) {
   return (
     <ThreeColumn>
-      <LeftColumn account={account} loanInfo={loanInfo} refresh={refresh} />
-      <CenterColumn account={account} loanInfo={loanInfo} refresh={refresh} />
-      <RightColumn account={account} loanInfo={loanInfo} refresh={refresh} />
+      <LeftColumn loanInfo={loanInfo} refresh={refresh} />
+      <CenterColumn loanInfo={loanInfo} refresh={refresh} />
+      <RightColumn loanInfo={loanInfo} refresh={refresh} />
     </ThreeColumn>
   );
 }
 
-function LeftColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
+function LeftColumn({ loanInfo, refresh }: TicketPageBodyProps) {
+  const { account } = useContext(AccountContext);
   const [owner, setOwner] = useState('');
 
   const getOwner = useCallback(async () => {
@@ -61,14 +61,8 @@ function LeftColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
       {account == null ||
       loanInfo.closed ||
       loanInfo.lastAccumulatedTimestamp.toString() == '0' ||
-      owner != account ? (
-        ''
-      ) : (
-        <RepayCard
-          account={account}
-          loanInfo={loanInfo}
-          repaySuccessCallback={refresh}
-        />
+      owner != account ? null : (
+        <RepayCard loanInfo={loanInfo} repaySuccessCallback={refresh} />
       )}
       <TicketHistory loanInfo={loanInfo} />
     </Column>
@@ -146,7 +140,8 @@ function CenterColumn({ loanInfo }: TicketPageBodyProps) {
   );
 }
 
-function RightColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
+function RightColumn({ loanInfo, refresh }: TicketPageBodyProps) {
+  const { account } = useContext(AccountContext);
   const [timestamp, setTimestamp] = useState(null);
   const [endSeconds] = useState(
     parseInt(
@@ -197,16 +192,11 @@ function RightColumn({ account, loanInfo, refresh }: TicketPageBodyProps) {
           timestamp == null ||
           timestamp < endSeconds ? null : (
             <SeizeCollateralCard
-              account={account}
               loanInfo={loanInfo}
               seizeCollateralSuccessCallback={refresh}
             />
           )}
-          <UnderwriteCard
-            account={account}
-            loanInfo={loanInfo}
-            loanUpdatedCallback={refresh}
-          />
+          <UnderwriteCard loanInfo={loanInfo} loanUpdatedCallback={refresh} />
         </>
       )}
     </Column>
