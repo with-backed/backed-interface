@@ -1,12 +1,12 @@
-import { UrqlContext } from 'context/urql';
-import React, { useContext } from 'react';
+import { nftBackedLoansClient } from 'lib/urql';
+import React from 'react';
 import { Provider, useQuery } from 'urql';
 
 const LoansQuery = `
   query {
     loans(first: 5) {
       id
-      borrowTickerHolder
+      borrowTicketHolder
     }
   }
 `;
@@ -24,14 +24,13 @@ const Querier = () => {
   return (
     <ol>
       {data.loans.map((loan) => (
-        <li key={loan.id}>{loan.borrowTickerHolder}</li>
+        <li key={loan.id}>{loan.borrowTicketHolder}</li>
       ))}
     </ol>
   );
 };
 
 const Wrapper = () => {
-  const { nftBackedLoansClient } = useContext(UrqlContext);
   return (
     <Provider value={nftBackedLoansClient}>
       <Querier />
@@ -40,7 +39,7 @@ const Wrapper = () => {
 };
 
 export default {
-  title: 'context/urql',
+  title: 'lib/urql',
   component: Wrapper,
 };
 
