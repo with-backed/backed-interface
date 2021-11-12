@@ -16,7 +16,6 @@ type TicketProps = {
 
 export const Ticket: FunctionComponent<TicketProps> = ({ ticketID }) => {
   const [loanInfo, setLoanInfo] = useState(null);
-  const [account, setAccount] = useState(null);
 
   const fetchData = useCallback(() => {
     setLoanInfo(null);
@@ -31,21 +30,13 @@ export const Ticket: FunctionComponent<TicketProps> = ({ ticketID }) => {
   }, [fetchData]);
   return (
     <PageWrapper>
-      <PawnShopHeader
-        account={account}
-        setAccount={setAccount}
-        message={`pawn loan #${ticketID}`}
-      />
+      <PawnShopHeader message={`pawn loan #${ticketID}`} />
       {loanInfo == null ? (
         <Dimmer active={loanInfo == null} inverted>
           <Loader inverted content="Loading" />
         </Dimmer>
       ) : (
-        <TicketPageBody
-          account={account}
-          loanInfo={loanInfo}
-          refresh={fetchData}
-        />
+        <TicketPageBody loanInfo={loanInfo} refresh={fetchData} />
       )}
     </PageWrapper>
   );

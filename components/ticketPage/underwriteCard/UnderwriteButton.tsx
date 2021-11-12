@@ -1,12 +1,12 @@
-import { useCallback, useMemo, useState, useEffect } from 'react';
+import { useCallback, useMemo, useState, useEffect, useContext } from 'react';
 import { ethers } from 'ethers';
 import { jsonRpcLoanFacilitator, web3LoanFacilitator } from 'lib/contracts';
 import { LoanInfo } from 'lib/LoanInfoType';
 import { TransactionButton } from 'components/ticketPage/TransactionButton';
+import { AccountContext } from 'context/account';
 
 interface UnderwriteButtonProps {
   loanInfo: LoanInfo;
-  account: string;
   allowance: ethers.BigNumber;
   interestRate: ethers.BigNumber;
   loanAmount: ethers.BigNumber;
@@ -16,13 +16,13 @@ interface UnderwriteButtonProps {
 
 export default function UnderwriteButton({
   loanInfo,
-  account,
   allowance,
   interestRate,
   loanAmount,
   duration,
   loanUpdatedCallback,
 }: UnderwriteButtonProps) {
+  const { account } = useContext(AccountContext);
   const [has10PercentImprovement, setHas10PercentImprovement] = useState(false);
   const [transactionHash, setTransactionHash] = useState('');
   const [transactionPending, setTransactionPending] = useState(false);

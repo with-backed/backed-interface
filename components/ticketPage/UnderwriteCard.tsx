@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, useContext } from 'react';
 import LoanAmountInput from 'components/ticketPage/underwriteCard/LoanAmountInput';
 import { jsonRpcERC20Contract } from 'lib/contracts';
 import InterestRateInput from 'components/ticketPage/underwriteCard/InterestRateInput';
@@ -9,18 +9,18 @@ import AllowButton from 'components/ticketPage/underwriteCard/AllowButton';
 import { LoanInfo } from 'lib/LoanInfoType';
 import { Fieldset } from 'components/Fieldset';
 import { FormWrapper } from 'components/layouts/FormWrapper';
+import { AccountContext } from 'context/account';
 
 interface UnderwriteCardProps {
-  account: string;
   loanInfo: LoanInfo;
   loanUpdatedCallback: () => void;
 }
 
 export function UnderwriteCard({
-  account,
   loanInfo,
   loanUpdatedCallback,
 }: UnderwriteCardProps) {
+  const { account } = useContext(AccountContext);
   const [loanAssetBalance, setLoanAssetBalance] = useState('0');
   const [loanAmount, setLoanAmount] = useState(ethers.BigNumber.from(0));
   const [interestRate, setInterestRate] = useState(ethers.BigNumber.from(0));
@@ -114,14 +114,12 @@ export function UnderwriteCard({
         {needsAllowance && (
           <AllowButton
             contractAddress={loanInfo.loanAssetContractAddress}
-            account={account}
             symbol={loanInfo.loanAssetSymbol}
             callback={() => setAllowance()}
           />
         )}
         <UnderwriteButton
           loanInfo={loanInfo}
-          account={account}
           allowance={allowanceValue}
           interestRate={interestRate}
           loanAmount={loanAmount}

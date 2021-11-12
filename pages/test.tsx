@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next';
 import dynamic from 'next/dynamic';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { ethers } from 'ethers';
 import { PawnShopHeader } from 'components/PawnShopHeader';
 import { MockDAI__factory, MockPUNK__factory } from 'abis/types';
@@ -8,6 +8,7 @@ import { TransactionButton } from 'components/ticketPage/TransactionButton';
 import { PageWrapper } from 'components/layouts/PageWrapper';
 import { Fieldset } from 'components/Fieldset';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
+import { AccountContext } from 'context/account';
 
 const ConnectWallet = dynamic(
   () => import('components/ConnectWallet').then((mod) => mod.ConnectWallet),
@@ -32,44 +33,28 @@ export const getServerSideProps: GetServerSideProps<TestProps> = async () => {
 };
 
 export default function Test({ mockDAIContract, mockPunkContract }: TestProps) {
-  const [account, setAccount] = useState(null);
-
+  const { account } = useContext(AccountContext);
   return (
     <PageWrapper>
-      <PawnShopHeader
-        account={account}
-        setAccount={setAccount}
-        message="get an NFT and DAI"
-      />
+      <PawnShopHeader message="get an NFT and DAI" />
       <ThreeColumn>
         <Fieldset legend="mint an NFT">
-          {account == null ? (
-            <ConnectWallet account={account} addressSetCallback={setAccount} />
-          ) : (
-            <MintPunk account={account} mockPunkContract={mockPunkContract} />
-          )}
+          {account == null ? <ConnectWallet /> : <MintPunk />}
         </Fieldset>
         <Fieldset legend="mint DAI">
-          {account == null ? (
-            <ConnectWallet account={account} addressSetCallback={setAccount} />
-          ) : (
-            <MintDAI account={account} mockDAIContract={mockDAIContract} />
-          )}
+          {account == null ? <ConnectWallet /> : <MintDAI />}
         </Fieldset>
       </ThreeColumn>
     </PageWrapper>
   );
 }
 
-type MintPunkProps = {
-  account: string;
-  mockPunkContract: string;
-};
-function MintPunk({ account, mockPunkContract }: MintPunkProps) {
+function MintPunk() {
+  const { account } = useContext(AccountContext);
   const [txHash, setTxHash] = useState('');
   const [txPending, setTxPending] = useState(false);
   const [id, setId] = useState<ethers.BigNumber>(null);
-
+  const mockPunkContract = process.env.NEXT_PUBLIC_MOCK_PUNK_CONTRACT;
   const mintPunk = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner(0);
@@ -117,13 +102,11 @@ function MintPunk({ account, mockPunkContract }: MintPunkProps) {
   );
 }
 
-type MintDAIProps = {
-  account: string;
-  mockDAIContract: string;
-};
-function MintDAI({ account, mockDAIContract }: MintDAIProps) {
+function MintDAI() {
+  const { account } = useContext(AccountContext);
   const [txHash, setTxHash] = useState('');
   const [txPending, setTxPending] = useState(false);
+  const mockDAIContract = process.env.NEXT_PUBLIC_MOCK_DAI_CONTRACT;
 
   const mint = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);

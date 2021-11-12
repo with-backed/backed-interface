@@ -1,16 +1,23 @@
 import { ERC721 } from 'abis/types';
 import { ethers } from 'ethers';
-import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import React, {
+  ChangeEvent,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { Input } from 'components/Input';
 import { jsonRpcERC721Contract } from 'lib/contracts';
+import { AccountContext } from 'context/account';
 
 export default function CollateralTokenIDInput({
-  account,
   collateralContractAddress,
   setCollateralTokenID,
   setIsValidCollateral,
   setIsApproved,
 }) {
+  const { account } = useContext(AccountContext);
   const [contract, setContract] = useState<ERC721 | null>(null);
   const [value, setValue] = useState('');
   const [error, setError] = useState('');

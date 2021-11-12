@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { LoanInfo } from 'lib/LoanInfoType';
 import {
   web3LoanFacilitator,
@@ -9,18 +9,15 @@ import {
 import AllowButton from 'components/ticketPage/underwriteCard/AllowButton';
 import { TransactionButton } from 'components/ticketPage/TransactionButton';
 import { Fieldset } from 'components/Fieldset';
+import { AccountContext } from 'context/account';
 
 interface RepayCardProps {
-  account: string;
   loanInfo: LoanInfo;
   repaySuccessCallback: () => void;
 }
 
-export function RepayCard({
-  account,
-  loanInfo,
-  repaySuccessCallback,
-}: RepayCardProps) {
+export function RepayCard({ loanInfo, repaySuccessCallback }: RepayCardProps) {
+  const { account } = useContext(AccountContext);
   const [disabled, setDisabled] = useState(false);
   const [allowanceValue, setAllowanceValue] = useState(
     ethers.BigNumber.from('0'),
@@ -66,7 +63,6 @@ export function RepayCard({
       {needsAllowance && (
         <AllowButton
           contractAddress={loanInfo.loanAssetContractAddress}
-          account={account}
           symbol={loanInfo.loanAssetSymbol}
           callback={setAllowance}
         />

@@ -8,14 +8,10 @@ const ConnectWallet = dynamic(
 );
 
 type PawnShopHeaderProps = {
-  account?: string;
-  setAccount: (account: string) => void;
   message: string;
 };
 
 export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
-  account,
-  setAccount,
   message,
 }) => {
   return (
@@ -24,7 +20,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
         <Link href="/">💸✨🎸 nft pawn shop 💍✨💸</Link>
       </h1>
       <div id="header-connect-address-wrapper">
-        <ConnectWallet account={account} addressSetCallback={setAccount} />
+        <ConnectWallet />
       </div>
       <div id="pawnShopHeaderDivider">
         <h2>{message}</h2>
