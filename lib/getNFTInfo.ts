@@ -23,34 +23,50 @@ export default async function getNFTInfo({
   try {
     const tokenURI = await contract.tokenURI(tokenId);
 
-    const resolvedTokenURI = isIPFS(tokenURI)
-      ? makeIPFSUrl(tokenURI)
-      : tokenURI;
-
-    const tokenURIRes = await fetch(resolvedTokenURI);
-
-    const metadata = await tokenURIRes.json();
-
-    const imageURL =
-      metadata?.animation_url == null
-        ? metadata?.image
-        : metadata?.animation_url;
-
-    const mediaUrl = isIPFS(imageURL) ? makeIPFSUrl(imageURL) : imageURL;
-
-    const mediaMimeType = await getMimeType(mediaUrl);
-
-    return {
-      name: metadata?.name,
-      description: metadata?.description,
-      mediaUrl,
-      mediaMimeType,
-      id: tokenId,
-    };
+    return getNFTInfoFromTokenInfo(tokenId, tokenURI);
   } catch (error) {
     console.log(error);
     return null;
   }
+}
+
+export async function getNFTInfoFromTokenInfo(
+  tokenId: ethers.BigNumber,
+  tokenURI: string,
+): Promise<GetNFTInfoResponse> {
+  const resolvedTokenURI = isIPFS(tokenURI) ? makeIPFSUrl(tokenURI) : tokenURI;
+
+  const tokenURIRes = await fetch(resolvedTokenURI);
+  const metadata = await tokenURIRes.json();
+
+  const imageURL =
+    metadata?.animation_url == null ? metadata?.image : metadata?.animation_url;
+
+  const mediaUrl = isIPFS(imageURL) ? makeIPFSUrl(imageURL) : imageURL;
+
+  const mediaMimeType = await getMimeType(mediaUrl);
+
+  return {
+    id: tokenId,
+    name: metadata?.name,
+    description: metadata?.description,
+    mediaUrl,
+    mediaMimeType,
+  };
+}
+
+export async function getNFTMediaUrl(tokenURI: string): Promise<string> {
+  const resolvedTokenURI = isIPFS(tokenURI) ? makeIPFSUrl(tokenURI) : tokenURI;
+
+  const tokenURIRes = await fetch(resolvedTokenURI);
+
+  const metadata = await tokenURIRes.json();
+
+  const imageURL =
+    metadata?.animation_url == null ? metadata?.image : metadata?.animation_url;
+
+  const mediaUrl = isIPFS(imageURL) ? makeIPFSUrl(imageURL) : imageURL;
+  return mediaUrl;
 }
 
 function isIPFS(url: string) {
