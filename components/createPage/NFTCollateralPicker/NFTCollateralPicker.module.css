@@ -1,3 +1,9 @@
+.centerAlignedRow {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
 .nftPicker {
     width: 50%;
     display: flex;
@@ -16,9 +22,6 @@
 }
 
 .nftCollectionRow {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
     justify-content: space-between;
     margin: 14px 0;
 
@@ -30,9 +33,6 @@
 }
 
 .nftCollectionNameAndIcon {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
     max-width: 60%;
 }
 

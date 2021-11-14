@@ -63,8 +63,10 @@ export function NFTCollateralPicker({
       <div className={styles.selectButton}>select an NFT</div>
       {Object.keys(groupedNFTs).map((nftGroupName, i) => (
         <div key={nftGroupName}>
-          <div className={styles.nftCollectionRow}>
-            <div className={styles.nftCollectionNameAndIcon}>
+          <div
+            className={`${styles.centerAlignedRow} ${styles.nftCollectionRow}`}>
+            <div
+              className={`${styles.centerAlignedRow} ${styles.nftCollectionNameAndIcon}`}>
               <div
                 className={styles.collectionIcon}
                 style={{ background: colors[i] }}
@@ -73,12 +75,7 @@ export function NFTCollateralPicker({
                 {nftGroupName.toLowerCase()}
               </div>
             </div>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
+            <div className={styles.centerAlignedRow}>
               <span className={styles.number}>
                 {groupedNFTs[nftGroupName].length}
               </span>
