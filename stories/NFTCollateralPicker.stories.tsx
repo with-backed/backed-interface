@@ -34,6 +34,11 @@ const useNFTs = () => {
   return { fetching, error, nfts };
 };
 
+const HIDDEN_NFT_ADDRESSES = [
+  process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT.toLowerCase(),
+  process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT.toLowerCase(),
+];
+
 const NFTCollateralPickerStory = () => {
   const { fetching, error, nfts } = useNFTs();
 
@@ -45,7 +50,12 @@ const NFTCollateralPickerStory = () => {
     return <div>error</div>;
   }
 
-  return <NFTCollateralPicker nfts={nfts} />;
+  return (
+    <NFTCollateralPicker
+      nfts={nfts}
+      hiddenNFTAddresses={HIDDEN_NFT_ADDRESSES}
+    />
+  );
 };
 
 export const Wrapper = () => {

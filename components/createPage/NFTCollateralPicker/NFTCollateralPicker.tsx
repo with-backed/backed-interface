@@ -7,7 +7,6 @@ import { getNFTInfoFromTokenInfo, GetNFTInfoResponse } from 'lib/getNFTInfo';
 import { Media } from 'components/Media';
 
 const colors = ['#5CB88C', '#D7C9F9', '#222426'];
-const HIDDEN_COLLECTIONS = ['0x015220c326587eb5ff9613aafaa343b5b751aaf1'];
 
 export interface NFTFromSubgraph {
   id: string;
@@ -20,14 +19,18 @@ export interface NFTFromSubgraph {
 }
 
 interface NFTCollateralPickerProps {
-  nfts: [NFTFromSubgraph];
+  nfts: NFTFromSubgraph[];
+  hiddenNFTAddresses?: string[];
 }
 
 interface GroupedNFTCollections {
-  [key: string]: [NFTFromSubgraph];
+  [key: string]: NFTFromSubgraph[];
 }
 
-export function NFTCollateralPicker({ nfts }: NFTCollateralPickerProps) {
+export function NFTCollateralPicker({
+  nfts,
+  hiddenNFTAddresses = [],
+}: NFTCollateralPickerProps) {
   const [showNFT, setShowNFT] = useState({});
 
   const groupedNFTs: GroupedNFTCollections = useMemo(() => {
@@ -35,7 +38,7 @@ export function NFTCollateralPicker({ nfts }: NFTCollateralPickerProps) {
       const collection: string = nextNFT.registry.name;
       const nftContractAddress: string = nextNFT.id.substring(0, 42);
 
-      if (HIDDEN_COLLECTIONS.includes(nftContractAddress)) return groupedNFTs; // skip if hidden collection
+      if (hiddenNFTAddresses.includes(nftContractAddress)) return groupedNFTs; // skip if hidden collection
       if (!!groupedNFTs[collection]) {
         groupedNFTs[collection] = [...groupedNFTs[collection], nextNFT];
       } else {
@@ -43,7 +46,7 @@ export function NFTCollateralPicker({ nfts }: NFTCollateralPickerProps) {
       }
       return groupedNFTs;
     }, {});
-  }, [nfts]);
+  }, [nfts, hiddenNFTAddresses]);
 
   const toggleShowForNFT = useCallback(
     (groupName) => {
