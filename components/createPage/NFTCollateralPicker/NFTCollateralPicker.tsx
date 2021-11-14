@@ -6,18 +6,36 @@ import styles from './NFTCollateralPicker.module.css';
 import { getNFTInfoFromTokenInfo, GetNFTInfoResponse } from 'lib/getNFTInfo';
 import { Media } from 'components/Media';
 
-interface NFTCollateralPickerProps {
-  nfts: any;
+const colors = ['#5CB88C', '#D7C9F9', '#222426'];
+const HIDDEN_COLLECTIONS = ['0x015220c326587eb5ff9613aafaa343b5b751aaf1'];
+
+export interface NFTFromSubgraph {
+  id: string;
+  identifier: string;
+  uri: string;
+  registry: {
+    symbol: string;
+    name: string;
+  };
 }
 
-const colors = ['#5CB88C', '#D7C9F9', '#222426'];
+interface NFTCollateralPickerProps {
+  nfts: [NFTFromSubgraph];
+}
+
+interface GroupedNFTCollections {
+  [key: string]: [NFTFromSubgraph];
+}
 
 export function NFTCollateralPicker({ nfts }: NFTCollateralPickerProps) {
   const [showNFT, setShowNFT] = useState({});
 
-  const groupedNFTs = useMemo(() => {
+  const groupedNFTs: GroupedNFTCollections = useMemo(() => {
     return nfts.reduce((groupedNFTs, nextNFT) => {
-      const collection = nextNFT.registry.name;
+      const collection: string = nextNFT.registry.name;
+      const nftContractAddress: string = nextNFT.id.substring(0, 42);
+
+      if (HIDDEN_COLLECTIONS.includes(nftContractAddress)) return groupedNFTs; // skip if hidden collection
       if (!!groupedNFTs[collection]) {
         groupedNFTs[collection] = [...groupedNFTs[collection], nextNFT];
       } else {
@@ -99,7 +117,7 @@ function NFTMedia({ tokenId, tokenUri }) {
   const [nftInfo, setNFTInfo] = useState<GetNFTInfoResponse>(null);
 
   const load = useCallback(async () => {
-    const result = await getNFTInfoFromTokenInfo(tokenId, tokenUri);
+    const result = await getNFTInfoFromTokenInfo(tokenId, tokenUri, true);
     setNFTInfo(result);
   }, [tokenId, tokenUri]);
 

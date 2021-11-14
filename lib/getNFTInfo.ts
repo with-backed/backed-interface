@@ -33,6 +33,7 @@ export default async function getNFTInfo({
 export async function getNFTInfoFromTokenInfo(
   tokenId: ethers.BigNumber,
   tokenURI: string,
+  forceImage: boolean = false,
 ): Promise<GetNFTInfoResponse> {
   const resolvedTokenURI = isIPFS(tokenURI) ? makeIPFSUrl(tokenURI) : tokenURI;
 
@@ -40,7 +41,9 @@ export async function getNFTInfoFromTokenInfo(
   const metadata = await tokenURIRes.json();
 
   const imageURL =
-    metadata?.animation_url == null ? metadata?.image : metadata?.animation_url;
+    metadata?.animation_url == null || forceImage
+      ? metadata?.image
+      : metadata?.animation_url;
 
   const mediaUrl = isIPFS(imageURL) ? makeIPFSUrl(imageURL) : imageURL;
 
