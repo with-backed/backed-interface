@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 
 import { NFTCollateralPicker } from 'components/createPage/NFTCollateralPicker/NFTCollateralPicker';
 import { Provider, useQuery } from 'urql';
-import { UrqlContext } from 'context/urql';
+import { eip721Client } from 'lib/urql';
 
 const NFTsQuery = `
 	query NFTs($address: String!) {
@@ -61,7 +61,6 @@ const NFTCollateralPickerStory = () => {
 };
 
 export const Wrapper = () => {
-  const { eip721Client } = useContext(UrqlContext);
   return (
     <Provider value={eip721Client}>
       <NFTCollateralPickerStory />
