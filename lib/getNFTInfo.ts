@@ -36,7 +36,7 @@ export async function getNFTInfoFromTokenInfo(
   tokenId: ethers.BigNumber,
   tokenURI: string,
   forceImage: boolean = false,
-): Promise<GetNFTInfoResponse> {
+): Promise<GetNFTInfoResponse | null> {
   try {
     const resolvedTokenURI = isIPFS(tokenURI)
       ? makeIPFSUrl(tokenURI)

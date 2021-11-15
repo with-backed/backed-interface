@@ -10,7 +10,7 @@ const colors = ['#5CB88C', '#D7C9F9', '#222426'];
 
 export interface NFTFromSubgraph {
   id: string;
-  identifier: string;
+  identifier: ethers.BigNumber;
   uri: string;
   registry: {
     symbol: string;
@@ -27,25 +27,32 @@ interface GroupedNFTCollections {
   [key: string]: NFTFromSubgraph[];
 }
 
+interface ShowNFTStateType {
+  [key: string]: boolean;
+}
+
 export function NFTCollateralPicker({
   nfts,
   hiddenNFTAddresses = [],
 }: NFTCollateralPickerProps) {
-  const [showNFT, setShowNFT] = useState({});
+  const [showNFT, setShowNFT] = useState<ShowNFTStateType>({});
 
   const groupedNFTs: GroupedNFTCollections = useMemo(() => {
-    return nfts.reduce((groupedNFTs, nextNFT) => {
-      const collection: string = nextNFT.registry.name;
-      const nftContractAddress: string = nextNFT.id.substring(0, 42);
+    return nfts.reduce(
+      (groupedNFTs: GroupedNFTCollections, nextNFT: NFTFromSubgraph) => {
+        const collection: string = nextNFT.registry.name;
+        const nftContractAddress: string = nextNFT.id.substring(0, 42);
 
-      if (hiddenNFTAddresses.includes(nftContractAddress)) return groupedNFTs; // skip if hidden collection
-      if (!!groupedNFTs[collection]) {
-        groupedNFTs[collection] = [...groupedNFTs[collection], nextNFT];
-      } else {
-        groupedNFTs[collection] = [nextNFT];
-      }
-      return groupedNFTs;
-    }, {});
+        if (hiddenNFTAddresses.includes(nftContractAddress)) return groupedNFTs; // skip if hidden collection
+        if (!!groupedNFTs[collection]) {
+          groupedNFTs[collection] = [...groupedNFTs[collection], nextNFT];
+        } else {
+          groupedNFTs[collection] = [nextNFT];
+        }
+        return groupedNFTs;
+      },
+      {},
+    );
   }, [nfts, hiddenNFTAddresses]);
 
   const toggleShowForNFT = useCallback(
@@ -113,8 +120,13 @@ export function NFTCollateralPicker({
   );
 }
 
-function NFTMedia({ tokenId, tokenUri }) {
-  const [nftInfo, setNFTInfo] = useState<GetNFTInfoResponse>(null);
+interface NFTMediaProps {
+  tokenId: ethers.BigNumber;
+  tokenUri: string;
+}
+
+function NFTMedia({ tokenId, tokenUri }: NFTMediaProps) {
+  const [nftInfo, setNFTInfo] = useState<GetNFTInfoResponse | null>(null);
 
   const load = useCallback(async () => {
     const result = await getNFTInfoFromTokenInfo(tokenId, tokenUri, true);
