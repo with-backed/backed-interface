@@ -37,8 +37,12 @@ const useNFTs = () => {
 };
 
 const HIDDEN_NFT_ADDRESSES = [
-  process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT.toLowerCase(),
-  process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT.toLowerCase(),
+  !!process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT
+    ? process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT.toLowerCase()
+    : '',
+  !!process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT
+    ? process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT.toLowerCase()
+    : '',
 ];
 
 const NFTCollateralPickerStory = () => {
