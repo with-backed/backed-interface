@@ -37,27 +37,34 @@ export async function getNFTInfoFromTokenInfo(
   tokenURI: string,
   forceImage: boolean = false,
 ): Promise<GetNFTInfoResponse> {
-  const resolvedTokenURI = isIPFS(tokenURI) ? makeIPFSUrl(tokenURI) : tokenURI;
+  try {
+    const resolvedTokenURI = isIPFS(tokenURI)
+      ? makeIPFSUrl(tokenURI)
+      : tokenURI;
 
-  const tokenURIRes = await fetch(resolvedTokenURI);
-  const metadata = await tokenURIRes.json();
+    const tokenURIRes = await fetch(resolvedTokenURI);
+    const metadata = await tokenURIRes.json();
 
-  const imageURL =
-    metadata?.animation_url == null || forceImage
-      ? metadata?.image
-      : metadata?.animation_url;
+    const imageURL =
+      metadata?.animation_url == null || forceImage
+        ? metadata?.image
+        : metadata?.animation_url;
 
-  const mediaUrl = isIPFS(imageURL) ? makeIPFSUrl(imageURL) : imageURL;
+    const mediaUrl = isIPFS(imageURL) ? makeIPFSUrl(imageURL) : imageURL;
 
-  const mediaMimeType = await getMimeType(mediaUrl);
+    const mediaMimeType = await getMimeType(mediaUrl);
 
-  return {
-    id: tokenId,
-    name: metadata?.name,
-    description: metadata?.description,
-    mediaUrl,
-    mediaMimeType,
-  };
+    return {
+      id: tokenId,
+      name: metadata?.name,
+      description: metadata?.description,
+      mediaUrl,
+      mediaMimeType,
+    };
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
 }
 
 function isIPFS(url: string) {
