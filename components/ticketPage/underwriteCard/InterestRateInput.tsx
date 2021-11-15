@@ -8,10 +8,14 @@ const SECONDS_IN_YEAR = 31_536_000;
 const INTEREST_RATE_PERCENT_DECIMALS = 8;
 const MIN_RATE = 1 / 10 ** INTEREST_RATE_PERCENT_DECIMALS;
 
+type InterestRateInputProps = {
+  maxPerSecondRate: ethers.BigNumber;
+  setInterestRate: (rate: ethers.BigNumber) => void;
+};
 export default function InterestRateInput({
   maxPerSecondRate,
   setInterestRate,
-}) {
+}: InterestRateInputProps) {
   const [error, setError] = useState('');
   const [maxInterestRate] = useState(maxPerSecondRate);
   const [actualRate, setActualRate] = useState(ethers.BigNumber.from('0'));

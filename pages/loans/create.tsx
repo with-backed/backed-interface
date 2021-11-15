@@ -9,11 +9,7 @@ import { Fieldset } from 'components/Fieldset';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { PageWrapper } from 'components/layouts/PageWrapper';
 import { AccountContext } from 'context/account';
-
-const ConnectWallet = dynamic(
-  () => import('components/ConnectWallet').then((mod) => mod.ConnectWallet),
-  { ssr: false },
-);
+import { ConnectWallet } from 'components/ConnectWallet';
 
 export default function Create({}) {
   const { account } = useContext(AccountContext);

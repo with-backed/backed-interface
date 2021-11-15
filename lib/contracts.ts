@@ -44,7 +44,7 @@ export function loanFacilitator(
   provider: ethers.providers.Provider | ethers.Signer,
 ) {
   return NFTLoanFacilitator__factory.connect(
-    process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT,
+    process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT || '',
     provider,
   );
 }

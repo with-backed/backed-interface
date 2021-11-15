@@ -28,8 +28,9 @@ export function RepayCard({ loanInfo, repaySuccessCallback }: RepayCardProps) {
   const setAllowance = async () => {
     const contract = jsonRpcERC20Contract(loanInfo.loanAssetContractAddress);
     const allowance = await contract.allowance(
-      account,
-      process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT,
+      // If they've gotten this far, they have an account.
+      account as string,
+      process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT || '',
     );
     if (!needsAllowance) {
       setNeedsAllowance(allowance.lt(amountOwed));

@@ -15,19 +15,22 @@ import React, {
 } from 'react';
 import styles from './TicketHistory.module.css';
 
-const eventDetailComponents = {
-  CreateLoan: CreateLoanEvent,
-  UnderwriteLoan: UnderwriteLoanEvent,
-  BuyoutUnderwriter: BuyoutUnderwriterEvent,
-  Repay: RepayLoanEvent,
-};
+const eventDetailComponents: { [key: string]: (...props: any) => JSX.Element } =
+  {
+    CreateLoan: CreateLoanEvent,
+    UnderwriteLoan: UnderwriteLoanEvent,
+    BuyoutUnderwriter: BuyoutUnderwriterEvent,
+    Repay: RepayLoanEvent,
+  };
 
 type ParsedEventProps = {
   event: ethers.Event;
   loanInfo: LoanInfo;
 };
 export function ParsedEvent({ event, loanInfo }: ParsedEventProps) {
-  const component = eventDetailComponents[event.event];
+  const component =
+    // keeping typescript happy and having some measure of runtime safety
+    eventDetailComponents[event.event || '__INTERNAL_DID_NOT_RECEIVE_EVENT'];
   if (component) {
     return React.createElement(component, { event, loanInfo });
   }
@@ -60,7 +63,7 @@ function EventHeader({ event }: Pick<ParsedEventProps, 'event'>) {
   return (
     <h3 className={styles['event-header']}>
       <EtherscanTransactionLink transactionHash={event.transactionHash}>
-        <b>{camelToSentenceCase(event.event)}</b> {timestamp}
+        <b>{camelToSentenceCase(event.event as string)}</b> {timestamp}
       </EtherscanTransactionLink>
     </h3>
   );
@@ -88,7 +91,7 @@ function CreateLoanEvent({
   loanInfo: { loanAssetDecimals, loanAssetSymbol },
 }: ParsedEventProps) {
   const { maxInterestRate, minDurationSeconds, minLoanAmount, minter } =
-    event.args;
+    event.args as any;
 
   const minterLink = useMemo(
     () => (
@@ -130,7 +133,8 @@ function UnderwriteLoanEvent({
   event,
   loanInfo: { loanAssetDecimals, loanAssetSymbol },
 }: ParsedEventProps) {
-  const { durationSeconds, interestRate, loanAmount, underwriter } = event.args;
+  const { durationSeconds, interestRate, loanAmount, underwriter } =
+    event.args as any;
 
   const underwriterLink = useMemo(
     () => (
@@ -171,7 +175,7 @@ function BuyoutUnderwriterEvent({
   loanInfo: { loanAssetDecimals, loanAssetSymbol },
 }: ParsedEventProps) {
   const { interestEarned, replacedAmount, replacedLoanOwner, underwriter } =
-    event.args;
+    event.args as any;
 
   const newLenderLink = useMemo(
     () => (
@@ -221,7 +225,7 @@ function RepayLoanEvent({
   event,
   loanInfo: { loanAssetDecimals, loanAssetSymbol },
 }: ParsedEventProps) {
-  const { interestEarned, loanAmount, loanOwner, repayer } = event.args;
+  const { interestEarned, loanAmount, loanOwner, repayer } = event.args as any;
 
   const repayerLink = useMemo(
     () => (

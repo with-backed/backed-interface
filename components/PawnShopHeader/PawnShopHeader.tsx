@@ -1,11 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
-
-const ConnectWallet = dynamic(
-  () => import('components/ConnectWallet').then((mod) => mod.ConnectWallet),
-  { ssr: false },
-);
+import { ConnectWallet } from 'components/ConnectWallet';
 
 type PawnShopHeaderProps = {
   message: string;

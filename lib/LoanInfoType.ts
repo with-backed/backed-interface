@@ -13,7 +13,7 @@ export type LoanInfo = {
   closed: boolean;
   loanAssetDecimals: number;
   loanAssetSymbol: string;
-  loanOwner: string;
+  loanOwner: string | null;
   ticketOwner: string;
   interestOwed: ethers.BigNumber;
 };

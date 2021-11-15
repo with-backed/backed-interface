@@ -19,7 +19,7 @@ export interface GetNFTInfoResponse {
 export default async function getNFTInfo({
   contract,
   tokenId,
-}: GetNFTInfoArgs): Promise<GetNFTInfoResponse> {
+}: GetNFTInfoArgs): Promise<GetNFTInfoResponse | null> {
   try {
     const tokenURI = await contract.tokenURI(tokenId);
 
@@ -78,5 +78,6 @@ function makeIPFSUrl(
 
 async function getMimeType(mediaUrl: string) {
   const res = await fetch(mediaUrl, { method: 'HEAD' });
-  return res.headers.get('Content-Type');
+  // If we get no mime type in headers, we don't know what the MIME type is
+  return res.headers.get('Content-Type') || 'application/octet-stream';
 }

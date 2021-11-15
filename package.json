@@ -10,7 +10,8 @@
     "build-storybook": "build-storybook",
     "lint": "next lint",
     "format": "prettier --write \"**/*.{ts,tsx,js,json}\"",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@ethersproject/keccak256": "^5.4.0",

@@ -6,32 +6,14 @@ import {
 } from './contracts';
 import { LoanInfo } from './LoanInfoType';
 
-// export async function getAllTicketIds() {
-//   const numberOfTickets = await pawnShopContract.totalSupply();
-
-//   const ticketsArray = (numberOfTickets): string[] => {
-//     const a: Array<string> = [];
-//     for (let i = 1; i <= numberOfTickets; i++) {
-//       a.push(i.toString());
-//     }
-//     return a;
-//   };
-
-//   return ticketsArray(numberOfTickets).map((ticket) => ({
-//     params: {
-//       id: ticket,
-//     },
-//   }));
-// }
-
 export async function getLoanInfo(id: string): Promise<LoanInfo> {
   const loanId = ethers.BigNumber.from(id);
   const loanFacilitator = jsonRpcLoanFacilitator();
   const lendTicket = jsonRpcERC721Contract(
-    process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT,
+    process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT || '',
   );
   const borrowTicket = jsonRpcERC721Contract(
-    process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT,
+    process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT || '',
   );
 
   const loanInfo = await loanFacilitator.loanInfo(loanId);

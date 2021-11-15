@@ -22,6 +22,8 @@ export default function SeizeCollateralCard({
       loanInfo.loanAssetDecimals,
     ),
   );
+
+  // TODO: show loading indicator based on this state?
   const [txHash, setTxHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
 
@@ -31,7 +33,8 @@ export default function SeizeCollateralCard({
 
     const t = await web3LoanFacilitator().seizeCollateral(
       loanInfo.loanId,
-      account,
+      // If they've gotten this far, they have an account.
+      account as string,
     );
     t.wait()
       .then((receipt) => {

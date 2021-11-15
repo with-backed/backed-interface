@@ -17,9 +17,9 @@ import { FormWrapper } from 'components/layouts/FormWrapper';
 import { AccountContext } from 'context/account';
 
 export type CreateTicketFormProps = {
-  collateralAddress: string | null;
+  collateralAddress: string;
   setCollateralAddress: (value: string) => void;
-  collateralTokenID?: ethers.BigNumber;
+  collateralTokenID: ethers.BigNumber;
   setCollateralTokenID: (value: ethers.BigNumber) => void;
   setIsValidCollateral: (value: boolean) => void;
 };
@@ -30,9 +30,13 @@ export function CreateTicketForm({
   setCollateralTokenID,
   setIsValidCollateral,
 }: CreateTicketFormProps) {
-  const [loanAssetContract, setLoanAssetContract] = useState(null);
-  const [loanAssetDecimals, setLoanAssetDecimals] = useState(null);
-  const [loanAmount, setLoanAmount] = useState(0);
+  const [loanAssetContract, setLoanAssetContract] = useState<string | null>(
+    null,
+  );
+  const [loanAssetDecimals, setLoanAssetDecimals] = useState<number | null>(
+    null,
+  );
+  const [loanAmount, setLoanAmount] = useState<ethers.BigNumberish>(0);
   const [interestRate, setInterestRate] = useState(ethers.BigNumber.from(0));
   const [duration, setDuration] = useState(ethers.BigNumber.from(0));
   const [isApproved, setIsApproved] = useState(true);
@@ -82,8 +86,8 @@ export function CreateTicketForm({
 }
 
 type AllowButtonProps = {
-  collateralAddress?: string;
-  tokenId?: ethers.BigNumber;
+  collateralAddress: string;
+  tokenId: ethers.BigNumber;
   setIsApproved: (value: boolean) => void;
 };
 function AllowButton({
@@ -111,7 +115,7 @@ function AllowButton({
   const approve = useCallback(async () => {
     const web3Contract = web3Erc721Contract(collateralAddress);
     const t = await web3Contract.approve(
-      process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT,
+      process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT || '',
       tokenId,
     );
     setTransactionHash(t.hash);
@@ -140,8 +144,8 @@ function AllowButton({
 
 type MintTicketButtonProps = {
   isApproved?: boolean;
-  collateralAddress?: string;
-  collateralTokenID?: ethers.BigNumber;
+  collateralAddress: string;
+  collateralTokenID: ethers.BigNumber;
   loanAsset: any;
   loanAssetDecimals: any;
   loanAmount: any;
@@ -180,7 +184,8 @@ function MintTicketButton({
       ethers.utils.parseUnits(loanAmount.toString(), loanAssetDecimals),
       loanAsset,
       duration,
-      account,
+      // If they've gotten this far, they must have an account.
+      account as string,
     );
     setTransactionHash(t.hash);
     setWaitingForTx(true);
