@@ -18,7 +18,7 @@
     width: 99%;
     padding: 10px;
     text-align: center;
-    background: #F7F7F7;
+    background: var(--lightest-grey);
 }
 
 .nftCollectionRow {
@@ -45,7 +45,7 @@
 .collectionIcon {
     color: white;
     margin-right: 20px;
-    background: #EEEEEE;
+    background: var(--light-grey);
     border-radius: 100%;
     padding: 16px;
 }
@@ -53,7 +53,7 @@
 .break {
     width: 99%;
     height: 0px;
-    border-bottom: 1px solid #EEEEEE;
+    border-bottom: 1px solid var(--light-grey);
 }
 
 .number {
@@ -70,7 +70,6 @@
     cursor: pointer;
     font-family: SF Compact Display;
     font-style: normal;
-    color: #555555;
     margin: 0 6px;
     transition: transform 0.3s ease-in-out;
 }

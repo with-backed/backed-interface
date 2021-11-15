@@ -125,20 +125,16 @@ function NFTMedia({ tokenId, tokenUri }) {
     load();
   }, [load]);
 
+  if (!nftInfo) {
+    return null;
+  }
+
   return (
-    <div>
-      {nftInfo == null ? (
-        ''
-      ) : (
-        <div>
-          <Media
-            media={nftInfo.mediaUrl}
-            mediaMimeType={nftInfo.mediaMimeType}
-            autoPlay={false}
-          />
-        </div>
-      )}
-    </div>
+    <Media
+      media={nftInfo.mediaUrl}
+      mediaMimeType={nftInfo.mediaMimeType}
+      autoPlay={false}
+    />
   );
 }
 
