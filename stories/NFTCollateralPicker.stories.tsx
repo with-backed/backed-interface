@@ -24,7 +24,9 @@ const NFTsQuery = `
 const useNFTs = () => {
   const [result] = useQuery({
     query: NFTsQuery,
-    variables: { address: '0x31fd8d16641d06e0eada78b475ae367163704774' },
+    variables: {
+      address: '0x31fd8d16641d06e0eada78b475ae367163704774'.toLowerCase(),
+    },
   });
 
   const { data, fetching, error } = result;
