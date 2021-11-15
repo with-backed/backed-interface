@@ -3,10 +3,8 @@ import { formattedAnnualRate } from 'lib/interest';
 import Link from 'next/link';
 import React, { FunctionComponent, useMemo } from 'react';
 import styles from './LoanCard.module.css';
-import { cid } from 'is-ipfs';
 import { useTokenMetadata } from 'hooks/useTokenMetadata';
-
-console.log(cid('QmXuEFJVjQrHX7GRWY2WnbUP59re3WsyDLZoKqXvRPSxBY/3'));
+import { Media } from 'components/Media';
 
 const Attributes: FunctionComponent = ({ children }) => {
   return <div className={styles.attributes}>{children}</div>;
@@ -45,10 +43,22 @@ export function LoanCard({
     [loanAmount, loanAssetDecimal, loanAssetSymbol],
   );
   const metadata = useTokenMetadata(collateralTokenURI);
+
+  if (!metadata) {
+    // TODO: @cnasc loading/error states
+    return null;
+  }
+
   return (
     <Link href={`/loans/${id}`}>
       <a className={styles.link} aria-label={title} title={title}>
         <div className={styles.card}>
+          <Media
+            media={metadata.mediaUrl}
+            mediaMimeType={metadata.mediaMimeType}
+            autoPlay={false}
+          />
+          <span>{metadata.name}</span>
           <Attributes>
             <span>{formattedLoanAmount}</span>
             <span>

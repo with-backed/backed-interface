@@ -13,7 +13,54 @@ export interface GetNFTInfoResponse {
   description: string;
   mediaUrl: string;
   mediaMimeType: string;
-  id: ethers.BigNumber;
+  id?: ethers.BigNumber;
+}
+
+export async function getNFTInfoByTokenID({
+  tokenId,
+  contract,
+}: GetNFTInfoArgs): Promise<GetNFTInfoResponse> {
+  const tokenURI = await contract.tokenURI(tokenId);
+  return getNFTInfoByTokenURI(tokenURI);
+}
+
+export async function getNFTInfoByTokenURI(
+  tokenURI: string,
+): Promise<GetNFTInfoResponse> {
+  try {
+    const resolvedTokenURI = isIPFS(tokenURI)
+      ? makeIPFSUrl(tokenURI)
+      : tokenURI;
+
+    const tokenURIRes = await fetch(resolvedTokenURI);
+
+    const metadata = await tokenURIRes.json();
+
+    const imageURL =
+      metadata?.animation_url == null
+        ? metadata?.image
+        : metadata?.animation_url;
+
+    const mediaUrl = isIPFS(imageURL) ? makeIPFSUrl(imageURL) : imageURL;
+
+    const mediaMimeType = await getMimeType(mediaUrl);
+
+    return {
+      name: metadata?.name,
+      description: metadata?.description,
+      mediaUrl,
+      mediaMimeType,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      name: 'unknown',
+      description:
+        "We couldn't download the metadata associated with this NFT.",
+      mediaUrl: '',
+      mediaMimeType: '',
+    };
+  }
 }
 
 export default async function getNFTInfo({
