@@ -42,7 +42,7 @@ function LeftColumn({ loanInfo, refresh }: TicketPageBodyProps) {
 
   const getOwner = useCallback(async () => {
     const contract = jsonRpcERC721Contract(
-      process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT,
+      process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT || '',
     );
     const o = await contract.ownerOf(loanInfo.loanId);
     setOwner(o);
@@ -142,7 +142,7 @@ function CenterColumn({ loanInfo }: TicketPageBodyProps) {
 
 function RightColumn({ loanInfo, refresh }: TicketPageBodyProps) {
   const { account } = useContext(AccountContext);
-  const [timestamp, setTimestamp] = useState(null);
+  const [timestamp, setTimestamp] = useState<number | null>(null);
   const [endSeconds] = useState(
     parseInt(
       loanInfo.lastAccumulatedTimestamp
@@ -157,7 +157,7 @@ function RightColumn({ loanInfo, refresh }: TicketPageBodyProps) {
       return;
     }
     const contract = jsonRpcERC721Contract(
-      process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT,
+      process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT || '',
     );
     const o = await contract.ownerOf(loanInfo.loanId);
     setOwner(o);

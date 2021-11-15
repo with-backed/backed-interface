@@ -9,13 +9,14 @@ import { getLoanInfo } from 'lib/loan';
 import TicketPageBody from 'components/ticketPage/TicketPageBody';
 import { PawnShopHeader } from 'components/PawnShopHeader';
 import { PageWrapper } from 'components/layouts/PageWrapper';
+import { LoanInfo } from 'lib/LoanInfoType';
 
 type TicketProps = {
   ticketID: string | null;
 };
 
 export const Ticket: FunctionComponent<TicketProps> = ({ ticketID }) => {
-  const [loanInfo, setLoanInfo] = useState(null);
+  const [loanInfo, setLoanInfo] = useState<LoanInfo | null>(null);
 
   const fetchData = useCallback(() => {
     setLoanInfo(null);

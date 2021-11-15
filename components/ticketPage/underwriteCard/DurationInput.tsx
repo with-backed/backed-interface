@@ -4,10 +4,14 @@ import { Input } from 'components/Input';
 
 const SECONDS_IN_DAY = 60 * 60 * 24;
 
+type DurationInputProps = {
+  minDurationSeconds: ethers.BigNumber;
+  setDurationSeconds: (seconds: ethers.BigNumber) => void;
+};
 export default function DurationInput({
   minDurationSeconds,
   setDurationSeconds,
-}) {
+}: DurationInputProps) {
   const [minDurationDays] = useState(
     parseFloat(minDurationSeconds.toString()) / SECONDS_IN_DAY,
   );

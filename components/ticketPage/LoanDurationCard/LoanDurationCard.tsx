@@ -59,7 +59,7 @@ export function LoanDurationCard({
   );
 
   const refreshTimestamp = useCallback(
-    (intervalId) => {
+    (intervalId: ReturnType<typeof setTimeout>) => {
       if (remainingSeconds.lte(ethers.BigNumber.from(0))) {
         clearInterval(intervalId);
         return;
@@ -70,7 +70,10 @@ export function LoanDurationCard({
   );
 
   useEffect(() => {
-    const timeOutId = setInterval(() => refreshTimestamp(timeOutId), 1000);
+    const timeOutId: ReturnType<typeof setTimeout> = setInterval(
+      () => refreshTimestamp(timeOutId),
+      1000,
+    );
     return () => clearInterval(timeOutId);
   }, [refreshTimestamp]);
 

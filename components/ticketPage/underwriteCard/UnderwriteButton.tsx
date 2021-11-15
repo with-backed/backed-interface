@@ -90,7 +90,7 @@ export default function UnderwriteButton({
       interestRate,
       loanAmount,
       duration,
-      account,
+      account as string,
     );
     setTransactionPending(true);
     setTransactionHash(t.hash);

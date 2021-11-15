@@ -3,6 +3,8 @@ import {
   CreateTicketForm,
   CreateTicketFormProps,
 } from 'components/createPage/CreateTicketForm';
+import { noop } from 'lodash';
+import { ethers } from 'ethers';
 
 export default {
   title: 'createPage/CreateTicketForm',
@@ -11,10 +13,10 @@ export default {
 
 const props: CreateTicketFormProps = {
   collateralAddress: '',
-  setCollateralAddress: undefined,
-  collateralTokenID: undefined,
-  setCollateralTokenID: undefined,
-  setIsValidCollateral: undefined,
+  setCollateralAddress: noop,
+  collateralTokenID: ethers.BigNumber.from(0),
+  setCollateralTokenID: noop,
+  setIsValidCollateral: noop,
 };
 
 export const Form = () => <CreateTicketForm {...props} />;

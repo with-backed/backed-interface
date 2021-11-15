@@ -61,8 +61,7 @@ export const ConnectWallet = () => {
     }
     let account = ethers.utils.getAddress(accounts[0]);
     setAccount(account);
-    window.ethereum.on('accountsChanged', (accounts) => {
-      console.log('accounts changed');
+    window.ethereum.on('accountsChanged', (accounts: string[]) => {
       account = ethers.utils.getAddress(accounts[0]);
       setAccount(account);
     });
@@ -74,8 +73,6 @@ export const ConnectWallet = () => {
       return;
     }
     setProviderAvailable(true);
-    // This currently isn't used, is it still necessary?
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
   }, []);
 
   useEffect(() => {

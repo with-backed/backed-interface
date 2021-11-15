@@ -34,7 +34,7 @@ export function UnderwriteCard({
     const loanAssetContract = jsonRpcERC20Contract(
       loanInfo.loanAssetContractAddress,
     );
-    const balance = await loanAssetContract.balanceOf(account);
+    const balance = await loanAssetContract.balanceOf(account as string);
     const humanReadableBalance = ethers.utils.formatUnits(
       balance,
       loanInfo.loanAssetDecimals,
@@ -47,8 +47,8 @@ export function UnderwriteCard({
       loanInfo.loanAssetContractAddress,
     );
     const allowance = await assetContract.allowance(
-      account,
-      process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT,
+      account as string,
+      process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT || '',
     );
     if (!needsAllowance) {
       setNeedsAllowance(allowanceValue.lt(loanAmount));

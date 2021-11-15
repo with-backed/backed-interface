@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { ethers } from 'ethers';
-import getNFTInfo from 'lib/getNFTInfo';
+import getNFTInfo, { GetNFTInfoResponse } from 'lib/getNFTInfo';
 import { Fieldset } from 'components/Fieldset';
 import { Media } from 'components/Media';
 import { jsonRpcERC721Contract } from 'lib/contracts';
@@ -15,8 +15,9 @@ export default function CollateralMediaCard({
   collateralAddress,
   collateralTokenId,
 }: CollateralCardArgs) {
-  const [CollateralNFTInfo, setCollateralNFTInfo] = useState(null);
-  const [contractName, setContractName] = useState(null);
+  const [CollateralNFTInfo, setCollateralNFTInfo] =
+    useState<GetNFTInfoResponse | null>(null);
+  const [contractName, setContractName] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const contract = jsonRpcERC721Contract(collateralAddress);
@@ -35,22 +36,37 @@ export default function CollateralMediaCard({
     load();
   }, [load]);
 
+  const legend = 'collateral';
+
+  if (!contractName || !CollateralNFTInfo) {
+    return (
+      <Fieldset legend={legend}>
+        <div className="collateral-media"></div>
+      </Fieldset>
+    );
+  }
+
   return (
-    <Fieldset legend="collateral">
-      {CollateralNFTInfo == null ? (
-        <div className="collateral-media"> </div>
-      ) : (
-        <CollateralMediaCardLoaded
-          contractName={contractName}
-          contractAddress={collateralAddress}
-          nftInfo={CollateralNFTInfo}
-        />
-      )}
+    <Fieldset legend={legend}>
+      <CollateralMediaCardLoaded
+        contractName={contractName}
+        contractAddress={collateralAddress}
+        nftInfo={CollateralNFTInfo}
+      />
     </Fieldset>
   );
 }
 
-function CollateralMediaCardLoaded({ contractName, contractAddress, nftInfo }) {
+type CollateralMediaCardLoadedProps = {
+  contractName: string;
+  contractAddress: string;
+  nftInfo: GetNFTInfoResponse;
+};
+function CollateralMediaCardLoaded({
+  contractName,
+  contractAddress,
+  nftInfo,
+}: CollateralMediaCardLoadedProps) {
   const assetId = nftInfo.id.toString();
   return (
     <div>

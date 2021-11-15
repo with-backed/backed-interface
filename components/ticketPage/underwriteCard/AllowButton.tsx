@@ -22,7 +22,7 @@ export default function AllowButton({
   const allow = async () => {
     const contract = web3Erc20Contract(contractAddress);
     const t = await contract.approve(
-      process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT,
+      process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT || '',
       ethers.BigNumber.from(2).pow(256).sub(1),
     );
     setWaitingForTx(true);

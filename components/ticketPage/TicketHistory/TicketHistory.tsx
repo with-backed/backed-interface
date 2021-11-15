@@ -25,7 +25,7 @@ export function TicketHistory({ loanInfo }: TicketHistoryProps) {
   return (
     <Fieldset legend="activity">
       <ol className={styles['top-level-list']}>
-        {Boolean(history) &&
+        {history !== null &&
           history.map((e: ethers.Event, i) => (
             <ParsedEvent event={e} loanInfo={loanInfo} key={i} />
           ))}
@@ -53,11 +53,13 @@ const getTicketHistory = async (loanId: ethers.BigNumber) => {
     seizeCollateralFilter,
   ];
 
-  let allEvents = [];
+  // TODO: keep track of TypedEvents so we don't have to do a type coercion
+  // in ParsedEvent
+  let allEvents: ethers.Event[] = [];
   for (let i = 0; i < filters.length; i++) {
     const results = await contract.queryFilter(
       filters[i],
-      parseInt(process.env.NEXT_PUBLIC_FACILITATOR_START_BLOCK),
+      parseInt(process.env.NEXT_PUBLIC_FACILITATOR_START_BLOCK || ''),
     );
     allEvents = allEvents.concat(results);
   }

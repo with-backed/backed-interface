@@ -4,14 +4,24 @@ import { LoanAsset, getLoanAssets } from 'lib/loanAssets';
 import { jsonRpcERC20Contract } from 'lib/contracts';
 import { Select } from 'components/Select';
 
-export default function LoanAssetInput({ setDecimals, setLoanAssetAddress }) {
+type LoanAssetInputProps = {
+  setDecimals: (decimals: number) => void;
+  setLoanAssetAddress: (address: string) => void;
+};
+export default function LoanAssetInput({
+  setDecimals,
+  setLoanAssetAddress,
+}: LoanAssetInputProps) {
   const [loanAssetOptions, setLoanAssetOptions] = useState<LoanAsset[]>([]);
 
   const setLoanAsset = useCallback(
     async (address: string) => {
       const contract = jsonRpcERC20Contract(address);
+      // TODO: why is `void` a possible return value?
       const decimals = await contract.decimals().catch((e) => console.log(e));
-      setDecimals(decimals);
+      if (decimals) {
+        setDecimals(decimals);
+      }
       setLoanAssetAddress(address);
     },
     [setDecimals, setLoanAssetAddress],

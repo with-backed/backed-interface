@@ -11,12 +11,18 @@ import { Input } from 'components/Input';
 import { jsonRpcERC721Contract } from 'lib/contracts';
 import { AccountContext } from 'context/account';
 
+type CollateralTokenIDInputProps = {
+  collateralContractAddress: string;
+  setCollateralTokenID: (id: ethers.BigNumber) => void;
+  setIsValidCollateral: (isValid: boolean) => void;
+  setIsApproved: (isApproved: boolean) => void;
+};
 export default function CollateralTokenIDInput({
   collateralContractAddress,
   setCollateralTokenID,
   setIsValidCollateral,
   setIsApproved,
-}) {
+}: CollateralTokenIDInputProps) {
   const { account } = useContext(AccountContext);
   const [contract, setContract] = useState<ERC721 | null>(null);
   const [value, setValue] = useState('');
@@ -52,7 +58,7 @@ export default function CollateralTokenIDInput({
 
         setIsApproved(
           approved.includes(
-            process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT,
+            process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT || '',
           ),
         );
       }

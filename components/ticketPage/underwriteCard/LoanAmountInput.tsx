@@ -2,13 +2,20 @@ import { ethers } from 'ethers';
 import React, { ChangeEvent, useCallback, useState } from 'react';
 import { Input } from 'components/Input';
 
+type LoanAmountInputProps = {
+  accountBalance: string;
+  minLoanAmount: ethers.BigNumber;
+  decimals: number;
+  loanAssetSymbol: string;
+  setLoanAmount: (amount: ethers.BigNumber) => void;
+};
 export default function LoanAmountInput({
   accountBalance,
   minLoanAmount,
   decimals,
   loanAssetSymbol,
   setLoanAmount,
-}) {
+}: LoanAmountInputProps) {
   const [error, setError] = useState('');
   const [minAmount] = useState(
     ethers.utils.formatUnits(minLoanAmount, decimals),

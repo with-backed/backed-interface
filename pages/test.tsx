@@ -1,5 +1,4 @@
 import { GetServerSideProps } from 'next';
-import dynamic from 'next/dynamic';
 import React, { useContext, useState } from 'react';
 import { ethers } from 'ethers';
 import { PawnShopHeader } from 'components/PawnShopHeader';
@@ -9,30 +8,9 @@ import { PageWrapper } from 'components/layouts/PageWrapper';
 import { Fieldset } from 'components/Fieldset';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { AccountContext } from 'context/account';
+import { ConnectWallet } from 'components/ConnectWallet';
 
-const ConnectWallet = dynamic(
-  () => import('components/ConnectWallet').then((mod) => mod.ConnectWallet),
-  { ssr: false },
-);
-
-type TestProps = {
-  mockDAIContract: string;
-  mockPunkContract: string;
-};
-
-export const getServerSideProps: GetServerSideProps<TestProps> = async () => {
-  const mockDAIContract = process.env.NEXT_PUBLIC_MOCK_DAI_CONTRACT;
-  const mockPunkContract = process.env.NEXT_PUBLIC_MOCK_PUNK_CONTRACT;
-
-  return {
-    props: {
-      mockDAIContract,
-      mockPunkContract,
-    },
-  };
-};
-
-export default function Test({ mockDAIContract, mockPunkContract }: TestProps) {
+export default function Test() {
   const { account } = useContext(AccountContext);
   return (
     <PageWrapper>
@@ -53,8 +31,8 @@ function MintPunk() {
   const { account } = useContext(AccountContext);
   const [txHash, setTxHash] = useState('');
   const [txPending, setTxPending] = useState(false);
-  const [id, setId] = useState<ethers.BigNumber>(null);
-  const mockPunkContract = process.env.NEXT_PUBLIC_MOCK_PUNK_CONTRACT;
+  const [id, setId] = useState<ethers.BigNumber | null>(null);
+  const mockPunkContract = process.env.NEXT_PUBLIC_MOCK_PUNK_CONTRACT || '';
   const mintPunk = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner(0);
@@ -97,7 +75,7 @@ function MintPunk() {
         NFT contract address {mockPunkContract} (you will need this when
         creating a loan)
       </p>
-      {Boolean(id) && <p>Minted token ID {id.toString()}</p>}
+      {id !== null && <p>Minted token ID {id.toString()}</p>}
     </div>
   );
 }
@@ -106,13 +84,13 @@ function MintDAI() {
   const { account } = useContext(AccountContext);
   const [txHash, setTxHash] = useState('');
   const [txPending, setTxPending] = useState(false);
-  const mockDAIContract = process.env.NEXT_PUBLIC_MOCK_DAI_CONTRACT;
+  const mockDAIContract = process.env.NEXT_PUBLIC_MOCK_DAI_CONTRACT || '';
 
   const mint = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner(0);
     const dai = MockDAI__factory.connect(mockDAIContract, signer);
-    const t = await dai.mint(ethers.BigNumber.from(10000), account);
+    const t = await dai.mint(ethers.BigNumber.from(10000), account as string);
     setTxHash(t.hash);
     setTxPending(true);
     t.wait()
