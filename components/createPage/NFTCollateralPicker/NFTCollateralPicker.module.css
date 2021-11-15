@@ -52,8 +52,9 @@
 
 .break {
     width: 99%;
-    height: 0px;
-    border-bottom: 1px solid var(--light-grey);
+    background: var(--light-grey);
+    height: 1px;
+    border: none;
 }
 
 .number {
