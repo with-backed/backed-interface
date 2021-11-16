@@ -5,8 +5,7 @@ import { Fieldset } from 'components/Fieldset';
 import styles from './NFTCollateralPicker.module.css';
 import { getNFTInfoFromTokenInfo, GetNFTInfoResponse } from 'lib/getNFTInfo';
 import { Media } from 'components/Media';
-
-const colors = ['#5CB88C', '#D7C9F9', '#222426'];
+import addressHSl from 'lib/addressHSL';
 
 export interface NFTFromSubgraph {
   id: string;
@@ -76,7 +75,11 @@ export function NFTCollateralPicker({
               className={`${styles.centerAlignedRow} ${styles.nftCollectionNameAndIcon}`}>
               <div
                 className={styles.collectionIcon}
-                style={{ background: colors[i] }}
+                style={{
+                  background: addressHSl(
+                    groupedNFTs[nftGroupName][0].id.substring(0, 42),
+                  ),
+                }}
               />
               <div className={styles.collectionName}>
                 {nftGroupName.toLowerCase()}
