@@ -7,7 +7,7 @@ import { getNFTInfoFromTokenInfo, GetNFTInfoResponse } from 'lib/getNFTInfo';
 import { Media } from 'components/Media';
 import addressHSl from 'lib/addressHSL';
 
-export interface NFTFromSubgraph {
+export interface NFTEntity {
   id: string;
   identifier: ethers.BigNumber;
   uri: string;
@@ -18,12 +18,12 @@ export interface NFTFromSubgraph {
 }
 
 interface NFTCollateralPickerProps {
-  nfts: NFTFromSubgraph[];
+  nfts: NFTEntity[];
   hiddenNFTAddresses?: string[];
 }
 
 interface GroupedNFTCollections {
-  [key: string]: NFTFromSubgraph[];
+  [key: string]: NFTEntity[];
 }
 
 interface ShowNFTStateType {
@@ -38,7 +38,7 @@ export function NFTCollateralPicker({
 
   const groupedNFTs: GroupedNFTCollections = useMemo(() => {
     return nfts.reduce(
-      (groupedNFTs: GroupedNFTCollections, nextNFT: NFTFromSubgraph) => {
+      (groupedNFTs: GroupedNFTCollections, nextNFT: NFTEntity) => {
         const nftContractAddress: string = nextNFT.id.substring(0, 42);
 
         if (hiddenNFTAddresses.includes(nftContractAddress)) return groupedNFTs; // skip if hidden collection
