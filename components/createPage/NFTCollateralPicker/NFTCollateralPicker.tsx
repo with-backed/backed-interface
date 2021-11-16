@@ -39,14 +39,16 @@ export function NFTCollateralPicker({
   const groupedNFTs: GroupedNFTCollections = useMemo(() => {
     return nfts.reduce(
       (groupedNFTs: GroupedNFTCollections, nextNFT: NFTFromSubgraph) => {
-        const collection: string = nextNFT.registry.name;
         const nftContractAddress: string = nextNFT.id.substring(0, 42);
 
         if (hiddenNFTAddresses.includes(nftContractAddress)) return groupedNFTs; // skip if hidden collection
-        if (!!groupedNFTs[collection]) {
-          groupedNFTs[collection] = [...groupedNFTs[collection], nextNFT];
+        if (!!groupedNFTs[nftContractAddress]) {
+          groupedNFTs[nftContractAddress] = [
+            ...groupedNFTs[nftContractAddress],
+            nextNFT,
+          ];
         } else {
-          groupedNFTs[collection] = [nextNFT];
+          groupedNFTs[nftContractAddress] = [nextNFT];
         }
         return groupedNFTs;
       },
@@ -67,8 +69,8 @@ export function NFTCollateralPicker({
   return (
     <div className={styles.nftPicker}>
       <div className={styles.selectButton}>select an NFT</div>
-      {Object.keys(groupedNFTs).map((nftGroupName, i) => (
-        <div key={nftGroupName}>
+      {Object.keys(groupedNFTs).map((nftContractAddress, i) => (
+        <div key={nftContractAddress}>
           <div
             className={`${styles.centerAlignedRow} ${styles.nftCollectionRow}`}>
             <div
@@ -76,24 +78,24 @@ export function NFTCollateralPicker({
               <div
                 className={styles.collectionIcon}
                 style={{
-                  background: addressHSl(
-                    groupedNFTs[nftGroupName][0].id.substring(0, 42),
-                  ),
+                  background: addressHSl(nftContractAddress),
                 }}
               />
               <div className={styles.collectionName}>
-                {nftGroupName.toLowerCase()}
+                {groupedNFTs[
+                  nftContractAddress
+                ][0]?.registry.name.toLowerCase()}
               </div>
             </div>
             <div className={styles.centerAlignedRow}>
               <span className={styles.number}>
-                {groupedNFTs[nftGroupName].length}
+                {groupedNFTs[nftContractAddress].length}
               </span>
               <div
                 className={`${styles.caret} ${
-                  showNFT[nftGroupName] ? styles.caretOpen : ''
+                  showNFT[nftContractAddress] ? styles.caretOpen : ''
                 }`}
-                onClick={() => toggleShowForNFT(nftGroupName)}>
+                onClick={() => toggleShowForNFT(nftContractAddress)}>
                 <Caret />
               </div>
             </div>
@@ -101,13 +103,15 @@ export function NFTCollateralPicker({
           {
             <div
               className={`${styles.nftGridWrapper} ${
-                showNFT[nftGroupName] ? styles.gridOpen : styles.gridClosed
+                showNFT[nftContractAddress]
+                  ? styles.gridOpen
+                  : styles.gridClosed
               } `}>
-              {groupedNFTs[nftGroupName].map((nft) => (
+              {groupedNFTs[nftContractAddress].map((nft) => (
                 <div
                   key={nft.id}
                   className={`${styles.nftGridItem} ${
-                    showNFT[nftGroupName]
+                    showNFT[nftContractAddress]
                       ? styles.itemOpened
                       : styles.itemClosed
                   }`}>
