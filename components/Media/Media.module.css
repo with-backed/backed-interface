@@ -1,5 +1,3 @@
 .media-content {
-  /* TODO: @cnasc just go to 100% width here? */
-  max-height: 400px;
-  max-width: 380px;
+  width: 100%;
 }

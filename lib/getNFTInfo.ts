@@ -6,6 +6,7 @@ import { ERC721 } from '../abis/types';
 interface GetNFTInfoArgs {
   contract: ERC721;
   tokenId: ethers.BigNumber;
+  forceImage?: boolean;
 }
 
 export interface GetNFTInfoResponse {
@@ -19,20 +20,33 @@ export interface GetNFTInfoResponse {
 export default async function getNFTInfo({
   contract,
   tokenId,
+  forceImage = false,
 }: GetNFTInfoArgs): Promise<GetNFTInfoResponse | null> {
   try {
     const tokenURI = await contract.tokenURI(tokenId);
 
+    return getNFTInfoFromTokenInfo(tokenId, tokenURI, forceImage);
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
+
+export async function getNFTInfoFromTokenInfo(
+  tokenId: ethers.BigNumber,
+  tokenURI: string,
+  forceImage: boolean = false,
+): Promise<GetNFTInfoResponse | null> {
+  try {
     const resolvedTokenURI = isIPFS(tokenURI)
       ? makeIPFSUrl(tokenURI)
       : tokenURI;
 
     const tokenURIRes = await fetch(resolvedTokenURI);
-
     const metadata = await tokenURIRes.json();
 
     const imageURL =
-      metadata?.animation_url == null
+      metadata?.animation_url == null || forceImage
         ? metadata?.image
         : metadata?.animation_url;
 
@@ -41,11 +55,11 @@ export default async function getNFTInfo({
     const mediaMimeType = await getMimeType(mediaUrl);
 
     return {
+      id: tokenId,
       name: metadata?.name,
       description: metadata?.description,
       mediaUrl,
       mediaMimeType,
-      id: tokenId,
     };
   } catch (error) {
     console.log(error);
