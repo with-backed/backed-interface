@@ -57,10 +57,10 @@ export function NFTCollateralPicker({
   }, [nfts, hiddenNFTAddresses]);
 
   const toggleShowForNFT = useCallback(
-    (groupName) => {
+    (nftAddress) => {
       setShowNFT((prev) => ({
         ...prev,
-        [groupName]: !showNFT[groupName],
+        [nftAddress]: !showNFT[nftAddress],
       }));
     },
     [showNFT, setShowNFT],
