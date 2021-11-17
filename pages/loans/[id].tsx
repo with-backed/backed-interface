@@ -24,14 +24,14 @@ export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
 
 export default function Loans({ loanInfoJson }: LoanPageProps) {
   const loanInfo = useMemo(
-    () => loanJsonToLoanInfo(loanInfoJson),
-    [loanJsonToLoanInfo],
+    () => parseLoanInfoJson(loanInfoJson),
+    [loanInfoJson],
   );
 
   return <Loan serverLoanInfo={loanInfo as LoanInfo} />;
 }
 
-const loanJsonToLoanInfo = (loanInfoJson: string): LoanInfo => {
+const parseLoanInfoJson = (loanInfoJson: string): LoanInfo => {
   const loanInfo = JSON.parse(loanInfoJson);
   Object.keys(loanInfo).forEach((k: string) => {
     if (loanInfo[k] == null) {
