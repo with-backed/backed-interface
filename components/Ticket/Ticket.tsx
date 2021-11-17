@@ -22,7 +22,7 @@ export const Loan: FunctionComponent<LoanProps> = ({ serverLoanInfo }) => {
     getLoanInfo(loanInfo.loanId.toString()).then((loanInfo) =>
       setLoanInfo(loanInfo),
     );
-  }, []);
+  }, [loanInfo.loanId]);
 
   return (
     <PageWrapper>
