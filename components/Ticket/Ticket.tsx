@@ -11,27 +11,22 @@ import { PawnShopHeader } from 'components/PawnShopHeader';
 import { PageWrapper } from 'components/layouts/PageWrapper';
 import { LoanInfo } from 'lib/LoanInfoType';
 
-type TicketProps = {
-  ticketID: string | null;
+type LoanProps = {
+  serverLoanInfo: LoanInfo;
 };
 
-export const Ticket: FunctionComponent<TicketProps> = ({ ticketID }) => {
-  const [loanInfo, setLoanInfo] = useState<LoanInfo | null>(null);
+export const Loan: FunctionComponent<LoanProps> = ({ serverLoanInfo }) => {
+  const [loanInfo, setLoanInfo] = useState<LoanInfo>(serverLoanInfo);
 
   const fetchData = useCallback(() => {
-    setLoanInfo(null);
-    if (ticketID == null) {
-      return;
-    }
-    getLoanInfo(`${ticketID}`).then((loanInfo) => setLoanInfo(loanInfo));
-  }, [ticketID]);
+    getLoanInfo(loanInfo.loanId.toString()).then((loanInfo) =>
+      setLoanInfo(loanInfo),
+    );
+  }, [loanInfo.loanId]);
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
   return (
     <PageWrapper>
-      <PawnShopHeader message={`pawn loan #${ticketID}`} />
+      <PawnShopHeader message={`pawn loan #${loanInfo.loanId}`} />
       {loanInfo == null ? (
         <Dimmer active={loanInfo == null} inverted>
           <Loader inverted content="Loading" />
