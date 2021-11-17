@@ -19,22 +19,30 @@ export type TokenURIAndID = {
  **/
 const METADATA_CACHE: { [key: string]: GetNFTInfoResponse } = {};
 
-type MaybeNFTMetadata = {
-  metadata: GetNFTInfoResponse | null;
-  isLoading: boolean;
+type LoadingNFTMetadata = {
+  metadata: null;
+  isLoading: true;
 };
+
+type ResolvedNFTMetadata = {
+  metadata: GetNFTInfoResponse | null;
+  isLoading: false;
+};
+
+type MaybeNFTMetadata = LoadingNFTMetadata | ResolvedNFTMetadata;
 
 export function useTokenMetadata(spec: GetNFTInfoArgs): MaybeNFTMetadata;
 export function useTokenMetadata(spec: TokenURIAndID): MaybeNFTMetadata;
 export function useTokenMetadata(spec: any): MaybeNFTMetadata {
-  const [metadata, setMetadata] = useState<GetNFTInfoResponse | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [result, setResult] = useState<MaybeNFTMetadata>({
+    isLoading: true,
+    metadata: null,
+  });
 
   const getMetadata = useCallback(async () => {
     const cacheKey = JSON.stringify(spec);
     if (METADATA_CACHE[cacheKey]) {
-      setMetadata(METADATA_CACHE[cacheKey]);
-      setIsLoading(false);
+      setResult({ isLoading: false, metadata: METADATA_CACHE[cacheKey] });
       return;
     }
 
@@ -51,13 +59,12 @@ export function useTokenMetadata(spec: any): MaybeNFTMetadata {
     if (fetchedMetadata) {
       METADATA_CACHE[cacheKey] = fetchedMetadata;
     }
-    setMetadata(fetchedMetadata);
-    setIsLoading(false);
+    setResult({ isLoading: false, metadata: fetchedMetadata });
   }, [spec]);
 
   useEffect(() => {
     getMetadata();
   }, [getMetadata]);
 
-  return { metadata, isLoading };
+  return result;
 }
