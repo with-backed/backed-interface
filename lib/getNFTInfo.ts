@@ -3,7 +3,7 @@ import { cid } from 'is-ipfs';
 import remove from 'lodash/remove';
 import { ERC721 } from '../abis/types';
 
-interface GetNFTInfoArgs {
+export interface GetNFTInfoArgs {
   contract: ERC721;
   tokenId: ethers.BigNumber;
   forceImage?: boolean;
@@ -17,7 +17,7 @@ export interface GetNFTInfoResponse {
   id: ethers.BigNumber;
 }
 
-export default async function getNFTInfo({
+export async function getNFTInfo({
   contract,
   tokenId,
   forceImage = false,
