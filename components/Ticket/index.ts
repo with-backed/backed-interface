@@ -1,1 +1,1 @@
-export { Ticket } from './Ticket';
+export { Loan } from './Ticket';
