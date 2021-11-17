@@ -132,10 +132,14 @@ function CenterColumn({ loanInfo }: TicketPageBodyProps) {
         collateralAddress={loanInfo.collateralContractAddress}
         collateralTokenId={loanInfo.collateralTokenId}
       />
-      <LoanDurationCard
-        lastAccumulatedInterest={loanInfo.lastAccumulatedTimestamp}
-        loanDuration={loanInfo.durationSeconds}
-      />
+      {!loanInfo.lastAccumulatedTimestamp.eq(0) && !loanInfo.closed ? (
+        <LoanDurationCard
+          lastAccumulatedInterest={loanInfo.lastAccumulatedTimestamp}
+          loanDuration={loanInfo.durationSeconds}
+        />
+      ) : (
+        ''
+      )}
     </Column>
   );
 }
