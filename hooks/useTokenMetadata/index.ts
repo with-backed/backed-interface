@@ -1,0 +1,1 @@
+export { useTokenMetadata } from './useTokenMetadata';
