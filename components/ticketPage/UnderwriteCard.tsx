@@ -30,7 +30,7 @@ export function UnderwriteCard({
   );
   const [needsAllowance, setNeedsAllowance] = useState(false);
 
-  const getAccountLoanAssetBalance = useCallback(async () => {
+  const getAccountLoanAssetBalance = async () => {
     const loanAssetContract = jsonRpcERC20Contract(
       loanInfo.loanAssetContractAddress,
     );
@@ -40,9 +40,9 @@ export function UnderwriteCard({
       loanInfo.loanAssetDecimals,
     );
     setLoanAssetBalance(humanReadableBalance);
-  }, [account, loanInfo.loanAssetContractAddress, loanInfo.loanAssetDecimals]);
+  };
 
-  const setAllowance = useCallback(async () => {
+  const setAllowance = async () => {
     const assetContract = jsonRpcERC20Contract(
       loanInfo.loanAssetContractAddress,
     );
@@ -54,13 +54,7 @@ export function UnderwriteCard({
       setNeedsAllowance(allowanceValue.lt(loanAmount));
     }
     setAllowanceValue(allowance);
-  }, [
-    account,
-    allowanceValue,
-    loanAmount,
-    loanInfo.loanAssetContractAddress,
-    needsAllowance,
-  ]);
+  };
 
   useEffect(() => {
     if (account == null) {
@@ -68,7 +62,7 @@ export function UnderwriteCard({
     }
     getAccountLoanAssetBalance();
     setAllowance();
-  }, [account, getAccountLoanAssetBalance, setAllowance]);
+  }, [account]);
 
   useEffect(() => {
     setNeedsAllowance(allowanceValue.lt(loanAmount));
