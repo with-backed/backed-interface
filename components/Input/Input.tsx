@@ -2,7 +2,9 @@ import React, {
   ChangeEvent,
   FunctionComponent,
   InputHTMLAttributes,
+  useCallback,
   useMemo,
+  useRef,
 } from 'react';
 import debounce from 'lodash/debounce';
 import styles from './Input.module.css';
@@ -24,6 +26,19 @@ export const Input: FunctionComponent<InputProps> = ({
   title,
   ...props
 }) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const handleWheel = useCallback(() => {
+    if (!inputRef.current) {
+      return;
+    }
+    // this stops the scroll event from changing the input (annoying)
+    inputRef.current.blur();
+    // this refocuses the input briefly after scrolling to prevent a different annoyance
+    setTimeout(() => {
+      inputRef.current?.focus();
+    });
+  }, []);
+
   const debouncedHandleChange = useMemo(
     () =>
       debounce((event: ChangeEvent<HTMLInputElement>) => {
@@ -31,6 +46,7 @@ export const Input: FunctionComponent<InputProps> = ({
       }, WAIT_DURATION_IN_MILLISECONDS),
     [onChange],
   );
+
   const hasError = Boolean(error);
   const hasMessage = Boolean(message);
   return (
@@ -41,6 +57,8 @@ export const Input: FunctionComponent<InputProps> = ({
           aria-invalid={hasError}
           className={hasError ? styles.errorInput : styles.input}
           onChange={debouncedHandleChange}
+          ref={inputRef}
+          onWheel={handleWheel}
           {...props}
         />
       </label>
