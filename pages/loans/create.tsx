@@ -10,6 +10,9 @@ import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { PageWrapper } from 'components/layouts/PageWrapper';
 import { AccountContext } from 'context/account';
 import { ConnectWallet } from 'components/ConnectWallet';
+import { NFTCollateralPicker } from 'components/createPage/NFTCollateralPicker/NFTCollateralPicker';
+import { Provider } from 'urql';
+import { eip721Client } from 'lib/urql';
 
 export default function Create({}) {
   const { account } = useContext(AccountContext);
@@ -18,6 +21,7 @@ export default function Create({}) {
     ethers.BigNumber.from(0),
   );
   const [isValidCollateral, setIsValidCollateral] = useState(false);
+  const [showNFTPicker, setShowNFTPicker] = useState(false);
 
   return (
     <PageWrapper>
@@ -42,8 +46,35 @@ export default function Create({}) {
             collateralTokenId={collateralTokenID}
           />
         )}
-        <Fieldset legend="explainer">
-          <Explainer />
+        <Fieldset legend="stake collateral">
+          <div>
+            This NFT will be locked up as collateral for your loan. If you fail
+            to repay the loan, the NFT will be transferred to the lender.
+          </div>
+          <div
+            id="connect-wallet-button"
+            onClick={() => setShowNFTPicker(true)}>
+            select NFT
+          </div>
+          {showNFTPicker && (
+            <Provider value={eip721Client}>
+              <div
+                style={{
+                  position: 'absolute',
+                  width: '600px',
+                  height: '600px',
+                  top: '200px',
+                  left: '360px',
+                }}>
+                <NFTCollateralPicker
+                  connectedWallet={'0x31fd8d16641d06e0eada78b475ae367163704774'}
+                  handleSetCollateralAddress={setCollateralAddress}
+                  handleSetCollateralTokenId={setCollateralTokenID}
+                  hidePicker={() => setShowNFTPicker(false)}
+                />
+              </div>
+            </Provider>
+          )}
         </Fieldset>
       </ThreeColumn>
     </PageWrapper>

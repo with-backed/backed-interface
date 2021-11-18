@@ -90,7 +90,7 @@ type AllowButtonProps = {
   tokenId: ethers.BigNumber;
   setIsApproved: (value: boolean) => void;
 };
-function AllowButton({
+export function AllowButton({
   collateralAddress,
   tokenId,
   setIsApproved,

@@ -6,6 +6,7 @@ import styles from './NFTCollateralPicker.module.css';
 import { getNFTInfoFromTokenInfo, GetNFTInfoResponse } from 'lib/getNFTInfo';
 import { Media } from 'components/Media';
 import addressHSl from 'lib/addressHSL';
+import { useNFTs } from 'stories/NFTCollateralPicker.stories';
 
 export interface NFTEntity {
   id: string;
@@ -18,7 +19,10 @@ export interface NFTEntity {
 }
 
 interface NFTCollateralPickerProps {
-  nfts: NFTEntity[];
+  connectedWallet: string;
+  handleSetCollateralAddress: (address: string) => void;
+  handleSetCollateralTokenId: (id: ethers.BigNumber) => void;
+  hidePicker: () => void;
   hiddenNFTAddresses?: string[];
 }
 
@@ -31,9 +35,14 @@ interface ShowNFTStateType {
 }
 
 export function NFTCollateralPicker({
-  nfts,
+  connectedWallet,
+  handleSetCollateralAddress,
+  handleSetCollateralTokenId,
+  hidePicker,
   hiddenNFTAddresses = [],
 }: NFTCollateralPickerProps) {
+  const { fetching, error, nfts } = useNFTs(connectedWallet);
+
   const [showNFT, setShowNFT] = useState<ShowNFTStateType>({});
 
   const groupedNFTs: GroupedNFTCollections = useMemo(() => {
@@ -65,6 +74,23 @@ export function NFTCollateralPicker({
     },
     [showNFT, setShowNFT],
   );
+
+  const handleNFTClick = useCallback(
+    (nftAddress: string, tokenId: ethers.BigNumber) => {
+      handleSetCollateralAddress(nftAddress);
+      handleSetCollateralTokenId(tokenId);
+      hidePicker();
+    },
+    [handleSetCollateralAddress, handleSetCollateralTokenId, hidePicker],
+  );
+
+  if (fetching) {
+    return <div>loading</div>;
+  }
+
+  if (error) {
+    return <div>error</div>;
+  }
 
   return (
     <div className={styles.nftPicker}>
@@ -115,7 +141,12 @@ export function NFTCollateralPicker({
                       ? styles.itemOpened
                       : styles.itemClosed
                   }`}>
-                  <NFTMedia tokenId={nft.identifier} tokenUri={nft.uri} />
+                  <div
+                    onClick={() =>
+                      handleNFTClick(nftContractAddress, nft.identifier)
+                    }>
+                    <NFTMedia tokenId={nft.identifier} tokenUri={nft.uri} />
+                  </div>
                 </div>
               ))}
             </div>

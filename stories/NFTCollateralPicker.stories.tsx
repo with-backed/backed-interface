@@ -21,11 +21,11 @@ const NFTsQuery = `
   }
 `;
 
-const useNFTs = () => {
+export const useNFTs = (address: string) => {
   const [result] = useQuery({
     query: NFTsQuery,
     variables: {
-      address: '0x31fd8d16641d06e0eada78b475ae367163704774'.toLowerCase(),
+      address: address.toLowerCase(),
     },
   });
 
@@ -46,19 +46,9 @@ const HIDDEN_NFT_ADDRESSES = [
 ];
 
 const NFTCollateralPickerStory = () => {
-  const { fetching, error, nfts } = useNFTs();
-
-  if (fetching) {
-    return <div>fetching</div>;
-  }
-
-  if (error) {
-    return <div>error</div>;
-  }
-
   return (
     <NFTCollateralPicker
-      nfts={nfts}
+      connectedWallet={'0x31fd8d16641d06e0eada78b475ae367163704774'}
       hiddenNFTAddresses={HIDDEN_NFT_ADDRESSES}
     />
   );
