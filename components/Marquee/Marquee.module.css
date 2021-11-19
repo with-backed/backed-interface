@@ -1,0 +1,19 @@
+/* https://reneroth.xyz/marquees-in-css/ */
+.container {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.scrolling {
+  animation: marquee 10s linear infinite;
+  display: inline-block;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
