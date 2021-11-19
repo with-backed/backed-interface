@@ -11,7 +11,7 @@ const Attributes: FunctionComponent = ({ children }) => {
   return <div className={styles.attributes}>{children}</div>;
 };
 
-type Loan = {
+export type Loan = {
   id: string;
   loanAssetSymbol: string;
   loanAssetDecimal: number;
@@ -96,15 +96,6 @@ export function LoanCardLoaded({
   perSecondInterestRate,
   metadata: { mediaMimeType, mediaUrl, name },
 }: LoanCardLoadedProps) {
-  console.log({
-    id,
-    title,
-    formattedLoanAmount,
-    perSecondInterestRate,
-    mediaMimeType,
-    mediaUrl,
-    name,
-  });
   return (
     <Link href={`/loans/${id}`}>
       <a className={styles.link} aria-label={title} title={title}>
