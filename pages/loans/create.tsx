@@ -17,7 +17,7 @@ import { AuthorizedNFT } from 'components/createPage/AuthorizedNFT';
 import { Button } from 'components/Button';
 import {
   NFTEntity,
-  getNftSubraphEntityContractAddress,
+  getNftContractAddress,
   HIDDEN_NFT_ADDRESSES,
   isNFTApprovedForCollateral,
 } from 'lib/eip721Subraph';
@@ -31,28 +31,32 @@ export default function Create({}) {
 
   const [collateralAddress, collateralTokenID] = useMemo(() => {
     if (!selectedNFT) return ['', ethers.BigNumber.from(-1)];
-    return [
-      getNftSubraphEntityContractAddress(selectedNFT),
-      selectedNFT?.identifier,
-    ];
+    return [getNftContractAddress(selectedNFT), selectedNFT?.identifier];
   }, [selectedNFT]);
 
   return (
     <PageWrapper>
       <PawnShopHeader message="create a loan" />
       <ThreeColumn>
-        <Fieldset legend="pawn your NFT">
+        <Fieldset legend="set loan terms">
           {Boolean(account) ? (
-            <CreateTicketForm
-              collateralAddress={collateralAddress}
-              collateralTokenID={collateralTokenID}
-              isCollateralApproved={
-                !!(
-                  isCollateralApproved ||
-                  (selectedNFT && isNFTApprovedForCollateral(selectedNFT))
-                )
-              }
-            />
+            <div>
+              <p style={{ marginTop: '20px' }}>
+                After selecting an NFT and setting the loan terms, mint the
+                borrower ticket to lock up your NFT and make your loan available
+                to lenders.
+              </p>
+              <CreateTicketForm
+                collateralAddress={collateralAddress}
+                collateralTokenID={collateralTokenID}
+                isCollateralApproved={
+                  !!(
+                    isCollateralApproved ||
+                    (selectedNFT && isNFTApprovedForCollateral(selectedNFT))
+                  )
+                }
+              />
+            </div>
           ) : (
             <ConnectWallet />
           )}
@@ -60,11 +64,11 @@ export default function Create({}) {
         <Fieldset legend="stake collateral">
           {collateralAddress === '' && (
             <div className={styles.collateralExplainer}>
-              <div>
+              <p>
                 This NFT will be locked up as collateral for your loan. If you
                 fail to repay the loan, the NFT will be transferred to the
                 lender.
-              </div>
+              </p>
             </div>
           )}
           {selectedNFT !== undefined && (
@@ -94,7 +98,7 @@ export default function Create({}) {
           )}
           {!showNFTPicker && !collateralAddress && (
             <Button onClick={() => setShowNFTPicker(true)} disabled={false}>
-              Select NFT
+              select an NFT
             </Button>
           )}
         </Fieldset>

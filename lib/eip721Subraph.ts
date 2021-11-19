@@ -66,24 +66,18 @@ export const useNFTs = (address: string) => {
   const nfts = rawNfts.map((nft: any) => ({
     ...nft,
     identifier: ethers.BigNumber.from(nft.identifier),
-    isApprovedForCollateral:
-      nft.approvals.filter(
-        (approval: any) =>
-          approval.approved.id.toLowerCase() ===
-          process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT?.toLowerCase(),
-      ).length > 0,
   }));
 
   return { fetching, error, nfts };
 };
 
-export function getNftSubraphEntityContractAddress(nft: NFTEntity): string {
+export function getNftContractAddress(nft: NFTEntity): string {
   return nft.id.substring(0, 42);
 }
 
 export function constructEtherscanLinkForNft(nft: NFTEntity): string {
   const etherscanUrl = process.env.NEXT_PUBLIC_ETHERSCAN_URL;
-  return `${etherscanUrl}/address/${getNftSubraphEntityContractAddress(nft)}`;
+  return `${etherscanUrl}/address/${getNftContractAddress(nft)}`;
 }
 
 export function isNFTApprovedForCollateral(nft: NFTEntity): boolean {

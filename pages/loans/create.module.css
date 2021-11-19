@@ -11,10 +11,16 @@
   background: #fbfbfb;
   padding: 20px;
   height: 75%;
+  width: 100%;
   display: flex;
   align-items: center;
-  text-align: center;
+  justify-content: center;
   margin: 20px 0;
+}
+
+.collateralExplainer p {
+  text-align: center;
+  width: 80%;
 }
 
 .nftCollateralPickerWrapper {

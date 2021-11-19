@@ -1,11 +1,12 @@
 import { NFTEntity } from 'lib/eip721Subraph';
 import {
-  getNftSubraphEntityContractAddress,
+  getNftContractAddress,
   constructEtherscanLinkForNft,
 } from 'lib/eip721Subraph';
 import styles from './AuthorizedNFT.module.css';
 import { NFTMedia } from 'components/Media/NFTMedia';
 import { AllowNFTSpendButton } from './AllowNFTSpendButton';
+import { EtherscanAddressLink } from 'components/EtherscanLink';
 
 interface AuthorizedNFTProps {
   nft: NFTEntity;
@@ -17,24 +18,20 @@ export function AuthorizedNFT({ nft, handleApproved }: AuthorizedNFTProps) {
     <div style={{ marginTop: '20px' }}>
       <NFTMedia
         collateralTokenID={nft.identifier}
-        collateralAddress={getNftSubraphEntityContractAddress(nft)}
+        collateralAddress={getNftContractAddress(nft)}
       />
       <div className={styles.nftInfo}>
         <div className={styles.nftInfoText}>{`#${nft.identifier.toString()} - ${
           nft.registry.name
         }`}</div>
         <div className={styles.nftInfoText}>
-          <a
-            className={styles.etherscanLink}
-            href={constructEtherscanLinkForNft(nft)}
-            target="_blank"
-            rel="noreferrer">
+          <EtherscanAddressLink address={getNftContractAddress(nft)}>
             View on etherscan
-          </a>
+          </EtherscanAddressLink>
         </div>
         <div className={styles.nftInfoText}>
           <b>address: </b>
-          {getNftSubraphEntityContractAddress(nft)}
+          {getNftContractAddress(nft)}
         </div>
         <div className={styles.nftInfoText}>
           <b>nft ID: </b>
@@ -42,7 +39,7 @@ export function AuthorizedNFT({ nft, handleApproved }: AuthorizedNFTProps) {
         </div>
       </div>
       <AllowNFTSpendButton
-        collateralAddress={getNftSubraphEntityContractAddress(nft)}
+        collateralAddress={getNftContractAddress(nft)}
         tokenId={nft.identifier}
         setIsApproved={handleApproved}
       />

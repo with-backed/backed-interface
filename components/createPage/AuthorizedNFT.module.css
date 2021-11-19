@@ -12,13 +12,13 @@
   white-space: nowrap;
 }
 
-.etherscanLink {
+.nftInfoText a {
   color: var(--primary-blue);
   text-decoration: none;
 }
 
-.etherscanLink:focus,
-.etherscanLink:hover {
+.nftInfoText a:focus,
+.nftInfoText a:hover {
   color: var(--primary-blue);
   text-decoration: none;
 }

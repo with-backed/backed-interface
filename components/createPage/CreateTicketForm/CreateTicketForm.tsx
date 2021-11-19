@@ -91,7 +91,6 @@ function MintTicketButton({
     duration.eq(0);
 
   const mint = async () => {
-    console.log({ collateralAddress, loanAsset, collateralTokenID });
     if (disabled()) {
       return;
     }
@@ -130,7 +129,7 @@ function MintTicketButton({
 
   return (
     <TransactionButton
-      text="Create Loan"
+      text="mint borrower ticket"
       onClick={mint}
       txHash={transactionHash}
       isPending={waitingForTx}

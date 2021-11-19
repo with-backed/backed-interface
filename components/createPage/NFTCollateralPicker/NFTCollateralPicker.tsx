@@ -8,11 +8,7 @@ import {
 } from 'react';
 import styles from './NFTCollateralPicker.module.css';
 import addressHSl from 'lib/addressHSL';
-import {
-  getNftSubraphEntityContractAddress,
-  NFTEntity,
-  useNFTs,
-} from 'lib/eip721Subraph';
+import { getNftContractAddress, NFTEntity, useNFTs } from 'lib/eip721Subraph';
 import useOutsideClick from 'lib/useOutsideClick';
 import { NFTMedia } from 'components/Media/NFTMedia';
 
@@ -151,9 +147,7 @@ export function NFTCollateralPicker({
                   }`}>
                   <div onClick={() => handleNFTClick(nft)}>
                     <NFTMedia
-                      collateralAddress={getNftSubraphEntityContractAddress(
-                        nft,
-                      )}
+                      collateralAddress={getNftContractAddress(nft)}
                       collateralTokenID={nft.identifier}
                     />
                   </div>
