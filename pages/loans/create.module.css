@@ -1,0 +1,26 @@
+.differentNftText {
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  margin-top: 10px;
+  font-size: 16px;
+  color: var(--primary-blue);
+}
+
+.collateralExplainer {
+  background: #fbfbfb;
+  padding: 20px;
+  height: 75%;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.nftCollateralPickerWrapper {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  top: 200px;
+  left: 360px;
+}

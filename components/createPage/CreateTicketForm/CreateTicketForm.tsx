@@ -18,17 +18,13 @@ import { AccountContext } from 'context/account';
 
 export type CreateTicketFormProps = {
   collateralAddress: string;
-  setCollateralAddress: (value: string) => void;
   collateralTokenID: ethers.BigNumber;
-  setCollateralTokenID: (value: ethers.BigNumber) => void;
-  setIsValidCollateral: (value: boolean) => void;
+  isCollateralApproved: boolean;
 };
 export function CreateTicketForm({
   collateralAddress,
-  setCollateralAddress,
   collateralTokenID,
-  setCollateralTokenID,
-  setIsValidCollateral,
+  isCollateralApproved,
 }: CreateTicketFormProps) {
   const [loanAssetContract, setLoanAssetContract] = useState<string | null>(
     null,
@@ -49,13 +45,6 @@ export function CreateTicketForm({
 
   return (
     <FormWrapper>
-      <CollateralAddressInput setCollateralAddress={setCollateralAddress} />
-      <CollateralTokenIDInput
-        collateralContractAddress={collateralAddress}
-        setCollateralTokenID={setCollateralTokenID}
-        setIsValidCollateral={setIsValidCollateral}
-        setIsApproved={setIsApproved}
-      />
       <LoanAssetInput
         setDecimals={setLoanAssetDecimals}
         setLoanAssetAddress={setLoanAssetContract}
@@ -64,15 +53,8 @@ export function CreateTicketForm({
       <LoanAmountInput setLoanAmount={setLoanAmount} />
       <InterestRateInput setInterestRate={setInterestRate} />
       <DurationInput setDurationSeconds={setDuration} />
-      {isApproved && !showApproved ? null : (
-        <AllowButton
-          setIsApproved={handleApproved}
-          collateralAddress={collateralAddress}
-          tokenId={collateralTokenID}
-        />
-      )}
       <MintTicketButton
-        isApproved={isApproved}
+        isApproved={isCollateralApproved}
         collateralAddress={collateralAddress}
         collateralTokenID={collateralTokenID}
         loanAsset={loanAssetContract}
@@ -133,7 +115,7 @@ export function AllowButton({
 
   return (
     <TransactionButton
-      text="allow Pawn Shop to transfer your NFT"
+      text="authorize NFT transfer"
       onClick={approve}
       txHash={transactionHash}
       isPending={waitingForTx}
@@ -168,11 +150,12 @@ function MintTicketButton({
 
   const disabled = () =>
     collateralAddress == '' ||
-    collateralTokenID.eq(0) ||
+    collateralTokenID.eq(-1) ||
     loanAsset == '' ||
     duration.eq(0);
 
   const mint = async () => {
+    console.log({ collateralAddress, loanAsset, collateralTokenID });
     if (disabled()) {
       return;
     }
