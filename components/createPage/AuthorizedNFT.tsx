@@ -12,7 +12,7 @@ interface AuthorizedNFTProps {
 
 export function AuthorizedNFT({ nft, handleApproved }: AuthorizedNFTProps) {
   return (
-    <div style={{ marginTop: '20px' }}>
+    <div className={styles.wrapper}>
       <NFTMedia
         collateralTokenID={nft.identifier}
         collateralAddress={getNftContractAddress(nft)}

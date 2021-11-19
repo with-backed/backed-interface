@@ -80,18 +80,12 @@ export function NFTCollateralPicker({
   );
 
   if (fetching) {
-    return (
-      <div className={styles.nftPicker}>
-        <div>loading your NFTs...</div>
-      </div>
-    );
+    return <div className={styles.nftPicker}>loading your NFTs...</div>;
   }
 
   if (error) {
     return (
-      <div className={styles.nftPicker}>
-        <div>oops, we could not load your NFTs</div>
-      </div>
+      <div className={styles.nftPicker}>oops, we could not load your NFTs</div>
     );
   }
 

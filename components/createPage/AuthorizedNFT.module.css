@@ -1,9 +1,13 @@
+.wrapper {
+  margin-top: 20px;
+}
+
 .nftInfo {
   margin: 20px 0;
 }
 
 .nftInfoText {
-  font-family: Times New Roman;
+  font-family: var(--serif);
   font-style: normal;
   font-weight: normal;
   font-size: 16px;

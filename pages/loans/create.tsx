@@ -41,7 +41,7 @@ export default function Create() {
         <Fieldset legend="set loan terms">
           {Boolean(account) ? (
             <div>
-              <p style={{ marginTop: '20px' }}>
+              <p className={styles.mintBorrowExplainer}>
                 After selecting an NFT and setting the loan terms, mint the
                 borrower ticket to lock up your NFT and make your loan available
                 to lenders.
