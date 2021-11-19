@@ -62,7 +62,7 @@ export const Input: FunctionComponent<InputProps> = ({
           {...props}
         />
       </label>
-      {hasError && <p className={styles.errorMessage}>{error}</p>}
+      {hasError && <div className={styles.errorMessage}>{error}</div>}
       {hasMessage && message}
     </div>
   );
