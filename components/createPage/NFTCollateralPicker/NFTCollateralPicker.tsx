@@ -101,7 +101,8 @@ export function NFTCollateralPicker({
       {Object.keys(groupedNFTs).map((nftContractAddress, i) => (
         <div key={nftContractAddress}>
           <div
-            className={`${styles.centerAlignedRow} ${styles.nftCollectionRow}`}>
+            className={`${styles.centerAlignedRow} ${styles.nftCollectionRow}`}
+            onClick={() => toggleShowForNFT(nftContractAddress)}>
             <div
               className={`${styles.centerAlignedRow} ${styles.nftCollectionNameAndIcon}`}>
               <div
@@ -123,8 +124,7 @@ export function NFTCollateralPicker({
               <div
                 className={`${styles.caret} ${
                   showNFT[nftContractAddress] ? styles.caretOpen : ''
-                }`}
-                onClick={() => toggleShowForNFT(nftContractAddress)}>
+                }`}>
                 <Caret />
               </div>
             </div>
@@ -148,6 +148,7 @@ export function NFTCollateralPicker({
                     <NFTMedia
                       collateralAddress={getNftContractAddress(nft)}
                       collateralTokenID={nft.identifier}
+                      forceImage
                     />
                   </div>
                 </div>
