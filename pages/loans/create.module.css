@@ -25,8 +25,9 @@
 
 .nftCollateralPickerWrapper {
   position: absolute;
-  width: 600px;
+  width: 50%;
+  max-width: 600px;
   height: 600px;
-  top: 200px;
-  left: 360px;
+  top: 30%;
+  left: 30%;
 }

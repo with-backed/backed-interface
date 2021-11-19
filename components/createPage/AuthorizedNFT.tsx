@@ -1,8 +1,5 @@
 import { NFTEntity } from 'lib/eip721Subraph';
-import {
-  getNftContractAddress,
-  constructEtherscanLinkForNft,
-} from 'lib/eip721Subraph';
+import { getNftContractAddress } from 'lib/eip721Subraph';
 import styles from './AuthorizedNFT.module.css';
 import { NFTMedia } from 'components/Media/NFTMedia';
 import { AllowNFTSpendButton } from './AllowNFTSpendButton';

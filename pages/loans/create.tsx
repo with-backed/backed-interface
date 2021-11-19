@@ -23,7 +23,7 @@ import {
 } from 'lib/eip721Subraph';
 import styles from './create.module.css';
 
-export default function Create({}) {
+export default function Create() {
   const { account } = useContext(AccountContext);
   const [selectedNFT, setSelectedNFT] = useState<NFTEntity>();
   const [isCollateralApproved, setIsCollateralApproved] = useState(false);

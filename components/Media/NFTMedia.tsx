@@ -7,11 +7,13 @@ import { jsonRpcERC721Contract } from 'lib/contracts';
 interface NFTMediaProps {
   collateralAddress: string;
   collateralTokenID: ethers.BigNumber;
+  forceImage?: boolean;
 }
 
 export function NFTMedia({
   collateralAddress,
   collateralTokenID,
+  forceImage = false,
 }: NFTMediaProps) {
   const [nftInfo, setNFTInfo] = useState<GetNFTInfoResponse | null>(null);
 
@@ -21,10 +23,10 @@ export function NFTMedia({
     const result = await getNFTInfo({
       contract,
       tokenId: collateralTokenID,
-      forceImage: true,
+      forceImage,
     });
     setNFTInfo(result);
-  }, [collateralAddress, collateralTokenID]);
+  }, [collateralAddress, collateralTokenID, forceImage]);
 
   useEffect(() => {
     load();
