@@ -26,7 +26,6 @@ import styles from './create.module.css';
 export default function Create({}) {
   const { account } = useContext(AccountContext);
   const [selectedNFT, setSelectedNFT] = useState<NFTEntity>();
-  const [isValidCollateral, setIsValidCollateral] = useState(false);
   const [isCollateralApproved, setIsCollateralApproved] = useState(false);
   const [showNFTPicker, setShowNFTPicker] = useState(false);
 
@@ -58,12 +57,6 @@ export default function Create({}) {
             <ConnectWallet />
           )}
         </Fieldset>
-        {isValidCollateral && (
-          <CollateralMediaCard
-            collateralAddress={collateralAddress}
-            collateralTokenId={collateralTokenID}
-          />
-        )}
         <Fieldset legend="stake collateral">
           {collateralAddress === '' && (
             <div className={styles.collateralExplainer}>

@@ -1,13 +1,20 @@
-import { ethers } from 'ethers';
-import moment from 'moment';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Fieldset } from 'components/Fieldset';
+import {
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import styles from './NFTCollateralPicker.module.css';
-import { getNFTInfoFromTokenInfo, GetNFTInfoResponse } from 'lib/getNFTInfo';
-import { Media } from 'components/Media';
 import addressHSl from 'lib/addressHSL';
-import { NFTEntity, useNFTs } from 'lib/eip721Subraph';
+import {
+  getNftSubraphEntityContractAddress,
+  NFTEntity,
+  useNFTs,
+} from 'lib/eip721Subraph';
 import useOutsideClick from 'lib/useOutsideClick';
+import { NFTMedia } from 'components/Media/NFTMedia';
 
 interface NFTCollateralPickerProps {
   connectedWallet: string;
@@ -30,7 +37,7 @@ export function NFTCollateralPicker({
   hidePicker,
   hiddenNFTAddresses = [],
 }: NFTCollateralPickerProps) {
-  const pickerRef = useRef();
+  const pickerRef = useRef() as MutableRefObject<HTMLInputElement>;
   useOutsideClick(pickerRef, () => {
     hidePicker();
   });
@@ -88,7 +95,7 @@ export function NFTCollateralPicker({
   if (error) {
     return (
       <div className={styles.nftPicker}>
-        <div>oops, we could not load your NFTs </div>
+        <div>oops, we could not load your NFTs</div>
       </div>
     );
   }
@@ -143,7 +150,12 @@ export function NFTCollateralPicker({
                       : styles.itemClosed
                   }`}>
                   <div onClick={() => handleNFTClick(nft)}>
-                    <NFTMedia tokenId={nft.identifier} tokenUri={nft.uri} />
+                    <NFTMedia
+                      collateralAddress={getNftSubraphEntityContractAddress(
+                        nft,
+                      )}
+                      collateralTokenID={nft.identifier}
+                    />
                   </div>
                 </div>
               ))}
@@ -153,36 +165,6 @@ export function NFTCollateralPicker({
         </div>
       ))}
     </div>
-  );
-}
-
-interface NFTMediaProps {
-  tokenId: ethers.BigNumber;
-  tokenUri: string;
-}
-
-function NFTMedia({ tokenId, tokenUri }: NFTMediaProps) {
-  const [nftInfo, setNFTInfo] = useState<GetNFTInfoResponse | null>(null);
-
-  const load = useCallback(async () => {
-    const result = await getNFTInfoFromTokenInfo(tokenId, tokenUri, true);
-    setNFTInfo(result);
-  }, [tokenId, tokenUri]);
-
-  useEffect(() => {
-    load();
-  }, [load]);
-
-  if (!nftInfo) {
-    return null;
-  }
-
-  return (
-    <Media
-      media={nftInfo.mediaUrl}
-      mediaMimeType={nftInfo.mediaMimeType}
-      autoPlay={false}
-    />
   );
 }
 

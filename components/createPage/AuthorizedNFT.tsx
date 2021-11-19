@@ -1,15 +1,11 @@
-import { ethers } from 'ethers';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { AllowButton } from './CreateTicketForm/CreateTicketForm';
-import getNFTInfo, { GetNFTInfoResponse } from 'lib/getNFTInfo';
-import { Media } from 'components/Media';
-import { jsonRpcERC721Contract } from 'lib/contracts';
 import { NFTEntity } from 'lib/eip721Subraph';
 import {
   getNftSubraphEntityContractAddress,
   constructEtherscanLinkForNft,
 } from 'lib/eip721Subraph';
 import styles from './AuthorizedNFT.module.css';
+import { NFTMedia } from 'components/Media/NFTMedia';
+import { AllowNFTSpendButton } from './AllowNFTSpendButton';
 
 interface AuthorizedNFTProps {
   nft: NFTEntity;
@@ -45,50 +41,11 @@ export function AuthorizedNFT({ nft, handleApproved }: AuthorizedNFTProps) {
           {nft.identifier.toString()}
         </div>
       </div>
-      <AllowButton
+      <AllowNFTSpendButton
         collateralAddress={getNftSubraphEntityContractAddress(nft)}
         tokenId={nft.identifier}
         setIsApproved={handleApproved}
       />
     </div>
-  );
-}
-
-interface NFTMediaProps {
-  collateralAddress: string;
-  collateralTokenID: ethers.BigNumber;
-}
-
-export function NFTMedia({
-  collateralAddress,
-  collateralTokenID,
-}: NFTMediaProps) {
-  const [nftInfo, setNFTInfo] = useState<GetNFTInfoResponse | null>(null);
-
-  const load = useCallback(async () => {
-    const contract = jsonRpcERC721Contract(collateralAddress);
-
-    const result = await getNFTInfo({
-      contract,
-      tokenId: collateralTokenID,
-      forceImage: true,
-    });
-    setNFTInfo(result);
-  }, [collateralAddress, collateralTokenID]);
-
-  useEffect(() => {
-    load();
-  }, [load]);
-
-  if (!nftInfo) {
-    return null;
-  }
-
-  return (
-    <Media
-      media={nftInfo.mediaUrl}
-      mediaMimeType={nftInfo.mediaMimeType}
-      autoPlay={false}
-    />
   );
 }

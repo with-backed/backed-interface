@@ -1,17 +1,10 @@
 import { ethers } from 'ethers';
 import React, { useCallback, useContext, useState } from 'react';
 import InterestRateInput from 'components/createPage/InterestRateInput';
-import CollateralAddressInput from 'components/createPage/CollateralAddressInput';
-import CollateralTokenIDInput from 'components/createPage/CollateralTokenIDInput';
 import LoanAmountInput from 'components/createPage/LoanAmountInput';
 import LoanAssetInput from 'components/createPage/LoanAssetInput';
 import DurationInput from 'components/createPage/DurationInput';
-import {
-  jsonRpcERC721Contract,
-  jsonRpcLoanFacilitator,
-  web3Erc721Contract,
-  web3LoanFacilitator,
-} from 'lib/contracts';
+import { jsonRpcLoanFacilitator, web3LoanFacilitator } from 'lib/contracts';
 import { TransactionButton } from 'components/ticketPage/TransactionButton';
 import { FormWrapper } from 'components/layouts/FormWrapper';
 import { AccountContext } from 'context/account';
@@ -64,63 +57,6 @@ export function CreateTicketForm({
         duration={duration}
       />
     </FormWrapper>
-  );
-}
-
-type AllowButtonProps = {
-  collateralAddress: string;
-  tokenId: ethers.BigNumber;
-  setIsApproved: (value: boolean) => void;
-};
-export function AllowButton({
-  collateralAddress,
-  tokenId,
-  setIsApproved,
-}: AllowButtonProps) {
-  const { account } = useContext(AccountContext);
-  const [transactionHash, setTransactionHash] = useState('');
-  const [waitingForTx, setWaitingForTx] = useState(false);
-
-  const waitForApproval = useCallback(async () => {
-    const contract = jsonRpcERC721Contract(collateralAddress);
-    const filter = contract.filters.Approval(
-      account,
-      process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT,
-      tokenId,
-    );
-    contract.once(filter, () => {
-      setWaitingForTx(false);
-      setIsApproved(true);
-    });
-  }, [account, collateralAddress, setIsApproved, tokenId]);
-
-  const approve = useCallback(async () => {
-    const web3Contract = web3Erc721Contract(collateralAddress);
-    const t = await web3Contract.approve(
-      process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT || '',
-      tokenId,
-    );
-    setTransactionHash(t.hash);
-    setWaitingForTx(true);
-    t.wait()
-      .then(() => {
-        waitForApproval();
-        setWaitingForTx(true);
-      })
-      .catch((err) => {
-        setWaitingForTx(false);
-        console.error(err);
-      });
-  }, [collateralAddress, tokenId, waitForApproval]);
-
-  return (
-    <TransactionButton
-      text="authorize NFT transfer"
-      onClick={approve}
-      txHash={transactionHash}
-      isPending={waitingForTx}
-      textSize="small"
-    />
   );
 }
 
