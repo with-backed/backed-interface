@@ -1,5 +1,4 @@
 .page-wrapper {
-  width: 95%;
+  max-width: var(--max-width);
   margin: auto;
-  padding-bottom: 200px;
 }

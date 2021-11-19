@@ -20,17 +20,18 @@
   --serif: 'Times New Roman', Times, serif;
   --sans: Inter, Helvetica, sans-serif;
   --gap: 1.25rem;
+  --max-width: 1400px;
 }
 
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu,
-    Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   line-height: var(--line-height);
   font-size: 18px;
-  background-color:rgba(255, 255, 255, 1);
+  background-color: rgba(255, 255, 255, 1);
 }
 
 * {
@@ -44,7 +45,7 @@ a {
   text-decoration: none;
 }
 
-#home-link>a {
+#home-link > a {
   text-decoration: none;
 }
 
@@ -57,208 +58,203 @@ img {
   display: block;
 }
 
-p{
+p {
   font-family: 'Times New Roman', Times, serif;
 }
 
-.times{
+.times {
   font-family: 'Times New Roman', Times, serif;
 }
 
-.gray1-fill{
-  background-color: #F4F4F4;
+.gray1-fill {
+  background-color: #f4f4f4;
 }
 
-.gray2-fill{
-  background-color: #EEEEEE
+.gray2-fill {
+  background-color: #eeeeee;
 }
 
-.gray3{
-  color: #424242
+.gray3 {
+  color: #424242;
 }
 
-.black{
-  color: #181818
+.black {
+  color: #181818;
 }
 
-.blue{
-  color: #0000EE
+.blue {
+  color: #0000ee;
 }
 
-.dark-gray{
-  color: #DDDDDD;
+.dark-gray {
+  color: #dddddd;
 }
 
-.craigslist-title{
+.craigslist-title {
   font-size: 20px;
   font-weight: '300';
   text-align: center;
-  background-color: #EEEEEE;
+  background-color: #eeeeee;
   padding: 20px;
-  border-top: 1px solid #CCCCCC;
-  border-bottom: 1px solid #CCCCCC;
+  border-top: 1px solid #cccccc;
+  border-bottom: 1px solid #cccccc;
 }
 
-.craiglist-row{
+.craiglist-row {
   height: 55px;
   width: 100%;
   background-color: white;
   padding: 10px;
 }
 
-a{
-  color: #0000EE;
+a {
+  color: #0000ee;
   text-decoration: underline;
 }
 
-
-.craiglist-row>p{
+.craiglist-row > p {
   /*padding: 10px;*/
   /*background: white;*/
   margin: 0px;
   margin-top: 5px;
 }
 
-.craiglist-row>.title{
+.craiglist-row > .title {
   float: left;
   margin-left: 30px;
 }
 
-.craiglist-row>.info{
+.craiglist-row > .info {
   float: right;
   margin-right: 30px;
 }
 
-#ticket-page{
+#ticket-page {
   display: table;
   margin: 0px auto;
 }
 
-#ticket-page-left{
+#ticket-page-left {
   float: left;
   width: 50%;
 }
 
-#ticket-page-right{
+#ticket-page-right {
   width: 50%;
   float: left;
 }
 
-.standard-width-card{
+.standard-width-card {
   width: 476px;
-  
 }
 
-.ticket-items-wrapper{
+.ticket-items-wrapper {
   width: 100%;
 }
 
-#collateral-header{
+#collateral-header {
   width: 85%;
 }
 
-
 /* ntfe */
-.nfte__details{
+.nfte__details {
   background-color: yellow;
 }
 
-.nfte__meta{
+.nfte__meta {
   display: none;
 }
 
-.nfte__header{
+.nfte__header {
   display: none;
 }
 
-.nfte--loaded>.nfte__header {
+.nfte--loaded > .nfte__header {
   display: none;
 }
 
-#info-card{
+#info-card {
   float: left;
   width: 50%;
   margin-left: 50px;
   background-color: blue;
 }
 
-.i{
-   background-color: #f4f4f4;
-   padding: 10px;
-   color: #75187C;
-   padding-top: 40px;
-   padding-bottom: 40px;
-   font-size: 17px;
- }
+.i {
+  background-color: #f4f4f4;
+  padding: 10px;
+  color: #75187c;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  font-size: 17px;
+}
 
- #interest-card{
+#interest-card {
   margin-right: 20px;
- }
+}
 
- #current-lender-card{
+#current-lender-card {
   margin-top: 40px;
- }
+}
 
+#pawnShopHeader {
+  text-align: center;
+  margin-top: 40px;
+}
 
- #pawnShopHeader{
-   text-align: center;
-   margin-top: 40px;
-   
- }
-
- #pawnShopHeader>h1{
+#pawnShopHeader > h1 {
   color: blue;
   font-family: 'Times New Roman', Times, serif;
   font-weight: 400;
   display: inline;
- }
+}
 
- p{
+p {
   font-family: 'Times New Roman', Times, serif;
- }
- 
- #pawnShopHeaderDivider{
-   width: 100%;
-   margin-top: 40px;
-   margin-bottom: 40px;
-   background-color: #FAFAFA;
-   text-align: center;
-   height: 50px;
- }
+}
 
- #pawnShopHeaderDivider>h2{
+#pawnShopHeaderDivider {
+  width: 100%;
+  margin-top: 40px;
+  margin-bottom: 40px;
+  background-color: #fafafa;
+  text-align: center;
+  height: 50px;
+}
+
+#pawnShopHeaderDivider > h2 {
   font-family: Inter, Helvetica;
   font-style: normal;
   font-weight: 600;
   font-size: 20px;
   line-height: 24px;
   text-align: center;
-  padding-top: 13px
- }
+  padding-top: 13px;
+}
 
- .inter{
+.inter {
   font-family: Inter, Helvetica;
- }
+}
 
- .float-left{
-   float: left;
- }
+.float-left {
+  float: left;
+}
 
- legend{
-   font-family: 'Inter', sans-serif;
- }
+legend {
+  font-family: 'Inter', sans-serif;
+}
 
- input{
-    border: 2px solid #0000EE;
-    padding: 5px;
-    padding-left: 15px;
-    width: 330px;
-    font-size: 14px;
-    height: 40px;
- }
+input {
+  border: 2px solid #0000ee;
+  padding: 5px;
+  padding-left: 15px;
+  width: 330px;
+  font-size: 14px;
+  height: 40px;
+}
 
- select{
-  border: 2px solid #0000EE;
+select {
+  border: 2px solid #0000ee;
   padding: 5px;
   padding-left: 15px;
   width: 330px;
@@ -270,8 +266,8 @@ select::after {
   padding-right: 20px;
 }
 
- .button-1{
-  background-color: #0000EE;
+.button-1 {
+  background-color: #0000ee;
   border-radius: 6px;
   width: 330px;
   margin-left: 20px;
@@ -281,40 +277,37 @@ select::after {
   cursor: pointer;
   margin-bottom: 15px;
   font-family: Inter, Helvetica;
- }
+}
 
- #header-connect-address-wrapper{
-  
+#header-connect-address-wrapper {
   margin: auto;
   margin-top: 20px;
   margin-bottom: 15px;
   width: 220px;
-  
- }
+}
 
- #connect-wallet-button {
+#connect-wallet-button {
   margin: auto;
-  background-color: #0000EE;
+  background-color: #0000ee;
   border-radius: 6px;
   width: 220px;
   text-align: center;
   padding: 10px;
   color: white;
   font-family: Inter, Helvetica;
- }
+}
 
- .button-2{
-  background-color: rgba(0,0,238,.1);
+.button-2 {
+  background-color: rgba(0, 0, 238, 0.1);
   cursor: pointer;
   font-size: 22px;
-  color: #0000EE;
+  color: #0000ee;
   font-family: 'Times New Roman', Times, serif;
- }
+}
 
-
- .blue-loader {
-  border: 5px solid rgba(0,0,238,.1); /* Light grey */
-  border-top: 5px solid #0000EE; /* Blue */
+.blue-loader {
+  border: 5px solid rgba(0, 0, 238, 0.1); /* Light grey */
+  border-top: 5px solid #0000ee; /* Blue */
   border-radius: 50%;
   width: 30px;
   height: 30px;
@@ -324,28 +317,31 @@ select::after {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-.pawn-art>div>p{
+.pawn-art > div > p {
   font-size: 14px;
 }
 
-.display-table{
+.display-table {
   display: table;
 }
 
-.error{
+.error {
   color: red;
 }
 
-.small-text{
+.small-text {
   font-size: 15px;
 }
 
-
-.event-details>a{
+.event-details > a {
   text-decoration: none;
   color: black;
 }
