@@ -1,128 +1,129 @@
 .centerAlignedRow {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .nftPicker {
-    width: 50%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    box-shadow: 0px 0px 100px 2px rgba(0, 0, 0, 0.12);
-    border-radius: 10px;
-    padding: 20px;
+  width: 100%;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: 0px 0px 100px 2px rgba(0, 0, 0, 0.12);
+  border-radius: 10px;
+  padding: 20px;
 }
 
 .selectButton {
-    width: 99%;
-    padding: 10px;
-    text-align: center;
-    background: var(--lightest-grey);
+  width: 99%;
+  padding: 10px;
+  text-align: center;
+  background: var(--lightest-grey);
 }
 
 .nftCollectionRow {
-    justify-content: space-between;
-    margin: 14px 0;
+  justify-content: space-between;
+  margin: 14px 0;
 
-    font-family: Times;
-    font-size: 24px;
-    font-style: normal;
-    font-weight: lighter;
-    line-height: 28px;
+  font-family: Times;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: lighter;
+  line-height: 28px;
+  cursor: pointer;
 }
 
 .nftCollectionNameAndIcon {
-    max-width: 60%;
+  max-width: 60%;
 }
 
 .collectionName {
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .collectionIcon {
-    color: white;
-    margin-right: 20px;
-    background: var(--light-grey);
-    border-radius: 100%;
-    padding: 16px;
+  color: white;
+  margin-right: 20px;
+  background: var(--light-grey);
+  border-radius: 100%;
+  padding: 16px;
 }
 
 .break {
-    width: 99%;
-    background: var(--light-grey);
-    height: 1px;
-    border: none;
+  width: 99%;
+  background: var(--light-grey);
+  height: 1px;
+  border: none;
 }
 
 .number {
-    font-family: Inter;
-    font-style: normal;
-    font-weight: 600;
-    font-size: 20px;
-    line-height: 24px;
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 24px;
 }
 
 .caret {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    font-family: SF Compact Display;
-    font-style: normal;
-    margin: 0 6px;
-    transition: transform 0.3s ease-in-out;
+  display: flex;
+  align-items: center;
+  font-family: SF Compact Display;
+  font-style: normal;
+  margin: 0 6px;
+  transition: transform 0.3s ease-in-out;
 }
 
 .caretOpen {
-    transform: rotate(90deg);
+  transform: rotate(90deg);
 }
 
 .nftGridWrapper {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .gridOpen {
-    transition-timing-function: cubic-bezier(0.895, 0.03, 0.685, 0.22);
-    transition-duration: 0.5s;
-    transition-property: max-height;
-    max-height: 2000px;
+  transition-timing-function: cubic-bezier(0.895, 0.03, 0.685, 0.22);
+  transition-duration: 0.5s;
+  transition-property: max-height;
+  max-height: 2000px;
 }
 
 .gridClosed {
-    max-height: 0;
-    overflow: hidden;
-    text-transform: cubic-bezier(0.95, 0.05, 0.795, 0.035);
-    transition-duration: 0.5s;
-    transition-property: max-height;
+  max-height: 0;
+  overflow: hidden;
+  text-transform: cubic-bezier(0.95, 0.05, 0.795, 0.035);
+  transition-duration: 0.5s;
+  transition-property: max-height;
 }
 
 .nftGridItem {
-    width: 31%;
-    margin: 1%;
+  width: 31%;
+  margin: 1%;
 }
 
 .nftGridItem:last-child {
-    padding-bottom: 10px;
+  padding-bottom: 10px;
 }
 
 .itemOpened {
-    opacity: 1;
-    transform: translateY(0);
-    transition-delay: 0.2s;
-    transition-timing-function: ease-in-out;
-    transition-duration: 0.2s;
-    transition-property: opacity, transform;
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.2s;
+  transition-timing-function: ease-in-out;
+  transition-duration: 0.2s;
+  transition-property: opacity, transform;
 }
 
 .itemClosed {
-    opacity: 0;
-    transform: translateY(-1rem);
-    transition-timing-function: linear, ease;
-    transition-duration: 0.1s;
-    transition-property: opacity, transform;
-    transition-delay: 0.5s;
+  opacity: 0;
+  transform: translateY(-1rem);
+  transition-timing-function: linear, ease;
+  transition-duration: 0.1s;
+  transition-property: opacity, transform;
+  transition-delay: 0.5s;
 }

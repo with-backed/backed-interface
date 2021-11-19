@@ -13,10 +13,8 @@ export default {
 
 const props: CreateTicketFormProps = {
   collateralAddress: '',
-  setCollateralAddress: noop,
   collateralTokenID: ethers.BigNumber.from(0),
-  setCollateralTokenID: noop,
-  setIsValidCollateral: noop,
+  isCollateralApproved: false,
 };
 
 export const Form = () => <CreateTicketForm {...props} />;

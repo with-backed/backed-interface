@@ -1,0 +1,37 @@
+.mintBorrowExplainer {
+  margin-top: 20px;
+}
+
+.differentNftText {
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  margin-top: 10px;
+  font-size: 16px;
+  color: var(--primary-blue);
+}
+
+.collateralExplainer {
+  background: #fbfbfb;
+  padding: 20px;
+  height: 75%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.collateralExplainer p {
+  text-align: center;
+  width: 80%;
+}
+
+.nftCollateralPickerWrapper {
+  position: absolute;
+  width: 50%;
+  max-width: 600px;
+  height: 600px;
+  top: 30%;
+  left: 30%;
+}

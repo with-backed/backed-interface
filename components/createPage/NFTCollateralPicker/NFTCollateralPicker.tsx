@@ -1,24 +1,20 @@
-import { ethers } from 'ethers';
-import moment from 'moment';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Fieldset } from 'components/Fieldset';
+import {
+  MutableRefObject,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import styles from './NFTCollateralPicker.module.css';
-import { getNFTInfoFromTokenInfo, GetNFTInfoResponse } from 'lib/getNFTInfo';
-import { Media } from 'components/Media';
 import addressHSl from 'lib/addressHSL';
-
-export interface NFTEntity {
-  id: string;
-  identifier: ethers.BigNumber;
-  uri: string;
-  registry: {
-    symbol: string;
-    name: string;
-  };
-}
+import { getNftContractAddress, NFTEntity, useNFTs } from 'lib/eip721Subraph';
+import useOutsideClick from 'lib/useOutsideClick';
+import { NFTMedia } from 'components/Media/NFTMedia';
 
 interface NFTCollateralPickerProps {
-  nfts: NFTEntity[];
+  connectedWallet: string;
+  handleSetSelectedNFT: (nft: NFTEntity) => void;
+  hidePicker: () => void;
   hiddenNFTAddresses?: string[];
 }
 
@@ -31,9 +27,18 @@ interface ShowNFTStateType {
 }
 
 export function NFTCollateralPicker({
-  nfts,
+  connectedWallet,
+  handleSetSelectedNFT,
+  hidePicker,
   hiddenNFTAddresses = [],
 }: NFTCollateralPickerProps) {
+  const pickerRef = useRef() as MutableRefObject<HTMLInputElement>;
+  useOutsideClick(pickerRef, () => {
+    hidePicker();
+  });
+
+  const { fetching, error, nfts } = useNFTs(connectedWallet);
+
   const [showNFT, setShowNFT] = useState<ShowNFTStateType>({});
 
   const groupedNFTs: GroupedNFTCollections = useMemo(() => {
@@ -66,13 +71,32 @@ export function NFTCollateralPicker({
     [showNFT, setShowNFT],
   );
 
+  const handleNFTClick = useCallback(
+    (nft: NFTEntity) => {
+      handleSetSelectedNFT(nft);
+      hidePicker();
+    },
+    [handleSetSelectedNFT, hidePicker],
+  );
+
+  if (fetching) {
+    return <div className={styles.nftPicker}>loading your NFTs...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className={styles.nftPicker}>oops, we could not load your NFTs</div>
+    );
+  }
+
   return (
-    <div className={styles.nftPicker}>
+    <div className={styles.nftPicker} ref={pickerRef}>
       <div className={styles.selectButton}>select an NFT</div>
       {Object.keys(groupedNFTs).map((nftContractAddress, i) => (
         <div key={nftContractAddress}>
           <div
-            className={`${styles.centerAlignedRow} ${styles.nftCollectionRow}`}>
+            className={`${styles.centerAlignedRow} ${styles.nftCollectionRow}`}
+            onClick={() => toggleShowForNFT(nftContractAddress)}>
             <div
               className={`${styles.centerAlignedRow} ${styles.nftCollectionNameAndIcon}`}>
               <div
@@ -94,8 +118,7 @@ export function NFTCollateralPicker({
               <div
                 className={`${styles.caret} ${
                   showNFT[nftContractAddress] ? styles.caretOpen : ''
-                }`}
-                onClick={() => toggleShowForNFT(nftContractAddress)}>
+                }`}>
                 <Caret />
               </div>
             </div>
@@ -107,7 +130,7 @@ export function NFTCollateralPicker({
                   ? styles.gridOpen
                   : styles.gridClosed
               } `}>
-              {groupedNFTs[nftContractAddress].map((nft) => (
+              {groupedNFTs[nftContractAddress].map((nft: NFTEntity) => (
                 <div
                   key={nft.id}
                   className={`${styles.nftGridItem} ${
@@ -115,7 +138,13 @@ export function NFTCollateralPicker({
                       ? styles.itemOpened
                       : styles.itemClosed
                   }`}>
-                  <NFTMedia tokenId={nft.identifier} tokenUri={nft.uri} />
+                  <div onClick={() => handleNFTClick(nft)}>
+                    <NFTMedia
+                      collateralAddress={getNftContractAddress(nft)}
+                      collateralTokenID={nft.identifier}
+                      forceImage
+                    />
+                  </div>
                 </div>
               ))}
             </div>
@@ -124,36 +153,6 @@ export function NFTCollateralPicker({
         </div>
       ))}
     </div>
-  );
-}
-
-interface NFTMediaProps {
-  tokenId: ethers.BigNumber;
-  tokenUri: string;
-}
-
-function NFTMedia({ tokenId, tokenUri }: NFTMediaProps) {
-  const [nftInfo, setNFTInfo] = useState<GetNFTInfoResponse | null>(null);
-
-  const load = useCallback(async () => {
-    const result = await getNFTInfoFromTokenInfo(tokenId, tokenUri, true);
-    setNFTInfo(result);
-  }, [tokenId, tokenUri]);
-
-  useEffect(() => {
-    load();
-  }, [load]);
-
-  if (!nftInfo) {
-    return null;
-  }
-
-  return (
-    <Media
-      media={nftInfo.mediaUrl}
-      mediaMimeType={nftInfo.mediaMimeType}
-      autoPlay={false}
-    />
   );
 }
 

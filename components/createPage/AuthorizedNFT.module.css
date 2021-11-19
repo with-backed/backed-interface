@@ -1,0 +1,28 @@
+.wrapper {
+  margin-top: 20px;
+}
+
+.nftInfo {
+  margin: 20px 0;
+}
+
+.nftInfoText {
+  font-family: var(--serif);
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+  margin: 8px 0;
+  white-space: nowrap;
+}
+
+.nftInfoText a {
+  color: var(--primary-blue);
+  text-decoration: none;
+}
+
+.nftInfoText a:focus,
+.nftInfoText a:hover {
+  color: var(--primary-blue);
+  text-decoration: none;
+}
