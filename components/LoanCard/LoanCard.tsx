@@ -5,6 +5,7 @@ import React, { FunctionComponent, useMemo } from 'react';
 import styles from './LoanCard.module.css';
 import { useTokenMetadata } from 'hooks/useTokenMetadata';
 import { Media } from 'components/Media';
+import { GetNFTInfoResponse } from 'lib/getNFTInfo';
 
 const Attributes: FunctionComponent = ({ children }) => {
   return <div className={styles.attributes}>{children}</div>;
@@ -44,42 +45,102 @@ export function LoanCard({
       )} ${loanAssetSymbol}`,
     [loanAmount, loanAssetDecimal, loanAssetSymbol],
   );
-  const maybeMetadata = useTokenMetadata({
-    tokenURI: collateralTokenURI,
-    tokenID: ethers.BigNumber.from(collateralTokenID),
-  });
+
+  const tokenSpec = useMemo(
+    () => ({
+      tokenURI: collateralTokenURI,
+      tokenID: ethers.BigNumber.from(collateralTokenID),
+    }),
+    [collateralTokenID, collateralTokenURI],
+  );
+
+  const maybeMetadata = useTokenMetadata(tokenSpec);
 
   if (maybeMetadata.isLoading) {
-    // TODO: @cnasc loading state
-    return null;
+    return <LoanCardLoading />;
   } else if (!maybeMetadata.metadata) {
-    // TODO: @cnasc failed to fetch state
+    // TODO: bugsnag?
+    console.error(
+      new Error(
+        `Failed to fetch metadata at ${collateralTokenURI} for loan #${id}`,
+      ),
+    );
+    return null;
   } else {
-    const { mediaUrl, mediaMimeType, name } = maybeMetadata.metadata;
     return (
-      <Link href={`/loans/${id}`}>
-        <a className={styles.link} aria-label={title} title={title}>
-          <div className={styles.card}>
-            <Media
-              media={mediaUrl}
-              mediaMimeType={mediaMimeType}
-              autoPlay={false}
-            />
-            <span>{name}</span>
-            <Attributes>
-              <span>{formattedLoanAmount}</span>
-              <span>
-                {formattedAnnualRate(
-                  ethers.BigNumber.from(perSecondInterestRate),
-                )}
-                % interest
-              </span>
-            </Attributes>
-          </div>
-        </a>
-      </Link>
+      <LoanCardLoaded
+        id={id}
+        title={title}
+        formattedLoanAmount={formattedLoanAmount}
+        perSecondInterestRate={perSecondInterestRate}
+        metadata={maybeMetadata.metadata}
+      />
     );
   }
+}
 
-  return null;
+type LoanCardLoadedProps = {
+  id: string;
+  title: string;
+  formattedLoanAmount: string;
+  perSecondInterestRate: string;
+  metadata: GetNFTInfoResponse;
+};
+/**
+ * Only exported for the Storybook. Please use top-level LoanCard.
+ */
+export function LoanCardLoaded({
+  id,
+  title,
+  formattedLoanAmount,
+  perSecondInterestRate,
+  metadata: { mediaMimeType, mediaUrl, name },
+}: LoanCardLoadedProps) {
+  console.log({
+    id,
+    title,
+    formattedLoanAmount,
+    perSecondInterestRate,
+    mediaMimeType,
+    mediaUrl,
+    name,
+  });
+  return (
+    <Link href={`/loans/${id}`}>
+      <a className={styles.link} aria-label={title} title={title}>
+        <div className={styles.card}>
+          <Media
+            media={mediaUrl}
+            mediaMimeType={mediaMimeType}
+            autoPlay={false}
+          />
+          <span>{name}</span>
+          <Attributes>
+            <span>{formattedLoanAmount}</span>
+            <span>
+              {formattedAnnualRate(
+                ethers.BigNumber.from(perSecondInterestRate),
+              )}
+              % interest
+            </span>
+          </Attributes>
+        </div>
+      </a>
+    </Link>
+  );
+}
+
+/**
+ * Only exported for the Storybook. Please use top-level LoanCard.
+ */
+export function LoanCardLoading() {
+  return (
+    <div className={styles.card}>
+      <div className={styles['loading-media']} />
+      <span>loading name</span>
+      <Attributes>
+        <span>loading attributes</span>
+      </Attributes>
+    </div>
+  );
 }
