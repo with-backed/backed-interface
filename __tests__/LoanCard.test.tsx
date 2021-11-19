@@ -37,6 +37,9 @@ describe('LoanCard', () => {
     console.error = jest.fn();
     jest.clearAllMocks();
   });
+  afterAll(() => {
+    console.error = error;
+  });
 
   it('renders a loading state when metadata has not resolved yet', () => {
     mockedUseTokenMetadata.mockReturnValue({ isLoading: true, metadata: null });
