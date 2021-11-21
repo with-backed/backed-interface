@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { useCallback, useEffect, useState } from 'react';
-import getNFTInfo, { GetNFTInfoResponse } from 'lib/getNFTInfo';
+import { GetNFTInfoResponse, getNFTInfo } from 'lib/getNFTInfo';
 import { Media } from 'components/Media';
 import { jsonRpcERC721Contract } from 'lib/contracts';
 
