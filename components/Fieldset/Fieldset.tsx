@@ -7,7 +7,7 @@ interface FieldsetProps extends FieldsetHTMLAttributes<HTMLFieldSetElement> {
 export function Fieldset({ children, legend, ...props }: FieldsetProps) {
   return (
     <fieldset className={styles['standard-fieldset']} {...props}>
-      <legend>{legend}</legend>
+      <legend className={styles.legend}>{legend}</legend>
       {children}
     </fieldset>
   );

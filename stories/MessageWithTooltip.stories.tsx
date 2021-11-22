@@ -11,7 +11,7 @@ export const SelectStyles = () => {
   return (
     <MessageWithTooltip
       message={<p>Hover on the icon to see the tooltip</p>}
-      content={<p>This should explain things</p>}
+      content={<span>This should explain things</span>}
     />
   );
 };

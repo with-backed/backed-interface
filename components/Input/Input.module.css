@@ -1,5 +1,5 @@
 .wrapper {
-  width: 100%; 
+  width: 100%;
 }
 
 .input {
@@ -7,27 +7,25 @@
   border: none;
   height: 40px;
   width: 100%;
-  border: 2px solid var(--primary-blue);
-  background-color: var(--white);
+  border: 1px solid var(--foreground-text-100);
+  background: var(--background-fieldset);
 }
 
 .errorInput {
   composes: input;
-  border: 2px solid var(--red);
+  border: 1px solid var(--highlight-alert-100);
 }
 
 .label {
-  font-family: Helvetica, Arial, sans-serif;
   font-size: 15px;
-  font-weight: 700;
-  color: var(--primary-blue);
+  color: var(--foreground-text-100);
 }
 
 .errorLabel {
   composes: label;
-  color: var(--red);
+  color: var(--highlight-alert-100);
 }
 
 .errorMessage {
-  color: var(--red);
+  color: var(--highlight-alert-100);
 }

@@ -6,20 +6,19 @@
 
 .nftPicker {
   width: 100%;
-  background: white;
+  background: var(--background-fieldset);
   display: flex;
   flex-direction: column;
   justify-content: center;
   box-shadow: 0px 0px 100px 2px rgba(0, 0, 0, 0.12);
-  border-radius: 10px;
-  padding: 20px;
+  border-radius: var(--border-radius-small);
+  padding: var(--padding-container);
 }
 
 .selectButton {
   width: 99%;
   padding: 10px;
   text-align: center;
-  background: var(--lightest-grey);
 }
 
 .nftCollectionRow {
@@ -47,20 +46,19 @@
 .collectionIcon {
   color: white;
   margin-right: 20px;
-  background: var(--light-grey);
   border-radius: 100%;
   padding: 16px;
 }
 
 .break {
   width: 99%;
-  background: var(--light-grey);
+  background: var(--foreground-text-10);
   height: 1px;
   border: none;
 }
 
 .number {
-  font-family: Inter;
+  font-family: var(--sans);
   font-style: normal;
   font-weight: 600;
   font-size: 20px;

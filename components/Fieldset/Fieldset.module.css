@@ -1,7 +1,12 @@
 .standard-fieldset {
   border: none;
-  background-color: var(--lightest-grey);
-  border-radius: var(--border-radius);
+  background: var(--background-fieldset);
+  border-radius: var(--border-radius-small);
+  border: thin var(--foreground-text-100) solid;
   width: 100%;
-  padding: 0 var(--fieldset-padding) var(--fieldset-padding);
+  padding: var(--padding-container);
+}
+
+.legend {
+  line-height: 0;
 }

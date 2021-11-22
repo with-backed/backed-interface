@@ -56,7 +56,6 @@ export function AllowNFTSpendButton({
       onClick={approve}
       txHash={transactionHash}
       isPending={waitingForTx}
-      textSize="small"
     />
   );
 }

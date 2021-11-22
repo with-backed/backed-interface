@@ -17,12 +17,12 @@
 }
 
 .nftInfoText a {
-  color: var(--primary-blue);
+  color: var(--highlight-clickable-100);
   text-decoration: none;
 }
 
 .nftInfoText a:focus,
 .nftInfoText a:hover {
-  color: var(--primary-blue);
+  color: var(--highlight-clickable-100);
   text-decoration: none;
 }

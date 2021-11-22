@@ -8,11 +8,11 @@
   text-align: center;
   margin-top: 10px;
   font-size: 16px;
-  color: var(--primary-blue);
+  color: var(--highlight-clickable-100);
 }
 
 .collateralExplainer {
-  background: #fbfbfb;
+  background: var(--background-fieldset);
   padding: 20px;
   height: 75%;
   width: 100%;
