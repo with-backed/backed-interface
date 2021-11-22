@@ -58,13 +58,9 @@ export default function Home({ loans }: HomeProps) {
         Welcome! Homepage in progress, try{' '}
         <Link href="/loans/create"> Creating a loan</Link>
       </p>
-      <p>
-        {process.env.NEXT_PUBLIC_ENV == 'rinkeby' ? (
-          <Link href="/test">Get Rinkeby DAI and an NFT!</Link>
-        ) : (
-          ''
-        )}
-      </p>
+      {process.env.NEXT_PUBLIC_ENV === 'rinkeby' && (
+        <Link href="/test">Get Rinkeby DAI and an NFT!</Link>
+      )}
     </PageWrapper>
   );
 }
