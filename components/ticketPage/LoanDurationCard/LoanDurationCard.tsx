@@ -86,7 +86,7 @@ export function LoanDurationCard({
   );
 
   return (
-    <Fieldset legend="loan duration" style={{ marginTop: '20px' }}>
+    <Fieldset legend="loan duration">
       <div className={styles.loanDurationCard}>
         <div className={styles.dateBox}>
           <div className={styles.dateNumber}>{days}</div>
