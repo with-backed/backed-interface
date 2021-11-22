@@ -7,7 +7,7 @@ export default {
   component: MessageWithTooltip,
 };
 
-export const SelectStyles = () => {
+export const MessageStyles = () => {
   return (
     <MessageWithTooltip
       message={<p>Hover on the icon to see the tooltip</p>}
