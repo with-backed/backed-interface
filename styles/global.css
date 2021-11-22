@@ -17,10 +17,18 @@
   /* We set this globally on html and body, may also need it in other places */
   --line-height: 1.6;
   --fieldset-padding: 24px;
-  --serif: 'Times New Roman', Times, serif;
-  --sans: Inter, Helvetica, sans-serif;
   --gap: 1.25rem;
   --max-width: 1400px;
+
+  /* font styles */
+  --serif: 'Times New Roman', Times, serif;
+  --sans: Inter, Helvetica, sans-serif;
+  --light-weight: 200;
+  --regular-weight: 400;
+  --semibold-weight: 600;
+  --small-font: 0.715rem;
+  --big-font: 1.43rem;
+  --huge-font: 2.6rem;
 }
 
 html,
@@ -28,6 +36,7 @@ body {
   font-family: var(--sans);
   line-height: var(--line-height);
   font-size: 14px;
+  font-weight: var(--regular-weight);
   background-color: rgba(255, 255, 255, 1);
 }
 
@@ -35,4 +44,9 @@ body {
   box-sizing: border-box;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+h1 {
+  font-size: var(--huge-font);
+  font-weight: var(--light-weight);
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600&display=swap');
