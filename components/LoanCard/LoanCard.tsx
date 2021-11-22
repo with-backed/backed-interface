@@ -18,7 +18,7 @@ export type Loan = {
   loanAmount: string;
   perSecondInterestRate: string;
   collateralTokenURI: string;
-  collateralTokenID: string;
+  collateralTokenId: string;
 };
 
 type LoanCardProps = {
@@ -33,7 +33,7 @@ export function LoanCard({
     loanAssetSymbol,
     perSecondInterestRate,
     collateralTokenURI,
-    collateralTokenID,
+    collateralTokenId,
   },
 }: LoanCardProps) {
   const title = `View loan #${id}`;
@@ -49,9 +49,9 @@ export function LoanCard({
   const tokenSpec = useMemo(
     () => ({
       tokenURI: collateralTokenURI,
-      tokenID: ethers.BigNumber.from(collateralTokenID),
+      tokenID: ethers.BigNumber.from(collateralTokenId),
     }),
-    [collateralTokenID, collateralTokenURI],
+    [collateralTokenId, collateralTokenURI],
   );
 
   const maybeMetadata = useTokenMetadata(tokenSpec);
