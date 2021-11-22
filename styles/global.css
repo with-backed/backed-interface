@@ -33,7 +33,7 @@
   /* font styles */
   --serif: 'Times New Roman', Times, serif;
   --sans: Inter, Helvetica, sans-serif;
-  --weight-light: 200;
+  --weight-light: 300;
   --weight-regular: 400;
   --weight-semibold: 600;
   --font-small: 0.715rem;
@@ -68,4 +68,4 @@ a:visited {
   color: var(--highlight-visited-100);
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
