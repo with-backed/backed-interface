@@ -76,7 +76,7 @@ const EventDetailList: FunctionComponent<Pick<ParsedEventProps, 'event'>> = ({
 }) => {
   return (
     <li>
-      <section className={styles.section}>
+      <section>
         <EventHeader event={event} />
         <ul {...props} className={styles.list}>
           {children}
