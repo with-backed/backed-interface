@@ -9,7 +9,7 @@ import React from 'react';
 
 const homepageQuery = `
 query {
-  loans(where: { closed: false}, first: 20, orderBy: id, orderDirection: desc) {
+  loans(where: { closed: false}, first: 20, orderBy: createdAtTimestamp, orderDirection: desc) {
     collateralTokenId
     collateralTokenURI
     id
