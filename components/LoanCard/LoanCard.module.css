@@ -27,7 +27,7 @@
   background-color: var(--light-grey);
   padding: 0 0.15rem;
   font-size: 0.66rem;
-  color: var(--black);
+  color: var(--foreground-text-100);
 }
 
 .loading-media {
