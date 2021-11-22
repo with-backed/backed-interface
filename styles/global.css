@@ -51,6 +51,10 @@ body {
   min-height: 100vh;
 }
 
+body {
+  padding: 0 40px;
+}
+
 * {
   box-sizing: border-box;
 }
