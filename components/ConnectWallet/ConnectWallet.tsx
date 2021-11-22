@@ -1,5 +1,4 @@
 import React, {
-  FunctionComponent,
   memo,
   useCallback,
   useContext,
@@ -9,6 +8,7 @@ import React, {
 import { ethers } from 'ethers';
 import { Button } from 'components/Button';
 import { AccountContext } from 'context/account';
+import styles from './ConnectWallet.module.css';
 
 declare global {
   interface Window {
@@ -88,6 +88,6 @@ export const ConnectWallet = () => {
   }
 
   return (
-    <div id="connect-wallet-button">connected {account.slice(0, 7)}...</div>
+    <div className={styles.connected}>connected {account.slice(0, 7)}...</div>
   );
 };

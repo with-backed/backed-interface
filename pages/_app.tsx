@@ -1,7 +1,5 @@
 import '../styles/global.css';
-import '../styles/ticketPage.css';
-import '../styles/collateralCard.css';
-import '../styles/underwriteCard.css';
+import 'normalize.css';
 import { AppProps } from 'next/app';
 import { AccountProvider } from 'context/account';
 

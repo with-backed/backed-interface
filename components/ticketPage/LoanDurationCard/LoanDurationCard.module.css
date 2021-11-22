@@ -22,8 +22,7 @@
   padding: 10px 0;
   font-weight: 600;
   font-style: normal;
-  font-family: Inter, Helvetica;
   font-size: 20px;
-  background: white;
+  background: var(--background-light);
   margin-bottom: 6px;
 }

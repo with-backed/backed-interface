@@ -1,0 +1,10 @@
+.connected {
+  background-color: var(--highlight-visited-10);
+  color: var(--highlight-visited-100);
+  border: thin var(--highlight-visited-100) solid;
+  border-radius: var(--border-radius-large);
+  padding: 0.3rem 1rem;
+  width: 100%;
+  line-height: 1.6;
+  font-size: var(--font-large);
+}

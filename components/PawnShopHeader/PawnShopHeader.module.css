@@ -1,0 +1,35 @@
+.header {
+  width: 100%;
+}
+
+.top-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  width: 100%;
+  align-items: center;
+}
+
+.message-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--background-fieldset);
+  border-radius: var(--border-radius-large);
+}
+
+.link {
+  justify-self: center;
+}
+
+.link > a {
+  text-decoration: none;
+  color: var(--foreground-text-100);
+}
+
+.help {
+  justify-self: start;
+}
+
+.connect-wallet {
+  justify-self: end;
+}

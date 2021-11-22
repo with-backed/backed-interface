@@ -10,7 +10,7 @@ import SeizeCollateralCard from 'components/ticketPage/SeizeCollateralCard';
 import { jsonRpcERC721Contract } from 'lib/contracts';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { Fieldset } from 'components/Fieldset';
-import { LoanDurationCard } from 'components/ticketPage/LoanDurationCard/LoanDurationCard';
+import { LoanDurationCard } from 'components/ticketPage/LoanDurationCard';
 import { Column } from 'components/Column';
 import { AccountContext } from 'context/account';
 

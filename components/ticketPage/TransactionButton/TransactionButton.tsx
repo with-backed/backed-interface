@@ -9,8 +9,6 @@ interface TransactionButtonProps {
   txHash: string;
   isPending: boolean;
   disabled?: boolean;
-  /** @deprecated Unclear whether this is still required */
-  textSize?: 'large' | 'small';
 }
 
 export function TransactionButton({
@@ -36,8 +34,8 @@ export function TransactionButton({
     );
     return (
       <div className={styles.submitted}>
-        <span className="inter">{text}</span>
-        <span className="times">
+        <span>{text}</span>
+        <span>
           {message} {transactionLink}
         </span>
       </div>

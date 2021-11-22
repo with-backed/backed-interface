@@ -14,15 +14,10 @@
   composes: list;
   display: flex;
   flex-direction: column;
-  gap: var(--gap);
-}
-
-.section {
-  font-family: var(--serif);
+  gap: 1rem;
 }
 
 .event-header {
-  font-family: var(--serif);
   font-size: 1rem;
   font-weight: normal;
   margin: 0;

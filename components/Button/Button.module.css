@@ -1,17 +1,18 @@
 .button {
-  background-color: var(--primary-blue);
-  color: var(--white);
-  border: none;
-  border-radius: var(--button-radius);
-  padding: var(--button-padding);
+  background-color: var(--highlight-clickable-10);
+  color: var(--highlight-clickable-100);
+  border: thin var(--highlight-clickable-100) solid;
+  border-radius: var(--border-radius-large);
+  padding: 0.3rem 1rem;
   width: 100%;
   line-height: 1.6;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: var(--font-large);
 }
 
 .button:disabled {
-  color: var(--darkest-grey);
-  background-color: var(--light-grey);
+  color: var(--foreground-text-50);
+  background: var(--background-white);
+  border: thin var(--foreground-text-10) solid;
   cursor: not-allowed;
 }

@@ -3,11 +3,11 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--button-padding);
+  padding: var(--padding-button);
   width: 100%;
   border: none;
-  border-radius: var(--button-radius);
-  background-color: var(--secondary-purple);
-  color: var(--primary-purple);
+  border-radius: var(--border-radius-large);
+  background-color: var(--highlight-visited-10);
+  color: var(--highlight-visited-100);
   line-height: 1.6;
 }
