@@ -1,4 +1,5 @@
 import '../styles/global.css';
+import 'normalize.css';
 
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
