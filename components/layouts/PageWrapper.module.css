@@ -2,4 +2,7 @@
   max-width: var(--max-width);
   margin: auto;
   padding-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
 }
