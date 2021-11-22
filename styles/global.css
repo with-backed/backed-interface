@@ -1,4 +1,16 @@
 :root {
+  /* colors */
+  --foreground-text-100: #111111;
+  --foreground-text-50: #ab9b96;
+  --foreground-text-10: #e6ded6;
+  --highlight-clickable-100: #0000ee;
+  --highlight-clickable-10: #e8e5f1;
+  --highlight-visited-100: #75187c;
+  --highlight-visited-10: #eadde5;
+  --highlight-active-10: #fffed1;
+  --highlight-alert-100: #ff4545;
+  --highlight-alert-10: #ffd1d1;
+
   --beige: #f4eae8;
   --black: #000000;
   --darkest-grey: #9e9e9e;
@@ -20,6 +32,16 @@
   --gap: 1.25rem;
   --max-width: 1400px;
 
+  /* backgrounds */
+  --background-radial-gradient: radial-gradient(#ffffff, #f6f2f0);
+  --background-fieldset: rgba(255, 255, 255, 0.8);
+  --background-light: #f9f7f5;
+  --background-white: #ffffff;
+
+  /* border styles */
+  --small-border-radius: 0.3rem;
+  --large-border-radius: 0.86rem;
+
   /* font styles */
   --serif: 'Times New Roman', Times, serif;
   --sans: Inter, Helvetica, sans-serif;
@@ -27,7 +49,7 @@
   --regular-weight: 400;
   --semibold-weight: 600;
   --small-font: 0.715rem;
-  --big-font: 1.43rem;
+  --large-font: 1.43rem;
   --huge-font: 2.6rem;
 }
 
@@ -37,7 +59,7 @@ body {
   line-height: var(--line-height);
   font-size: 14px;
   font-weight: var(--regular-weight);
-  background-color: rgba(255, 255, 255, 1);
+  background: var(--background-radial-gradient);
 }
 
 * {
@@ -47,6 +69,14 @@ body {
 h1 {
   font-size: var(--huge-font);
   font-weight: var(--light-weight);
+}
+
+a {
+  color: var(--highlight-clickable-100);
+}
+
+a:visited {
+  color: var(--highlight-visited-100);
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600&display=swap');
