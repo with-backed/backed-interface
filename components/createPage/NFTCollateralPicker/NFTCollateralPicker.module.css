@@ -29,17 +29,16 @@
   padding: 10px;
   text-align: center;
   font-size: var(--font-large);
-  font-weight: bold;
+  font-weight: var(--weight-semibold);
 }
 
 .nftCollectionRow {
   justify-content: space-between;
   margin: 14px 0;
 
-  font-family: Times;
+  font-family: var(--serif);
   font-size: var(--font-large);
-  font-style: normal;
-  font-weight: lighter;
+  font-weight: var(--weight-light);
   line-height: var(--line-height);
   cursor: pointer;
 }
@@ -63,8 +62,7 @@
 
 .number {
   font-family: var(--sans);
-  font-style: normal;
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
   font-size: var(--font-large);
   line-height: var(--line-height);
 }
@@ -73,7 +71,6 @@
   display: flex;
   align-items: center;
   font-family: SF Compact Display;
-  font-style: normal;
   margin: 0 6px;
   transition: transform 0.3s ease-in-out;
 }
