@@ -79,7 +79,7 @@ function isIPFS(url: string) {
 
 function makeIPFSUrl(
   url: string,
-  ipfsHost = 'https://gateway.pinata.cloud/ipfs/',
+  ipfsHost = 'https://nftpawnshop.mypinata.cloud/ipfs/',
 ) {
   if (cid(url)) return `${ipfsHost}${url}`;
 
