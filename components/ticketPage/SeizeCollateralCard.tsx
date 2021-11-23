@@ -63,9 +63,9 @@ export default function SeizeCollateralCard({
     <Fieldset legend="seize collateral">
       <p>
         The loan duration is complete. The total interest and principal owed is{' '}
-        {totalOwed}, and 0 {loanInfo.loanAssetSymbol}
-        has been repaid. You are able to seize the collateral NFT, closing the
-        loan, or wait for repayment.
+        {totalOwed}, and 0 {loanInfo.loanAssetSymbol} has been repaid. You are
+        able to seize the collateral NFT, closing the loan, or wait for
+        repayment.
       </p>
       <Button onClick={repay}>seize collateral</Button>
     </Fieldset>
