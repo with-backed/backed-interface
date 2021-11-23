@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import styles from './Media.module.css';
 
 const PAWN_SHOP_ITEMS = ['🎸', '💸', '🔭', '🎥', '🛵', '🏺', '💎', '💍'];
@@ -7,9 +7,10 @@ const getRandomItem = () => {
 };
 
 export const Fallback = () => {
-  const item = useMemo(() => {
-    return getRandomItem();
-  }, []);
+  const [item, setItem] = useState('');
+  useEffect(() => {
+    setItem(getRandomItem());
+  }, [setItem]);
   return (
     <div aria-hidden="true" className={styles.fallback}>
       <span>{item}</span>

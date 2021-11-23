@@ -1,6 +1,5 @@
 import { ethers } from 'ethers';
-import { cid } from 'is-ipfs';
-import remove from 'lodash/remove';
+import { NFTResponseData } from 'pages/api/nftInfo/[uri]';
 import { ERC721 } from '../abis/types';
 
 export interface GetNFTInfoArgs {
@@ -37,27 +36,30 @@ export async function getNFTInfoFromTokenInfo(
   tokenURI: string,
   forceImage: boolean = false,
 ): Promise<GetNFTInfoResponse | null> {
+  const isDataUri = tokenURI.startsWith('data:');
   try {
-    const resolvedTokenURI = isIPFS(tokenURI)
-      ? makeIPFSUrl(tokenURI)
-      : tokenURI;
+    const tokenURIRes = await fetch(
+      isDataUri ? tokenURI : `/api/nftInfo/${encodeURIComponent(tokenURI)}`,
+    );
+    const NFTInfo: NFTResponseData = await tokenURIRes.json();
 
-    const tokenURIRes = await fetch(resolvedTokenURI);
-    const metadata = await tokenURIRes.json();
+    if (!NFTInfo) {
+      return null;
+    }
 
-    const imageURL =
-      metadata?.animation_url == null || forceImage
-        ? metadata?.image
-        : metadata?.animation_url;
+    console.log({ NFTInfo });
 
-    const mediaUrl = isIPFS(imageURL) ? makeIPFSUrl(imageURL) : imageURL;
+    const mediaUrl =
+      NFTInfo.animation_url == null || forceImage
+        ? NFTInfo.image
+        : NFTInfo.animation_url;
 
     const mediaMimeType = await getMimeType(mediaUrl);
 
     return {
       id: tokenId,
-      name: metadata?.name,
-      description: metadata?.description,
+      name: NFTInfo?.name,
+      description: NFTInfo?.description,
       mediaUrl,
       mediaMimeType,
     };
@@ -65,29 +67,6 @@ export async function getNFTInfoFromTokenInfo(
     console.log(error);
     return null;
   }
-}
-
-function isIPFS(url: string) {
-  try {
-    if (cid(url)) return true;
-    const { protocol } = new URL(url);
-    return protocol === 'ipfs:';
-  } catch (error) {
-    return false;
-  }
-}
-
-function makeIPFSUrl(
-  url: string,
-  ipfsHost = 'https://nftpawnshop.mypinata.cloud/ipfs/',
-) {
-  if (cid(url)) return `${ipfsHost}${url}`;
-
-  const urlArray = url.split('/');
-  const cidIndex = urlArray.findIndex((curr) => cid(curr));
-  const newCidPath = remove(urlArray, (_, i) => i >= cidIndex).join('/');
-
-  return `${ipfsHost}${newCidPath}`;
 }
 
 async function getMimeType(mediaUrl: string) {

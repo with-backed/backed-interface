@@ -18,7 +18,7 @@ const loan: Loan = {
   loanAssetDecimal: 18,
   loanAmount: '200',
   perSecondInterestRate: '200',
-  collateralTokenID: '3',
+  collateralTokenId: '3',
   collateralTokenURI: 'gopher://gopher.pawnshop.internet',
 };
 
