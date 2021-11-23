@@ -51,11 +51,7 @@ export function LoanDurationCard({
   loanDuration,
 }: LoanDurationCardProps) {
   const [remainingSeconds, setRemainingSeconds] = useState(
-    computeInitialRemaining(
-      lastAccumulatedInterest,
-      loanDuration,
-      getCurrentUnixTime(),
-    ),
+    ethers.BigNumber.from(0),
   );
 
   const refreshTimestamp = useCallback(
@@ -76,6 +72,16 @@ export function LoanDurationCard({
     );
     return () => clearInterval(timeOutId);
   }, [refreshTimestamp]);
+
+  useEffect(() => {
+    setRemainingSeconds(
+      computeInitialRemaining(
+        lastAccumulatedInterest,
+        loanDuration,
+        getCurrentUnixTime(),
+      ),
+    );
+  }, [lastAccumulatedInterest, loanDuration]);
 
   const { days, hours, minutes, seconds } = useMemo(
     () =>
