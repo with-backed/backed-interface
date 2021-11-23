@@ -6,6 +6,7 @@ import styles from './LoanCard.module.css';
 import { useTokenMetadata } from 'hooks/useTokenMetadata';
 import { Media } from 'components/Media';
 import { GetNFTInfoResponse } from 'lib/getNFTInfo';
+import { Fallback } from 'components/Media/Fallback';
 
 const Attributes: FunctionComponent = ({ children }) => {
   return <div className={styles.attributes}>{children}</div>;
@@ -127,7 +128,7 @@ export function LoanCardLoaded({
 export function LoanCardLoading() {
   return (
     <div className={styles.card}>
-      <div className={styles['loading-media']} />
+      <Fallback />
       <span>loading name</span>
       <Attributes>
         <span>loading attributes</span>
