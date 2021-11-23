@@ -49,9 +49,5 @@ function Text({ media }: { media: string }) {
       .then((r) => setContent(r));
   }, [media]);
 
-  return (
-    <div className={`${styles['media-content']} pl1 pr1 pt1 pb1`}>
-      {content}
-    </div>
-  );
+  return <div className={`${styles['media-content']}`}>{content}</div>;
 }
