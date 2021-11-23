@@ -40,7 +40,12 @@ export const Media: FunctionComponent<MediaProps> = ({
   }
 
   return (
-    <img className={styles['media-content']} src={media} onError={onError} />
+    <img
+      className={styles['media-content']}
+      src={media}
+      onError={onError}
+      alt=""
+    />
   );
 };
 
@@ -86,7 +91,7 @@ function Text({ media, onError }: { media: string; onError: () => void }) {
       .then((r) => r.text())
       .then((r) => setContent(r))
       .catch(() => onError());
-  }, [media]);
+  }, [media, onError]);
 
   return <div className={`${styles['media-content']}`}>{content}</div>;
 }
