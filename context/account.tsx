@@ -14,9 +14,7 @@ export const AccountContext = createContext<AccountContext>({
 });
 
 export const AccountProvider: FunctionComponent = ({ children }) => {
-  const [account, setAccount] = useState<string | null>(
-    '0x31fd8d16641d06e0eada78b475ae367163704774',
-  );
+  const [account, setAccount] = useState<string | null>(null);
   return (
     <AccountContext.Provider value={{ account, setAccount }}>
       {children}
