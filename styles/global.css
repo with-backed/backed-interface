@@ -39,6 +39,9 @@
   --font-small: 0.715rem;
   --font-large: 1.43rem;
   --font-huge: 2.6rem;
+
+  /* app specific dimensions */
+  --nft-picker-dim: 600px;
 }
 
 html,

@@ -99,12 +99,6 @@ export function NFTCollateralPicker({
             onClick={() => toggleShowForNFT(nftContractAddress)}>
             <div
               className={`${styles.centerAlignedRow} ${styles.nftCollectionNameAndIcon}`}>
-              <div
-                className={styles.collectionIcon}
-                style={{
-                  background: addressHSl(nftContractAddress),
-                }}
-              />
               <div className={styles.collectionName}>
                 {groupedNFTs[
                   nftContractAddress
