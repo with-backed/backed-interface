@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ethers } from 'ethers';
 import { getNFTInfo, GetNFTInfoResponse } from 'lib/getNFTInfo';
 import { Fieldset } from 'components/Fieldset';
 import { Media } from 'components/Media';
 import { jsonRpcERC721Contract } from 'lib/contracts';
 import { EtherscanTokenLink } from 'components/EtherscanLink';
+import { useTokenMetadata } from 'hooks/useTokenMetadata';
 
 interface CollateralCardArgs {
   collateralAddress: string;
@@ -15,35 +16,32 @@ export default function CollateralMediaCard({
   collateralAddress,
   collateralTokenId,
 }: CollateralCardArgs) {
-  const [CollateralNFTInfo, setCollateralNFTInfo] =
-    useState<GetNFTInfoResponse | null>(null);
-  const [contractName, setContractName] = useState<string | null>(null);
+  const contract = useMemo(() => {
+    return jsonRpcERC721Contract(collateralAddress);
+  }, [collateralAddress]);
 
-  const load = useCallback(async () => {
-    const contract = jsonRpcERC721Contract(collateralAddress);
+  const [contractName, setContractName] = useState('');
+  useEffect(() => {
+    contract.name().then((name) => setContractName(name));
+  }, [contract, setContractName]);
 
-    const contractName = await contract.name();
-    setContractName(contractName);
-
-    const result = await getNFTInfo({
+  const tokenSpec = useMemo(
+    () => ({
       contract,
       tokenId: collateralTokenId,
-    });
-    setCollateralNFTInfo(result);
-  }, [collateralAddress, collateralTokenId]);
-
-  useEffect(() => {
-    load();
-  }, [load]);
+    }),
+    [contract, collateralTokenId],
+  );
+  const tokenMetadata = useTokenMetadata(tokenSpec);
 
   const legend = 'collateral';
 
-  if (!contractName || !CollateralNFTInfo) {
-    return (
-      <Fieldset legend={legend}>
-        <div className="collateral-media"></div>
-      </Fieldset>
-    );
+  if (tokenMetadata.isLoading) {
+    return <Fieldset legend={legend}></Fieldset>;
+  }
+
+  if (tokenMetadata.metadata === null) {
+    return <Fieldset legend={legend}></Fieldset>;
   }
 
   return (
@@ -51,7 +49,7 @@ export default function CollateralMediaCard({
       <CollateralMediaCardLoaded
         contractName={contractName}
         contractAddress={collateralAddress}
-        nftInfo={CollateralNFTInfo}
+        nftInfo={tokenMetadata.metadata}
       />
     </Fieldset>
   );
