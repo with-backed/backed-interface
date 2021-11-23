@@ -1,3 +1,12 @@
+.nftCollateralPickerWrapper {
+  position: absolute;
+  width: 50%;
+  max-width: var(--nft-picker-dim);
+  max-height: var(--nft-picker-dim);
+  top: 30%;
+  left: 30%;
+}
+
 .centerAlignedRow {
   display: flex;
   flex-direction: row;
@@ -19,7 +28,7 @@
   width: 99%;
   padding: 10px;
   text-align: center;
-  font-size: 20px;
+  font-size: var(--font-large);
   font-weight: bold;
 }
 
@@ -28,10 +37,10 @@
   margin: 14px 0;
 
   font-family: Times;
-  font-size: 24px;
+  font-size: var(--font-large);
   font-style: normal;
   font-weight: lighter;
-  line-height: 28px;
+  line-height: var(--line-height);
   cursor: pointer;
 }
 
@@ -56,8 +65,8 @@
   font-family: var(--sans);
   font-style: normal;
   font-weight: 600;
-  font-size: 20px;
-  line-height: 24px;
+  font-size: var(--font-large);
+  line-height: var(--line-height);
 }
 
 .caret {

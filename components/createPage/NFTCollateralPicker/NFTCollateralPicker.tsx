@@ -80,72 +80,82 @@ export function NFTCollateralPicker({
   );
 
   if (fetching) {
-    return <div className={styles.nftPicker}>loading your NFTs...</div>;
+    return (
+      <div className={styles.nftCollateralPickerWrapper}>
+        <div className={styles.nftPicker}>loading your NFTs...</div>
+      </div>
+    );
   }
 
   if (error) {
     return (
-      <div className={styles.nftPicker}>oops, we could not load your NFTs</div>
+      <div className={styles.nftCollateralPickerWrapper}>
+        <div className={styles.nftPicker}>
+          oops, we could not load your NFTs
+        </div>
+      </div>
     );
   }
 
   return (
-    <div className={styles.nftPicker} ref={pickerRef}>
-      <div className={styles.selectButton}>select an NFT</div>
-      {Object.keys(groupedNFTs).map((nftContractAddress, i) => (
-        <div key={nftContractAddress}>
-          <div
-            className={`${styles.centerAlignedRow} ${styles.nftCollectionRow}`}
-            onClick={() => toggleShowForNFT(nftContractAddress)}>
+    <div className={styles.nftCollateralPickerWrapper}>
+      <div className={styles.nftPicker} ref={pickerRef}>
+        <div className={styles.selectButton}>select an NFT</div>
+        {Object.keys(groupedNFTs).map((nftContractAddress, i) => (
+          <div key={nftContractAddress}>
             <div
-              className={`${styles.centerAlignedRow} ${styles.nftCollectionNameAndIcon}`}>
-              <div className={styles.collectionName}>
-                {groupedNFTs[
-                  nftContractAddress
-                ][0]?.registry.name.toLowerCase()}
-              </div>
-            </div>
-            <div className={styles.centerAlignedRow}>
-              <span className={styles.number}>
-                {groupedNFTs[nftContractAddress].length}
-              </span>
+              className={`${styles.centerAlignedRow} ${styles.nftCollectionRow}`}
+              onClick={() => toggleShowForNFT(nftContractAddress)}>
               <div
-                className={`${styles.caret} ${
-                  showNFT[nftContractAddress] ? styles.caretOpen : ''
-                }`}>
-                <Caret />
+                className={`${styles.centerAlignedRow} ${styles.nftCollectionNameAndIcon}`}>
+                <div className={styles.collectionName}>
+                  {groupedNFTs[
+                    nftContractAddress
+                  ][0]?.registry.name.toLowerCase()}
+                </div>
+              </div>
+              <div className={styles.centerAlignedRow}>
+                <span className={styles.number}>
+                  {groupedNFTs[nftContractAddress].length}
+                </span>
+                <div
+                  className={`${styles.caret} ${
+                    showNFT[nftContractAddress] ? styles.caretOpen : ''
+                  }`}>
+                  <Caret />
+                </div>
               </div>
             </div>
-          </div>
-          {
-            <div
-              className={`${styles.nftGridWrapper} ${
-                showNFT[nftContractAddress]
-                  ? styles.gridOpen
-                  : styles.gridClosed
-              } `}>
-              {groupedNFTs[nftContractAddress].map((nft: NFTEntity) => (
-                <div
-                  key={nft.id}
-                  className={`${styles.nftGridItem} ${
-                    showNFT[nftContractAddress]
-                      ? styles.itemOpened
-                      : styles.itemClosed
-                  }`}>
-                  <div onClick={() => handleNFTClick(nft)}>
-                    <NFTMedia
-                      collateralAddress={getNftContractAddress(nft)}
-                      collateralTokenID={nft.identifier}
-                      forceImage
-                    />
+            {
+              <div
+                className={`${styles.nftGridWrapper} ${
+                  showNFT[nftContractAddress]
+                    ? styles.gridOpen
+                    : styles.gridClosed
+                } `}>
+                {groupedNFTs[nftContractAddress].map((nft: NFTEntity) => (
+                  <div
+                    key={nft.id}
+                    className={`${styles.nftGridItem} ${
+                      showNFT[nftContractAddress]
+                        ? styles.itemOpened
+                        : styles.itemClosed
+                    }`}>
+                    <div onClick={() => handleNFTClick(nft)}>
+                      <NFTMedia
+                        collateralAddress={getNftContractAddress(nft)}
+                        collateralTokenID={nft.identifier}
+                        forceImage
+                      />
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          }
-          <hr className={styles.break} />
-        </div>
-      ))}
+                ))}
+              </div>
+            }
+            <hr className={styles.break} />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
