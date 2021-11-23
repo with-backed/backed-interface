@@ -1,4 +1,10 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, {
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
+import { Fallback } from './Fallback';
 import styles from './Media.module.css';
 
 type MediaProps = {
@@ -12,17 +18,46 @@ export const Media: FunctionComponent<MediaProps> = ({
   mediaMimeType,
   autoPlay,
 }) => {
-  if (mediaMimeType?.includes('text')) return <Text media={media} />;
+  const [hasError, setHasError] = useState(false);
+  const onError = useCallback(() => {
+    setHasError(true);
+  }, [setHasError]);
 
-  if (mediaMimeType?.includes('video'))
-    return <Video media={media} autoPlay={autoPlay} />;
+  if (hasError) {
+    return <Fallback />;
+  }
 
-  if (mediaMimeType?.includes('audio')) return <Audio media={media} />;
+  if (mediaMimeType?.includes('text')) {
+    return <Text media={media} onError={onError} />;
+  }
 
-  return <img className={styles['media-content']} src={media} />;
+  if (mediaMimeType?.includes('video')) {
+    return <Video media={media} autoPlay={autoPlay} onError={onError} />;
+  }
+
+  if (mediaMimeType?.includes('audio')) {
+    return <Audio media={media} onError={onError} />;
+  }
+
+  return (
+    <img
+      className={styles['media-content']}
+      src={media}
+      onError={onError}
+      alt=""
+    />
+  );
 };
 
-function Video({ media, autoPlay }: { media: string; autoPlay: boolean }) {
+function Video({
+  media,
+  autoPlay,
+  onError,
+}: {
+  media: string;
+  autoPlay: boolean;
+  onError: () => void;
+}) {
   return (
     <video
       className={styles['media-content']}
@@ -30,28 +65,33 @@ function Video({ media, autoPlay }: { media: string; autoPlay: boolean }) {
       autoPlay={autoPlay}
       controls={!autoPlay}
       loop
-      playsInline>
+      playsInline
+      onError={onError}>
       <source src={media} />
     </video>
   );
 }
 
-function Audio({ media }: { media: string }) {
-  return <audio className={styles['media-content']} controls src={media} />;
+function Audio({ media, onError }: { media: string; onError: () => void }) {
+  return (
+    <audio
+      className={styles['media-content']}
+      controls
+      src={media}
+      onError={onError}
+    />
+  );
 }
 
-function Text({ media }: { media: string }) {
+function Text({ media, onError }: { media: string; onError: () => void }) {
   const [content, setContent] = useState<string | null>(null);
 
   useEffect(() => {
     fetch(media)
       .then((r) => r.text())
-      .then((r) => setContent(r));
-  }, [media]);
+      .then((r) => setContent(r))
+      .catch(() => onError());
+  }, [media, onError]);
 
-  return (
-    <div className={`${styles['media-content']} pl1 pr1 pt1 pb1`}>
-      {content}
-    </div>
-  );
+  return <div className={`${styles['media-content']}`}>{content}</div>;
 }
