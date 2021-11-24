@@ -38,8 +38,13 @@
   --weight-regular: 400;
   --weight-semibold: 600;
   --font-small: 0.715rem;
+  --font-medium: 1.125rem;
   --font-large: 1.43rem;
   --font-huge: 2.6rem;
+
+  /* component specific dimensions */
+  --modal-width: 580px;
+  --modal-height: 580px;
 }
 
 html,

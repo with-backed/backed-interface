@@ -6,31 +6,26 @@
 
 .nftPicker {
   width: 100%;
-  background: var(--background-fieldset);
-  display: flex;
-  flex-direction: column;
   justify-content: center;
-  box-shadow: 0px 0px 100px 2px rgba(0, 0, 0, 0.12);
-  border-radius: var(--border-radius-small);
   padding: var(--padding-container);
 }
 
 .selectButton {
   width: 99%;
-  padding: 10px;
   text-align: center;
+  border-bottom: 1px solid var(--foreground-text-100);
+  padding-bottom: 20px;
 }
 
 .nftCollectionRow {
   justify-content: space-between;
-  margin: 14px 0;
-
-  font-family: Times;
-  font-size: 24px;
-  font-style: normal;
-  font-weight: lighter;
-  line-height: 28px;
+  margin: var(--padding-container) 0;
+  line-height: var(--line-height);
   cursor: pointer;
+}
+
+.collectionRowWrapper:last-child .nftCollectionRow {
+  margin-bottom: 0px;
 }
 
 .nftCollectionNameAndIcon {
@@ -41,35 +36,24 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-}
-
-.collectionIcon {
-  color: white;
-  margin-right: 20px;
-  border-radius: 100%;
-  padding: 16px;
+  text-transform: capitalize;
 }
 
 .break {
   width: 99%;
-  background: var(--foreground-text-10);
+  background: var(--foreground-text-100);
   height: 1px;
   border: none;
+  margin: 0;
 }
 
-.number {
-  font-family: var(--sans);
-  font-style: normal;
-  font-weight: 600;
-  font-size: 20px;
-  line-height: 24px;
+.collectionRowWrapper:last-child .break {
+  height: 0px;
 }
 
 .caret {
   display: flex;
   align-items: center;
-  font-family: SF Compact Display;
-  font-style: normal;
   margin: 0 6px;
   transition: transform 0.3s ease-in-out;
 }
@@ -79,9 +63,10 @@
 }
 
 .nftGridWrapper {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: var(--padding-container);
+  row-gap: var(--padding-container);
 }
 
 .gridOpen {
@@ -100,12 +85,15 @@
 }
 
 .nftGridItem {
-  width: 31%;
-  margin: 1%;
+  box-sizing: border-box;
 }
 
 .nftGridItem:last-child {
-  padding-bottom: 10px;
+  margin-bottom: var(--padding-container);
+}
+
+.collectionRowWrapper:last-child .nftGridItem:first-child {
+  margin-top: var(--padding-container);
 }
 
 .itemOpened {

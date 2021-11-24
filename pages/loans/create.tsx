@@ -83,14 +83,12 @@ export default function Create() {
           )}
           {showNFTPicker && (
             <Provider value={eip721Client}>
-              <div className={styles.nftCollateralPickerWrapper}>
-                <NFTCollateralPicker
-                  hiddenNFTAddresses={HIDDEN_NFT_ADDRESSES}
-                  connectedWallet={account || ''}
-                  handleSetSelectedNFT={setSelectedNFT}
-                  hidePicker={() => setShowNFTPicker(false)}
-                />
-              </div>
+              <NFTCollateralPicker
+                hiddenNFTAddresses={HIDDEN_NFT_ADDRESSES}
+                connectedWallet={account || ''}
+                handleSetSelectedNFT={setSelectedNFT}
+                hidePicker={() => setShowNFTPicker(false)}
+              />
             </Provider>
           )}
           {!showNFTPicker && !collateralAddress && (
