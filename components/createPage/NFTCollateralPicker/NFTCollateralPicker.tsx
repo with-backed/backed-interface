@@ -119,9 +119,7 @@ export function NFTCollateralPicker({
                   </div>
                 </div>
                 <div className={styles.centerAlignedRow}>
-                  <span className={styles.number}>
-                    {groupedNFTs[nftContractAddress].length}
-                  </span>
+                  <span>{groupedNFTs[nftContractAddress].length}</span>
                   <div
                     className={`${styles.caret} ${
                       showNFT[nftContractAddress] ? styles.caretOpen : ''

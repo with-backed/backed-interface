@@ -3,11 +3,12 @@
     max-height: var(--modal-height);
 
     position: fixed;
-    top: 50%;
+    top: 160px;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, 0);
     
     font-family: var(--sans);
+    font-size: var(--font-large);
     background: var(--background-white);
     border: thin solid var(--foreground-text-100);
     border-radius: var(--border-radius-large);

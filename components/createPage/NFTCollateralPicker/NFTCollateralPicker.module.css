@@ -13,7 +13,6 @@
 .selectButton {
   width: 99%;
   text-align: center;
-  font-size: var(--font-large);
   border-bottom: 1px solid var(--foreground-text-100);
   padding-bottom: 20px;
 }
@@ -21,8 +20,6 @@
 .nftCollectionRow {
   justify-content: space-between;
   margin: var(--padding-container) 0;
-  font-size: var(--font-large);
-  font-weight: var(--weight-light);
   line-height: var(--line-height);
   cursor: pointer;
 }
@@ -39,6 +36,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  text-transform: capitalize;
 }
 
 .break {
@@ -53,17 +51,9 @@
   height: 0px;
 }
 
-.number {
-  font-family: var(--sans);
-  font-weight: var(--weight-semibold);
-  font-size: var(--font-large);
-  line-height: var(--line-height);
-}
-
 .caret {
   display: flex;
   align-items: center;
-  font-family: SF Compact Display;
   margin: 0 6px;
   transition: transform 0.3s ease-in-out;
 }
