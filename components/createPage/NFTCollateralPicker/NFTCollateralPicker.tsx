@@ -10,6 +10,7 @@ import addressHSl from 'lib/addressHSL';
 import { getNftContractAddress, NFTEntity, useNFTs } from 'lib/eip721Subraph';
 import useOutsideClick from 'lib/useOutsideClick';
 import { NFTMedia } from 'components/Media/NFTMedia';
+import { Modal } from 'components/Modal/Modal';
 
 interface NFTCollateralPickerProps {
   connectedWallet: string;
@@ -81,24 +82,24 @@ export function NFTCollateralPicker({
 
   if (fetching) {
     return (
-      <div className={styles.nftCollateralPickerWrapper}>
+      <Modal>
         <div className={styles.nftPicker}>loading your NFTs...</div>
-      </div>
+      </Modal>
     );
   }
 
   if (error) {
     return (
-      <div className={styles.nftCollateralPickerWrapper}>
+      <Modal>
         <div className={styles.nftPicker}>
           oops, we could not load your NFTs
         </div>
-      </div>
+      </Modal>
     );
   }
 
   return (
-    <div className={styles.nftCollateralPickerWrapper}>
+    <Modal>
       <div className={styles.nftPicker} ref={pickerRef}>
         <div className={styles.selectButton}>✨ 🔍 Select an NFT 🖼 ✨</div>
         {Object.keys(groupedNFTs).map((nftContractAddress, i) => (
@@ -156,7 +157,7 @@ export function NFTCollateralPicker({
           </div>
         ))}
       </div>
-    </div>
+    </Modal>
   );
 }
 

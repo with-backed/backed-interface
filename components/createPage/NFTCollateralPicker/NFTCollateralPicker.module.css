@@ -1,17 +1,3 @@
-.nftCollateralPickerWrapper {
-  position: absolute;
-  width: var(--modal-width);
-  max-height: var(--modal-height);
-  top: 30%;
-  left: 30%;
-  border: thin solid var(--foreground-text-100);
-  border-radius: var(--border-radius-large);
-  background: var(--background-white);
-  overflow-y: scroll;
-  box-shadow: 0px 0px 100px 2px rgba(0, 0, 0, 0.12);
-  font-family: var(--sans);
-}
-
 .centerAlignedRow {
   display: flex;
   flex-direction: row;
@@ -28,14 +14,13 @@
   width: 99%;
   text-align: center;
   font-size: var(--font-large);
-  font-weight: var(--weight-semibold);
   border-bottom: 1px solid var(--foreground-text-100);
   padding-bottom: 20px;
 }
 
 .nftCollectionRow {
   justify-content: space-between;
-  margin: 14px 0;
+  margin: 16px 0;
   font-size: var(--font-large);
   font-weight: var(--weight-light);
   line-height: var(--line-height);
@@ -57,6 +42,7 @@
   background: var(--foreground-text-100);
   height: 1px;
   border: none;
+  margin: 0;
 }
 
 .number {
