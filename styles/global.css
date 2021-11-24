@@ -42,7 +42,8 @@
   --font-huge: 2.6rem;
 
   /* component specific dimensions */
-  --nft-picker-dim: 600px;
+  --modal-width: 580px;
+  --modal-height: 580px;
 }
 
 html,

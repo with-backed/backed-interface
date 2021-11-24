@@ -100,7 +100,7 @@ export function NFTCollateralPicker({
   return (
     <div className={styles.nftCollateralPickerWrapper}>
       <div className={styles.nftPicker} ref={pickerRef}>
-        <div className={styles.selectButton}>select an NFT</div>
+        <div className={styles.selectButton}>✨ 🔍 Select an NFT 🖼 ✨</div>
         {Object.keys(groupedNFTs).map((nftContractAddress, i) => (
           <div key={nftContractAddress}>
             <div

@@ -1,10 +1,15 @@
 .nftCollateralPickerWrapper {
   position: absolute;
-  width: 50%;
-  max-width: var(--nft-picker-dim);
-  max-height: var(--nft-picker-dim);
+  width: var(--modal-width);
+  max-height: var(--modal-height);
   top: 30%;
   left: 30%;
+  border: thin solid var(--foreground-text-100);
+  border-radius: var(--border-radius-large);
+  background: var(--background-white);
+  overflow-y: scroll;
+  box-shadow: 0px 0px 100px 2px rgba(0, 0, 0, 0.12);
+  font-family: var(--sans);
 }
 
 .centerAlignedRow {
@@ -15,28 +20,22 @@
 
 .nftPicker {
   width: 100%;
-  background: var(--background-radial-gradient);
-  max-height: var(--nft-picker-dim);
-  overflow-y: scroll;
   justify-content: center;
-  box-shadow: 0px 0px 100px 2px rgba(0, 0, 0, 0.12);
-  border-radius: var(--border-radius-small);
   padding: var(--padding-container);
 }
 
 .selectButton {
   width: 99%;
-  padding: 10px;
   text-align: center;
   font-size: var(--font-large);
   font-weight: var(--weight-semibold);
+  border-bottom: 1px solid var(--foreground-text-100);
+  padding-bottom: 20px;
 }
 
 .nftCollectionRow {
   justify-content: space-between;
   margin: 14px 0;
-
-  font-family: var(--serif);
   font-size: var(--font-large);
   font-weight: var(--weight-light);
   line-height: var(--line-height);
@@ -55,7 +54,7 @@
 
 .break {
   width: 99%;
-  background: var(--foreground-text-10);
+  background: var(--foreground-text-100);
   height: 1px;
   border: none;
 }
@@ -101,13 +100,19 @@
 }
 
 .nftGridItem {
-  width: 31%;
-  margin: 1%;
+  width: calc((var(--modal-width) - (var(--padding-container) * 4) - 2px) / 3);
+  margin: calc(var(--padding-container) / 2);
+  box-sizing: border-box;
 }
 
-.nftGridItem:last-child {
-  padding-bottom: 10px;
+.nftGridItem:nth-child(3n + 1) {
+  margin-left: 0px;
 }
+
+.nftGridItem:nth-child(3n) {
+  margin-right: 0px;
+}
+
 
 .itemOpened {
   opacity: 1;
