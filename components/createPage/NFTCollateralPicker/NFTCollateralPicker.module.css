@@ -20,7 +20,7 @@
 
 .nftCollectionRow {
   justify-content: space-between;
-  margin: 16px 0;
+  margin: var(--padding-container) 0;
   font-size: var(--font-large);
   font-weight: var(--weight-light);
   line-height: var(--line-height);
