@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { ethers } from 'ethers';
 import CollateralMediaCard from 'components/ticketPage/CollateralMediaCard';
 import { PawnLoanArt, PawnTicketArt } from 'components/ticketPage/PawnArt';
@@ -13,10 +19,7 @@ import { Fieldset } from 'components/Fieldset';
 import { LoanDurationCard } from 'components/ticketPage/LoanDurationCard';
 import { Column } from 'components/Column';
 import { AccountContext } from 'context/account';
-
-const _provider = new ethers.providers.JsonRpcProvider(
-  process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
-);
+import { useTimestamp } from 'hooks/useTokenMetadata/useTimestamp';
 
 interface TicketPageBodyProps {
   loanInfo: LoanInfo;
@@ -146,14 +149,15 @@ function CenterColumn({ loanInfo }: TicketPageBodyProps) {
 
 function RightColumn({ loanInfo, refresh }: TicketPageBodyProps) {
   const { account } = useContext(AccountContext);
-  const [timestamp, setTimestamp] = useState<number | null>(null);
-  const [endSeconds] = useState(
-    parseInt(
+  const timestamp = useTimestamp();
+  const endSeconds = useMemo(() => {
+    return Math.floor(
       loanInfo.lastAccumulatedTimestamp
         .add(loanInfo.durationSeconds)
-        .toString(),
-    ),
-  );
+        .toNumber(),
+    );
+  }, [loanInfo.lastAccumulatedTimestamp, loanInfo.durationSeconds]);
+
   const [owner, setOwner] = useState('');
 
   const getOwner = useCallback(async () => {
@@ -167,19 +171,9 @@ function RightColumn({ loanInfo, refresh }: TicketPageBodyProps) {
     setOwner(o);
   }, [loanInfo.lastAccumulatedTimestamp, loanInfo.loanId]);
 
-  const refreshTimestamp = useCallback(async () => {
-    const height = await _provider.getBlockNumber();
-    const block = await _provider.getBlock(height);
-    setTimestamp(block.timestamp);
-    console.log(`timestamp ${block.timestamp}`);
-  }, []);
-
   useEffect(() => {
     getOwner();
-    refreshTimestamp();
-    const timeOutId = setInterval(() => refreshTimestamp(), 14000);
-    return () => clearInterval(timeOutId);
-  }, [getOwner, refreshTimestamp]);
+  }, [getOwner]);
 
   return (
     <Column>
