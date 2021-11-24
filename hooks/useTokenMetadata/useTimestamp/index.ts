@@ -1,0 +1,1 @@
+export { useTimestamp } from './useTimestamp';
