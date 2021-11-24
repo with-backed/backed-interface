@@ -73,9 +73,10 @@
 }
 
 .nftGridWrapper {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: var(--padding-container);
+  row-gap: var(--padding-container);
 }
 
 .gridOpen {
@@ -94,17 +95,15 @@
 }
 
 .nftGridItem {
-  width: calc((var(--modal-width) - (var(--padding-container) * 4) - 2px) / 3);
-  margin: calc(var(--padding-container) / 2);
   box-sizing: border-box;
 }
 
-.nftGridItem:nth-child(3n + 1) {
-  margin-left: 0px;
+.nftGridItem:last-child {
+  margin-bottom: var(--padding-container);
 }
 
-.nftGridItem:nth-child(3n) {
-  margin-right: 0px;
+.collectionRowWrapper:last-child .nftGridItem:first-child {
+  margin-top: var(--padding-container);
 }
 
 .itemOpened {
