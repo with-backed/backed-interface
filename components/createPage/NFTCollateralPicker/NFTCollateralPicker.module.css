@@ -27,6 +27,10 @@
   cursor: pointer;
 }
 
+.collectionRowWrapper:last-child .nftCollectionRow {
+  margin-bottom: 0px;
+}
+
 .nftCollectionNameAndIcon {
   max-width: 60%;
 }
@@ -43,6 +47,10 @@
   height: 1px;
   border: none;
   margin: 0;
+}
+
+.collectionRowWrapper:last-child .break {
+  height: 0px;
 }
 
 .number {

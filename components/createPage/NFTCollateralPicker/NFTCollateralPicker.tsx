@@ -102,32 +102,34 @@ export function NFTCollateralPicker({
     <Modal>
       <div className={styles.nftPicker} ref={pickerRef}>
         <div className={styles.selectButton}>✨ 🔍 Select an NFT 🖼 ✨</div>
-        {Object.keys(groupedNFTs).map((nftContractAddress, i) => (
-          <div key={nftContractAddress}>
+        {Object.keys(groupedNFTs).map(
+          (nftContractAddress: string, i: number) => (
             <div
-              className={`${styles.centerAlignedRow} ${styles.nftCollectionRow}`}
-              onClick={() => toggleShowForNFT(nftContractAddress)}>
+              key={nftContractAddress}
+              className={styles.collectionRowWrapper}>
               <div
-                className={`${styles.centerAlignedRow} ${styles.nftCollectionNameAndIcon}`}>
-                <div className={styles.collectionName}>
-                  {groupedNFTs[
-                    nftContractAddress
-                  ][0]?.registry.name.toLowerCase()}
-                </div>
-              </div>
-              <div className={styles.centerAlignedRow}>
-                <span className={styles.number}>
-                  {groupedNFTs[nftContractAddress].length}
-                </span>
+                className={`${styles.centerAlignedRow} ${styles.nftCollectionRow}`}
+                onClick={() => toggleShowForNFT(nftContractAddress)}>
                 <div
-                  className={`${styles.caret} ${
-                    showNFT[nftContractAddress] ? styles.caretOpen : ''
-                  }`}>
-                  <Caret />
+                  className={`${styles.centerAlignedRow} ${styles.nftCollectionNameAndIcon}`}>
+                  <div className={styles.collectionName}>
+                    {groupedNFTs[
+                      nftContractAddress
+                    ][0]?.registry.name.toLowerCase()}
+                  </div>
+                </div>
+                <div className={styles.centerAlignedRow}>
+                  <span className={styles.number}>
+                    {groupedNFTs[nftContractAddress].length}
+                  </span>
+                  <div
+                    className={`${styles.caret} ${
+                      showNFT[nftContractAddress] ? styles.caretOpen : ''
+                    }`}>
+                    <Caret />
+                  </div>
                 </div>
               </div>
-            </div>
-            {
               <div
                 className={`${styles.nftGridWrapper} ${
                   showNFT[nftContractAddress]
@@ -152,10 +154,10 @@ export function NFTCollateralPicker({
                   </div>
                 ))}
               </div>
-            }
-            <hr className={styles.break} />
-          </div>
-        ))}
+              <hr className={styles.break} />
+            </div>
+          ),
+        )}
       </div>
     </Modal>
   );
