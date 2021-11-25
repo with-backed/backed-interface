@@ -87,7 +87,5 @@ export const ConnectWallet = () => {
     return <Button onClick={getAccount}>Connect Wallet</Button>;
   }
 
-  return (
-    <div className={styles.connected}>connected {account.slice(0, 7)}...</div>
-  );
+  return <div className={styles.connected}>👤 {account.slice(0, 7)}...</div>;
 };
