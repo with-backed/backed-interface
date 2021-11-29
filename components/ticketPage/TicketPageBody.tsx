@@ -19,7 +19,7 @@ import { Fieldset } from 'components/Fieldset';
 import { LoanDurationCard } from 'components/ticketPage/LoanDurationCard';
 import { Column } from 'components/Column';
 import { AccountContext } from 'context/account';
-import { useTimestamp } from 'hooks/useTokenMetadata/useTimestamp';
+import { useTimestamp } from 'hooks/useTimestamp';
 
 interface TicketPageBodyProps {
   loanInfo: LoanInfo;
