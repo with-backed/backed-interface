@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { useContext, useMemo } from 'react';
 import { ethers } from 'ethers';
 import CollateralMediaCard from 'components/ticketPage/CollateralMediaCard';
 import { PawnLoanArt, PawnTicketArt } from 'components/ticketPage/PawnArt';
@@ -13,7 +7,6 @@ import { LoanInfo } from 'lib/LoanInfoType';
 import { RepayCard } from 'components/ticketPage/RepayCard';
 import { TicketHistory } from 'components/ticketPage/TicketHistory';
 import SeizeCollateralCard from 'components/ticketPage/SeizeCollateralCard';
-import { jsonRpcERC721Contract } from 'lib/contracts';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { Fieldset } from 'components/Fieldset';
 import { LoanDurationCard } from 'components/ticketPage/LoanDurationCard';
@@ -41,19 +34,7 @@ export default function TicketPageBody({
 
 function LeftColumn({ loanInfo, refresh }: TicketPageBodyProps) {
   const { account } = useContext(AccountContext);
-  const [owner, setOwner] = useState('');
-
-  const getOwner = useCallback(async () => {
-    const contract = jsonRpcERC721Contract(
-      process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT || '',
-    );
-    const o = await contract.ownerOf(loanInfo.loanId);
-    setOwner(o);
-  }, [loanInfo.loanId]);
-
-  useEffect(() => {
-    getOwner();
-  }, [getOwner]);
+  const owner = loanInfo.borrower;
   return (
     <Column>
       <BorrowTicket
@@ -135,13 +116,11 @@ function CenterColumn({ loanInfo }: TicketPageBodyProps) {
         collateralAddress={loanInfo.collateralContractAddress}
         collateralTokenId={loanInfo.collateralTokenId}
       />
-      {!loanInfo.lastAccumulatedTimestamp.eq(0) && !loanInfo.closed ? (
+      {!loanInfo.lastAccumulatedTimestamp.eq(0) && !loanInfo.closed && (
         <LoanDurationCard
           lastAccumulatedInterest={loanInfo.lastAccumulatedTimestamp}
           loanDuration={loanInfo.durationSeconds}
         />
-      ) : (
-        ''
       )}
     </Column>
   );
@@ -158,35 +137,18 @@ function RightColumn({ loanInfo, refresh }: TicketPageBodyProps) {
     );
   }, [loanInfo.lastAccumulatedTimestamp, loanInfo.durationSeconds]);
 
-  const [owner, setOwner] = useState('');
-
-  const getOwner = useCallback(async () => {
-    if (loanInfo.lastAccumulatedTimestamp.eq(0)) {
-      return;
-    }
-    const contract = jsonRpcERC721Contract(
-      process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT || '',
-    );
-    const o = await contract.ownerOf(loanInfo.loanId);
-    setOwner(o);
-  }, [loanInfo.lastAccumulatedTimestamp, loanInfo.loanId]);
-
-  useEffect(() => {
-    getOwner();
-  }, [getOwner]);
-
   return (
     <Column>
-      {!loanInfo.lastAccumulatedTimestamp.eq(0) && (
+      {loanInfo.lender && (
         <LendTicket
           title="lend ticket"
           tokenId={loanInfo.loanId}
-          owner={owner}
+          owner={loanInfo.lender}
         />
       )}
       {Boolean(account) && !loanInfo.closed && (
         <>
-          {loanInfo.loanOwner != account ||
+          {loanInfo.lender != account ||
           timestamp == null ||
           timestamp < endSeconds ? null : (
             <SeizeCollateralCard

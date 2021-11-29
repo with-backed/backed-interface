@@ -49,9 +49,7 @@ export function RepayCard({ loanInfo, repaySuccessCallback }: RepayCardProps) {
       loanInfo.loanAssetDecimals,
     );
     const ticketHolder =
-      loanInfo.ticketOwner.slice(0, 10) +
-      '...' +
-      loanInfo.ticketOwner.slice(34, 42);
+      loanInfo.borrower.slice(0, 10) + '...' + loanInfo.borrower.slice(34, 42);
     return { repayAmount, ticketHolder };
   }, [amountOwed, loanInfo]);
 

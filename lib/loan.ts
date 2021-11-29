@@ -31,15 +31,15 @@ export async function getLoanInfo(id: string): Promise<LoanInfo> {
 
   const decimals = await assetContract.decimals();
   const loanAssetSymbol = await assetContract.symbol();
-  let loanOwner = null;
+  let lender = null;
   if (!lastAccumulatedTimestamp.eq(0)) {
-    loanOwner = await lendTicket.ownerOf(loanId);
+    lender = await lendTicket.ownerOf(loanId);
     // const interest = await loanFacilitator.interestOwed(loanId);
     // const scalar = await loanFacilitator.SCALAR();
   }
 
   const interestOwed = await loanFacilitator.interestOwed(loanId);
-  const ticketOwner = await borrowTicket.ownerOf(loanId);
+  const borrower = await borrowTicket.ownerOf(loanId);
 
   return {
     loanId,
@@ -54,8 +54,8 @@ export async function getLoanInfo(id: string): Promise<LoanInfo> {
     closed,
     loanAssetDecimals: parseInt(decimals.toString()),
     loanAssetSymbol,
-    loanOwner,
-    ticketOwner,
+    lender,
+    borrower,
     interestOwed,
   };
 }
