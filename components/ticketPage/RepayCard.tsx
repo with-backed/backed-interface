@@ -19,9 +19,6 @@ interface RepayCardProps {
 export function RepayCard({ loanInfo, repaySuccessCallback }: RepayCardProps) {
   const { account } = useContext(AccountContext);
   const [disabled, setDisabled] = useState(false);
-  const [allowanceValue, setAllowanceValue] = useState(
-    ethers.BigNumber.from('0'),
-  );
   const [needsAllowance, setNeedsAllowance] = useState(false);
   const [amountOwed] = useState(loanInfo.interestOwed.add(loanInfo.loanAmount));
 
@@ -36,7 +33,6 @@ export function RepayCard({ loanInfo, repaySuccessCallback }: RepayCardProps) {
       setNeedsAllowance(allowance.lt(amountOwed));
     }
     setDisabled(allowance.lt(amountOwed));
-    setAllowanceValue(allowance);
   };
 
   useEffect(() => {
