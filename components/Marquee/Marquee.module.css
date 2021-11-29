@@ -17,3 +17,7 @@
     transform: translateX(-100%);
   }
 }
+
+.paused {
+  animation-play-state: paused;
+}
