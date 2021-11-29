@@ -17,7 +17,7 @@
   --line-height: 1.6;
 
   /* padding and gaps */
-  --padding-button: 1rem;
+  --padding-button: 0.3rem 1rem;
   --padding-container: 1.43rem;
   --gap: 2.86rem;
 

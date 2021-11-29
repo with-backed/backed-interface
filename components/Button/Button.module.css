@@ -3,7 +3,7 @@
   color: var(--highlight-clickable-100);
   border: thin var(--highlight-clickable-100) solid;
   border-radius: var(--border-radius-large);
-  padding: 0.3rem 1rem;
+  padding: var(--padding-button);
   width: 100%;
   line-height: 1.6;
   cursor: pointer;
