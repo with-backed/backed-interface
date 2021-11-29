@@ -63,8 +63,7 @@ function LeftColumn({ loanInfo, refresh }: TicketPageBodyProps) {
       />
       {account == null ||
       loanInfo.closed ||
-      loanInfo.lastAccumulatedTimestamp.toString() == '0' ||
-      owner != account ? null : (
+      loanInfo.lastAccumulatedTimestamp.eq(0) ? null : (
         <RepayCard loanInfo={loanInfo} repaySuccessCallback={refresh} />
       )}
       <TicketHistory loanInfo={loanInfo} />
