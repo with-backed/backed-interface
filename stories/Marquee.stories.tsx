@@ -1,7 +1,6 @@
 import React, { ChangeEvent } from 'react';
 
 import { Marquee } from 'components/Marquee';
-import { MarqueeSpacer } from 'components/Marquee/Marquee';
 
 export default {
   title: 'Components/Marquee',
