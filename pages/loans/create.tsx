@@ -18,9 +18,13 @@ import {
   isNFTApprovedForCollateral,
 } from 'lib/eip721Subraph';
 import styles from './create.module.css';
+<<<<<<< HEAD
 import { useDialogState } from 'reakit/Dialog';
 import { DialogDisclosureButton } from 'components/Button';
 import { FormWrapper } from 'components/layouts/FormWrapper';
+=======
+import { headerMessages } from 'pawnshopConstants';
+>>>>>>> 6fbe9b4 (first stab at using marquee)
 
 export default function Create() {
   const { account } = useContext(AccountContext);
@@ -35,7 +39,7 @@ export default function Create() {
 
   return (
     <PageWrapper>
-      <PawnShopHeader message="create a loan" />
+      <PawnShopHeader message={headerMessages.create} />
       <ThreeColumn>
         <Fieldset legend="set loan terms">
           {Boolean(account) ? (

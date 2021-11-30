@@ -9,12 +9,13 @@ import { Fieldset } from 'components/Fieldset';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { AccountContext } from 'context/account';
 import { ConnectWallet } from 'components/ConnectWallet';
+import { headerMessages } from 'pawnshopConstants';
 
 export default function Test() {
   const { account } = useContext(AccountContext);
   return (
     <PageWrapper>
-      <PawnShopHeader message="get an NFT and DAI" />
+      <PawnShopHeader message={headerMessages.test} />
       <ThreeColumn>
         <Fieldset legend="mint an NFT">
           {account == null ? <ConnectWallet /> : <MintPunk />}

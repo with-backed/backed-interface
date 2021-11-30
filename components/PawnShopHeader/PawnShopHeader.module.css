@@ -9,14 +9,6 @@
   align-items: center;
 }
 
-.message-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--background-fieldset);
-  border-radius: var(--border-radius-large);
-}
-
 .link {
   justify-self: center;
 }

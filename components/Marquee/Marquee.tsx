@@ -6,9 +6,7 @@ import React, {
 } from 'react';
 import styles from './Marquee.module.css';
 
-export const MarqueeSpacer = () => {
-  return <div className={styles['spacer']} />;
-};
+const MARQUEE_ITEM_COUNT = 10;
 
 export const Marquee: FunctionComponent = ({ children }) => {
   const [isPaused, setIsPaused] = useState(false);
@@ -19,18 +17,18 @@ export const Marquee: FunctionComponent = ({ children }) => {
   const handleClick = useCallback(() => {
     setIsPaused((state) => !state);
   }, [setIsPaused]);
+  const repetitions = useMemo(() => {
+    return Array.from({ length: MARQUEE_ITEM_COUNT }, (_, i) => (
+      <div className={className} key={i} aria-hidden>
+        {children}
+      </div>
+    ));
+  }, [children, className]);
+
   return (
     <div className={styles.container} onClick={handleClick}>
       <div className={className}>{children}</div>
-      <div className={className} aria-hidden={true}>
-        {children}
-      </div>
-      <div className={className} aria-hidden={true}>
-        {children}
-      </div>
-      <div className={className} aria-hidden={true}>
-        {children}
-      </div>
+      {repetitions}
     </div>
   );
 };

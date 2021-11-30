@@ -4,6 +4,7 @@ import TicketPageBody from 'components/ticketPage/TicketPageBody';
 import { PawnShopHeader } from 'components/PawnShopHeader';
 import { PageWrapper } from 'components/layouts/PageWrapper';
 import { LoanInfo } from 'lib/LoanInfoType';
+import { headerMessages } from 'pawnshopConstants';
 
 type LoanProps = {
   serverLoanInfo: LoanInfo;
@@ -20,7 +21,7 @@ export const Loan: FunctionComponent<LoanProps> = ({ serverLoanInfo }) => {
 
   return (
     <PageWrapper>
-      <PawnShopHeader message={`pawn loan #${loanInfo.loanId}`} />
+      <PawnShopHeader message={headerMessages.ticket(loanInfo)} />
       <TicketPageBody loanInfo={loanInfo} refresh={fetchData} />
     </PageWrapper>
   );

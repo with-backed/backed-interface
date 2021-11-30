@@ -7,5 +7,7 @@ export default {
 };
 
 export const HeaderStyles = () => {
-  return <PawnShopHeader message="yote" />;
+  return (
+    <PawnShopHeader message="🭺🭺🭺🭺🭺🭺🭺🭺🭺🭺🭺🭺🭺🭺🭺🭺🭺🭺🭺🭺 yote 🭺🭺🭺🭺🭺🭺🭺🭺🭺🭺🭺🭺🭺🭺🭺🭺🭺🭺🭺🭺" />
+  );
 };
