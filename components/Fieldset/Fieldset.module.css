@@ -11,4 +11,5 @@
   line-height: 0;
   font-size: var(--font-large);
   padding: 0 0.5rem;
+  text-transform: capitalize;
 }

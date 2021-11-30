@@ -1,3 +1,4 @@
+import { ethers } from 'ethers';
 import noop from 'lodash/noop';
 import React, {
   createContext,
@@ -37,7 +38,7 @@ export const AccountProvider: FunctionComponent = ({ children }) => {
           } else {
             const addressList = result.result;
             if (addressList && addressList.length > 0) {
-              setAccount(addressList[0]);
+              setAccount(ethers.utils.getAddress(addressList[0]));
             }
           }
         },
