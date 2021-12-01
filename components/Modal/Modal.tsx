@@ -13,7 +13,7 @@ export const Modal: FunctionComponent<ModalProps> = ({
 }) => {
   return (
     <Dialog className={styles.dialog} {...dialog}>
-      {heading && <h3 className={styles.heading}>{heading}</h3>}
+      {Boolean(heading) && <h3 className={styles.heading}>{heading}</h3>}
       <div className={styles['scroll-box']}>{children}</div>
     </Dialog>
   );
