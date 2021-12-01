@@ -58,7 +58,7 @@ export default function Create() {
             <ConnectWallet />
           )}
         </Fieldset>
-        <Fieldset legend="stake collateral">
+        <Fieldset legend="select collateral NFT">
           {collateralAddress === '' && (
             <div className={styles.collateralExplainer}>
               <p>
