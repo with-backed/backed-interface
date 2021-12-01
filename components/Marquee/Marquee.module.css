@@ -2,11 +2,20 @@
 .container {
   overflow: hidden;
   white-space: nowrap;
+  align-items: stretch;
 }
 
 .scrolling {
+  text-align: center;
   animation: marquee 10s linear infinite;
   display: inline-block;
+  width: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) calc(50% - 1px),
+    var(--foreground-text-100) calc(50%),
+    rgba(0, 0, 0, 0) calc(50% + 1px)
+  );
 }
 
 @keyframes marquee {
@@ -20,4 +29,10 @@
 
 .paused {
   animation-play-state: paused;
+}
+
+.wrapper > * {
+  background: var(--background-light);
+  margin: 0 2rem;
+  padding: 0 0.25rem;
 }
