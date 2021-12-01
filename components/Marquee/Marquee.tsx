@@ -16,19 +16,15 @@ export const Marquee: FunctionComponent<MarqueeProps> = ({
   messages,
   initialStoppedState = false,
 }) => {
-  const [isPaused, setIsPaused] = useState(false);
   const [isStopped, setIsStopped] = useState(initialStoppedState);
 
   const toggleStopped = useCallback(() => {
     setIsStopped((state) => !state);
   }, [setIsStopped]);
-  const togglePaused = useCallback(() => {
-    setIsPaused((state) => !state);
-  }, [setIsPaused]);
 
   const className = useMemo(
-    () => `${styles.scrolling} ${isPaused || isStopped ? styles.paused : ''}`,
-    [isPaused, isStopped],
+    () => `${styles.scrolling} ${isStopped ? styles.paused : ''}`,
+    [isStopped],
   );
   const formattedMessages = useMemo(() => {
     return messages.map((message, index) => <span key={index}>{message}</span>);
@@ -42,11 +38,7 @@ export const Marquee: FunctionComponent<MarqueeProps> = ({
   }, [formattedMessages, className]);
 
   return (
-    <div
-      className={styles.container}
-      onClick={toggleStopped}
-      onMouseEnter={togglePaused}
-      onMouseLeave={togglePaused}>
+    <div className={styles.container} onClick={toggleStopped}>
       <div className={className}>
         <div className={styles.wrapper}>{formattedMessages}</div>
       </div>
