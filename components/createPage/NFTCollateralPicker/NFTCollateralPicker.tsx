@@ -1,22 +1,15 @@
-import {
-  MutableRefObject,
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import styles from './NFTCollateralPicker.module.css';
-import addressHSl from 'lib/addressHSL';
 import { getNftContractAddress, NFTEntity, useNFTs } from 'lib/eip721Subraph';
-import useOutsideClick from 'lib/useOutsideClick';
 import { NFTMedia } from 'components/Media/NFTMedia';
-import { Modal } from 'components/Modal/Modal';
+import { Modal } from 'components/Modal';
+import { DialogStateReturn } from 'reakit/Dialog';
 
 interface NFTCollateralPickerProps {
   connectedWallet: string;
   handleSetSelectedNFT: (nft: NFTEntity) => void;
-  hidePicker: () => void;
   hiddenNFTAddresses?: string[];
+  dialog: DialogStateReturn;
 }
 
 interface GroupedNFTCollections {
@@ -30,14 +23,9 @@ interface ShowNFTStateType {
 export function NFTCollateralPicker({
   connectedWallet,
   handleSetSelectedNFT,
-  hidePicker,
   hiddenNFTAddresses = [],
+  dialog,
 }: NFTCollateralPickerProps) {
-  const pickerRef = useRef() as MutableRefObject<HTMLInputElement>;
-  useOutsideClick(pickerRef, () => {
-    hidePicker();
-  });
-
   const { fetching, error, nfts } = useNFTs(connectedWallet);
 
   const [showNFT, setShowNFT] = useState<ShowNFTStateType>({});
@@ -75,14 +63,14 @@ export function NFTCollateralPicker({
   const handleNFTClick = useCallback(
     (nft: NFTEntity) => {
       handleSetSelectedNFT(nft);
-      hidePicker();
+      dialog.setVisible(false);
     },
-    [handleSetSelectedNFT, hidePicker],
+    [handleSetSelectedNFT, dialog.setVisible],
   );
 
   if (fetching) {
     return (
-      <Modal>
+      <Modal dialog={dialog}>
         <div className={styles.nftPicker}>loading your NFTs...</div>
       </Modal>
     );
@@ -90,7 +78,7 @@ export function NFTCollateralPicker({
 
   if (error) {
     return (
-      <Modal>
+      <Modal dialog={dialog}>
         <div className={styles.nftPicker}>
           oops, we could not load your NFTs
         </div>
@@ -99,9 +87,8 @@ export function NFTCollateralPicker({
   }
 
   return (
-    <Modal>
-      <div className={styles.nftPicker} ref={pickerRef}>
-        <div className={styles.selectButton}>✨ 🔍 Select an NFT 🖼 ✨</div>
+    <Modal dialog={dialog} heading="✨ 🔍 Select an NFT 🖼 ✨">
+      <div className={styles.nftPicker}>
         {Object.keys(groupedNFTs).map(
           (nftContractAddress: string, i: number) => (
             <div
@@ -152,7 +139,6 @@ export function NFTCollateralPicker({
                   </div>
                 ))}
               </div>
-              <hr className={styles.break} />
             </div>
           ),
         )}

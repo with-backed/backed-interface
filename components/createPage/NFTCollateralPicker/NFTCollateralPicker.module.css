@@ -7,7 +7,6 @@
 .nftPicker {
   width: 100%;
   justify-content: center;
-  padding: var(--padding-container);
 }
 
 .selectButton {
@@ -19,13 +18,14 @@
 
 .nftCollectionRow {
   justify-content: space-between;
-  margin: var(--padding-container) 0;
+  padding: var(--padding-container) 0;
   line-height: var(--line-height);
   cursor: pointer;
+  border-top: thin var(--foreground-text-100) solid;
 }
 
 .collectionRowWrapper:last-child .nftCollectionRow {
-  margin-bottom: 0px;
+  padding-bottom: 0px;
 }
 
 .nftCollectionNameAndIcon {
@@ -37,14 +37,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-transform: capitalize;
-}
-
-.break {
-  width: 99%;
-  background: var(--foreground-text-100);
-  height: 1px;
-  border: none;
-  margin: 0;
 }
 
 .collectionRowWrapper:last-child .break {
