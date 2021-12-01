@@ -17,9 +17,9 @@ export const headerMessages = {
       loanAssetDecimals,
       perSecondInterestRate,
       loanAssetSymbol,
-      interestOwed,
       closed,
       lastAccumulatedTimestamp,
+      durationSeconds,
     }: LoanInfo,
     status: LoanStatus,
   ) => {
@@ -29,12 +29,8 @@ export const headerMessages = {
 
     const amount = ethers.utils.formatUnits(loanAmount, loanAssetDecimals);
     const interestRate = formattedAnnualRate(perSecondInterestRate);
-    const repayAmount = ethers.utils.formatUnits(
-      interestOwed.add(loanAmount),
-      loanAssetDecimals,
-    );
     const idEntry = `Loan #${loanId}`;
-    const paymentEntry = `${amount} ${loanAssetSymbol} @ ${interestRate}% = ${repayAmount} ${loanAssetSymbol} repayment`;
+    const paymentEntry = `${amount} ${loanAssetSymbol} @ ${interestRate}%`;
     const statusEntry = (() => {
       if (lastAccumulatedTimestamp.eq(0)) {
         return 'Awaiting lender';
