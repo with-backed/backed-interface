@@ -70,6 +70,12 @@ h1 {
   font-weight: var(--weight-light);
 }
 
+h2,
+h3 {
+  font-size: var(--font-large);
+  font-weight: var(--weight-regular);
+}
+
 a {
   color: var(--highlight-clickable-100);
 }

@@ -1,8 +1,20 @@
-import { HTMLAttributes } from 'react';
+import { Dialog, DialogStateReturn } from 'reakit/Dialog';
 import styles from './Modal.module.css';
+import React, { FunctionComponent } from 'react';
 
-interface ModalProps extends HTMLAttributes<HTMLDivElement> {}
-
-export function Modal({ children }: ModalProps) {
-  return <div className={styles.modalWrapper}>{children}</div>;
-}
+type ModalProps = {
+  dialog: DialogStateReturn;
+  heading?: string;
+};
+export const Modal: FunctionComponent<ModalProps> = ({
+  children,
+  dialog,
+  heading,
+}) => {
+  return (
+    <Dialog className={styles.dialog} {...dialog}>
+      {heading && <h3 className={styles.heading}>{heading}</h3>}
+      <div className={styles['scroll-box']}>{children}</div>
+    </Dialog>
+  );
+};
