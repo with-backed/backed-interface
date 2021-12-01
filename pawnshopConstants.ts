@@ -1,14 +1,14 @@
 import { ethers } from 'ethers';
 import { formattedAnnualRate } from 'lib/interest';
 import { LoanInfo } from 'lib/LoanInfoType';
+import React from 'react';
 
 // this file is named weirdly because apparently `constants` is a reserved, deprecated module.
 
 export const headerMessages = {
-  availableForLending:
-    '🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸 Available for Lending 🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸',
-  test: '🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸 Get an NFT and DAI 🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸',
-  create: '🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸 Create a Loan 🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸',
+  availableForLending: ['Available for Lending'],
+  test: ['Get an NFT and DAI '],
+  create: ['Create a Loan'],
   ticket: ({
     loanId,
     loanAmount,
@@ -19,7 +19,7 @@ export const headerMessages = {
     closed,
   }: LoanInfo) => {
     if (closed) {
-      return `🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸🭸 Loan #${loanId} (closed) `;
+      return [`Loan #${loanId} (closed)`];
     }
     const amount = ethers.utils.formatUnits(loanAmount, loanAssetDecimals);
     const interestRate = formattedAnnualRate(perSecondInterestRate);
@@ -29,6 +29,6 @@ export const headerMessages = {
     );
     const idEntry = `Loan #${loanId}`;
     const paymentEntry = `${amount} ${loanAssetSymbol} @ ${interestRate}% = ${repayAmount} ${loanAssetSymbol} repayment`;
-    return `🭸🭸 ${idEntry} 🭸🭸🭸 ${paymentEntry}  🭸🭸🭸 accruing interest 🭸`;
+    return [idEntry, paymentEntry, 'accruing interest'];
   },
 };

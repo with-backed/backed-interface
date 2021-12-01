@@ -5,11 +5,11 @@ import styles from './PawnShopHeader.module.css';
 import { Marquee } from 'components/Marquee';
 
 type PawnShopHeaderProps = {
-  message: string;
+  messages: React.ReactNode[];
 };
 
 export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
-  message,
+  messages,
 }) => {
   return (
     <header className={styles.header}>
@@ -24,7 +24,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
           <ConnectWallet />
         </div>
       </div>
-      <Marquee>{message}</Marquee>
+      <Marquee messages={messages} />
     </header>
   );
 };

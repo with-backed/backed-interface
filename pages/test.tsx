@@ -1,4 +1,3 @@
-import { GetServerSideProps } from 'next';
 import React, { useContext, useState } from 'react';
 import { ethers } from 'ethers';
 import { PawnShopHeader } from 'components/PawnShopHeader';
@@ -15,7 +14,7 @@ export default function Test() {
   const { account } = useContext(AccountContext);
   return (
     <PageWrapper>
-      <PawnShopHeader message={headerMessages.test} />
+      <PawnShopHeader messages={headerMessages.test} />
       <ThreeColumn>
         <Fieldset legend="mint an NFT">
           {account == null ? <ConnectWallet /> : <MintPunk />}

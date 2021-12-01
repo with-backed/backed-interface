@@ -24,7 +24,7 @@ export const Marquee: FunctionComponent<MarqueeProps> = ({ messages }) => {
 
   const className = useMemo(
     () => `${styles.scrolling} ${isPaused || isStopped ? styles.paused : ''}`,
-    [isPaused],
+    [isPaused, isStopped],
   );
   const formattedMessages = useMemo(() => {
     return messages.map((message, index) => <span key={index}>{message}</span>);
@@ -35,7 +35,7 @@ export const Marquee: FunctionComponent<MarqueeProps> = ({ messages }) => {
         <div className={styles.wrapper}>{formattedMessages}</div>
       </div>
     ));
-  }, [messages, className]);
+  }, [formattedMessages, className]);
 
   return (
     <div

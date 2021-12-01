@@ -49,7 +49,7 @@ type HomeProps = {
 export default function Home({ loans }: HomeProps) {
   return (
     <PageWrapper>
-      <PawnShopHeader message={headerMessages.availableForLending} />
+      <PawnShopHeader messages={headerMessages.availableForLending} />
       <FiveColumn>
         {loans.map((loan) => (
           <LoanCard key={loan.id} loan={loan} />

@@ -36,7 +36,7 @@ export default function Create() {
 
   return (
     <PageWrapper>
-      <PawnShopHeader message={headerMessages.create} />
+      <PawnShopHeader messages={headerMessages.create} />
       <ThreeColumn>
         <Fieldset legend="set loan terms">
           {Boolean(account) ? (
