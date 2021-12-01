@@ -7,7 +7,6 @@
 .nftPicker {
   width: 100%;
   justify-content: center;
-  padding: var(--padding-container);
 }
 
 .selectButton {
