@@ -139,7 +139,6 @@ export function NFTCollateralPicker({
                   </div>
                 ))}
               </div>
-              <hr className={styles.break} />
             </div>
           ),
         )}
