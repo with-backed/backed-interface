@@ -17,15 +17,17 @@ export async function getLoanInfo(id: string): Promise<LoanInfo> {
   );
 
   const loanInfo = await loanFacilitator.loanInfo(loanId);
-  const { loanAssetContractAddress } = loanInfo;
-  const { collateralContractAddress } = loanInfo;
-  const { collateralTokenId } = loanInfo;
-  const { perSecondInterestRate } = loanInfo;
-  const { accumulatedInterest } = loanInfo;
-  const { lastAccumulatedTimestamp } = loanInfo;
-  const { durationSeconds } = loanInfo;
-  const { loanAmount } = loanInfo;
-  const { closed } = loanInfo;
+  const {
+    loanAssetContractAddress,
+    collateralContractAddress,
+    collateralTokenId,
+    perSecondInterestRate,
+    accumulatedInterest,
+    lastAccumulatedTimestamp,
+    durationSeconds,
+    loanAmount,
+    closed,
+  } = loanInfo;
 
   const assetContract = jsonRpcERC20Contract(loanAssetContractAddress);
 

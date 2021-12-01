@@ -1,4 +1,3 @@
-import { GetServerSideProps } from 'next';
 import React, { useContext, useState } from 'react';
 import { ethers } from 'ethers';
 import { PawnShopHeader } from 'components/PawnShopHeader';
@@ -9,12 +8,13 @@ import { Fieldset } from 'components/Fieldset';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { AccountContext } from 'context/account';
 import { ConnectWallet } from 'components/ConnectWallet';
+import { headerMessages } from 'pawnshopConstants';
 
 export default function Test() {
   const { account } = useContext(AccountContext);
   return (
     <PageWrapper>
-      <PawnShopHeader message="get an NFT and DAI" />
+      <PawnShopHeader messages={headerMessages.test} />
       <ThreeColumn>
         <Fieldset legend="mint an NFT">
           {account == null ? <ConnectWallet /> : <MintPunk />}

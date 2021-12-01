@@ -2,13 +2,14 @@ import React, { FunctionComponent } from 'react';
 import Link from 'next/link';
 import { ConnectWallet } from 'components/ConnectWallet';
 import styles from './PawnShopHeader.module.css';
+import { Marquee } from 'components/Marquee';
 
 type PawnShopHeaderProps = {
-  message: string;
+  messages: React.ReactNode[];
 };
 
 export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
-  message,
+  messages,
 }) => {
   return (
     <header className={styles.header}>
@@ -23,9 +24,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
           <ConnectWallet />
         </div>
       </div>
-      <div className={styles['message-row']}>
-        <h2>{message}</h2>
-      </div>
+      <Marquee messages={messages} />
     </header>
   );
 };

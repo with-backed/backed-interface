@@ -6,31 +6,39 @@ import React, {
 } from 'react';
 import styles from './Marquee.module.css';
 
-export const MarqueeSpacer = () => {
-  return <div className={styles['spacer']} />;
-};
+const MARQUEE_ITEM_COUNT = 2;
 
-export const Marquee: FunctionComponent = ({ children }) => {
-  const [isPaused, setIsPaused] = useState(false);
+type MarqueeProps = {
+  messages: React.ReactNode[];
+};
+export const Marquee: FunctionComponent<MarqueeProps> = ({ messages }) => {
+  const [isStopped, setIsStopped] = useState(true);
+
+  const toggleStopped = useCallback(() => {
+    setIsStopped((state) => !state);
+  }, [setIsStopped]);
+
   const className = useMemo(
-    () => `${styles.scrolling} ${isPaused ? styles.paused : ''}`,
-    [isPaused],
+    () => `${styles.scrolling} ${isStopped ? styles.paused : ''}`,
+    [isStopped],
   );
-  const handleClick = useCallback(() => {
-    setIsPaused((state) => !state);
-  }, [setIsPaused]);
+  const formattedMessages = useMemo(() => {
+    return messages.map((message, index) => <span key={index}>{message}</span>);
+  }, [messages]);
+  const repetitions = useMemo(() => {
+    return Array.from({ length: MARQUEE_ITEM_COUNT }, (_, i) => (
+      <div className={className} key={i} aria-hidden>
+        <div className={styles.wrapper}>{formattedMessages}</div>
+      </div>
+    ));
+  }, [formattedMessages, className]);
+
   return (
-    <div className={styles.container} onClick={handleClick}>
-      <div className={className}>{children}</div>
-      <div className={className} aria-hidden={true}>
-        {children}
+    <div className={styles.container} onClick={toggleStopped}>
+      <div className={className}>
+        <div className={styles.wrapper}>{formattedMessages}</div>
       </div>
-      <div className={className} aria-hidden={true}>
-        {children}
-      </div>
-      <div className={className} aria-hidden={true}>
-        {children}
-      </div>
+      {repetitions}
     </div>
   );
 };

@@ -65,7 +65,7 @@ export function NFTCollateralPicker({
       handleSetSelectedNFT(nft);
       dialog.setVisible(false);
     },
-    [handleSetSelectedNFT, dialog.setVisible],
+    [handleSetSelectedNFT, dialog],
   );
 
   if (fetching) {

@@ -21,6 +21,7 @@ import styles from './create.module.css';
 import { useDialogState } from 'reakit/Dialog';
 import { DialogDisclosureButton } from 'components/Button';
 import { FormWrapper } from 'components/layouts/FormWrapper';
+import { headerMessages } from 'pawnshopConstants';
 
 export default function Create() {
   const { account } = useContext(AccountContext);
@@ -35,7 +36,7 @@ export default function Create() {
 
   return (
     <PageWrapper>
-      <PawnShopHeader message="create a loan" />
+      <PawnShopHeader messages={headerMessages.create} />
       <ThreeColumn>
         <Fieldset legend="set loan terms">
           {Boolean(account) ? (

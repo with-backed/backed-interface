@@ -3,48 +3,16 @@ import moment from 'moment';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Fieldset } from 'components/Fieldset';
 import styles from './LoanDurationCard.module.css';
+import {
+  computeInitialRemaining,
+  getCurrentUnixTime,
+  getDaysHoursMinutesSeconds,
+} from 'lib/duration';
 
 interface LoanDurationCardProps {
   lastAccumulatedInterest: ethers.BigNumber;
   loanDuration: ethers.BigNumber;
 }
-
-const getCurrentUnixTime = (): ethers.BigNumber =>
-  ethers.BigNumber.from(Math.floor(new Date().getTime() / 1000));
-
-const computeInitialRemaining = (
-  lastAccumulatedInterest: ethers.BigNumber,
-  loanDuration: ethers.BigNumber,
-  now: ethers.BigNumber,
-): ethers.BigNumber => {
-  if (lastAccumulatedInterest.add(loanDuration).lt(now))
-    return ethers.BigNumber.from(0);
-  return lastAccumulatedInterest.add(loanDuration).sub(now);
-};
-
-interface LoanCountdown {
-  days: number;
-  hours: number;
-  minutes: number;
-  seconds: number;
-}
-
-const getDaysHoursMinutesSeconds = (
-  duration: moment.Duration,
-): LoanCountdown => {
-  const days = Math.floor(duration.asDays());
-
-  const hours = Math.floor(
-    duration.subtract(moment.duration(days, 'days')).asHours(),
-  );
-  const minutes = Math.floor(
-    duration.subtract(moment.duration(hours, 'hours')).asMinutes(),
-  );
-  const seconds = Math.floor(
-    duration.subtract(moment.duration(minutes, 'minutes')).asSeconds(),
-  );
-  return { days, hours, minutes, seconds };
-};
 
 export function LoanDurationCard({
   lastAccumulatedInterest,
