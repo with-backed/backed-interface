@@ -7,7 +7,7 @@
 
 .scrolling {
   text-align: center;
-  animation: marquee 10s linear infinite;
+  animation: marquee 15s linear infinite;
   display: inline-block;
   width: 100%;
   background: linear-gradient(
