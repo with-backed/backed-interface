@@ -1,7 +1,6 @@
 import { ethers } from 'ethers';
 import { formattedAnnualRate } from 'lib/interest';
 import { LoanInfo } from 'lib/LoanInfoType';
-import React from 'react';
 
 // this file is named weirdly because apparently `constants` is a reserved, deprecated module.
 
@@ -17,6 +16,7 @@ export const headerMessages = {
     loanAssetSymbol,
     interestOwed,
     closed,
+    lender,
   }: LoanInfo) => {
     if (closed) {
       return [`Loan #${loanId} (closed)`];
@@ -29,6 +29,13 @@ export const headerMessages = {
     );
     const idEntry = `Loan #${loanId}`;
     const paymentEntry = `${amount} ${loanAssetSymbol} @ ${interestRate}% = ${repayAmount} ${loanAssetSymbol} repayment`;
-    return [idEntry, paymentEntry, 'accruing interest'];
+    const statusEntry = (() => {
+      if (!lender) {
+        return 'Awaiting lender';
+      }
+
+      return 'Accruing interest';
+    })();
+    return [idEntry, paymentEntry, statusEntry];
   },
 };
