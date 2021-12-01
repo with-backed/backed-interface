@@ -3,6 +3,10 @@
   overflow: hidden;
   white-space: nowrap;
   align-items: stretch;
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: var(--padding-container);
 }
 
 .scrolling {
