@@ -10,10 +10,14 @@ const MARQUEE_ITEM_COUNT = 2;
 
 type MarqueeProps = {
   messages: React.ReactNode[];
+  initialStoppedState?: boolean;
 };
-export const Marquee: FunctionComponent<MarqueeProps> = ({ messages }) => {
+export const Marquee: FunctionComponent<MarqueeProps> = ({
+  messages,
+  initialStoppedState = false,
+}) => {
   const [isPaused, setIsPaused] = useState(false);
-  const [isStopped, setIsStopped] = useState(false);
+  const [isStopped, setIsStopped] = useState(initialStoppedState);
 
   const toggleStopped = useCallback(() => {
     setIsStopped((state) => !state);

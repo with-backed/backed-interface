@@ -21,7 +21,10 @@ export const Loan: FunctionComponent<LoanProps> = ({ serverLoanInfo }) => {
 
   return (
     <PageWrapper>
-      <PawnShopHeader messages={headerMessages.ticket(loanInfo)} />
+      <PawnShopHeader
+        messages={headerMessages.ticket(loanInfo)}
+        marqueeStoppedByDefault={true}
+      />
       <TicketPageBody loanInfo={loanInfo} refresh={fetchData} />
     </PageWrapper>
   );
