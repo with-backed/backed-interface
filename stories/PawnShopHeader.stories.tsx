@@ -7,13 +7,5 @@ export default {
 };
 
 export const HeaderStyles = () => {
-  return (
-    <div>
-      <PawnShopHeader messages={['yote', 'yote', 'yote', 'yote']} />
-      <PawnShopHeader
-        messages={['yote', 'yote', 'yote', 'yote']}
-        marqueeStoppedByDefault={true}
-      />
-    </div>
-  );
+  return <PawnShopHeader messages={['yote', 'yote', 'yote', 'yote']} />;
 };

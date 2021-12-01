@@ -34,7 +34,7 @@ export const Loan: FunctionComponent<LoanProps> = ({ serverLoanInfo }) => {
     }
 
     return 'active';
-  }, [timestamp]);
+  }, [loanInfo.durationSeconds, loanInfo.lastAccumulatedTimestamp, timestamp]);
 
   const messages = useMemo(
     () => headerMessages.ticket(loanInfo, loanStatus),
@@ -49,7 +49,7 @@ export const Loan: FunctionComponent<LoanProps> = ({ serverLoanInfo }) => {
 
   return (
     <PageWrapper>
-      <PawnShopHeader messages={messages} marqueeStoppedByDefault={true} />
+      <PawnShopHeader messages={messages} />
       <TicketPageBody loanInfo={loanInfo} refresh={fetchData} />
     </PageWrapper>
   );

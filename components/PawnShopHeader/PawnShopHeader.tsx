@@ -6,12 +6,10 @@ import { Marquee } from 'components/Marquee';
 
 type PawnShopHeaderProps = {
   messages: React.ReactNode[];
-  marqueeStoppedByDefault?: boolean;
 };
 
 export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
   messages,
-  marqueeStoppedByDefault = false,
 }) => {
   return (
     <header className={styles.header}>
@@ -26,10 +24,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
           <ConnectWallet />
         </div>
       </div>
-      <Marquee
-        messages={messages}
-        initialStoppedState={marqueeStoppedByDefault}
-      />
+      <Marquee messages={messages} />
     </header>
   );
 };
