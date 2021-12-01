@@ -38,4 +38,5 @@
   background: var(--background-light);
   margin: 0 2rem;
   padding: 0 0.25rem;
+  font-size: var(--font-large);
 }
