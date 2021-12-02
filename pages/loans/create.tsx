@@ -1,11 +1,10 @@
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ethers } from 'ethers';
 import { PawnShopHeader } from 'components/PawnShopHeader';
 import { CreateTicketForm } from 'components/createPage/CreateTicketForm';
 import { Fieldset } from 'components/Fieldset';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { PageWrapper } from 'components/layouts/PageWrapper';
-import { AccountContext } from 'context/account';
 import { ConnectWallet } from 'components/ConnectWallet';
 import { NFTCollateralPicker } from 'components/createPage/NFTCollateralPicker/NFTCollateralPicker';
 import { Provider } from 'urql';
@@ -22,9 +21,10 @@ import { useDialogState } from 'reakit/Dialog';
 import { DialogDisclosureButton } from 'components/Button';
 import { FormWrapper } from 'components/layouts/FormWrapper';
 import { headerMessages } from 'pawnshopConstants';
+import { useWeb3 } from 'hooks/useWeb3';
 
 export default function Create() {
-  const { account } = useContext(AccountContext);
+  const { account } = useWeb3();
   const [selectedNFT, setSelectedNFT] = useState<NFTEntity>();
   const [isCollateralApproved, setIsCollateralApproved] = useState(false);
   const dialog = useDialogState();

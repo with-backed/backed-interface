@@ -1,8 +1,8 @@
 import { TransactionButton } from 'components/ticketPage/TransactionButton';
-import { AccountContext } from 'context/account';
 import { ethers } from 'ethers';
+import { useWeb3 } from 'hooks/useWeb3';
 import { jsonRpcERC721Contract, web3Erc721Contract } from 'lib/contracts';
-import { useCallback, useContext, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 type AllowNFTSpendButtonProps = {
   collateralAddress: string;
@@ -14,7 +14,7 @@ export function AllowNFTSpendButton({
   tokenId,
   setIsApproved,
 }: AllowNFTSpendButtonProps) {
-  const { account } = useContext(AccountContext);
+  const { account } = useWeb3();
   const [transactionHash, setTransactionHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
 

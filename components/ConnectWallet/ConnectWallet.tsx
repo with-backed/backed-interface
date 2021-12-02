@@ -1,14 +1,8 @@
-import React, {
-  memo,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
-import { ethers } from 'ethers';
+import React, { memo, useState } from 'react';
 import { Button } from 'components/Button';
-import { AccountContext } from 'context/account';
 import styles from './ConnectWallet.module.css';
+import { noop } from 'lodash';
+import { useWeb3 } from 'hooks/useWeb3';
 
 declare global {
   interface Window {
@@ -46,45 +40,17 @@ const NoProvider = memo(function NoProvider() {
 });
 
 export const ConnectWallet = () => {
-  const { account, setAccount } = useContext(AccountContext);
+  const { account, ...ctx } = useWeb3();
   const [providerAvailable, setProviderAvailable] = useState(false);
 
-  const getAccount = useCallback(async () => {
-    const accounts = await window.ethereum.request({
-      method: 'eth_requestAccounts',
-    });
-    if (process.env.NEXT_PUBLIC_ENV != 'local') {
-      await window.ethereum.request({
-        method: 'wallet_switchEthereumChain',
-        params: [{ chainId: process.env.NEXT_PUBLIC_CHAIN_ID }],
-      });
-    }
-    let account = ethers.utils.getAddress(accounts[0]);
-    setAccount(account);
-    window.ethereum.on('accountsChanged', (accounts: string[]) => {
-      account = ethers.utils.getAddress(accounts[0]);
-      setAccount(account);
-    });
-  }, [setAccount]);
-
-  const setup = useCallback(async () => {
-    if (window.ethereum == null) {
-      setProviderAvailable(false);
-      return;
-    }
-    setProviderAvailable(true);
-  }, []);
-
-  useEffect(() => {
-    setup();
-  }, [setup]);
+  console.log({ ctx });
 
   if (!providerAvailable) {
     return <NoProvider />;
   }
 
   if (!account) {
-    return <Button onClick={getAccount}>Connect Wallet</Button>;
+    return <Button onClick={noop}>Connect Wallet</Button>;
   }
 
   return <div className={styles.connected}>👤 {account.slice(0, 7)}...</div>;

@@ -1,7 +1,6 @@
 import '../styles/global.css';
 import 'normalize.css';
 import { AppProps } from 'next/app';
-import { AccountProvider } from 'context/account';
 import { Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 
@@ -15,9 +14,7 @@ const getLibrary: React.ComponentProps<typeof Web3ReactProvider>['getLibrary'] =
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
-      <AccountProvider>
-        <Component {...pageProps} />
-      </AccountProvider>
+      <Component {...pageProps} />
     </Web3ReactProvider>
   );
 }
