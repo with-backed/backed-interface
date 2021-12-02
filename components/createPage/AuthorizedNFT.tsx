@@ -1,4 +1,4 @@
-import { NFTEntity } from 'lib/eip721Subraph';
+import { isNFTApprovedForCollateral, NFTEntity } from 'lib/eip721Subraph';
 import { getNftContractAddress } from 'lib/eip721Subraph';
 import styles from './AuthorizedNFT.module.css';
 import { NFTMedia } from 'components/Media/NFTMedia';
@@ -35,11 +35,13 @@ export function AuthorizedNFT({ nft, handleApproved }: AuthorizedNFTProps) {
           {nft.identifier.toString()}
         </div>
       </div>
-      <AllowNFTSpendButton
-        collateralAddress={getNftContractAddress(nft)}
-        tokenId={nft.identifier}
-        setIsApproved={handleApproved}
-      />
+      {isNFTApprovedForCollateral(nft) && (
+        <AllowNFTSpendButton
+          collateralAddress={getNftContractAddress(nft)}
+          tokenId={nft.identifier}
+          setIsApproved={handleApproved}
+        />
+      )}
     </div>
   );
 }
