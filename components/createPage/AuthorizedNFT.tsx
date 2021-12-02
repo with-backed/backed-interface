@@ -4,6 +4,7 @@ import styles from './AuthorizedNFT.module.css';
 import { NFTMedia } from 'components/Media/NFTMedia';
 import { AllowNFTSpendButton } from './AllowNFTSpendButton';
 import { EtherscanAddressLink } from 'components/EtherscanLink';
+import { useMemo } from 'react';
 
 interface AuthorizedNFTProps {
   nft: NFTEntity;
@@ -11,6 +12,8 @@ interface AuthorizedNFTProps {
 }
 
 export function AuthorizedNFT({ nft, handleApproved }: AuthorizedNFTProps) {
+  const isNFTApproved = useMemo(() => isNFTApprovedForCollateral(nft), [nft]);
+
   return (
     <div className={styles.wrapper}>
       <NFTMedia
@@ -35,7 +38,7 @@ export function AuthorizedNFT({ nft, handleApproved }: AuthorizedNFTProps) {
           {nft.identifier.toString()}
         </div>
       </div>
-      {isNFTApprovedForCollateral(nft) && (
+      {!isNFTApproved && (
         <AllowNFTSpendButton
           collateralAddress={getNftContractAddress(nft)}
           tokenId={nft.identifier}
