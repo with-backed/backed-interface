@@ -1,57 +1,80 @@
-import React, { memo, useState } from 'react';
-import { Button } from 'components/Button';
+import React, { useCallback, useEffect } from 'react';
+import { DialogDisclosureButton, WalletButton } from 'components/Button';
 import styles from './ConnectWallet.module.css';
-import { noop } from 'lodash';
 import { useWeb3 } from 'hooks/useWeb3';
+import { Modal } from 'components/Modal';
+import { useDialogState } from 'reakit/Dialog';
+import { FormWrapper } from 'components/layouts/FormWrapper';
 
-declare global {
-  interface Window {
-    ethereum: any;
-  }
-}
+import { InjectedConnector } from '@web3-react/injected-connector';
+import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
+import { WalletLinkConnector } from '@web3-react/walletlink-connector';
 
-type ExternalLinkProps = {
-  href: string;
-  display: React.ReactNode;
-};
-const ExternalLink = memo(function ExternalLink({
-  display,
-  href,
-}: ExternalLinkProps) {
-  return (
-    <a href={href} target="_blank" rel="noreferrer">
-      {display}
-    </a>
-  );
-});
-
-const NoProvider = memo(function NoProvider() {
-  const metamaskLink = (
-    <ExternalLink href="https://metamask.io" display="Metamask" />
-  );
-  const chromeLink = (
-    <ExternalLink href="https://www.google.com/chrome/" display="Chrome" />
-  );
-  return (
-    <p>
-      Please use {metamaskLink} + {chromeLink} to connect.
-    </p>
-  );
-});
+// TODO: get supported IDs based on ENV
+const supportedChainIds = [4];
 
 export const ConnectWallet = () => {
-  const { account, ...ctx } = useWeb3();
-  const [providerAvailable, setProviderAvailable] = useState(false);
+  const { account, activate } = useWeb3();
+  const dialog = useDialogState();
 
-  console.log({ ctx });
+  const activateInjectedProvider = useCallback(() => {
+    const injectedConnector = new InjectedConnector({ supportedChainIds });
+    activate(injectedConnector);
+  }, [activate]);
 
-  if (!providerAvailable) {
-    return <NoProvider />;
-  }
+  const activateWalletConnectProvider = useCallback(() => {
+    const walletConnectConnector = new WalletConnectConnector({
+      rpc: { 4: 'rinkeby' },
+    });
+    activate(walletConnectConnector);
+  }, [activate]);
 
-  if (!account) {
-    return <Button onClick={noop}>Connect Wallet</Button>;
-  }
+  const activateWalletLinkProvider = useCallback(() => {
+    const walletLinkConnector = new WalletLinkConnector({
+      appName: '💸✨🎸 NFT Pawn Shop 💍✨💸',
+      url: 'https://nft-pawn-shop-rinkeby.vercel.app/',
+    });
+    activate(walletLinkConnector);
+  }, [activate]);
 
-  return <div className={styles.connected}>👤 {account.slice(0, 7)}...</div>;
+  useEffect(() => {
+    // Auto-hide modal when user successfully connects
+    if (account) {
+      dialog.setVisible(false);
+    }
+  }, [account, dialog]);
+
+  return (
+    <>
+      {!account && (
+        <DialogDisclosureButton {...dialog}>
+          Connect Wallet
+        </DialogDisclosureButton>
+      )}
+      {!!account && (
+        <div className={styles.connected}>👤 {account.slice(0, 7)}...</div>
+      )}
+      <Modal
+        dialog={dialog}
+        width="narrow"
+        heading="✨ 🔑️ Connect Wallet ⚙️ ✨">
+        <FormWrapper>
+          <WalletButton type="Metamask" onClick={activateInjectedProvider} />
+          <WalletButton
+            type="Coinbase Wallet"
+            onClick={activateWalletLinkProvider}
+          />
+          <WalletButton
+            type="Wallet Connect"
+            onClick={activateWalletConnectProvider}
+          />
+          <p>
+            By connecting a wallet, you agree to NFT Pawn Shop&apos;s Terms of
+            Service and acknowledge that you have read and understand the NFT
+            Pawn Shop protocol disclaimer.
+          </p>
+        </FormWrapper>
+      </Modal>
+    </>
+  );
 };
