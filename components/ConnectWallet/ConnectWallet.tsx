@@ -14,7 +14,8 @@ import { WalletLinkConnector } from '@web3-react/walletlink-connector';
 const supportedChainIds = [4];
 
 export const ConnectWallet = () => {
-  const { account, activate } = useWeb3();
+  const { account, activate, ...ctx } = useWeb3();
+  console.log({ account, ...ctx });
   const dialog = useDialogState();
 
   const activateInjectedProvider = useCallback(() => {
