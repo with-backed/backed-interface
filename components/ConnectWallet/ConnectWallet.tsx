@@ -78,13 +78,13 @@ export const ConnectWallet = () => {
         width="narrow"
         heading="✨ 🔑️ Connect Wallet ⚙️ ✨">
         <FormWrapper>
-          <WalletButton type="Metamask" onClick={activateInjectedProvider} />
+          <WalletButton wallet="Metamask" onClick={activateInjectedProvider} />
           <WalletButton
-            type="Coinbase Wallet"
+            wallet="Coinbase Wallet"
             onClick={activateWalletLinkProvider}
           />
           <WalletButton
-            type="Wallet Connect"
+            wallet="Wallet Connect"
             onClick={activateWalletConnectProvider}
           />
           <p>
