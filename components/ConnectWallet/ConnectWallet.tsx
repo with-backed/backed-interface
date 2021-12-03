@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import { Button } from 'components/Button';
 import styles from './ConnectWallet.module.css';
 import { useWeb3 } from 'hooks/useWeb3';
@@ -13,6 +13,35 @@ declare global {
 
 const chainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || '');
 const supportedChainIds = [chainId];
+
+type ExternalLinkProps = {
+  href: string;
+  display: React.ReactNode;
+};
+const ExternalLink = memo(function ExternalLink({
+  display,
+  href,
+}: ExternalLinkProps) {
+  return (
+    <a href={href} target="_blank" rel="noreferrer">
+      {display}
+    </a>
+  );
+});
+
+const NoProvider = memo(function NoProvider() {
+  const metamaskLink = (
+    <ExternalLink href="https://metamask.io" display="Metamask" />
+  );
+  const chromeLink = (
+    <ExternalLink href="https://www.google.com/chrome/" display="Chrome" />
+  );
+  return (
+    <p>
+      Please use {metamaskLink} + {chromeLink} to connect.
+    </p>
+  );
+});
 
 export const ConnectWallet = () => {
   const [providerAvailable, setProviderAvailable] = useState(false);
@@ -57,6 +86,10 @@ export const ConnectWallet = () => {
       );
     }
   }, [account, activateInjectedProvider, providerAvailable]);
+
+  if (!providerAvailable) {
+    return <NoProvider />;
+  }
 
   if (!account) {
     return <Button onClick={activateInjectedProvider}>Connect Wallet</Button>;
