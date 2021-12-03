@@ -9,23 +9,38 @@ import { FormWrapper } from 'components/layouts/FormWrapper';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { WalletLinkConnector } from '@web3-react/walletlink-connector';
+import { env } from 'process';
 
-// TODO: get supported IDs based on ENV
-const supportedChainIds = [4];
+declare global {
+  interface Window {
+    ethereum: any;
+  }
+}
+
+const chainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || '');
+const supportedChainIds = [chainId];
 
 export const ConnectWallet = () => {
   const { account, activate, ...ctx } = useWeb3();
   console.log({ account, ...ctx });
   const dialog = useDialogState();
 
-  const activateInjectedProvider = useCallback(() => {
+  const activateInjectedProvider = useCallback(async () => {
+    if (window.ethereum) {
+      if (process.env.NEXT_PUBLIC_ENV != 'local') {
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId }],
+        });
+      }
+    }
     const injectedConnector = new InjectedConnector({ supportedChainIds });
     activate(injectedConnector);
   }, [activate]);
 
   const activateWalletConnectProvider = useCallback(() => {
     const walletConnectConnector = new WalletConnectConnector({
-      rpc: { 4: 'rinkeby' },
+      rpc: { [chainId]: env.NEXT_PUBLIC_JSON_RPC_PROVIDER || '' },
     });
     activate(walletConnectConnector);
   }, [activate]);
