@@ -47,8 +47,6 @@ export async function getNFTInfoFromTokenInfo(
       return null;
     }
 
-    console.log({ NFTInfo });
-
     const mediaUrl =
       NFTInfo.animation_url == null || forceImage
         ? NFTInfo.image
