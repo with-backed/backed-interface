@@ -1,14 +1,8 @@
-import React, {
-  memo,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import { Button } from 'components/Button';
-import { AccountContext } from 'context/account';
 import styles from './ConnectWallet.module.css';
+import { useWeb3 } from 'hooks/useWeb3';
 
 declare global {
   interface Window {
@@ -46,7 +40,7 @@ const NoProvider = memo(function NoProvider() {
 });
 
 export const ConnectWallet = () => {
-  const { account, setAccount } = useContext(AccountContext);
+  const { account } = useWeb3();
   const [providerAvailable, setProviderAvailable] = useState(false);
 
   const getAccount = useCallback(async () => {
@@ -60,12 +54,10 @@ export const ConnectWallet = () => {
       });
     }
     let account = ethers.utils.getAddress(accounts[0]);
-    setAccount(account);
     window.ethereum.on('accountsChanged', (accounts: string[]) => {
       account = ethers.utils.getAddress(accounts[0]);
-      setAccount(account);
     });
-  }, [setAccount]);
+  }, []);
 
   const setup = useCallback(async () => {
     if (window.ethereum == null) {
