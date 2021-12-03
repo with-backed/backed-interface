@@ -1,8 +1,9 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
-import { ethers } from 'ethers';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Button } from 'components/Button';
 import styles from './ConnectWallet.module.css';
 import { useWeb3 } from 'hooks/useWeb3';
+
+import { InjectedConnector } from '@web3-react/injected-connector';
 
 declare global {
   interface Window {
@@ -10,73 +11,55 @@ declare global {
   }
 }
 
-type ExternalLinkProps = {
-  href: string;
-  display: React.ReactNode;
-};
-const ExternalLink = memo(function ExternalLink({
-  display,
-  href,
-}: ExternalLinkProps) {
-  return (
-    <a href={href} target="_blank" rel="noreferrer">
-      {display}
-    </a>
-  );
-});
-
-const NoProvider = memo(function NoProvider() {
-  const metamaskLink = (
-    <ExternalLink href="https://metamask.io" display="Metamask" />
-  );
-  const chromeLink = (
-    <ExternalLink href="https://www.google.com/chrome/" display="Chrome" />
-  );
-  return (
-    <p>
-      Please use {metamaskLink} + {chromeLink} to connect.
-    </p>
-  );
-});
+const chainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || '');
+const supportedChainIds = [chainId];
 
 export const ConnectWallet = () => {
-  const { account } = useWeb3();
   const [providerAvailable, setProviderAvailable] = useState(false);
+  const { account, activate } = useWeb3();
 
-  const getAccount = useCallback(async () => {
-    const accounts = await window.ethereum.request({
-      method: 'eth_requestAccounts',
-    });
-    if (process.env.NEXT_PUBLIC_ENV != 'local') {
-      await window.ethereum.request({
-        method: 'wallet_switchEthereumChain',
-        params: [{ chainId: process.env.NEXT_PUBLIC_CHAIN_ID }],
-      });
+  const activateInjectedProvider = useCallback(async () => {
+    if (window.ethereum) {
+      if (process.env.NEXT_PUBLIC_ENV != 'local') {
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId }],
+        });
+      }
     }
-    let account = ethers.utils.getAddress(accounts[0]);
-    window.ethereum.on('accountsChanged', (accounts: string[]) => {
-      account = ethers.utils.getAddress(accounts[0]);
-    });
-  }, []);
+    const injectedConnector = new InjectedConnector({ supportedChainIds });
+    activate(injectedConnector);
+  }, [activate]);
 
-  const setup = useCallback(async () => {
-    if (window.ethereum == null) {
-      setProviderAvailable(false);
-      return;
-    }
-    setProviderAvailable(true);
+  useEffect(() => {
+    setProviderAvailable(!!window.ethereum);
   }, []);
 
   useEffect(() => {
-    setup();
-  }, [setup]);
-
-  if (!providerAvailable) {
-    return <NoProvider />;
-  }
+    if (providerAvailable && !account) {
+      window.ethereum.sendAsync(
+        {
+          method: 'eth_accounts',
+          params: [],
+          jsonrpc: '2.0',
+          id: new Date().getTime(),
+        },
+        (error: any, result: any) => {
+          if (error) {
+            console.error(error);
+          } else {
+            const addressList = result.result;
+            if (addressList && addressList.length > 0) {
+              activateInjectedProvider();
+            }
+          }
+        },
+      );
+    }
+  }, [account, activateInjectedProvider, providerAvailable]);
 
   if (!account) {
-    return <Button onClick={getAccount}>Connect Wallet</Button>;
+    return <Button onClick={activateInjectedProvider}>Connect Wallet</Button>;
   }
 
   return <div className={styles.connected}>👤 {account.slice(0, 7)}...</div>;
