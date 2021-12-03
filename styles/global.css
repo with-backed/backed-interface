@@ -43,7 +43,8 @@
   --font-huge: 2.6rem;
 
   /* component specific dimensions */
-  --modal-width: 580px;
+  --modal-width-narrow: 460px;
+  --modal-width-regular: 580px;
   --modal-height: 580px;
 }
 

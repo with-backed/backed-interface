@@ -16,3 +16,31 @@
   border: thin var(--foreground-text-10) solid;
   cursor: not-allowed;
 }
+
+.wallet-button {
+  width: 100%;
+  height: 78px;
+  border: thin var(--foreground-text-100) solid;
+  border-radius: var(--border-radius-large);
+  padding: 0.6rem 2rem;
+  background: var(--background-white);
+  cursor: pointer;
+}
+
+.wallet-button:hover {
+  background: var(--highlight-clickable-10);
+  border: thin var(--highlight-clickable-100) solid;
+}
+
+.button-grid-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--font-large);
+  font-size: var(--font-large);
+}
+
+.button-grid-wrapper > svg {
+  max-height: 49px;
+  max-width: 49px;
+}
