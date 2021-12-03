@@ -41,7 +41,9 @@ export const ConnectWallet = () => {
   const activateWalletConnectProvider = useCallback(() => {
     const walletConnectConnector = new WalletConnectConnector({
       rpc: { [chainId]: env.NEXT_PUBLIC_JSON_RPC_PROVIDER || '' },
+      chainId,
     });
+
     activate(walletConnectConnector);
   }, [activate]);
 
