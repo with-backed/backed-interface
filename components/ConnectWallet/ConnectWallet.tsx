@@ -62,29 +62,6 @@ export const ConnectWallet = () => {
     setProviderAvailable(!!window.ethereum);
   }, []);
 
-  useEffect(() => {
-    if (providerAvailable && !account) {
-      window.ethereum.sendAsync(
-        {
-          method: 'eth_accounts',
-          params: [],
-          jsonrpc: '2.0',
-          id: new Date().getTime(),
-        },
-        (error: any, result: any) => {
-          if (error) {
-            console.error(error);
-          } else {
-            const addressList = result.result;
-            if (addressList && addressList.length > 0) {
-              activateInjectedProvider();
-            }
-          }
-        },
-      );
-    }
-  }, [account, activateInjectedProvider, providerAvailable]);
-
   return (
     <>
       {!account && (
