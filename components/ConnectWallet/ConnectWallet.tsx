@@ -34,6 +34,7 @@ export const ConnectWallet = () => {
     const walletLinkConnector = new WalletLinkConnector({
       appName: '💸✨🎸 NFT Pawn Shop 💍✨💸',
       url: 'https://nft-pawn-shop-rinkeby.vercel.app/',
+      supportedChainIds,
     });
     activate(walletLinkConnector);
   }, [activate]);
