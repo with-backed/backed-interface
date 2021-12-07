@@ -11,7 +11,7 @@ const jsonRpcProvider = new ethers.providers.JsonRpcProvider(
 );
 
 export function web3LoanFacilitator() {
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const provider = new ethers.providers.Web3Provider(window.ethereum!);
   const signer = provider.getSigner(0);
   return loanFacilitator(signer);
 }
@@ -21,13 +21,13 @@ export function jsonRpcLoanFacilitator() {
 }
 
 export function web3Erc20Contract(address: string) {
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const provider = new ethers.providers.Web3Provider(window.ethereum!);
   const signer = provider.getSigner(0);
   return erc20Contract(address, signer);
 }
 
 export function web3Erc721Contract(address: string) {
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const provider = new ethers.providers.Web3Provider(window.ethereum!);
   const signer = provider.getSigner(0);
   return erc721Contract(address, signer);
 }
