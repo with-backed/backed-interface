@@ -1,11 +1,5 @@
-import { ethers } from 'ethers';
 import noop from 'lodash/noop';
-import React, {
-  createContext,
-  FunctionComponent,
-  useEffect,
-  useState,
-} from 'react';
+import React, { createContext, FunctionComponent, useState } from 'react';
 
 type AccountContext = {
   /** The address of the connected wallet, if present. */
@@ -21,30 +15,6 @@ export const AccountContext = createContext<AccountContext>({
 
 export const AccountProvider: FunctionComponent = ({ children }) => {
   const [account, setAccount] = useState<string | null>(null);
-
-  // On first load, see if there's already a connected account.
-  useEffect(() => {
-    if (window.ethereum) {
-      window.ethereum.sendAsync(
-        {
-          method: 'eth_accounts',
-          params: [],
-          jsonrpc: '2.0',
-          id: new Date().getTime(),
-        },
-        (error: any, result: any) => {
-          if (error) {
-            console.error(error);
-          } else {
-            const addressList = result.result;
-            if (addressList && addressList.length > 0) {
-              setAccount(ethers.utils.getAddress(addressList[0]));
-            }
-          }
-        },
-      );
-    }
-  });
 
   return (
     <AccountContext.Provider value={{ account, setAccount }}>
