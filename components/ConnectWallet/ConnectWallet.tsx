@@ -5,16 +5,10 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { ethers } from 'ethers';
 import { Button } from 'components/Button';
 import { AccountContext } from 'context/account';
+import { hooks as metaMaskHooks, metaMask } from 'connectors/metaMask';
 import styles from './ConnectWallet.module.css';
-
-declare global {
-  interface Window {
-    ethereum: any;
-  }
-}
 
 type ExternalLinkProps = {
   href: string;
@@ -46,29 +40,13 @@ const NoProvider = memo(function NoProvider() {
 });
 
 export const ConnectWallet = () => {
-  const { account, setAccount } = useContext(AccountContext);
+  const { setAccount } = useContext(AccountContext);
   const [providerAvailable, setProviderAvailable] = useState(false);
-
-  const getAccount = useCallback(async () => {
-    const accounts = await window.ethereum.request({
-      method: 'eth_requestAccounts',
-    });
-    if (process.env.NEXT_PUBLIC_ENV != 'local') {
-      await window.ethereum.request({
-        method: 'wallet_switchEthereumChain',
-        params: [{ chainId: process.env.NEXT_PUBLIC_CHAIN_ID }],
-      });
-    }
-    let account = ethers.utils.getAddress(accounts[0]);
-    setAccount(account);
-    window.ethereum.on('accountsChanged', (accounts: string[]) => {
-      account = ethers.utils.getAddress(accounts[0]);
-      setAccount(account);
-    });
-  }, [setAccount]);
+  const { useAccount } = metaMaskHooks;
+  const account = useAccount();
 
   const setup = useCallback(async () => {
-    if (window.ethereum == null) {
+    if (!window.ethereum) {
       setProviderAvailable(false);
       return;
     }
@@ -79,12 +57,18 @@ export const ConnectWallet = () => {
     setup();
   }, [setup]);
 
+  useEffect(() => {
+    if (account) {
+      setAccount(account);
+    }
+  }, [account, setAccount]);
+
   if (!providerAvailable) {
     return <NoProvider />;
   }
 
   if (!account) {
-    return <Button onClick={getAccount}>Connect Wallet</Button>;
+    return <Button onClick={() => metaMask.activate()}>Connect Wallet</Button>;
   }
 
   return <div className={styles.connected}>👤 {account.slice(0, 7)}...</div>;
