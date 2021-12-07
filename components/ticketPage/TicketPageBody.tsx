@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { ethers } from 'ethers';
 import CollateralMediaCard from 'components/ticketPage/CollateralMediaCard';
 import { PawnLoanArt, PawnTicketArt } from 'components/ticketPage/PawnArt';
@@ -11,8 +11,8 @@ import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { Fieldset } from 'components/Fieldset';
 import { LoanDurationCard } from 'components/ticketPage/LoanDurationCard';
 import { Column } from 'components/Column';
+import { AccountContext } from 'context/account';
 import { useTimestamp } from 'hooks/useTimestamp';
-import { useWeb3 } from 'hooks/useWeb3';
 
 interface TicketPageBodyProps {
   loanInfo: LoanInfo;
@@ -33,7 +33,7 @@ export default function TicketPageBody({
 }
 
 function LeftColumn({ loanInfo, refresh }: TicketPageBodyProps) {
-  const { account } = useWeb3();
+  const { account } = useContext(AccountContext);
   const owner = loanInfo.borrower;
   return (
     <Column>
@@ -126,7 +126,7 @@ function CenterColumn({ loanInfo }: TicketPageBodyProps) {
 }
 
 function RightColumn({ loanInfo, refresh }: TicketPageBodyProps) {
-  const { account } = useWeb3();
+  const { account } = useContext(AccountContext);
   const timestamp = useTimestamp();
   const endSeconds = useMemo(() => {
     return Math.floor(
