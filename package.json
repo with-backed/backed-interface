@@ -19,6 +19,8 @@
     "@nfte/handler": "^1.0.5",
     "@nfte/react": "^1.0.4",
     "@pinata/ipfs-gateway-tools": "^1.1.6",
+    "@web3-react/core": "8.0.11-alpha.0",
+    "@web3-react/metamask": "8.0.11-alpha.0",
     "cors": "^2.8.5",
     "ethers": "^5.4.6",
     "graphql": "^16.0.1",
