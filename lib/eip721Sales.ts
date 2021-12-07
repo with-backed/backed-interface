@@ -1,7 +1,3 @@
-import { ethers } from 'ethers';
-import { useEffect, useState } from 'react';
-import { useQuery } from 'urql';
-
 const NFT_EXCHANGES = {
   '0x5206e78b21ce315ce284fb24cf05e0585a93b1d9': 'OpenSea',
   '0xE7dd1252f50B3d845590Da0c5eADd985049a03ce': 'Zora',
