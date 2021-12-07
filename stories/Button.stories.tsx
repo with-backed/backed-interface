@@ -20,6 +20,7 @@ export const InputStyles = () => {
       <Fieldset legend="buttons">
         <FormWrapper>
           <Button>Click here</Button>
+          <Button disabled>Inactive</Button>
           <DialogDisclosureButton>Click here for dialog</DialogDisclosureButton>
           <WalletButton wallet="Metamask" />
         </FormWrapper>

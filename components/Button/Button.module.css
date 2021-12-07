@@ -1,5 +1,5 @@
 .button {
-  background-color: var(--highlight-clickable-10);
+  background: var(--highlight-clickable-5);
   color: var(--highlight-clickable-100);
   border: thin var(--highlight-clickable-100) solid;
   border-radius: var(--border-radius-large);
@@ -8,6 +8,10 @@
   line-height: 1.6;
   cursor: pointer;
   font-size: var(--font-large);
+}
+
+.button:hover {
+  background: var(--highlight-clickable-10);
 }
 
 .button:disabled {
