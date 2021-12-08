@@ -14,6 +14,8 @@ export default async function handler(
     res.status(200).json({
       sales: [
         generateFakeSaleForNFT(contractAddress as string, tokenId as string),
+        generateFakeSaleForNFT(contractAddress as string, tokenId as string),
+        generateFakeSaleForNFT(contractAddress as string, tokenId as string),
       ],
     });
   } catch (e) {
