@@ -6,10 +6,10 @@ import { Metamask } from 'components/Icons/Metamask';
 import { WalletConnect } from 'components/Icons/WalletConnect';
 import { ButtonProps } from './Button';
 
-type SupportedWallet = 'Metamask' | 'Coinbase Wallet' | 'Wallet Connect';
+type SupportedWallet = 'MetaMask' | 'Coinbase Wallet' | 'Wallet Connect';
 
 const icons: { [key in SupportedWallet]: () => JSX.Element } = {
-  Metamask: Metamask,
+  MetaMask: Metamask,
   'Coinbase Wallet': CoinbaseWallet,
   'Wallet Connect': WalletConnect,
 };

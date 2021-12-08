@@ -22,7 +22,7 @@ export const InputStyles = () => {
           <Button>Click here</Button>
           <Button disabled>Inactive</Button>
           <DialogDisclosureButton>Click here for dialog</DialogDisclosureButton>
-          <WalletButton wallet="Metamask" />
+          <WalletButton wallet="MetaMask" />
         </FormWrapper>
       </Fieldset>
     </ThreeColumn>

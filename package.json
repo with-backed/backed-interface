@@ -22,6 +22,8 @@
     "@pinata/ipfs-gateway-tools": "^1.1.6",
     "@web3-react/core": "^6.1.9",
     "@web3-react/injected-connector": "^6.0.7",
+    "@web3-react/walletconnect-connector": "^6.2.8",
+    "@web3-react/walletlink-connector": "^6.2.8",
     "cors": "^2.8.5",
     "ethers": "^5.4.6",
     "graphql": "^16.0.1",
