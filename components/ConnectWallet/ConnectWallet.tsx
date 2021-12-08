@@ -28,14 +28,6 @@ export const ConnectWallet = () => {
   const dialog = useDialogState();
 
   const activateInjectedProvider = useCallback(async () => {
-    if (window.ethereum) {
-      if (process.env.NEXT_PUBLIC_ENV != 'local') {
-        await window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId }],
-        });
-      }
-    }
     const injectedConnector = new InjectedConnector({ supportedChainIds });
     activate(injectedConnector);
   }, [activate]);
