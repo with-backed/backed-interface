@@ -1,9 +1,9 @@
-import { useCallback, useMemo, useState, useEffect, useContext } from 'react';
+import { useCallback, useMemo, useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { jsonRpcLoanFacilitator, web3LoanFacilitator } from 'lib/contracts';
 import { LoanInfo } from 'lib/LoanInfoType';
 import { TransactionButton } from 'components/ticketPage/TransactionButton';
-import { AccountContext } from 'context/account';
+import { useWeb3 } from 'hooks/useWeb3';
 
 interface UnderwriteButtonProps {
   loanInfo: LoanInfo;
@@ -22,7 +22,7 @@ export default function UnderwriteButton({
   duration,
   loanUpdatedCallback,
 }: UnderwriteButtonProps) {
-  const { account } = useContext(AccountContext);
+  const { account } = useWeb3();
   const [has10PercentImprovement, setHas10PercentImprovement] = useState(false);
   const [transactionHash, setTransactionHash] = useState('');
   const [transactionPending, setTransactionPending] = useState(false);
@@ -74,9 +74,11 @@ export default function UnderwriteButton({
   }, [account, loanInfo.loanId, loanUpdatedCallback]);
 
   const isDisabled = useMemo(
-    () => 
+    () =>
       loanAmount.gt(allowance) ||
-      ((!checkHas10PercentImprovement() && !loanInfo.lastAccumulatedTimestamp.eq(0))&& isFilled()),
+      (!checkHas10PercentImprovement() &&
+        !loanInfo.lastAccumulatedTimestamp.eq(0) &&
+        isFilled()),
     [allowance, checkHas10PercentImprovement, isFilled, loanAmount],
   );
 

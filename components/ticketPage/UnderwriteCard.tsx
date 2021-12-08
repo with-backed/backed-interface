@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { useCallback, useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import LoanAmountInput from 'components/ticketPage/underwriteCard/LoanAmountInput';
 import { jsonRpcERC20Contract } from 'lib/contracts';
 import InterestRateInput from 'components/ticketPage/underwriteCard/InterestRateInput';
@@ -9,7 +9,7 @@ import AllowButton from 'components/ticketPage/underwriteCard/AllowButton';
 import { LoanInfo } from 'lib/LoanInfoType';
 import { Fieldset } from 'components/Fieldset';
 import { FormWrapper } from 'components/layouts/FormWrapper';
-import { AccountContext } from 'context/account';
+import { useWeb3 } from 'hooks/useWeb3';
 
 interface UnderwriteCardProps {
   loanInfo: LoanInfo;
@@ -20,7 +20,7 @@ export function UnderwriteCard({
   loanInfo,
   loanUpdatedCallback,
 }: UnderwriteCardProps) {
-  const { account } = useContext(AccountContext);
+  const { account } = useWeb3();
   const [loanAssetBalance, setLoanAssetBalance] = useState('0');
   const [loanAmount, setLoanAmount] = useState(ethers.BigNumber.from(0));
   const [interestRate, setInterestRate] = useState(ethers.BigNumber.from(0));

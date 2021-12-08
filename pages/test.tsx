@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { ethers } from 'ethers';
 import { PawnShopHeader } from 'components/PawnShopHeader';
 import { MockDAI__factory, MockPUNK__factory } from 'abis/types';
@@ -6,12 +6,12 @@ import { TransactionButton } from 'components/ticketPage/TransactionButton';
 import { PageWrapper } from 'components/layouts/PageWrapper';
 import { Fieldset } from 'components/Fieldset';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
-import { AccountContext } from 'context/account';
 import { ConnectWallet } from 'components/ConnectWallet';
 import { headerMessages } from 'pawnshopConstants';
+import { useWeb3 } from 'hooks/useWeb3';
 
 export default function Test() {
-  const { account } = useContext(AccountContext);
+  const { account } = useWeb3();
   return (
     <PageWrapper>
       <PawnShopHeader messages={headerMessages.test} />
@@ -28,7 +28,7 @@ export default function Test() {
 }
 
 function MintPunk() {
-  const { account } = useContext(AccountContext);
+  const { account } = useWeb3();
   const [txHash, setTxHash] = useState('');
   const [txPending, setTxPending] = useState(false);
   const [id, setId] = useState<ethers.BigNumber | null>(null);
@@ -81,7 +81,7 @@ function MintPunk() {
 }
 
 function MintDAI() {
-  const { account } = useContext(AccountContext);
+  const { account } = useWeb3();
   const [txHash, setTxHash] = useState('');
   const [txPending, setTxPending] = useState(false);
   const mockDAIContract = process.env.NEXT_PUBLIC_MOCK_DAI_CONTRACT || '';

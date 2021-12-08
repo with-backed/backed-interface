@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useState } from 'react';
 import InterestRateInput from 'components/createPage/InterestRateInput';
 import LoanAmountInput from 'components/createPage/LoanAmountInput';
 import LoanAssetInput from 'components/createPage/LoanAssetInput';
@@ -7,7 +7,7 @@ import DurationInput from 'components/createPage/DurationInput';
 import { jsonRpcLoanFacilitator, web3LoanFacilitator } from 'lib/contracts';
 import { TransactionButton } from 'components/ticketPage/TransactionButton';
 import { FormWrapper } from 'components/layouts/FormWrapper';
-import { AccountContext } from 'context/account';
+import { useWeb3 } from 'hooks/useWeb3';
 
 export type CreateTicketFormProps = {
   collateralAddress: string;
@@ -28,13 +28,6 @@ export function CreateTicketForm({
   const [loanAmount, setLoanAmount] = useState<ethers.BigNumberish>(0);
   const [interestRate, setInterestRate] = useState(ethers.BigNumber.from(0));
   const [duration, setDuration] = useState(ethers.BigNumber.from(0));
-  const [isApproved, setIsApproved] = useState(true);
-  const [showApproved, setShowApproved] = useState(false);
-
-  const handleApproved = useCallback(() => {
-    setShowApproved(true);
-    setIsApproved(true);
-  }, [setShowApproved, setIsApproved]);
 
   return (
     <FormWrapper>
@@ -80,7 +73,7 @@ function MintTicketButton({
   interestRate,
   duration,
 }: MintTicketButtonProps) {
-  const { account } = useContext(AccountContext);
+  const { account } = useWeb3();
   const [transactionHash, setTransactionHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
 
