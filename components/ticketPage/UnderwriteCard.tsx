@@ -10,6 +10,7 @@ import { LoanInfo } from 'lib/LoanInfoType';
 import { Fieldset } from 'components/Fieldset';
 import { FormWrapper } from 'components/layouts/FormWrapper';
 import { useWeb3 } from 'hooks/useWeb3';
+import { environmentVariables } from 'lib/environmentVariables';
 
 interface UnderwriteCardProps {
   loanInfo: LoanInfo;
@@ -48,7 +49,7 @@ export function UnderwriteCard({
     );
     const allowance = await assetContract.allowance(
       account as string,
-      process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT || '',
+      environmentVariables.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT,
     );
     if (!needsAllowance) {
       setNeedsAllowance(allowanceValue.lt(loanAmount));
