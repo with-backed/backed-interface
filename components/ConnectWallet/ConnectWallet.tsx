@@ -1,20 +1,18 @@
-import React, {
-  memo,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
-import { ethers } from 'ethers';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import { Button } from 'components/Button';
-import { AccountContext } from 'context/account';
 import styles from './ConnectWallet.module.css';
+import { useWeb3 } from 'hooks/useWeb3';
+
+import { InjectedConnector } from '@web3-react/injected-connector';
 
 declare global {
   interface Window {
     ethereum: any;
   }
 }
+
+const chainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || '');
+const supportedChainIds = [chainId];
 
 type ExternalLinkProps = {
   href: string;
@@ -46,45 +44,55 @@ const NoProvider = memo(function NoProvider() {
 });
 
 export const ConnectWallet = () => {
-  const { account, setAccount } = useContext(AccountContext);
   const [providerAvailable, setProviderAvailable] = useState(false);
+  const { account, activate } = useWeb3();
 
-  const getAccount = useCallback(async () => {
-    const accounts = await window.ethereum.request({
-      method: 'eth_requestAccounts',
-    });
-    if (process.env.NEXT_PUBLIC_ENV != 'local') {
-      await window.ethereum.request({
-        method: 'wallet_switchEthereumChain',
-        params: [{ chainId: process.env.NEXT_PUBLIC_CHAIN_ID }],
-      });
+  const activateInjectedProvider = useCallback(async () => {
+    if (window.ethereum) {
+      if (process.env.NEXT_PUBLIC_ENV != 'local') {
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId }],
+        });
+      }
     }
-    let account = ethers.utils.getAddress(accounts[0]);
-    setAccount(account);
-    window.ethereum.on('accountsChanged', (accounts: string[]) => {
-      account = ethers.utils.getAddress(accounts[0]);
-      setAccount(account);
-    });
-  }, [setAccount]);
+    const injectedConnector = new InjectedConnector({ supportedChainIds });
+    activate(injectedConnector);
+  }, [activate]);
 
-  const setup = useCallback(async () => {
-    if (window.ethereum == null) {
-      setProviderAvailable(false);
-      return;
-    }
-    setProviderAvailable(true);
+  useEffect(() => {
+    setProviderAvailable(!!window.ethereum);
   }, []);
 
   useEffect(() => {
-    setup();
-  }, [setup]);
+    if (providerAvailable && !account) {
+      window.ethereum.sendAsync(
+        {
+          method: 'eth_accounts',
+          params: [],
+          jsonrpc: '2.0',
+          id: new Date().getTime(),
+        },
+        (error: any, result: any) => {
+          if (error) {
+            console.error(error);
+          } else {
+            const addressList = result.result;
+            if (addressList && addressList.length > 0) {
+              activateInjectedProvider();
+            }
+          }
+        },
+      );
+    }
+  }, [account, activateInjectedProvider, providerAvailable]);
 
   if (!providerAvailable) {
     return <NoProvider />;
   }
 
   if (!account) {
-    return <Button onClick={getAccount}>Connect Wallet</Button>;
+    return <Button onClick={activateInjectedProvider}>Connect Wallet</Button>;
   }
 
   return <div className={styles.connected}>👤 {account.slice(0, 7)}...</div>;
