@@ -15,8 +15,8 @@ declare global {
   }
 }
 
-const chainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || '');
-const supportedChainIds = [chainId];
+const chainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || '0x4', 16);
+const supportedChainIds = [1, 4];
 
 const visitMetaMask = () => {
   window.open('https://metamask.io', '_blank');
