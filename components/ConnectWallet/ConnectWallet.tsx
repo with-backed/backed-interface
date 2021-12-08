@@ -54,6 +54,12 @@ export const ConnectWallet = () => {
     setProviderAvailable(!!window.ethereum);
   }, []);
 
+  useEffect(() => {
+    if (Boolean(account)) {
+      dialog.setVisible(false);
+    }
+  }, [account]);
+
   return (
     <>
       {!account && (
