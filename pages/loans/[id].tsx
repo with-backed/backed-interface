@@ -6,7 +6,8 @@ import { ethers } from 'ethers';
 import { useMemo } from 'react';
 
 export type LoanPageProps = {
-  loanInfoJson: string;
+  loanInfoJson: string | null;
+  id: string;
 };
 
 export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
@@ -18,17 +19,18 @@ export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
   return {
     props: {
       loanInfoJson,
+      id,
     },
   };
 };
 
-export default function Loans({ loanInfoJson }: LoanPageProps) {
+export default function Loans({ loanInfoJson, id }: LoanPageProps) {
   const loanInfo = useMemo(
-    () => parseLoanInfoJson(loanInfoJson),
+    () => (loanInfoJson ? parseLoanInfoJson(loanInfoJson) : null),
     [loanInfoJson],
   );
 
-  return <Loan serverLoanInfo={loanInfo as LoanInfo} />;
+  return <Loan serverLoanInfo={loanInfo} loanId={id} />;
 }
 
 const parseLoanInfoJson = (loanInfoJson: string): LoanInfo => {

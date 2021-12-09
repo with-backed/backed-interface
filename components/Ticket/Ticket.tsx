@@ -1,6 +1,7 @@
 import React, {
   FunctionComponent,
   useCallback,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -13,15 +14,19 @@ import { headerMessages, LoanStatus } from 'pawnshopConstants';
 import { useTimestamp } from 'hooks/useTimestamp';
 
 type LoanProps = {
-  serverLoanInfo: LoanInfo;
+  serverLoanInfo: LoanInfo | null;
+  loanId: string;
 };
 
-export const Loan: FunctionComponent<LoanProps> = ({ serverLoanInfo }) => {
-  const [loanInfo, setLoanInfo] = useState<LoanInfo>(serverLoanInfo);
+export const Loan: FunctionComponent<LoanProps> = ({
+  serverLoanInfo,
+  loanId,
+}) => {
+  const [loanInfo, setLoanInfo] = useState<LoanInfo | null>(serverLoanInfo);
   const timestamp = useTimestamp();
 
   const loanStatus: LoanStatus = useMemo(() => {
-    if (!timestamp) {
+    if (!timestamp || !loanInfo) {
       return 'indeterminate';
     }
 
@@ -34,18 +39,31 @@ export const Loan: FunctionComponent<LoanProps> = ({ serverLoanInfo }) => {
     }
 
     return 'active';
-  }, [loanInfo.durationSeconds, loanInfo.lastAccumulatedTimestamp, timestamp]);
+  }, [loanInfo, timestamp]);
 
   const messages = useMemo(
-    () => headerMessages.ticket(loanInfo, loanStatus),
+    () => (loanInfo ? headerMessages.ticket(loanInfo, loanStatus) : []),
     [loanInfo, loanStatus],
   );
 
   const fetchData = useCallback(() => {
-    getLoanInfo(loanInfo.loanId.toString()).then((loanInfo) =>
-      setLoanInfo(loanInfo),
+    getLoanInfo(loanId).then((loanInfo) => setLoanInfo(loanInfo));
+  }, [loanId]);
+
+  useEffect(() => {
+    if (!serverLoanInfo) {
+      fetchData();
+    }
+  }, [serverLoanInfo, fetchData]);
+
+  if (!loanInfo) {
+    return (
+      <PageWrapper>
+        <PawnShopHeader messages={messages} />
+        <h1>Loading...</h1>
+      </PageWrapper>
     );
-  }, [loanInfo.loanId]);
+  }
 
   return (
     <PageWrapper>
