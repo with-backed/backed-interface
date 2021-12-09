@@ -58,6 +58,12 @@ function Video({
   autoPlay: boolean;
   onError: () => void;
 }) {
+  const handleClick: React.MouseEventHandler<HTMLVideoElement> = useCallback(
+    (e) => {
+      e.preventDefault();
+    },
+    [],
+  );
   return (
     <video
       className={styles['media-content']}
@@ -66,19 +72,27 @@ function Video({
       controls={!autoPlay}
       loop
       playsInline
-      onError={onError}>
+      onError={onError}
+      onClick={handleClick}>
       <source src={media} />
     </video>
   );
 }
 
 function Audio({ media, onError }: { media: string; onError: () => void }) {
+  const handleClick: React.MouseEventHandler<HTMLAudioElement> = useCallback(
+    (e) => {
+      e.preventDefault();
+    },
+    [],
+  );
   return (
     <audio
       className={styles['media-content']}
       controls
       src={media}
       onError={onError}
+      onClick={handleClick}
     />
   );
 }
