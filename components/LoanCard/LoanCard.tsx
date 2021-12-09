@@ -127,12 +127,16 @@ export function LoanCardLoaded({
  */
 export function LoanCardLoading() {
   return (
-    <div className={styles.card}>
-      <Fallback />
-      <span>loading name</span>
-      <Attributes>
-        <span>loading attributes</span>
-      </Attributes>
+    // This wrapping div simulates the presence of the <a> element in the
+    // loaded one. Safari renders weirdly without it.
+    <div>
+      <div className={styles.card}>
+        <Fallback />
+        <span>loading name</span>
+        <Attributes>
+          <span>loading attributes</span>
+        </Attributes>
+      </div>
     </div>
   );
 }
