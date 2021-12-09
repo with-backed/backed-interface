@@ -26,5 +26,19 @@ export const LoanCards = () => (
         } as GetNFTInfoResponse
       }
     />
+    <LoanCardLoaded
+      id="18"
+      title="View loan #18"
+      formattedLoanAmount="930000000000.0 SHIB"
+      perSecondInterestRate="9"
+      metadata={
+        {
+          name: 'Monarch #7',
+          mediaMimeType: 'video/mp4',
+          mediaUrl:
+            'https://gateway.pinata.cloud/ipfs/QmPtmDDobXCjEACE4ftjprJn995pP2iiwHwtXwxbgX8W8z',
+        } as GetNFTInfoResponse
+      }
+    />
   </FiveColumn>
 );
