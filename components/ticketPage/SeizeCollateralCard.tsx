@@ -3,8 +3,8 @@ import { useState } from 'react';
 import { LoanInfo } from 'lib/LoanInfoType';
 import { web3LoanFacilitator, jsonRpcLoanFacilitator } from 'lib/contracts';
 import { Fieldset } from 'components/Fieldset';
-import { Button } from 'components/Button';
 import { useWeb3 } from 'hooks/useWeb3';
+import { TransactionButton } from 'components/ticketPage/TransactionButton';
 
 interface SeizeCollateralCardProps {
   loanInfo: LoanInfo;
@@ -27,7 +27,7 @@ export default function SeizeCollateralCard({
   const [txHash, setTxHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
 
-  const repay = async () => {
+  const seize = async () => {
     setTxHash('');
     setWaitingForTx(false);
 
@@ -64,10 +64,14 @@ export default function SeizeCollateralCard({
       <p>
         The loan duration is complete. The total interest and principal owed is{' '}
         {totalOwed}, and 0 {loanInfo.loanAssetSymbol} has been repaid. You are
-        able to seize the collateral NFT, closing the loan, or wait for
-        repayment.
+        able to seize the collateral NFT, closing the loan, or wait for seizure.
       </p>
-      <Button onClick={repay}>seize collateral</Button>
+      <TransactionButton
+        text="seize collateral"
+        onClick={seize}
+        txHash={txHash}
+        isPending={waitingForTx}
+      />
     </Fieldset>
   );
 }
