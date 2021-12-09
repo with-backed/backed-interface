@@ -58,7 +58,7 @@ export const ConnectWallet = () => {
     if (Boolean(account)) {
       dialog.setVisible(false);
     }
-  }, [account]);
+  }, [account, dialog]);
 
   return (
     <>
