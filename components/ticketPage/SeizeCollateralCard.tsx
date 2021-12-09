@@ -64,7 +64,8 @@ export default function SeizeCollateralCard({
       <p>
         The loan duration is complete. The total interest and principal owed is{' '}
         {totalOwed}, and 0 {loanInfo.loanAssetSymbol} has been repaid. You are
-        able to seize the collateral NFT, closing the loan, or wait for seizure.
+        able to seize the collateral NFT, closing the loan, or wait for
+        repayment.
       </p>
       <TransactionButton
         text="seize collateral"
