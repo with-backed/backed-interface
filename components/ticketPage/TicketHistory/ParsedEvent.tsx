@@ -13,21 +13,36 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import {
+  BuyoutUnderwriterEvent,
+  CloseEvent,
+  CreateLoanEvent,
+  OwnershipTransferredEvent,
+  RepayEvent,
+  SeizeCollateralEvent,
+  UnderwriteLoanEvent,
+} from 'abis/types/NFTLoanFacilitator';
 import styles from './TicketHistory.module.css';
 
 const eventDetailComponents: { [key: string]: (...props: any) => JSX.Element } =
   {
-    CreateLoan: CreateLoanEvent,
-    UnderwriteLoan: UnderwriteLoanEvent,
-    BuyoutUnderwriter: BuyoutUnderwriterEvent,
-    Repay: RepayLoanEvent,
+    BuyoutUnderwriter,
+    Close,
+    CreateLoan,
+    OwnershipTransferred,
+    Repay,
+    SeizeCollateral,
+    UnderwriteLoan,
   };
 
-type ParsedEventProps = {
-  event: ethers.Event;
+type ParsedEventProps<T> = {
+  event: T;
   loanInfo: LoanInfo;
 };
-export function ParsedEvent({ event, loanInfo }: ParsedEventProps) {
+export function ParsedEvent({
+  event,
+  loanInfo,
+}: ParsedEventProps<ethers.Event>) {
   const component =
     // keeping typescript happy and having some measure of runtime safety
     eventDetailComponents[event.event || '__INTERNAL_DID_NOT_RECEIVE_EVENT'];
@@ -49,7 +64,7 @@ function camelToSentenceCase(text: string) {
   return result.charAt(0).toUpperCase() + result.slice(1);
 }
 
-function EventHeader({ event }: Pick<ParsedEventProps, 'event'>) {
+function EventHeader({ event }: Pick<ParsedEventProps<ethers.Event>, 'event'>) {
   const [timestamp, setTimestamp] = useState<string | null>(null);
 
   const getTimestamp = useCallback(async () => {
@@ -69,11 +84,9 @@ function EventHeader({ event }: Pick<ParsedEventProps, 'event'>) {
   );
 }
 
-const EventDetailList: FunctionComponent<Pick<ParsedEventProps, 'event'>> = ({
-  children,
-  event,
-  ...props
-}) => {
+const EventDetailList: FunctionComponent<
+  Pick<ParsedEventProps<ethers.Event>, 'event'>
+> = ({ children, event, ...props }) => {
   return (
     <li>
       <section>
@@ -86,12 +99,12 @@ const EventDetailList: FunctionComponent<Pick<ParsedEventProps, 'event'>> = ({
   );
 };
 
-function CreateLoanEvent({
+function CreateLoan({
   event,
   loanInfo: { loanAssetDecimals, loanAssetSymbol },
-}: ParsedEventProps) {
+}: ParsedEventProps<CreateLoanEvent>) {
   const { maxInterestRate, minDurationSeconds, minLoanAmount, minter } =
-    event.args as any;
+    event.args;
 
   const minterLink = useMemo(
     () => (
@@ -113,7 +126,7 @@ function CreateLoanEvent({
   );
 
   const minDuration = useMemo(
-    () => secondsToDays(minDurationSeconds),
+    () => secondsToDays(minDurationSeconds.toNumber()),
     [minDurationSeconds],
   );
 
@@ -129,12 +142,11 @@ function CreateLoanEvent({
   );
 }
 
-function UnderwriteLoanEvent({
+function UnderwriteLoan({
   event,
   loanInfo: { loanAssetDecimals, loanAssetSymbol },
-}: ParsedEventProps) {
-  const { durationSeconds, interestRate, loanAmount, underwriter } =
-    event.args as any;
+}: ParsedEventProps<UnderwriteLoanEvent>) {
+  const { durationSeconds, interestRate, loanAmount, underwriter } = event.args;
 
   const underwriterLink = useMemo(
     () => (
@@ -154,7 +166,7 @@ function UnderwriteLoanEvent({
     [loanAmount, loanAssetDecimals],
   );
   const formattedDuration = useMemo(
-    () => secondsToDays(durationSeconds),
+    () => secondsToDays(durationSeconds.toNumber()),
     [durationSeconds],
   );
 
@@ -170,12 +182,12 @@ function UnderwriteLoanEvent({
   );
 }
 
-function BuyoutUnderwriterEvent({
+function BuyoutUnderwriter({
   event,
   loanInfo: { loanAssetDecimals, loanAssetSymbol },
-}: ParsedEventProps) {
+}: ParsedEventProps<BuyoutUnderwriterEvent>) {
   const { interestEarned, replacedAmount, replacedLoanOwner, underwriter } =
-    event.args as any;
+    event.args;
 
   const newLenderLink = useMemo(
     () => (
@@ -221,10 +233,10 @@ function BuyoutUnderwriterEvent({
   );
 }
 
-function RepayLoanEvent({
+function Repay({
   event,
   loanInfo: { loanAssetDecimals, loanAssetSymbol },
-}: ParsedEventProps) {
+}: ParsedEventProps<RepayEvent>) {
   const { interestEarned, loanAmount, loanOwner, repayer } = event.args as any;
 
   const repayerLink = useMemo(
@@ -265,6 +277,45 @@ function RepayLoanEvent({
       <li>
         loan amount: {formattedLoanAmount} {loanAssetSymbol}
       </li>
+    </EventDetailList>
+  );
+}
+
+function SeizeCollateral({ event }: ParsedEventProps<SeizeCollateralEvent>) {
+  return <EventDetailList event={event} />;
+}
+
+function Close({ event }: ParsedEventProps<CloseEvent>) {
+  return <EventDetailList event={event} />;
+}
+
+function OwnershipTransferred({
+  event,
+}: ParsedEventProps<OwnershipTransferredEvent>) {
+  const { newOwner, previousOwner } = event.args;
+
+  const newOwnerLink = useMemo(
+    () => (
+      <EtherscanAddressLink address={newOwner} title={newOwner}>
+        {newOwner.slice(0, 10)}...
+      </EtherscanAddressLink>
+    ),
+    [newOwner],
+  );
+
+  const previousOwnerLink = useMemo(
+    () => (
+      <EtherscanAddressLink address={previousOwner} title={previousOwner}>
+        {previousOwner.slice(0, 10)}...
+      </EtherscanAddressLink>
+    ),
+    [previousOwner],
+  );
+
+  return (
+    <EventDetailList event={event}>
+      <li>new owner: {newOwnerLink}</li>
+      <li>previous owner: {previousOwnerLink}</li>
     </EventDetailList>
   );
 }
