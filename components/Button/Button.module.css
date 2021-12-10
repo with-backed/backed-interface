@@ -45,6 +45,8 @@
 }
 
 .button-grid-wrapper > svg {
+  height: 49px;
+  width: 49px;
   max-height: 49px;
   max-width: 49px;
 }
