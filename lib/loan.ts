@@ -80,7 +80,13 @@ export async function getLoanInfoGraphQL(id: string): Promise<LoanInfo | null> {
   const loanInfoFromGraphQL = await queryLoanInfoGraphQL(id);
 
   // The Graph has indexed this loan. Fetch the interest owed and send it on its way.
-  if (loanInfoFromGraphQL) {
+  if (
+    loanInfoFromGraphQL &&
+    // If this is zero, events got indexed out of order and we don't have the full loan object yet.
+    !ethers.BigNumber.from(
+      loanInfoFromGraphQL.loanAssetContractAddress,
+    ).isZero()
+  ) {
     const loanFacilitator = jsonRpcLoanFacilitator();
     const interestOwed = await loanFacilitator.interestOwed(id);
     return { ...loanInfoFromGraphQL, interestOwed };
