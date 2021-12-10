@@ -1,14 +1,12 @@
 import { GetServerSideProps } from 'next';
 import { Loan } from 'components/Ticket';
 import { LoanInfo } from 'lib/LoanInfoType';
-
 import { ethers } from 'ethers';
 import { useMemo } from 'react';
 import { getLoanInfoGraphQL } from 'lib/loan';
 
 export type LoanPageProps = {
   loanInfoJson: string;
-  id: string;
 };
 
 export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
@@ -28,18 +26,17 @@ export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
   return {
     props: {
       loanInfoJson,
-      id,
     },
   };
 };
 
-export default function Loans({ loanInfoJson, id }: LoanPageProps) {
+export default function Loans({ loanInfoJson }: LoanPageProps) {
   const loanInfo = useMemo(
     () => parseLoanInfoJson(loanInfoJson),
     [loanInfoJson],
   );
 
-  return <Loan serverLoanInfo={loanInfo} loanId={id} />;
+  return <Loan serverLoanInfo={loanInfo} />;
 }
 
 const parseLoanInfoJson = (loanInfoJson: string): LoanInfo => {

@@ -14,19 +14,15 @@ import { headerMessages, LoanStatus } from 'pawnshopConstants';
 import { useTimestamp } from 'hooks/useTimestamp';
 
 type LoanProps = {
-  serverLoanInfo: LoanInfo | null;
-  loanId: string;
+  serverLoanInfo: LoanInfo;
 };
 
-export const Loan: FunctionComponent<LoanProps> = ({
-  serverLoanInfo,
-  loanId,
-}) => {
-  const [loanInfo, setLoanInfo] = useState<LoanInfo | null>(serverLoanInfo);
+export const Loan: FunctionComponent<LoanProps> = ({ serverLoanInfo }) => {
+  const [loanInfo, setLoanInfo] = useState<LoanInfo>(serverLoanInfo);
   const timestamp = useTimestamp();
 
   const loanStatus: LoanStatus = useMemo(() => {
-    if (!timestamp || !loanInfo) {
+    if (!timestamp) {
       return 'indeterminate';
     }
 
@@ -47,8 +43,10 @@ export const Loan: FunctionComponent<LoanProps> = ({
   );
 
   const fetchData = useCallback(() => {
-    getLoanInfo(loanId).then((loanInfo) => setLoanInfo(loanInfo));
-  }, [loanId]);
+    getLoanInfo(loanInfo.loanId.toString()).then((loanInfo) =>
+      setLoanInfo(loanInfo),
+    );
+  }, [loanInfo.loanId]);
 
   useEffect(() => {
     if (!serverLoanInfo) {
