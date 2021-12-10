@@ -5,6 +5,97 @@ import {
   jsonRpcLoanFacilitator,
 } from './contracts';
 import { LoanInfo } from './LoanInfoType';
+import { nftBackedLoansClient } from './urql';
+
+const loanInfoQuery = `
+query ($id: ID!) {
+  loan(id: $id) {
+    loanAssetContractAddress
+    collateralContractAddress
+    collateralTokenId
+    perSecondInterestRate
+    accumulatedInterest
+    lastAccumulatedTimestamp
+    durationSeconds
+    loanAmount
+    closed
+    loanAssetDecimal
+    loanAssetSymbol
+    lendTicketHolder
+    borrowTicketHolder
+  }
+}
+`;
+
+/**
+ * The Graph doesn't contain `interestOwed`, so we will have to fetch that separately.
+ */
+async function queryLoanInfoGraphQL(
+  id: string,
+): Promise<Omit<LoanInfo, 'interestOwed'> | null> {
+  const {
+    data: { loan },
+  } = await nftBackedLoansClient.query(loanInfoQuery, { id }).toPromise();
+
+  if (!loan) {
+    // The Graph hasn't indexed this loan, but it may exist.
+    return null;
+  }
+
+  const {
+    loanAssetContractAddress,
+    collateralContractAddress,
+    collateralTokenId,
+    perSecondInterestRate,
+    accumulatedInterest,
+    lastAccumulatedTimestamp,
+    durationSeconds,
+    loanAmount,
+    closed,
+    loanAssetDecimal,
+    loanAssetSymbol,
+    lendTicketHolder,
+    borrowTicketHolder,
+  } = loan;
+
+  return {
+    loanId: ethers.BigNumber.from(id),
+    loanAssetContractAddress,
+    collateralContractAddress,
+    collateralTokenId: ethers.BigNumber.from(collateralTokenId),
+    perSecondInterestRate: ethers.BigNumber.from(perSecondInterestRate),
+    accumulatedInterest: ethers.BigNumber.from(accumulatedInterest),
+    lastAccumulatedTimestamp: ethers.BigNumber.from(lastAccumulatedTimestamp),
+    durationSeconds: ethers.BigNumber.from(durationSeconds),
+    loanAmount: ethers.BigNumber.from(loanAmount),
+    closed,
+    loanAssetDecimals: loanAssetDecimal,
+    loanAssetSymbol,
+    lender: lendTicketHolder,
+    borrower: borrowTicketHolder,
+  };
+}
+
+export async function getLoanInfoGraphQL(id: string): Promise<LoanInfo | null> {
+  const loanInfoFromGraphQL = await queryLoanInfoGraphQL(id);
+
+  // The Graph has indexed this loan. Fetch the interest owed and send it on its way.
+  if (loanInfoFromGraphQL) {
+    const loanFacilitator = jsonRpcLoanFacilitator();
+    const interestOwed = await loanFacilitator.interestOwed(id);
+    return { ...loanInfoFromGraphQL, interestOwed };
+  }
+
+  // The Graph has not indexed this loan, but it may exist.
+  try {
+    const loanInfo = await getLoanInfo(id);
+    // shipit
+    return loanInfo;
+  } catch (e) {
+    // error, loan must not exist
+    return null;
+  }
+}
 
 export async function getLoanInfo(id: string): Promise<LoanInfo> {
   const loanId = ethers.BigNumber.from(id);
