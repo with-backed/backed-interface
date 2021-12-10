@@ -35,10 +35,10 @@ export const Loan: FunctionComponent<LoanProps> = ({ serverLoanInfo }) => {
     }
 
     return 'active';
-  }, [loanInfo, timestamp]);
+  }, [loanInfo.durationSeconds, loanInfo.lastAccumulatedTimestamp, timestamp]);
 
   const messages = useMemo(
-    () => (loanInfo ? headerMessages.ticket(loanInfo, loanStatus) : []),
+    () => headerMessages.ticket(loanInfo, loanStatus),
     [loanInfo, loanStatus],
   );
 
@@ -47,21 +47,6 @@ export const Loan: FunctionComponent<LoanProps> = ({ serverLoanInfo }) => {
       setLoanInfo(loanInfo),
     );
   }, [loanInfo.loanId]);
-
-  useEffect(() => {
-    if (!serverLoanInfo) {
-      fetchData();
-    }
-  }, [serverLoanInfo, fetchData]);
-
-  if (!loanInfo) {
-    return (
-      <PageWrapper>
-        <PawnShopHeader messages={messages} />
-        <h1>Loading...</h1>
-      </PageWrapper>
-    );
-  }
 
   return (
     <PageWrapper>
