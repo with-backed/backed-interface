@@ -52,7 +52,7 @@
 
 html,
 body {
-  font-family: var(--sans);
+  font-family: var(--mono);
   line-height: var(--line-height);
   font-size: 14px;
   font-weight: var(--weight-regular);

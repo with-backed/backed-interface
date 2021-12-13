@@ -1,7 +1,6 @@
 .wrapper {
   display: flex;
   align-items: baseline;
-  font-family: var(--serif);
   gap: 0.5rem;
 }
 
