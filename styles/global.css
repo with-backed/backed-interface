@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
 :root {
   /* colors */
   --foreground-text-100: #111111;
@@ -35,7 +34,8 @@
 
   /* font styles */
   --serif: 'Times New Roman', Times, serif;
-  --sans: Inter, Helvetica, sans-serif;
+  --sans: 'GT Maru Regular', Helvetica, sans-serif;
+  --mono: 'GT Maru Mono', monospace;
   --weight-light: 300;
   --weight-regular: 400;
   --weight-semibold: 600;
