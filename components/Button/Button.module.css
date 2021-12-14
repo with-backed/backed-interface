@@ -27,8 +27,8 @@
 }
 
 .tertiary {
-  background: var(--background-light);
-  color: var(--foreground-text-100);
+  background: var(--neutral-5);
+  color: var(--neutral-100);
 }
 
 .tertiary:hover {
@@ -44,8 +44,8 @@
 }
 
 .button:disabled {
-  color: var(--foreground-text-50);
-  background: var(--background-light);
+  color: var(--neutral-50);
+  background: var(--neutral-5);
   cursor: not-allowed;
 }
 

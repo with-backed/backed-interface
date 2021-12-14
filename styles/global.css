@@ -1,8 +1,5 @@
 :root {
   /* colors */
-  --foreground-text-100: #111111;
-  --foreground-text-50: #ab9b96;
-  --foreground-text-10: #e6ded6;
   --highlight-clickable-100: #0000ee;
   --highlight-clickable-10: #e8e5f1;
   --highlight-clickable-5: #f0f0fe;
@@ -13,7 +10,11 @@
   --highlight-active-10: #fffed1;
   --highlight-alert-100: #ff4545;
   --highlight-alert-10: #ffd1d1;
+  --neutral-100: #111111;
+  --neutral-50: #ab9b96;
+  --neutral-20: #e6ded6;
   --neutral-10: #f4f0ec;
+  --neutral-5: #f9f7f5;
 
   /* layout */
   --max-width: 1400px;
@@ -27,7 +28,6 @@
   /* backgrounds */
   --background-radial-gradient: radial-gradient(#ffffff, #f6f2f0);
   --background-fieldset: rgba(255, 255, 255, 0.8);
-  --background-light: #f9f7f5;
   --background-white: #ffffff;
 
   /* border styles */

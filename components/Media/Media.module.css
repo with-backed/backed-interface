@@ -10,7 +10,7 @@
   align-items: center;
   justify-content: center;
   font-size: min(5vw, calc(var(--max-width) / 20));
-  background: var(--background-light);
+  background: var(--neutral-5);
 }
 
 .fallback > span {
