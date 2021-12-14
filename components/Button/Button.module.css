@@ -52,7 +52,7 @@
 .wallet-button {
   width: 100%;
   height: 78px;
-  border:  none;
+  border: none;
   border-radius: var(--border-radius-large);
   padding: 0.6rem 2rem;
   background: var(--background-white);
@@ -61,35 +61,38 @@
 
 .metamask {
   background: linear-gradient(
-    100.9deg, 
-    rgba(255, 245, 221, 0.5) 19.2%, 
-    rgba(255, 225, 198, 0.5) 82.99%);
+    100.9deg,
+    rgba(255, 245, 221, 0.5) 19.2%,
+    rgba(255, 225, 198, 0.5) 82.99%
+  );
 }
 
 .metamask:hover {
-  background: linear-gradient(100.9deg, #FFF5DD 19.2%, #FFE1C6 82.99%);
+  background: linear-gradient(100.9deg, #fff5dd 19.2%, #ffe1c6 82.99%);
 }
 
 .coinbase-wallet {
   background: linear-gradient(
-    100.9deg, 
-    rgba(213, 215, 255, 0.5) 19.2%, 
-    rgba(219, 198, 255, 0.5) 82.99%);
+    100.9deg,
+    rgba(213, 215, 255, 0.5) 19.2%,
+    rgba(219, 198, 255, 0.5) 82.99%
+  );
 }
 
 .coinbase-wallet:hover {
-  background: linear-gradient(100.9deg, #D5D7FF 19.2%, #DBC6FF 82.99%);
+  background: linear-gradient(100.9deg, #d5d7ff 19.2%, #dbc6ff 82.99%);
 }
 
 .wallet-connect {
   background: linear-gradient(
-    100.9deg, 
-    rgba(221, 255, 231, 0.5) 19.2%, 
-    rgba(198, 231, 255, 0.5) 82.99%);
+    100.9deg,
+    rgba(221, 255, 231, 0.5) 19.2%,
+    rgba(198, 231, 255, 0.5) 82.99%
+  );
 }
 
 .wallet-connect:hover {
-  background: linear-gradient(100.9deg, #DDFFE7 19.2%, #C6E7FF 82.99%);
+  background: linear-gradient(100.9deg, #ddffe7 19.2%, #c6e7ff 82.99%);
 }
 
 .button-grid-wrapper {
