@@ -2,7 +2,7 @@
   border: none;
   background: var(--background-fieldset);
   border-radius: var(--border-radius-small);
-  border: thin var(--foreground-text-100) solid;
+  border: thin var(--neutral-100) solid;
   width: 100%;
   padding: var(--padding-container);
 }

@@ -16,7 +16,7 @@
   background: linear-gradient(
     180deg,
     rgba(0, 0, 0, 0) calc(50% - 1px),
-    var(--foreground-text-100) calc(50%),
+    var(--neutral-100) calc(50%),
     rgba(0, 0, 0, 0) calc(50% + 1px)
   );
 }
@@ -35,7 +35,7 @@
 }
 
 .wrapper > * {
-  background: var(--background-light);
+  background: var(--neutral-5);
   margin: 0 2rem;
   padding: 0 0.25rem;
   font-size: var(--font-large);

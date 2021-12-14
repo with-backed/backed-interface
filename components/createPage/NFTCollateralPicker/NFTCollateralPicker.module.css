@@ -12,7 +12,7 @@
 .selectButton {
   width: 99%;
   text-align: center;
-  border-bottom: 1px solid var(--foreground-text-100);
+  border-bottom: 1px solid var(--neutral-100);
   padding-bottom: 20px;
 }
 
@@ -21,7 +21,7 @@
   padding: var(--padding-container) 0;
   line-height: var(--line-height);
   cursor: pointer;
-  border-top: thin var(--foreground-text-100) solid;
+  border-top: thin var(--neutral-100) solid;
 }
 
 .collectionRowWrapper:last-child .nftCollectionRow {

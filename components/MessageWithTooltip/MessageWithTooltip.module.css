@@ -8,7 +8,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: thin var(--foreground-text-100) solid;
+  border: thin var(--neutral) solid;
   background-color: var(--background-white);
   font-weight: bold;
   border-radius: 1rem;
@@ -18,7 +18,7 @@
 }
 
 .tooltip {
-  border: thin var(--foreground-text-100) solid;
+  border: thin var(--neutral) solid;
   background-color: var(--background-white);
   padding: 1rem;
   border-radius: var(--border-radius-small);
