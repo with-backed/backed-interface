@@ -14,13 +14,21 @@ const icons: { [key in SupportedWallet]: () => JSX.Element } = {
   'Wallet Connect': WalletConnect,
 };
 
+const classNames: { [key in SupportedWallet]: string } = {
+  MetaMask: 'metamask',
+  'Coinbase Wallet': 'coinbase-wallet',
+  'Wallet Connect': 'wallet-connect',
+};
+
 interface WalletButtonProps extends ButtonProps {
   wallet: SupportedWallet;
 }
 export function WalletButton({ wallet, onClick }: WalletButtonProps) {
   const Icon = icons[wallet];
+  const walletClass = classNames[wallet];
+  const className = [styles['wallet-button'], styles[walletClass]].join(' ');
   return (
-    <button className={styles['wallet-button']} onClick={onClick}>
+    <button className={className} onClick={onClick}>
       <div className={styles['button-grid-wrapper']}>
         <Icon />
         <p>{wallet}</p>
