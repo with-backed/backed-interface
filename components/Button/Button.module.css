@@ -1,7 +1,5 @@
 .button {
-  background: var(--highlight-clickable-5);
-  color: var(--highlight-clickable-100);
-  border: thin var(--highlight-clickable-100) solid;
+  border: none;
   border-radius: var(--border-radius-large);
   padding: var(--padding-button);
   width: 100%;
@@ -10,30 +8,88 @@
   font-size: var(--font-large);
 }
 
-.button:hover {
+.primary {
+  background: var(--highlight-clickable-5);
+  color: var(--highlight-clickable-100);
+}
+
+.primary:hover {
   background: var(--highlight-clickable-10);
+}
+
+.secondary {
+  background: var(--highlight-visited-5);
+  color: var(--highlight-visited-100);
+}
+
+.secondary:hover {
+  background: var(--highlight-visited-10);
+}
+
+.tertiary {
+  background: var(--background-light);
+  color: var(--foreground-text-100);
+}
+
+.tertiary:hover {
+  background: var(--neutral-10);
+}
+
+.highlight {
+  background: var(--highlight-active-10);
+}
+
+.highlight:hover {
+  background: var(--highlight-active-20);
 }
 
 .button:disabled {
   color: var(--foreground-text-50);
-  background: var(--background-white);
-  border: thin var(--foreground-text-10) solid;
+  background: var(--background-light);
   cursor: not-allowed;
 }
 
 .wallet-button {
   width: 100%;
   height: 78px;
-  border: thin var(--foreground-text-100) solid;
+  border:  none;
   border-radius: var(--border-radius-large);
   padding: 0.6rem 2rem;
   background: var(--background-white);
   cursor: pointer;
 }
 
-.wallet-button:hover {
-  background: var(--highlight-clickable-10);
-  border: thin var(--highlight-clickable-100) solid;
+.metamask {
+  background: linear-gradient(
+    100.9deg, 
+    rgba(255, 245, 221, 0.5) 19.2%, 
+    rgba(255, 225, 198, 0.5) 82.99%);
+}
+
+.metamask:hover {
+  background: linear-gradient(100.9deg, #FFF5DD 19.2%, #FFE1C6 82.99%);
+}
+
+.coinbase-wallet {
+  background: linear-gradient(
+    100.9deg, 
+    rgba(213, 215, 255, 0.5) 19.2%, 
+    rgba(219, 198, 255, 0.5) 82.99%);
+}
+
+.coinbase-wallet:hover {
+  background: linear-gradient(100.9deg, #D5D7FF 19.2%, #DBC6FF 82.99%);
+}
+
+.wallet-connect {
+  background: linear-gradient(
+    100.9deg, 
+    rgba(221, 255, 231, 0.5) 19.2%, 
+    rgba(198, 231, 255, 0.5) 82.99%);
+}
+
+.wallet-connect:hover {
+  background: linear-gradient(100.9deg, #DDFFE7 19.2%, #C6E7FF 82.99%);
 }
 
 .button-grid-wrapper {
@@ -49,4 +105,37 @@
   width: 49px;
   max-height: 49px;
   max-width: 49px;
+}
+
+.button-completed {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--padding-button);
+  width: 100%;
+  line-height: 1.6;
+  font-size: var(--font-large);
+  border-radius: var(--border-radius-large);
+  position: relative;
+}
+
+.button-completed-message {
+  font-size: var(--font-medium);
+}
+
+.button-completed-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 1rem;
+  position: absolute;
+  z-index: 50;
+  top: 1rem;
+  left: 1rem;
+  cursor: default;
+  user-select: none;
 }
