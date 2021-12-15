@@ -31,16 +31,14 @@ export const InputStyles = () => {
           <DialogDisclosureButton>Click here for dialog</DialogDisclosureButton>
           <CompletedButton
             buttonText="Authorize NFT"
-            kind="primary"
             message={
               <span>
-                Complete! <a href="https://google.com">View transaction</a>
+                Pending... <a href="https://google.com">View transaction</a>
               </span>
             }
           />
           <CompletedButton
             buttonText="Authorize NFT"
-            kind="secondary"
             success
             message={
               <span>

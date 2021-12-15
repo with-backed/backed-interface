@@ -1,21 +1,19 @@
 import React from 'react';
-import { ButtonKind } from './Button';
+import { Checkmark } from 'components/Icons/Checkmark';
 import styles from './Button.module.css';
 
 interface CompletedButtonProps {
   buttonText: React.ReactNode;
-  kind?: ButtonKind;
   message?: React.ReactNode;
   success?: boolean;
 }
 
 export function CompletedButton({
   buttonText,
-  kind = 'primary',
   message,
   success = false,
 }: CompletedButtonProps) {
-  const className = [styles['button-completed'], styles[kind]].join(' ');
+  const className = [styles['button-completed'], styles.secondary].join(' ');
   return (
     <div className={className}>
       {buttonText}
@@ -24,7 +22,7 @@ export function CompletedButton({
       )}
       {success && (
         <div aria-hidden className={styles['button-completed-icon']}>
-          ✓
+          <Checkmark />
         </div>
       )}
     </div>
