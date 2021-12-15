@@ -9,10 +9,12 @@ import { parseSubgraphLoan } from './utils';
 
 const query = `
 query ($address: Bytes!) {
-  loans(or: [
-      { borrowTicketHolder: $address},
-      { lendTicketHolder: $address}
-  ]) {
+  loans(or: 
+        [
+            { borrowTicketHolder: $address},
+            { lendTicketHolder: $address}
+        ], orderBy: endDateTimestamp, order: desc
+        ) {
     ${ALL_LOAN_PROPERTIES}
   }
 }

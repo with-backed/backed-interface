@@ -13,6 +13,7 @@ export const ALL_LOAN_PROPERTIES = `
     loanAssetSymbol
     lendTicketHolder
     borrowTicketHolder
+    endDateTimestamp
 `;
 
 export type SubgraphLoanEntity = {
@@ -30,4 +31,5 @@ export type SubgraphLoanEntity = {
   loanAssetSymbol: string;
   lendTicketHolder: string;
   borrowTicketHolder: string;
+  endDateTimestamp: number;
 };
