@@ -1,10 +1,11 @@
 :root {
   /* colors */
   --highlight-clickable-100: #0000ee;
+  --highlight-clickable-20: #d6d6ff;
   --highlight-clickable-10: #e8e5f1;
   --highlight-clickable-5: #f0f0fe;
   --highlight-visited-100: #75187c;
-  --highlight-visited-10: #eadde5;
+  --highlight-visited-10: #eadbeb;
   --highlight-visited-5: #f7f1f7;
   --highlight-active-20: #fffda2;
   --highlight-active-10: #fffed1;
