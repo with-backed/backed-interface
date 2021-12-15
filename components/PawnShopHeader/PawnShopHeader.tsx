@@ -2,20 +2,23 @@ import React, { FunctionComponent } from 'react';
 import Link from 'next/link';
 import { ConnectWallet } from 'components/ConnectWallet';
 import styles from './PawnShopHeader.module.css';
-import { Marquee } from 'components/Marquee';
+import { ButtonLink } from 'components/Button';
+import { useRouter } from 'next/router';
 
-type PawnShopHeaderProps = {
-  messages: React.ReactNode[];
-};
+type PawnShopHeaderProps = {};
 
-export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
-  messages,
-}) => {
+const CREATE_PATH = '/loans/create';
+
+export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = () => {
+  const { pathname } = useRouter();
+  const kind = pathname === CREATE_PATH ? 'secondary' : 'primary';
   return (
     <header className={styles.header}>
       <div className={styles['top-row']}>
-        <div className={styles.help}>
-          {/* this div intentionally left blank until we use the info icon */}
+        <div className={styles.pawn}>
+          <ButtonLink kind={kind} href={CREATE_PATH}>
+            Pawn Your NFT
+          </ButtonLink>
         </div>
         <h1 className={styles.link}>
           <Link href="/">💸✨🎸 NFT Pawn Shop 💍✨💸</Link>
@@ -24,7 +27,6 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
           <ConnectWallet />
         </div>
       </div>
-      <Marquee messages={messages} />
     </header>
   );
 };

@@ -1,29 +1,23 @@
 import React, { useState } from 'react';
 import { ethers } from 'ethers';
-import { PawnShopHeader } from 'components/PawnShopHeader';
 import { MockDAI__factory, MockPUNK__factory } from 'abis/types';
 import { TransactionButton } from 'components/ticketPage/TransactionButton';
-import { PageWrapper } from 'components/layouts/PageWrapper';
 import { Fieldset } from 'components/Fieldset';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { ConnectWallet } from 'components/ConnectWallet';
-import { headerMessages } from 'pawnshopConstants';
 import { useWeb3 } from 'hooks/useWeb3';
 
 export default function Test() {
   const { account } = useWeb3();
   return (
-    <PageWrapper>
-      <PawnShopHeader messages={headerMessages.test} />
-      <ThreeColumn>
-        <Fieldset legend="mint an NFT">
-          {account == null ? <ConnectWallet /> : <MintPunk />}
-        </Fieldset>
-        <Fieldset legend="mint DAI">
-          {account == null ? <ConnectWallet /> : <MintDAI />}
-        </Fieldset>
-      </ThreeColumn>
-    </PageWrapper>
+    <ThreeColumn>
+      <Fieldset legend="mint an NFT">
+        {account == null ? <ConnectWallet /> : <MintPunk />}
+      </Fieldset>
+      <Fieldset legend="mint DAI">
+        {account == null ? <ConnectWallet /> : <MintDAI />}
+      </Fieldset>
+    </ThreeColumn>
   );
 }
 
