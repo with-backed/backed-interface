@@ -12,7 +12,8 @@
     "format": "prettier --write \"**/*.{ts,tsx,js,json}\"",
     "prepare": "husky install",
     "typecheck": "tsc --noEmit",
-    "test": "jest"
+    "test": "jest",
+    "test-coverage": "yarn test --collect-coverage=true"
   },
   "dependencies": {
     "@ethersproject/keccak256": "^5.4.0",
