@@ -74,6 +74,7 @@ body {
 h1 {
   font-size: var(--font-huge);
   font-weight: var(--weight-light);
+  font-family: 'GT Maru Mega Mini', var(--sans);
 }
 
 h2,
