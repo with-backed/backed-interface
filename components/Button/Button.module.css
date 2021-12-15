@@ -159,3 +159,7 @@
   text-decoration: none;
   display: inline-block;
 }
+
+.primary.button-link:visited {
+  color: var(--highlight-clickable-100);
+}
