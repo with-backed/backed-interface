@@ -1,15 +1,12 @@
 .standard-fieldset {
   border: none;
   background: var(--background-fieldset);
-  border-radius: var(--border-radius-small);
-  border: thin var(--neutral-100) solid;
   width: 100%;
   padding: var(--padding-container);
 }
 
 .legend {
   line-height: 0;
-  font-size: var(--font-large);
-  padding: 0 0.5rem;
+  font-size: var(--font-medium);
   text-transform: capitalize;
 }
