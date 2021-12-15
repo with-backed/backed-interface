@@ -133,7 +133,7 @@
   justify-content: center;
   width: 1.5rem;
   height: 1.5rem;
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--highlight-visited-10);
   border-radius: 1rem;
   position: absolute;
   z-index: 50;
