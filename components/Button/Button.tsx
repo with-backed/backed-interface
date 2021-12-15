@@ -9,9 +9,8 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export function Button({ children, kind = 'primary', ...props }: ButtonProps) {
-  const className = [styles.button, styles[kind]].join(' ');
   return (
-    <button className={className} {...props}>
+    <button className={styles[kind]} {...props}>
       {children}
     </button>
   );
@@ -27,9 +26,8 @@ export function DialogDisclosureButton({
   kind = 'primary',
   ...props
 }: DialogDisclosureButtonProps) {
-  const className = [styles.button, styles[kind]].join(' ');
   return (
-    <DialogDisclosure {...props} className={className}>
+    <DialogDisclosure {...props} className={styles[kind]}>
       {children}
     </DialogDisclosure>
   );
