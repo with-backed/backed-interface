@@ -10,8 +10,3 @@
     url('GT-Maru-Mono-Regular-Oblique-Trial.woff2') format('woff2'),
     url('GT-Maru-Mono-Bold-Trial.woff2') format('woff2');
 }
-
-@font-face {
-  font-family: 'GT Maru Mega Mini';
-  src: url('GT-Maru-Mega-Mini-Trial.woff2') format('woff2');
-}
