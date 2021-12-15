@@ -157,4 +157,5 @@
 .button-link {
   text-align: center;
   text-decoration: none;
+  display: inline-block;
 }
