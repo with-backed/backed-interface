@@ -157,9 +157,12 @@
 .button-link {
   text-align: center;
   text-decoration: none;
+<<<<<<< HEAD
   display: inline-block;
 }
 
 .primary.button-link:visited {
   color: var(--highlight-clickable-100);
+=======
+>>>>>>> 9d19a87 (feat: introduce ButtonLink for header)
 }
