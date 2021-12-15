@@ -17,7 +17,7 @@ export default {
 export const InputStyles = () => {
   return (
     <ThreeColumn>
-      <Fieldset legend="buttons">
+      <Fieldset legend="🔘 buttons">
         <FormWrapper>
           <Button kind="primary">Primary Button</Button>
           <Button kind="secondary">Secondary Button</Button>
@@ -26,7 +26,7 @@ export const InputStyles = () => {
           <Button disabled>Inactive Button</Button>
         </FormWrapper>
       </Fieldset>
-      <Fieldset legend="Other buttons">
+      <Fieldset legend="🖱️ Other buttons">
         <FormWrapper>
           <DialogDisclosureButton>Click here for dialog</DialogDisclosureButton>
           <CompletedButton
@@ -48,7 +48,7 @@ export const InputStyles = () => {
           />
         </FormWrapper>
       </Fieldset>
-      <Fieldset legend="Wallet buttons">
+      <Fieldset legend="👛 Wallet buttons">
         <FormWrapper>
           <WalletButton wallet="MetaMask" />
           <WalletButton wallet="Coinbase Wallet" />
