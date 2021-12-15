@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Button,
+  ButtonLink,
   CompletedButton,
   DialogDisclosureButton,
   WalletButton,
@@ -46,6 +47,9 @@ export const InputStyles = () => {
               </span>
             }
           />
+          <ButtonLink kind="primary" href="https://google.com">
+            Button Link
+          </ButtonLink>
         </FormWrapper>
       </Fieldset>
       <Fieldset legend="👛 Wallet buttons">

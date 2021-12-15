@@ -9,37 +9,45 @@
 }
 
 .primary {
+  composes: button;
   background: var(--highlight-clickable-5);
   color: var(--highlight-clickable-100);
 }
 
-.primary:hover {
+.primary:hover,
+.primary:focus {
   background: var(--highlight-clickable-10);
 }
 
 .secondary {
+  composes: button;
   background: var(--highlight-visited-5);
   color: var(--highlight-visited-100);
 }
 
-.secondary:hover {
+.secondary:hover,
+.secondary:focus {
   background: var(--highlight-visited-10);
 }
 
 .tertiary {
+  composes: button;
   background: var(--neutral-5);
   color: var(--neutral-100);
 }
 
-.tertiary:hover {
+.tertiary:hover,
+.tertiary:focus {
   background: var(--neutral-10);
 }
 
 .highlight {
+  composes: button;
   background: var(--highlight-active-10);
 }
 
-.highlight:hover {
+.highlight:hover,
+.highlight:focus {
   background: var(--highlight-active-20);
 }
 
@@ -67,7 +75,8 @@
   );
 }
 
-.metamask:hover {
+.metamask:hover,
+.metamask:focus {
   background: linear-gradient(100.9deg, #fff5dd 19.2%, #ffe1c6 82.99%);
 }
 
@@ -79,7 +88,8 @@
   );
 }
 
-.coinbase-wallet:hover {
+.coinbase-wallet:hover,
+.coinbase-wallet:focus {
   background: linear-gradient(100.9deg, #d5d7ff 19.2%, #dbc6ff 82.99%);
 }
 
@@ -91,7 +101,8 @@
   );
 }
 
-.wallet-connect:hover {
+.wallet-connect:hover,
+.wallet-connect:focus {
   background: linear-gradient(100.9deg, #ddffe7 19.2%, #c6e7ff 82.99%);
 }
 
@@ -141,4 +152,14 @@
   left: 1rem;
   cursor: default;
   user-select: none;
+}
+
+.button-link {
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.primary.button-link:visited {
+  color: var(--highlight-clickable-100);
 }
