@@ -1,11 +1,15 @@
 .header {
   width: 100%;
-  padding-bottom: var(--padding-container);
+  padding: 0 40px;
+  background: var(--background-white);
+  display: flex;
+  justify-content: center;
 }
 
 .top-row {
   display: grid;
   grid-template-columns: 1fr 2fr 1fr;
+  max-width: var(--max-width-header);
   width: 100%;
   align-items: center;
 }
@@ -19,7 +23,7 @@
   color: var(--neutral-100);
 }
 
-.help {
+.pawn {
   justify-self: start;
 }
 

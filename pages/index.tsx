@@ -1,8 +1,5 @@
-import { FiveColumn } from 'components/layouts/FiveColumn';
-import { PageWrapper } from 'components/layouts/PageWrapper';
+import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { LoanCard, Loan } from 'components/LoanCard';
-import { PawnShopHeader } from 'components/PawnShopHeader';
-import { headerMessages } from 'pawnshopConstants';
 import { nftBackedLoansClient } from 'lib/urql';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
@@ -48,13 +45,13 @@ type HomeProps = {
 };
 export default function Home({ loans }: HomeProps) {
   return (
-    <PageWrapper>
-      <PawnShopHeader messages={headerMessages.availableForLending} />
-      <FiveColumn>
+    <>
+      <ThreeColumn>
         {loans.map((loan) => (
           <LoanCard key={loan.id} loan={loan} />
         ))}
-      </FiveColumn>
+      </ThreeColumn>
+
       <p>
         Welcome! Homepage in progress, try{' '}
         <Link href="/loans/create"> Creating a loan</Link>
@@ -62,6 +59,6 @@ export default function Home({ loans }: HomeProps) {
       {process.env.NEXT_PUBLIC_ENV === 'rinkeby' && (
         <Link href="/test">Get Rinkeby DAI and an NFT!</Link>
       )}
-    </PageWrapper>
+    </>
   );
 }

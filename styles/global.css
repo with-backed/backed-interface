@@ -18,7 +18,8 @@
   --neutral-5: #f9f7f5;
 
   /* layout */
-  --max-width: 1400px;
+  --max-width-header: 1224px;
+  --max-width: 980px;
   --line-height: 1.6;
 
   /* padding and gaps */
@@ -59,12 +60,8 @@ body {
   line-height: var(--line-height);
   font-size: 14px;
   font-weight: var(--weight-regular);
-  background: var(--background-radial-gradient);
+  background: var(--background-white);
   min-height: 100vh;
-}
-
-body {
-  padding: 0 40px;
 }
 
 * {
