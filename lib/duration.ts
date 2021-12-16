@@ -1,5 +1,8 @@
 import { ethers } from 'ethers';
-import moment from 'moment';
+import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
+
+dayjs.extend(duration);
 
 const SECONDS_IN_DAY = 60 * 60 * 24;
 
@@ -36,18 +39,19 @@ interface LoanCountdown {
 }
 
 export const getDaysHoursMinutesSeconds = (
-  duration: moment.Duration,
+  durationInSeconds: number,
 ): LoanCountdown => {
+  const duration = dayjs.duration({ seconds: durationInSeconds });
   const days = Math.floor(duration.asDays());
 
   const hours = Math.floor(
-    duration.subtract(moment.duration(days, 'days')).asHours(),
+    duration.subtract(dayjs.duration(days, 'days')).asHours(),
   );
   const minutes = Math.floor(
-    duration.subtract(moment.duration(hours, 'hours')).asMinutes(),
+    duration.subtract(dayjs.duration(hours, 'hours')).asMinutes(),
   );
   const seconds = Math.floor(
-    duration.subtract(moment.duration(minutes, 'minutes')).asSeconds(),
+    duration.subtract(dayjs.duration(minutes, 'minutes')).asSeconds(),
   );
   return { days, hours, minutes, seconds };
 };
