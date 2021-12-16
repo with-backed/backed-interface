@@ -7,5 +7,5 @@ export default {
 };
 
 export const HeaderStyles = () => {
-  return <PawnShopHeader messages={['yote', 'yote', 'yote', 'yote']} />;
+  return <PawnShopHeader />;
 };
