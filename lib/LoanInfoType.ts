@@ -16,4 +16,5 @@ export type LoanInfo = {
   lender: string | null;
   borrower: string;
   interestOwed: ethers.BigNumber;
+  endDateTimestamp: number;
 };

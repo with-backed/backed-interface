@@ -5,75 +5,29 @@ import {
   jsonRpcLoanFacilitator,
 } from './contracts';
 import { LoanInfo } from './LoanInfoType';
+import {
+  ALL_LOAN_PROPERTIES,
+  SubgraphLoanEntity,
+} from './loans/sharedLoanSubgraphConstants';
+import { parseSubgraphLoan } from './loans/utils';
 import { nftBackedLoansClient } from './urql';
 
 const loanInfoQuery = `
 query ($id: ID!) {
   loan(id: $id) {
-    loanAssetContractAddress
-    collateralContractAddress
-    collateralTokenId
-    perSecondInterestRate
-    accumulatedInterest
-    lastAccumulatedTimestamp
-    durationSeconds
-    loanAmount
-    closed
-    loanAssetDecimal
-    loanAssetSymbol
-    lendTicketHolder
-    borrowTicketHolder
+    ${ALL_LOAN_PROPERTIES}
   }
 }
 `;
 
-/**
- * The Graph doesn't contain `interestOwed`, so we will have to fetch that separately.
- */
 async function queryLoanInfoGraphQL(
   id: string,
-): Promise<Omit<LoanInfo, 'interestOwed'> | null> {
+): Promise<SubgraphLoanEntity | null> {
   const {
     data: { loan },
   } = await nftBackedLoansClient.query(loanInfoQuery, { id }).toPromise();
 
-  if (!loan) {
-    // The Graph hasn't indexed this loan, but it may exist.
-    return null;
-  }
-
-  const {
-    loanAssetContractAddress,
-    collateralContractAddress,
-    collateralTokenId,
-    perSecondInterestRate,
-    accumulatedInterest,
-    lastAccumulatedTimestamp,
-    durationSeconds,
-    loanAmount,
-    closed,
-    loanAssetDecimal,
-    loanAssetSymbol,
-    lendTicketHolder,
-    borrowTicketHolder,
-  } = loan;
-
-  return {
-    loanId: ethers.BigNumber.from(id),
-    loanAssetContractAddress,
-    collateralContractAddress,
-    collateralTokenId: ethers.BigNumber.from(collateralTokenId),
-    perSecondInterestRate: ethers.BigNumber.from(perSecondInterestRate),
-    accumulatedInterest: ethers.BigNumber.from(accumulatedInterest),
-    lastAccumulatedTimestamp: ethers.BigNumber.from(lastAccumulatedTimestamp),
-    durationSeconds: ethers.BigNumber.from(durationSeconds),
-    loanAmount: ethers.BigNumber.from(loanAmount),
-    closed,
-    loanAssetDecimals: loanAssetDecimal,
-    loanAssetSymbol,
-    lender: lendTicketHolder,
-    borrower: borrowTicketHolder,
-  };
+  return loan;
 }
 
 export async function getLoanInfoGraphQL(id: string): Promise<LoanInfo | null> {
@@ -87,9 +41,7 @@ export async function getLoanInfoGraphQL(id: string): Promise<LoanInfo | null> {
       loanInfoFromGraphQL.loanAssetContractAddress,
     ).isZero()
   ) {
-    const loanFacilitator = jsonRpcLoanFacilitator();
-    const interestOwed = await loanFacilitator.interestOwed(id);
-    return { ...loanInfoFromGraphQL, interestOwed };
+    return parseSubgraphLoan(loanInfoFromGraphQL);
   }
 
   // The Graph has not indexed this loan, but it may exist.
@@ -139,6 +91,10 @@ export async function getLoanInfo(id: string): Promise<LoanInfo> {
 
   const interestOwed = await loanFacilitator.interestOwed(loanId);
   const borrower = await borrowTicket.ownerOf(loanId);
+  let endDateTimestamp: number = 0;
+  if (!lastAccumulatedTimestamp.eq(0)) {
+    endDateTimestamp = lastAccumulatedTimestamp.add(durationSeconds).toNumber();
+  }
 
   return {
     loanId,
@@ -156,5 +112,6 @@ export async function getLoanInfo(id: string): Promise<LoanInfo> {
     lender,
     borrower,
     interestOwed,
+    endDateTimestamp,
   };
 }
