@@ -1,0 +1,10 @@
+.loan-header {
+  display: flex;
+  width: 100%;
+  background: var(--background-white);
+  justify-content: center;
+}
+
+.loan-header > div {
+  max-width: 980px;
+}
