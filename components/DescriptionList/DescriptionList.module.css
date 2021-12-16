@@ -1,0 +1,19 @@
+/* Note: this styling is not compatible with "multiple terms, single definition". */
+.dl {
+  display: grid;
+  grid-template-columns: fit-content(50%) 1fr;
+  column-gap: var(--gap);
+  align-items: center;
+}
+
+.dl > dd {
+  margin: 0;
+}
+
+.dl > dt {
+  margin: 0;
+  text-transform: uppercase;
+  text-align: right;
+  font-size: var(--font-small);
+  letter-spacing: 12%;
+}
