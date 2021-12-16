@@ -31,5 +31,5 @@ export type SubgraphLoanEntity = {
   loanAssetSymbol: string;
   lendTicketHolder: string;
   borrowTicketHolder: string;
-  endDateTimestamp: number | null;
+  endDateTimestamp: number;
 };

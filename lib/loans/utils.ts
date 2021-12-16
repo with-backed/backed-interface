@@ -11,7 +11,7 @@ export function parseSubgraphLoan(loan: SubgraphLoanEntity): LoanInfo {
   const lastAccumulatedTimestamp = ethers.BigNumber.from(
     loan.lastAccumulatedTimestamp,
   );
-  const now = ethers.BigNumber.from(Date.now().toString());
+  const now = ethers.BigNumber.from(Date.now());
   let interestOwed = ethers.BigNumber.from(0);
   if (!lastAccumulatedTimestamp.eq(0)) {
     interestOwed = loanAmount
@@ -36,5 +36,6 @@ export function parseSubgraphLoan(loan: SubgraphLoanEntity): LoanInfo {
     lender: loan.lendTicketHolder,
     borrower: loan.borrowTicketHolder,
     interestOwed: interestOwed,
+    endDateTimestamp: loan.endDateTimestamp,
   };
 }

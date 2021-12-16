@@ -1,15 +1,14 @@
-import { LoanInfo } from 'lib/LoanInfoType';
-import { getAllLoansForAddress } from 'lib/loans/getAllLoansForAddress';
+import { getAllSubgraphLoansForAddress } from 'lib/loans/getAllSubgraphLoansForAddress';
+import { SubgraphLoanEntity } from 'lib/loans/sharedLoanSubgraphConstants';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { CompositeGroup } from 'reakit/ts';
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<LoanInfo[]>,
+  res: NextApiResponse<SubgraphLoanEntity[]>,
 ) {
   try {
     const { address } = req.query;
-    const loans = await getAllLoansForAddress(address);
+    const loans = await getAllSubgraphLoansForAddress(address);
     res.status(200).json(loans);
   } catch (e) {
     // TODO: bugsnag

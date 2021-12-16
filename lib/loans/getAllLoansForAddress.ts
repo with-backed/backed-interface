@@ -1,31 +1,11 @@
-import { ethers } from 'ethers';
-import {
-  ALL_LOAN_PROPERTIES,
-  SubgraphLoanEntity,
-} from './sharedLoanSubgraphConstants';
-import { LoanInfo } from '../LoanInfoType';
-import { nftBackedLoansClient } from '../urql';
+import { LoanInfo } from 'lib/LoanInfoType';
+import { SubgraphLoanEntity } from './sharedLoanSubgraphConstants';
 import { parseSubgraphLoan } from './utils';
 
-const query = `
-query ($address: Bytes!) {
-  loans(or: 
-        [
-            { borrowTicketHolder: $address},
-            { lendTicketHolder: $address}
-        ], orderBy: endDateTimestamp, order: desc
-        ) {
-    ${ALL_LOAN_PROPERTIES}
-  }
-}
-`;
-
 export async function getAllLoansForAddress(
-  address: string | string[],
+  address: string,
 ): Promise<LoanInfo[]> {
-  const {
-    data: { loans },
-  } = await nftBackedLoansClient.query(query, { address }).toPromise();
-
-  return loans.map((l: SubgraphLoanEntity) => parseSubgraphLoan(l));
+  const res = await fetch(`/api/addresses/${address}/loans`);
+  const loans = await res.json();
+  return loans.map((loan: SubgraphLoanEntity) => parseSubgraphLoan(loan));
 }
