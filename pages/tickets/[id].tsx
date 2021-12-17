@@ -8,6 +8,7 @@ import { getNFTInfo, GetNFTInfoResponse } from 'lib/getNFTInfo';
 import { useTokenMetadata } from 'hooks/useTokenMetadata';
 import { jsonRpcERC721Contract } from 'lib/contracts';
 import { LoanHeader } from 'components/LoanHeader';
+import { PageWrapper } from 'components/layouts/PageWrapper';
 
 export type LoanPageProps = {
   loanInfoJson: string;
@@ -61,6 +62,7 @@ export default function Loans({ loanInfoJson }: LoanPageProps) {
   return (
     <>
       <LoanHeader collateralMedia={collateralMedia} loanInfo={loanInfo} />
+      <PageWrapper></PageWrapper>
     </>
   );
 }

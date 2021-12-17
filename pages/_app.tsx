@@ -6,7 +6,6 @@ import { Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { PawnShopHeader } from 'components/PawnShopHeader';
 import { AppWrapper } from 'components/layouts/AppWrapper';
-import { PageWrapper } from 'components/layouts/PageWrapper';
 
 const getLibrary: React.ComponentProps<typeof Web3ReactProvider>['getLibrary'] =
   (provider) => {
@@ -20,9 +19,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <Web3ReactProvider getLibrary={getLibrary}>
       <AppWrapper>
         <PawnShopHeader />
-        <PageWrapper>
-          <Component {...pageProps} />
-        </PageWrapper>
+        <Component {...pageProps} />
       </AppWrapper>
     </Web3ReactProvider>
   );

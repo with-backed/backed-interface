@@ -1,3 +1,4 @@
+import { PageWrapper } from 'components/layouts/PageWrapper';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { LoanCard, Loan } from 'components/LoanCard';
 import { nftBackedLoansClient } from 'lib/urql';
@@ -45,7 +46,7 @@ type HomeProps = {
 };
 export default function Home({ loans }: HomeProps) {
   return (
-    <>
+    <PageWrapper>
       <ThreeColumn>
         {loans.map((loan) => (
           <LoanCard key={loan.id} loan={loan} />
@@ -59,6 +60,6 @@ export default function Home({ loans }: HomeProps) {
       {process.env.NEXT_PUBLIC_ENV === 'rinkeby' && (
         <Link href="/test">Get Rinkeby DAI and an NFT!</Link>
       )}
-    </>
+    </PageWrapper>
   );
 }

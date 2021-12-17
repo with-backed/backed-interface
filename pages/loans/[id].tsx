@@ -4,6 +4,7 @@ import { LoanInfo } from 'lib/LoanInfoType';
 import { ethers } from 'ethers';
 import { useMemo } from 'react';
 import { getLoanInfoGraphQL } from 'lib/loan';
+import { PageWrapper } from 'components/layouts/PageWrapper';
 
 export type LoanPageProps = {
   loanInfoJson: string;
@@ -36,7 +37,11 @@ export default function Loans({ loanInfoJson }: LoanPageProps) {
     [loanInfoJson],
   );
 
-  return <Loan serverLoanInfo={loanInfo} />;
+  return (
+    <PageWrapper>
+      <Loan serverLoanInfo={loanInfo} />
+    </PageWrapper>
+  );
 }
 
 const parseLoanInfoJson = (loanInfoJson: string): LoanInfo => {
