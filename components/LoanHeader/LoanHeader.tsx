@@ -23,6 +23,7 @@ export const LoanHeader = ({ collateralMedia, loanInfo }: LoanHeaderProps) => {
     loanAssetDecimals,
     loanAssetSymbol,
     perSecondInterestRate,
+    lender,
   } = loanInfo;
   const timestamp = useTimestamp();
   const amount = useMemo(() => {

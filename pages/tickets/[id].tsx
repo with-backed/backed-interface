@@ -9,6 +9,10 @@ import { useTokenMetadata } from 'hooks/useTokenMetadata';
 import { jsonRpcERC721Contract } from 'lib/contracts';
 import { LoanHeader } from 'components/LoanHeader';
 import { PageWrapper } from 'components/layouts/PageWrapper';
+import { TwoColumn } from 'components/layouts/TwoColumn';
+import { Fieldset } from 'components/Fieldset';
+import { Column } from 'components/Column';
+import { TicketHistory } from 'components/ticketPage/TicketHistory';
 
 export type LoanPageProps = {
   loanInfoJson: string;
@@ -62,7 +66,14 @@ export default function Loans({ loanInfoJson }: LoanPageProps) {
   return (
     <>
       <LoanHeader collateralMedia={collateralMedia} loanInfo={loanInfo} />
-      <PageWrapper></PageWrapper>
+      <PageWrapper>
+        <TwoColumn>
+          <Column>
+            <TicketHistory loanInfo={loanInfo} />
+          </Column>
+          <Column></Column>
+        </TwoColumn>
+      </PageWrapper>
     </>
   );
 }
