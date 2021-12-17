@@ -1,22 +1,4 @@
-export const ALL_LOAN_PROPERTIES = `
-    id
-    loanAssetContractAddress
-    collateralContractAddress
-    collateralTokenId
-    perSecondInterestRate
-    accumulatedInterest
-    lastAccumulatedTimestamp
-    durationSeconds
-    loanAmount
-    closed
-    loanAssetDecimal
-    loanAssetSymbol
-    lendTicketHolder
-    borrowTicketHolder
-    endDateTimestamp
-`;
-
-export type SubgraphLoanEntity = {
+export type SubgraphLoan = {
   id: string;
   loanAssetContractAddress: string;
   collateralContractAddress: string;
@@ -32,4 +14,5 @@ export type SubgraphLoanEntity = {
   lendTicketHolder: string;
   borrowTicketHolder: string;
   endDateTimestamp: number;
+  collateralTokenURI: string;
 };

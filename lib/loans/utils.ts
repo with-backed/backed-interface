@@ -1,8 +1,8 @@
 import { ethers } from 'ethers';
-import { LoanInfo } from 'lib/LoanInfoType';
-import { SubgraphLoanEntity } from './sharedLoanSubgraphConstants';
+import { Loan } from 'lib/types/Loan';
+import { SubgraphLoan } from 'lib/types/SubgraphLoan';
 
-export function parseSubgraphLoan(loan: SubgraphLoanEntity): LoanInfo {
+export function parseSubgraphLoan(loan: SubgraphLoan): Loan {
   const loanAmount = ethers.BigNumber.from(loan.loanAmount);
   const perSecondInterestRate = ethers.BigNumber.from(
     loan.perSecondInterestRate,
@@ -21,21 +21,17 @@ export function parseSubgraphLoan(loan: SubgraphLoanEntity): LoanInfo {
   }
 
   return {
-    loanId: ethers.BigNumber.from(loan.id),
-    loanAssetContractAddress: loan.loanAssetContractAddress,
-    collateralContractAddress: loan.collateralContractAddress,
+    ...loan,
+    id: ethers.BigNumber.from(loan.id),
     collateralTokenId: ethers.BigNumber.from(loan.collateralTokenId),
     perSecondInterestRate: perSecondInterestRate,
     accumulatedInterest: accumulatedInterest,
     lastAccumulatedTimestamp: lastAccumulatedTimestamp,
     durationSeconds: ethers.BigNumber.from(loan.durationSeconds),
     loanAmount: loanAmount,
-    closed: loan.closed,
     loanAssetDecimals: loan.loanAssetDecimal,
-    loanAssetSymbol: loan.loanAssetSymbol,
     lender: loan.lendTicketHolder,
     borrower: loan.borrowTicketHolder,
     interestOwed: interestOwed,
-    endDateTimestamp: loan.endDateTimestamp,
   };
 }

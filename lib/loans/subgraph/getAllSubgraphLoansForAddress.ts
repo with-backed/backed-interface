@@ -1,15 +1,13 @@
-import {
-  ALL_LOAN_PROPERTIES,
-  SubgraphLoanEntity,
-} from './sharedLoanSubgraphConstants';
-import { nftBackedLoansClient } from '../urql';
+import { ALL_LOAN_PROPERTIES } from './subgraphSharedConstants';
+import { SubgraphLoan } from 'lib/types/SubgraphLoan';
+import { nftBackedLoansClient } from '../../urql';
 
 const query = `
 query ($address: Bytes!) {
   loans(or: 
         [
             { borrowTicketHolder: $address},
-            { lendTicketHolder: $address}
+            { lendTicketHolder: $address }
         ], orderBy: endDateTimestamp, orderDirection: desc
         ) {
     ${ALL_LOAN_PROPERTIES}
@@ -17,9 +15,10 @@ query ($address: Bytes!) {
 }
 `;
 
+// TODO(WILSON): explore making subgraphLoans generic enough to handle this as well
 export async function getAllSubgraphLoansForAddress(
   address: string | string[],
-): Promise<SubgraphLoanEntity[]> {
+): Promise<SubgraphLoan[]> {
   const {
     data: { loans },
   } = await nftBackedLoansClient.query(query, { address }).toPromise();

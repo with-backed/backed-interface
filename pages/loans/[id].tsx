@@ -1,9 +1,9 @@
 import { GetServerSideProps } from 'next';
-import { Loan } from 'components/Ticket';
-import { LoanInfo } from 'lib/LoanInfoType';
+import { Loan } from 'lib/types/Loan';
 import { ethers } from 'ethers';
-import { useMemo } from 'react';
-import { getLoanInfoGraphQL } from 'lib/loan';
+import React, { useMemo } from 'react';
+import { loanById } from 'lib/loans/loanById';
+import { LoanPage } from 'components/Loan/LoanPage';
 
 export type LoanPageProps = {
   loanInfoJson: string;
@@ -13,7 +13,7 @@ export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
   context,
 ) => {
   const id = context.params?.id as string;
-  const loan = await getLoanInfoGraphQL(id);
+  const loan = await loanById(id);
 
   // The Graph didn't have loan, and fallback call errored.
   if (!loan) {
@@ -36,10 +36,10 @@ export default function Loans({ loanInfoJson }: LoanPageProps) {
     [loanInfoJson],
   );
 
-  return <Loan serverLoanInfo={loanInfo} />;
+  return <LoanPage serverLoanInfo={loanInfo} />;
 }
 
-const parseLoanInfoJson = (loanInfoJson: string): LoanInfo => {
+const parseLoanInfoJson = (loanInfoJson: string): Loan => {
   const loanInfo = JSON.parse(loanInfoJson);
   Object.keys(loanInfo).forEach((k: string) => {
     if (loanInfo[k] == null) {

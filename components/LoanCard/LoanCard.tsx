@@ -7,19 +7,10 @@ import { useTokenMetadata } from 'hooks/useTokenMetadata';
 import { Media } from 'components/Media';
 import { GetNFTInfoResponse } from 'lib/getNFTInfo';
 import { Fallback } from 'components/Media/Fallback';
+import { Loan } from 'lib/types/Loan';
 
 const Attributes: FunctionComponent = ({ children }) => {
   return <div className={styles.attributes}>{children}</div>;
-};
-
-export type Loan = {
-  id: string;
-  loanAssetSymbol: string;
-  loanAssetDecimal: number;
-  loanAmount: string;
-  perSecondInterestRate: string;
-  collateralTokenURI: string;
-  collateralTokenId: string;
 };
 
 type LoanCardProps = {
@@ -30,7 +21,7 @@ export function LoanCard({
   loan: {
     id,
     loanAmount,
-    loanAssetDecimal,
+    loanAssetDecimals,
     loanAssetSymbol,
     perSecondInterestRate,
     collateralTokenURI,
@@ -42,9 +33,9 @@ export function LoanCard({
     () =>
       `${ethers.utils.formatUnits(
         loanAmount,
-        loanAssetDecimal,
+        loanAssetDecimals,
       )} ${loanAssetSymbol}`,
-    [loanAmount, loanAssetDecimal, loanAssetSymbol],
+    [loanAmount, loanAssetDecimals, loanAssetSymbol],
   );
 
   const tokenSpec = useMemo(
@@ -70,7 +61,7 @@ export function LoanCard({
   } else {
     return (
       <LoanCardLoaded
-        id={id}
+        id={id.toString()}
         title={title}
         formattedLoanAmount={formattedLoanAmount}
         perSecondInterestRate={perSecondInterestRate}
@@ -84,7 +75,7 @@ type LoanCardLoadedProps = {
   id: string;
   title: string;
   formattedLoanAmount: string;
-  perSecondInterestRate: string;
+  perSecondInterestRate: ethers.BigNumber;
   metadata: GetNFTInfoResponse;
 };
 /**
@@ -109,12 +100,7 @@ export function LoanCardLoaded({
           <span>{name}</span>
           <Attributes>
             <span>{formattedLoanAmount}</span>
-            <span>
-              {formattedAnnualRate(
-                ethers.BigNumber.from(perSecondInterestRate),
-              )}
-              % interest
-            </span>
+            <span>{formattedAnnualRate(perSecondInterestRate)}% interest</span>
           </Attributes>
         </div>
       </a>
