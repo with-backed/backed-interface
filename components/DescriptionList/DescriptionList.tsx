@@ -11,7 +11,7 @@ interface DescriptionListProps
 
 export const DescriptionList = ({
   children,
-  orientation = 'horizontal',
+  orientation = 'vertical',
 }: DescriptionListProps) => {
   return <dl className={styles[orientation]}>{children}</dl>;
 };

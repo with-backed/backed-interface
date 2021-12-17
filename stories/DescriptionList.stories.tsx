@@ -8,7 +8,7 @@ export default {
 
 export const List = () => (
   <>
-    <DescriptionList>
+    <DescriptionList orientation="horizontal">
       <dt>Beast of Bodmin</dt>
       <dd>A large feline inhabiting Bodmin Moor.</dd>
 
