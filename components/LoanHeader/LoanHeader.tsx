@@ -39,6 +39,7 @@ export const LoanHeader = ({ collateralMedia, loanInfo }: LoanHeaderProps) => {
     () => getLoanStatus(lastAccumulatedTimestamp, durationSeconds, timestamp),
     [lastAccumulatedTimestamp, durationSeconds, timestamp],
   );
+
   return (
     <div className={styles['loan-header']}>
       <TwoColumn>

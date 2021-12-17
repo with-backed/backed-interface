@@ -3,6 +3,8 @@
   width: 100%;
   background: var(--background-white);
   justify-content: center;
+  padding-bottom: var(--gap);
+  padding-top: calc(var(--gap) / 2);
 }
 
 .loan-header > div {
