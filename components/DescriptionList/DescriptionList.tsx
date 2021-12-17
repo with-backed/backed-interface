@@ -5,8 +5,13 @@ interface DescriptionListProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDListElement>,
     HTMLDListElement
-  > {}
+  > {
+  orientation?: 'horizontal' | 'vertical';
+}
 
-export const DescriptionList = ({ children }: DescriptionListProps) => {
-  return <dl className={styles.dl}>{children}</dl>;
+export const DescriptionList = ({
+  children,
+  orientation = 'horizontal',
+}: DescriptionListProps) => {
+  return <dl className={styles[orientation]}>{children}</dl>;
 };

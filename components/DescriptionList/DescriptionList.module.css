@@ -1,19 +1,25 @@
 /* Note: this styling is not compatible with "multiple terms, single definition". */
-.dl {
+.horizontal {
   display: grid;
   grid-template-columns: fit-content(50%) 1fr;
   column-gap: var(--gap);
   align-items: center;
 }
 
-.dl > dd {
+.horizontal > dd,
+.vertical > dd {
   margin: 0;
 }
 
-.dl > dt {
+.horizontal > dt,
+.vertical > dt {
   margin: 0;
   text-transform: uppercase;
-  text-align: right;
   font-size: var(--font-small);
-  letter-spacing: 12%;
+  letter-spacing: 0.12rem;
+  line-height: 32px;
+}
+
+.horizontal > dt {
+  text-align: right;
 }
