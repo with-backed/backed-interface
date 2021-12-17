@@ -50,6 +50,7 @@ const loanInfo: LoanInfo = {
   lender: '0xbadc0ffee',
   borrower: '0xdeadbeef',
   interestOwed: ethers.BigNumber.from(0),
+  endDateTimestamp: 445,
 };
 const events: ethers.Event[] = [
   {
