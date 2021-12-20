@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
-import { LoanInfo } from 'lib/LoanInfoType';
-import { SubgraphLoanEntity } from 'lib/loans/sharedLoanSubgraphConstants';
+import { Loan } from 'lib/types/Loan';
+import { SubgraphLoan } from 'lib/types/SubgraphLoan';
 import { parseSubgraphLoan } from 'lib/loans/utils';
 
 describe('parseSubgraphLoan', () => {
@@ -19,9 +19,9 @@ describe('parseSubgraphLoan', () => {
   let loanAssetDecimal = 18;
   let loanAssetSymbol = 'DAI';
   let perSecondInterestRate = '15';
-  let subgraphLoan: SubgraphLoanEntity;
+  let subgraphLoan: SubgraphLoan;
 
-  function result(): LoanInfo {
+  function result(): Loan {
     return parseSubgraphLoan(subgraphLoan);
   }
 
@@ -50,7 +50,7 @@ describe('parseSubgraphLoan', () => {
 
   it('parses values correctly', () => {
     expect(result()).toEqual({
-      loanId: ethers.BigNumber.from(id),
+      id: ethers.BigNumber.from(id),
       loanAmount: ethers.BigNumber.from(loanAmount),
       collateralTokenId: ethers.BigNumber.from(collateralTokenId),
       collateralContractAddress,

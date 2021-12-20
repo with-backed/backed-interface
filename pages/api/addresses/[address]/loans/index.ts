@@ -1,10 +1,10 @@
-import { getAllSubgraphLoansForAddress } from 'lib/loans/getAllSubgraphLoansForAddress';
-import { SubgraphLoanEntity } from 'lib/loans/sharedLoanSubgraphConstants';
+import { getAllSubgraphLoansForAddress } from 'lib/loans/subgraph/getAllSubgraphLoansForAddress';
+import { SubgraphLoan } from 'lib/types/SubgraphLoan';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<SubgraphLoanEntity[]>,
+  res: NextApiResponse<SubgraphLoan[]>,
 ) {
   try {
     const { address } = req.query;

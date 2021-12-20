@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import CollateralMediaCard from 'components/ticketPage/CollateralMediaCard';
 import { PawnLoanArt, PawnTicketArt } from 'components/ticketPage/PawnArt';
 import { UnderwriteCard } from 'components/ticketPage/UnderwriteCard';
-import { LoanInfo } from 'lib/LoanInfoType';
+import { Loan } from 'lib/types/Loan';
 import { RepayCard } from 'components/ticketPage/RepayCard';
 import { TicketHistory } from 'components/ticketPage/TicketHistory';
 import SeizeCollateralCard from 'components/ticketPage/SeizeCollateralCard';
@@ -14,40 +14,33 @@ import { Column } from 'components/Column';
 import { useTimestamp } from 'hooks/useTimestamp';
 import { useWeb3 } from 'hooks/useWeb3';
 
-interface TicketPageBodyProps {
-  loanInfo: LoanInfo;
+interface LoanPageBodyProps {
+  loan: Loan;
   refresh: () => void;
 }
 
-export default function TicketPageBody({
-  loanInfo,
-  refresh,
-}: TicketPageBodyProps) {
+export default function LoanPageBody({ loan, refresh }: LoanPageBodyProps) {
   return (
     <ThreeColumn>
-      <LeftColumn loanInfo={loanInfo} refresh={refresh} />
-      <CenterColumn loanInfo={loanInfo} refresh={refresh} />
-      <RightColumn loanInfo={loanInfo} refresh={refresh} />
+      <LeftColumn loan={loan} refresh={refresh} />
+      <CenterColumn loan={loan} refresh={refresh} />
+      <RightColumn loan={loan} refresh={refresh} />
     </ThreeColumn>
   );
 }
 
-function LeftColumn({ loanInfo, refresh }: TicketPageBodyProps) {
+function LeftColumn({ loan, refresh }: LoanPageBodyProps) {
   const { account } = useWeb3();
-  const owner = loanInfo.borrower;
+  const owner = loan.borrower;
   return (
     <Column>
-      <BorrowTicket
-        title="borrow ticket"
-        tokenId={loanInfo.loanId}
-        owner={owner}
-      />
+      <BorrowTicket title="borrow ticket" tokenId={loan.id} owner={owner} />
       {account == null ||
-      loanInfo.closed ||
-      loanInfo.lastAccumulatedTimestamp.eq(0) ? null : (
-        <RepayCard loanInfo={loanInfo} repaySuccessCallback={refresh} />
+      loan.closed ||
+      loan.lastAccumulatedTimestamp.eq(0) ? null : (
+        <RepayCard loanInfo={loan} repaySuccessCallback={refresh} />
       )}
-      <TicketHistory loanInfo={loanInfo} />
+      <TicketHistory loanInfo={loan} />
     </Column>
   );
 }
@@ -108,54 +101,48 @@ function LendTicket({
   );
 }
 
-function CenterColumn({ loanInfo }: TicketPageBodyProps) {
+function CenterColumn({ loan }: LoanPageBodyProps) {
   return (
     <Column>
       <CollateralMediaCard
-        collateralAddress={loanInfo.collateralContractAddress}
-        collateralTokenId={loanInfo.collateralTokenId}
+        collateralAddress={loan.collateralContractAddress}
+        collateralTokenId={loan.collateralTokenId}
       />
-      {!loanInfo.lastAccumulatedTimestamp.eq(0) && !loanInfo.closed && (
+      {!loan.lastAccumulatedTimestamp.eq(0) && !loan.closed && (
         <LoanDurationCard
-          lastAccumulatedInterest={loanInfo.lastAccumulatedTimestamp}
-          loanDuration={loanInfo.durationSeconds}
+          lastAccumulatedInterest={loan.lastAccumulatedTimestamp}
+          loanDuration={loan.durationSeconds}
         />
       )}
     </Column>
   );
 }
 
-function RightColumn({ loanInfo, refresh }: TicketPageBodyProps) {
+function RightColumn({ loan, refresh }: LoanPageBodyProps) {
   const { account } = useWeb3();
   const timestamp = useTimestamp();
   const endSeconds = useMemo(() => {
     return Math.floor(
-      loanInfo.lastAccumulatedTimestamp
-        .add(loanInfo.durationSeconds)
-        .toNumber(),
+      loan.lastAccumulatedTimestamp.add(loan.durationSeconds).toNumber(),
     );
-  }, [loanInfo.lastAccumulatedTimestamp, loanInfo.durationSeconds]);
+  }, [loan.lastAccumulatedTimestamp, loan.durationSeconds]);
 
   return (
     <Column>
-      {loanInfo.lender && (
-        <LendTicket
-          title="lend ticket"
-          tokenId={loanInfo.loanId}
-          owner={loanInfo.lender}
-        />
+      {loan.lender && (
+        <LendTicket title="lend ticket" tokenId={loan.id} owner={loan.lender} />
       )}
-      {Boolean(account) && !loanInfo.closed && (
+      {Boolean(account) && !loan.closed && (
         <>
-          {loanInfo.lender != account ||
+          {loan.lender != account ||
           timestamp == null ||
           timestamp < endSeconds ? null : (
             <SeizeCollateralCard
-              loanInfo={loanInfo}
+              loanInfo={loan}
               seizeCollateralSuccessCallback={refresh}
             />
           )}
-          <UnderwriteCard loanInfo={loanInfo} loanUpdatedCallback={refresh} />
+          <UnderwriteCard loanInfo={loan} loanUpdatedCallback={refresh} />
         </>
       )}
     </Column>

@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 
-export type LoanInfo = {
-  loanId: ethers.BigNumber;
+export type Loan = {
+  id: ethers.BigNumber;
   loanAssetContractAddress: string;
   collateralContractAddress: string;
   collateralTokenId: ethers.BigNumber;
@@ -17,4 +17,5 @@ export type LoanInfo = {
   borrower: string;
   interestOwed: ethers.BigNumber;
   endDateTimestamp: number;
+  collateralTokenURI: string;
 };
