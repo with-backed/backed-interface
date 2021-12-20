@@ -2,7 +2,6 @@ import React from 'react';
 
 import { ParsedEvent } from 'components/ticketPage/TicketHistory/ParsedEvent';
 import { ethers } from 'ethers';
-import { LoanInfo } from 'lib/LoanInfoType';
 import {
   BuyoutUnderwriterEvent,
   CloseEvent,
@@ -14,6 +13,7 @@ import {
 } from 'abis/types/NFTLoanFacilitator';
 import { Fieldset } from 'components/Fieldset';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
+import { Loan } from 'lib/types/Loan';
 
 export default {
   title: 'Components/ticketPage/TicketHistory/ParsedEvent',
@@ -34,8 +34,8 @@ const replacedAmount = ethers.BigNumber.from(0);
 const getBlock = async (): Promise<ethers.providers.Block> =>
   ({ timestamp: 1999999999 } as any);
 
-const loanInfo: LoanInfo = {
-  loanId: ethers.BigNumber.from(1),
+const loanInfo: Loan = {
+  id: ethers.BigNumber.from(1),
   loanAssetContractAddress: '0x123abc',
   collateralContractAddress: '0xdef999',
   collateralTokenId,
@@ -51,6 +51,7 @@ const loanInfo: LoanInfo = {
   borrower: '0xdeadbeef',
   interestOwed: ethers.BigNumber.from(0),
   endDateTimestamp: 445,
+  collateralTokenURI: '',
 };
 const events: ethers.Event[] = [
   {

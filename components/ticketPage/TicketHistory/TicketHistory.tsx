@@ -1,22 +1,22 @@
 import { ethers } from 'ethers';
 import { useCallback, useState, useEffect } from 'react';
 import { jsonRpcLoanFacilitator } from 'lib/contracts';
-import { LoanInfo } from 'lib/LoanInfoType';
 import { Fieldset } from 'components/Fieldset';
 import { ParsedEvent } from './ParsedEvent';
 import styles from './TicketHistory.module.css';
+import { Loan } from 'lib/types/Loan';
 
 interface TicketHistoryProps {
-  loanInfo: LoanInfo;
+  loanInfo: Loan;
 }
 
 export function TicketHistory({ loanInfo }: TicketHistoryProps) {
   const [history, setHistory] = useState<ethers.Event[] | null>(null);
 
   const setup = useCallback(async () => {
-    const history = await getTicketHistory(loanInfo.loanId);
+    const history = await getTicketHistory(loanInfo.id);
     setHistory(history);
-  }, [loanInfo.loanId]);
+  }, [loanInfo.id]);
 
   useEffect(() => {
     setup();

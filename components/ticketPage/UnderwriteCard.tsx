@@ -6,13 +6,13 @@ import InterestRateInput from 'components/ticketPage/underwriteCard/InterestRate
 import DurationInput from 'components/ticketPage/underwriteCard/DurationInput';
 import UnderwriteButton from 'components/ticketPage/underwriteCard/UnderwriteButton';
 import AllowButton from 'components/ticketPage/underwriteCard/AllowButton';
-import { LoanInfo } from 'lib/LoanInfoType';
 import { Fieldset } from 'components/Fieldset';
 import { FormWrapper } from 'components/layouts/FormWrapper';
 import { useWeb3 } from 'hooks/useWeb3';
+import { Loan } from 'lib/types/Loan';
 
 interface UnderwriteCardProps {
-  loanInfo: LoanInfo;
+  loanInfo: Loan;
   loanUpdatedCallback: () => void;
 }
 

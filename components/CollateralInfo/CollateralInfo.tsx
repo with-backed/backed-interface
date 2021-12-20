@@ -1,11 +1,11 @@
 import { DescriptionList } from 'components/DescriptionList';
 import { Fieldset } from 'components/Fieldset';
 import { OpenSeaAddressLink } from 'components/OpenSeaLink';
-import { LoanInfo } from 'lib/LoanInfoType';
+import { Loan } from 'lib/types/Loan';
 import React, { useMemo } from 'react';
 
 type CollateralInfoProps = {
-  loanInfo: LoanInfo;
+  loanInfo: Loan;
 };
 
 export const CollateralInfo = ({ loanInfo }: CollateralInfoProps) => {

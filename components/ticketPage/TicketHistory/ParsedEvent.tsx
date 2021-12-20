@@ -5,7 +5,6 @@ import {
 import { ethers } from 'ethers';
 import { secondsToDays } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
-import { LoanInfo } from 'lib/LoanInfoType';
 import React, {
   FunctionComponent,
   useCallback,
@@ -23,6 +22,7 @@ import {
   UnderwriteLoanEvent,
 } from 'abis/types/NFTLoanFacilitator';
 import styles from './TicketHistory.module.css';
+import { Loan } from 'lib/types/Loan';
 
 const eventDetailComponents: { [key: string]: (...props: any) => JSX.Element } =
   {
@@ -37,7 +37,7 @@ const eventDetailComponents: { [key: string]: (...props: any) => JSX.Element } =
 
 type ParsedEventProps<T> = {
   event: T;
-  loanInfo: LoanInfo;
+  loanInfo: Loan;
 };
 export function ParsedEvent({
   event,

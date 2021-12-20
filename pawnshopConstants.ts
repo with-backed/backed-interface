@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { formattedAnnualRate } from 'lib/interest';
-import { LoanInfo } from 'lib/LoanInfoType';
+import { Loan } from 'lib/types/Loan';
 
 export type LoanStatus = 'indeterminate' | 'active' | 'past due';
 
@@ -12,7 +12,7 @@ export const headerMessages = {
   create: ['Create a Loan'],
   ticket: (
     {
-      loanId,
+      id,
       loanAmount,
       loanAssetDecimals,
       perSecondInterestRate,
@@ -20,16 +20,16 @@ export const headerMessages = {
       closed,
       lastAccumulatedTimestamp,
       durationSeconds,
-    }: LoanInfo,
+    }: Loan,
     status: LoanStatus,
   ) => {
     if (closed) {
-      return [`Loan #${loanId} (closed)`];
+      return [`Loan #${id} (closed)`];
     }
 
     const amount = ethers.utils.formatUnits(loanAmount, loanAssetDecimals);
     const interestRate = formattedAnnualRate(perSecondInterestRate);
-    const idEntry = `Loan #${loanId}`;
+    const idEntry = `Loan #${id}`;
     const paymentEntry = `${amount} ${loanAssetSymbol} @ ${interestRate}%`;
     const statusEntry = (() => {
       if (lastAccumulatedTimestamp.eq(0)) {
