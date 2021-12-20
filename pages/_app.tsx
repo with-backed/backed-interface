@@ -7,6 +7,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { PawnShopHeader } from 'components/PawnShopHeader';
 import { AppWrapper } from 'components/layouts/AppWrapper';
 import { PageWrapper } from 'components/layouts/PageWrapper';
+import { TimestampProvider } from 'hooks/useTimestamp/useTimestamp';
 
 const getLibrary: React.ComponentProps<typeof Web3ReactProvider>['getLibrary'] =
   (provider) => {
@@ -18,12 +19,14 @@ const getLibrary: React.ComponentProps<typeof Web3ReactProvider>['getLibrary'] =
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
-      <AppWrapper>
-        <PawnShopHeader />
-        <PageWrapper>
-          <Component {...pageProps} />
-        </PageWrapper>
-      </AppWrapper>
+      <TimestampProvider>
+        <AppWrapper>
+          <PawnShopHeader />
+          <PageWrapper>
+            <Component {...pageProps} />
+          </PageWrapper>
+        </AppWrapper>
+      </TimestampProvider>
     </Web3ReactProvider>
   );
 }
