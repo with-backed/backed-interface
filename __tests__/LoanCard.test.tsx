@@ -2,9 +2,9 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { useTokenMetadata } from 'hooks/useTokenMetadata';
 import { LoanCard } from 'components/LoanCard';
-import { Loan } from 'components/LoanCard/LoanCard';
 import { GetNFTInfoResponse } from 'lib/getNFTInfo';
 import { ethers } from 'ethers';
+import { Loan } from 'lib/types/Loan';
 
 jest.mock('hooks/useTokenMetadata', () => ({
   useTokenMetadata: jest.fn(),
@@ -13,13 +13,23 @@ jest.mock('hooks/useTokenMetadata', () => ({
 const mockedUseTokenMetadata = useTokenMetadata as jest.Mock;
 
 const loan: Loan = {
-  id: '1',
+  id: ethers.BigNumber.from('1'),
   loanAssetSymbol: 'DAI',
-  loanAssetDecimal: 18,
-  loanAmount: '200',
-  perSecondInterestRate: '200',
-  collateralTokenId: '3',
+  loanAssetDecimals: 18,
+  loanAmount: ethers.BigNumber.from('200'),
+  perSecondInterestRate: ethers.BigNumber.from('200'),
+  collateralTokenId: ethers.BigNumber.from('3'),
   collateralTokenURI: 'gopher://gopher.pawnshop.internet',
+  loanAssetContractAddress: '0xcontractAddress',
+  collateralContractAddress: '0xcontractAddress',
+  accumulatedInterest: ethers.BigNumber.from('0'),
+  lastAccumulatedTimestamp: ethers.BigNumber.from('0'),
+  durationSeconds: ethers.BigNumber.from('100000'),
+  closed: false,
+  lender: '0xlender',
+  borrower: '0xborrower',
+  interestOwed: ethers.BigNumber.from('0'),
+  endDateTimestamp: 45000000,
 };
 
 const metadata: GetNFTInfoResponse = {

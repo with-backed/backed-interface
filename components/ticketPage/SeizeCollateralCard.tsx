@@ -1,13 +1,13 @@
 import { ethers } from 'ethers';
 import { useState } from 'react';
-import { LoanInfo } from 'lib/LoanInfoType';
 import { web3LoanFacilitator, jsonRpcLoanFacilitator } from 'lib/contracts';
 import { Fieldset } from 'components/Fieldset';
 import { useWeb3 } from 'hooks/useWeb3';
 import { TransactionButton } from 'components/ticketPage/TransactionButton';
+import { Loan } from 'lib/types/Loan';
 
 interface SeizeCollateralCardProps {
-  loanInfo: LoanInfo;
+  loanInfo: Loan;
   seizeCollateralSuccessCallback: () => void;
 }
 
@@ -32,7 +32,7 @@ export default function SeizeCollateralCard({
     setWaitingForTx(false);
 
     const t = await web3LoanFacilitator().seizeCollateral(
-      loanInfo.loanId,
+      loanInfo.id,
       // If they've gotten this far, they have an account.
       account as string,
     );
@@ -50,7 +50,7 @@ export default function SeizeCollateralCard({
 
   const wait = async () => {
     const loanFacilitator = jsonRpcLoanFacilitator();
-    const filter = loanFacilitator.filters.SeizeCollateral(loanInfo.loanId);
+    const filter = loanFacilitator.filters.SeizeCollateral(loanInfo.id);
     loanFacilitator.once(filter, () => {
       seizeCollateralSuccessCallback();
       setWaitingForTx(false);

@@ -1,12 +1,12 @@
 import { useCallback, useMemo, useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { jsonRpcLoanFacilitator, web3LoanFacilitator } from 'lib/contracts';
-import { LoanInfo } from 'lib/LoanInfoType';
 import { TransactionButton } from 'components/ticketPage/TransactionButton';
 import { useWeb3 } from 'hooks/useWeb3';
+import { Loan } from 'lib/types/Loan';
 
 interface UnderwriteButtonProps {
-  loanInfo: LoanInfo;
+  loanInfo: Loan;
   allowance: ethers.BigNumber;
   interestRate: ethers.BigNumber;
   loanAmount: ethers.BigNumber;
@@ -62,16 +62,13 @@ export default function UnderwriteButton({
   const waitForUnderwrite = useCallback(async () => {
     const loanFacilitator = jsonRpcLoanFacilitator();
 
-    const filter = loanFacilitator.filters.UnderwriteLoan(
-      loanInfo.loanId,
-      account,
-    );
+    const filter = loanFacilitator.filters.UnderwriteLoan(loanInfo.id, account);
 
     loanFacilitator.once(filter, () => {
       setTransactionPending(false);
       loanUpdatedCallback();
     });
-  }, [account, loanInfo.loanId, loanUpdatedCallback]);
+  }, [account, loanInfo.id, loanUpdatedCallback]);
 
   const isDisabled = useMemo(
     () =>
@@ -79,7 +76,13 @@ export default function UnderwriteButton({
       (!checkHas10PercentImprovement() &&
         !loanInfo.lastAccumulatedTimestamp.eq(0) &&
         isFilled()),
-    [allowance, checkHas10PercentImprovement, isFilled, loanAmount],
+    [
+      allowance,
+      checkHas10PercentImprovement,
+      isFilled,
+      loanAmount,
+      loanInfo.lastAccumulatedTimestamp,
+    ],
   );
 
   const underwrite = useCallback(async () => {
@@ -88,7 +91,7 @@ export default function UnderwriteButton({
     }
     const loanFacilitator = web3LoanFacilitator();
     const t = await loanFacilitator.underwriteLoan(
-      loanInfo.loanId,
+      loanInfo.id,
       interestRate,
       loanAmount,
       duration,
@@ -112,7 +115,7 @@ export default function UnderwriteButton({
     isDisabled,
     isFilled,
     loanAmount,
-    loanInfo.loanId,
+    loanInfo.id,
     waitForUnderwrite,
   ]);
 

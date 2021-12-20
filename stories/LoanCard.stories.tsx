@@ -3,11 +3,14 @@ import { FiveColumn } from 'components/layouts/FiveColumn';
 import { LoanCard } from 'components/LoanCard';
 import { LoanCardLoaded, LoanCardLoading } from 'components/LoanCard/LoanCard';
 import { GetNFTInfoResponse } from 'lib/getNFTInfo';
+import { ethers } from 'ethers';
 
 export default {
   title: 'components/LoanCard',
   component: LoanCard,
 };
+
+const perSecondInterestRate = ethers.BigNumber.from('9');
 
 export const LoanCards = () => (
   <FiveColumn>
@@ -16,7 +19,7 @@ export const LoanCards = () => (
       id="18"
       title="View loan #18"
       formattedLoanAmount="93.0 DAI"
-      perSecondInterestRate="9"
+      perSecondInterestRate={perSecondInterestRate}
       metadata={
         {
           name: 'Monarch #7',
@@ -30,7 +33,7 @@ export const LoanCards = () => (
       id="18"
       title="View loan #18"
       formattedLoanAmount="930000000000.0 SHIB"
-      perSecondInterestRate="9"
+      perSecondInterestRate={perSecondInterestRate}
       metadata={
         {
           name: 'Monarch #7',
