@@ -1,10 +1,19 @@
 import { ethers } from 'ethers';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
+import relativeTime from 'dayjs/plugin/relativeTime';
 
 dayjs.extend(duration);
+dayjs.extend(relativeTime);
 
 const SECONDS_IN_DAY = 60 * 60 * 24;
+
+export function humanizedDuration(
+  duration: number,
+  unit: duration.DurationUnitType = 'seconds',
+) {
+  return dayjs.duration(duration, unit).humanize();
+}
 
 export function secondsToDays(seconds: number) {
   return seconds / SECONDS_IN_DAY;
