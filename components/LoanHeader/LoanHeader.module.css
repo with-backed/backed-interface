@@ -8,7 +8,7 @@
 }
 
 .loan-header > div {
-  max-width: 980px;
+  max-width: var(--max-width);
 }
 
 .red {
