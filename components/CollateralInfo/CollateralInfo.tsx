@@ -5,22 +5,22 @@ import { Loan } from 'lib/types/Loan';
 import React, { useMemo } from 'react';
 
 type CollateralInfoProps = {
-  loanInfo: Loan;
+  loan: Loan;
 };
 
-export const CollateralInfo = ({ loanInfo }: CollateralInfoProps) => {
+export const CollateralInfo = ({ loan }: CollateralInfoProps) => {
   const tokenId = useMemo(
-    () => loanInfo.collateralTokenId.toNumber(),
-    [loanInfo.collateralTokenId],
+    () => loan.collateralTokenId.toNumber(),
+    [loan.collateralTokenId],
   );
 
   return (
-    <Fieldset legend="🖼 Collateral">
+    <Fieldset legend="🖼️ Collateral">
       <DescriptionList>
         <dt>#{tokenId}</dt>
         <dd>
           <OpenSeaAddressLink
-            contractAddress={loanInfo.collateralContractAddress}
+            contractAddress={loan.collateralContractAddress}
             assetId={tokenId}>
             View on OpenSea
           </OpenSeaAddressLink>

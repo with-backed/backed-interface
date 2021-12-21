@@ -6,6 +6,11 @@
   align-items: center;
 }
 
+.horizontal,
+.vertical {
+  margin: 0;
+}
+
 .horizontal > dd,
 .vertical > dd {
   margin: 0;

@@ -1,0 +1,11 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  background-color: var(--neutral-5);
+  padding: 40px 0;
+}
+
+.wrapper > div {
+  max-width: var(--max-width);
+}

@@ -23,7 +23,7 @@ export function TicketHistory({ loanInfo }: TicketHistoryProps) {
   }, [setup]);
 
   return (
-    <Fieldset legend="activity">
+    <Fieldset legend="🎬 Activity">
       <ol className={styles['top-level-list']}>
         {history !== null &&
           history.map((e: ethers.Event, i) => (
