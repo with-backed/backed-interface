@@ -13,7 +13,10 @@ const _provider = new ethers.providers.JsonRpcProvider(
 
 const TIMESTAMP_POLL_INTERVAL = 14000;
 
-const TimestampContext = createContext<number | null>(null);
+/**
+ * Exported only for use in stories. Please use TimestampProvider.
+ */
+export const TimestampContext = createContext<number | null>(null);
 
 export function TimestampProvider({ children }: PropsWithChildren<{}>) {
   const [timestamp, setTimestamp] = useState<number | null>(null);

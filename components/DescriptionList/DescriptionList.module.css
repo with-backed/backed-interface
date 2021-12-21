@@ -9,6 +9,7 @@
 .horizontal > dd,
 .vertical > dd {
   margin: 0;
+  line-height: 32px;
 }
 
 .horizontal > dt,
