@@ -1,3 +1,10 @@
+import { SubgraphBuyoutEvent } from './SubgraphLoanEvents/SubgraphBuyoutEvent';
+import { SubgraphCloseEvent } from './SubgraphLoanEvents/SubgraphCloseEvent';
+import { SubgraphCollateralSeizureEvent } from './SubgraphLoanEvents/SubgraphCollateralSeizureEvent';
+import { SubgraphCreateEvent } from './SubgraphLoanEvents/SubgraphCreateEvent';
+import { SubgraphLendEvent } from './SubgraphLoanEvents/SubgraphLendEvent';
+import { SubgraphRepayEvent } from './SubgraphLoanEvents/SubgraphRepayEvent';
+
 export type SubgraphLoan = {
   id: string;
   loanAssetContractAddress: string;
@@ -15,4 +22,10 @@ export type SubgraphLoan = {
   borrowTicketHolder: string;
   endDateTimestamp: number;
   collateralTokenURI: string;
+  createEvent?: SubgraphCreateEvent;
+  lendEvents?: SubgraphLendEvent[];
+  buyoutEvents?: SubgraphBuyoutEvent[];
+  collateralSeizureEvents?: SubgraphCollateralSeizureEvent[];
+  repayEvent?: SubgraphRepayEvent;
+  closeEvent?: SubgraphCloseEvent;
 };
