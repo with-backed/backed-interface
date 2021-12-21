@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
 import { useTimestamp } from 'hooks/useTimestamp';
+import { SCALAR } from 'lib/constants';
 import { humanizedDuration } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
 import { Loan } from 'lib/types/Loan';
@@ -17,17 +18,17 @@ function loanStatus({
   closed,
   durationSeconds,
   lastAccumulatedTimestamp,
-}: LoanStatusParams): string {
+}: LoanStatusParams) {
   if (closed) {
     return 'Closed';
   }
 
-  if (!timestamp) {
-    return 'Loading...';
-  }
-
   if (lastAccumulatedTimestamp.eq(0)) {
     return 'Awaiting lender';
+  }
+
+  if (!timestamp) {
+    return 'Loading...';
   }
 
   if (lastAccumulatedTimestamp.add(durationSeconds).lte(timestamp)) {
@@ -39,9 +40,11 @@ function loanStatus({
 
 export function useLoanDetails(loan: Loan) {
   const {
+    id,
     closed,
     durationSeconds,
     interestOwed,
+    accumulatedInterest,
     lastAccumulatedTimestamp,
     loanAmount,
     loanAssetDecimals,
@@ -77,12 +80,44 @@ export function useLoanDetails(loan: Loan) {
       loanAssetSymbol,
     ].join(' ');
   }, [interestOwed, loanAssetDecimals, loanAssetSymbol]);
+  const formattedLoanID = useMemo(() => {
+    return ['Loan #', id.toString()].join('');
+  }, [id]);
+  const formattedTotalPayback = useMemo(() => {
+    return [
+      ethers.utils.formatUnits(loanAmount.add(interestOwed), loanAssetDecimals),
+      loanAssetSymbol,
+    ].join(' ');
+  }, [loanAmount, interestOwed, loanAssetDecimals, loanAssetSymbol]);
+  const formattedEstimatedPaybackAtMaturity = useMemo(() => {
+    const interestOverTerm = perSecondInterestRate
+      .mul(durationSeconds)
+      .mul(loanAmount)
+      .div(SCALAR);
+
+    const estimate = accumulatedInterest.add(loanAmount).add(interestOverTerm);
+
+    return [
+      ethers.utils.formatUnits(estimate, loanAssetDecimals),
+      loanAssetSymbol,
+    ].join(' ');
+  }, [
+    accumulatedInterest,
+    durationSeconds,
+    loanAssetSymbol,
+    loanAmount,
+    loanAssetDecimals,
+    perSecondInterestRate,
+  ]);
 
   return {
     formattedInterestAccrued,
     formattedInterestRate,
+    formattedLoanID,
     formattedPrincipal,
     formattedStatus,
     formattedTotalDuration,
+    formattedTotalPayback,
+    formattedEstimatedPaybackAtMaturity,
   };
 }
