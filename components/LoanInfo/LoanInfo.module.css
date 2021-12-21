@@ -2,10 +2,23 @@
   display: flex;
   justify-content: center;
   width: 100%;
-  background-color: var(--neutral-5);
+  position: relative;
   padding: 40px 0;
 }
 
-.wrapper > div {
+.wrapper > div:last-child {
   max-width: var(--max-width);
+  z-index: 1;
+}
+
+.mask {
+  background: var(--background-radial-gradient);
+  opacity: 0.7;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  z-index: 0;
 }
