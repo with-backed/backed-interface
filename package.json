@@ -6,7 +6,7 @@
     "dev": "yarn typechain --target ethers-v5 --out-dir ./abis/types './abis/*.json' && next dev",
     "build": "yarn typechain --target ethers-v5 --out-dir ./abis/types './abis/*.json' && next build",
     "start": "next start",
-    "storybook": "start-storybook -p 6006",
+    "storybook": "start-storybook -p 6006 -s ./public",
     "build-storybook": "build-storybook",
     "lint": "next lint",
     "format": "prettier --write \"**/*.{ts,tsx,js,json}\"",

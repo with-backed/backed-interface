@@ -1,5 +1,5 @@
 import '../styles/global.css';
-import '../public/fonts/maru/fonts-maru.css';
+import '../styles/fonts-maru.css';
 import 'normalize.css';
 import * as NextImage from 'next/image';
 import { RouterContext } from 'next/dist/shared/lib/router-context';
