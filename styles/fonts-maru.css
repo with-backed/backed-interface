@@ -1,0 +1,12 @@
+@font-face {
+  font-family: 'GT Maru Regular';
+  src: url('/fonts/maru/GT-Maru-Regular-Trial.woff2') format('woff2'),
+    url('/fonts/maru/GT-Maru-Light-Trial.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'GT Maru Mono';
+  src: url('/fonts/maru/GT-Maru-Mono-Regular-Trial.woff2') format('woff2'),
+    url('/fonts/maru/GT-Maru-Mono-Regular-Oblique-Trial.woff2') format('woff2'),
+    url('/fonts/maru/GT-Maru-Mono-Bold-Trial.woff2') format('woff2');
+}
