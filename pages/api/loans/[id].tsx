@@ -11,7 +11,7 @@ export default async function handler(
   try {
     const { id, includeEvents } = req.query;
     const idString: string = Array.isArray(id) ? id[0] : id;
-    const includeEventsBool: boolean = Array.isArray(id)
+    const includeEventsBool: boolean = Array.isArray(includeEvents)
       ? includeEvents[0] == 'true'
       : includeEvents == 'true';
 
