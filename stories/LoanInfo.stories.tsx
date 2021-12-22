@@ -1,6 +1,6 @@
 import React from 'react';
 import { LoanInfo } from 'components/LoanInfo';
-import { baseLoan } from 'lib/mockData';
+import { baseLoan, loanWithLenderAccruing } from 'lib/mockData';
 
 export default {
   title: 'components/LoanInfo',
@@ -13,6 +13,10 @@ const collateralMedia = {
   mediaMimeType: 'video',
 };
 
-export function LoanInfoComponent() {
+export function LoanInfoNoLender() {
   return <LoanInfo loan={baseLoan} />;
+}
+
+export function LoanInfoWithLender() {
+  return <LoanInfo loan={loanWithLenderAccruing} />;
 }
