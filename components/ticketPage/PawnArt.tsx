@@ -4,6 +4,7 @@ import { getNFTInfo, GetNFTInfoResponse } from 'lib/getNFTInfo';
 import { Media } from 'components/Media';
 import { ERC721 } from 'abis/types';
 import { jsonRpcERC721Contract } from 'lib/contracts';
+import { Fallback } from 'components/Media/Fallback';
 
 const pawnTicketsContract = jsonRpcERC721Contract(
   process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT || '',
@@ -38,23 +39,19 @@ function PawnArt({ contract, tokenId }: PawnArtProps) {
     load();
   }, [load]);
 
-  return (
-    <div className="pawn-art">
-      {nftInfo !== null && <PawnArtLoaded {...nftInfo} />}
-    </div>
-  );
+  if (nftInfo === null) {
+    return <Fallback />;
+  }
+
+  return <PawnArtLoaded {...nftInfo} />;
 }
 
 function PawnArtLoaded(nftInfo: GetNFTInfoResponse) {
   return (
-    <div>
-      <div className="pawn-art nfte__media">
-        <Media
-          media={nftInfo.mediaUrl}
-          mediaMimeType={nftInfo.mediaMimeType}
-          autoPlay={false}
-        />
-      </div>
-    </div>
+    <Media
+      media={nftInfo.mediaUrl}
+      mediaMimeType={nftInfo.mediaMimeType}
+      autoPlay={false}
+    />
   );
 }

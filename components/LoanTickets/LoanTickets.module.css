@@ -1,5 +1,11 @@
 .wrapper {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--gap);
+  grid-auto-flow: column;
+  grid-column-gap: var(--gap);
+  grid-auto-columns: minmax(0, 1fr);
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
 }
