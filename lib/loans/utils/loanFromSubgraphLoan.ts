@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 import { Loan } from 'lib/types/Loan';
 import { SubgraphLoan } from 'lib/types/SubgraphLoan';
 
-export function parseSubgraphLoan(loan: SubgraphLoan): Loan {
+export function loanFromSubgraphLoan(loan: SubgraphLoan): Loan {
   const loanAmount = ethers.BigNumber.from(loan.loanAmount);
   const perSecondInterestRate = ethers.BigNumber.from(
     loan.perSecondInterestRate,

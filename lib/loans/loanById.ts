@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 import { Loan } from 'lib/types/Loan';
 import { nodeLoanById } from './node/nodeLoanById';
 import { subgraphLoanById } from './subgraph/subgraphLoanById';
-import { parseSubgraphLoan } from './utils';
+import { loanFromSubgraphLoan } from './utils/loanFromSubgraphLoan';
 
 export async function loanById(id: string): Promise<Loan | null> {
   const loanInfoFromGraphQL = await subgraphLoanById(id, false);
@@ -15,7 +15,7 @@ export async function loanById(id: string): Promise<Loan | null> {
       loanInfoFromGraphQL.loanAssetContractAddress,
     ).isZero()
   ) {
-    return parseSubgraphLoan(loanInfoFromGraphQL);
+    return loanFromSubgraphLoan(loanInfoFromGraphQL);
   }
 
   // The Graph has not indexed this loan, but it may exist.

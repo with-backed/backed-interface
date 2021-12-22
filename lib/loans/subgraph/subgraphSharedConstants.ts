@@ -20,7 +20,10 @@ export const ALL_LOAN_PROPERTIES = `
 const CREATE_EVENT_PROPERTIES = `
     id, 
     timestamp,
-    creator
+    creator,
+    minLoanAmount,
+    maxPerSecondInterestRate,
+    maxDurationSeconds
 `;
 
 const LEND_EVENT_PROPERTIES = `

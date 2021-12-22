@@ -1,9 +1,9 @@
 import { ethers } from 'ethers';
 import { Loan } from 'lib/types/Loan';
 import { SubgraphLoan } from 'lib/types/SubgraphLoan';
-import { parseSubgraphLoan } from 'lib/loans/utils';
+import { loanFromSubgraphLoan } from 'lib/loans/utils/loanFromSubgraphLoan';
 
-describe('parseSubgraphLoan', () => {
+describe('loanFromSubgraphLoan', () => {
   let accumulatedInterest = '186000000000000';
   let borrowTicketHolder = '0xbc3ed6b537f2980e66f396fe14210a56ba3f72c4';
   let closed = false;
@@ -23,7 +23,7 @@ describe('parseSubgraphLoan', () => {
   let subgraphLoan: SubgraphLoan;
 
   function result(): Loan {
-    return parseSubgraphLoan(subgraphLoan);
+    return loanFromSubgraphLoan(subgraphLoan);
   }
 
   beforeAll(() => {
