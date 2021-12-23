@@ -18,7 +18,7 @@ function addressStringToHSL(address: string) {
   // remove leading '0x' from hex string, split into nibbles
   const hash = ethers.utils.keccak256(address).slice(2).split('');
   const bytes = chunk(hash, 2).map((nibbles) => parseInt(nibbles.join(''), 16));
-  console.log({ bytes });
+
   const h = (bytes[0] + bytes[1]) % 360;
   const s = 80 + (bytes[2] % 20);
   const l = 80 + (bytes[3] % 10);
