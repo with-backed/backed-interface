@@ -1,19 +1,54 @@
-import { Button, CompletedButton } from 'components/Button';
+import { Button } from 'components/Button';
 import { ethers } from 'ethers';
-import { ErrorMessage, Field, Formik } from 'formik';
 import { Loan } from 'lib/types/Loan';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styles from './LoanForm.module.css';
-import * as Yup from 'yup';
-import { formattedAnnualRate } from 'lib/interest';
-import { secondsBigNumToDays } from 'lib/duration';
+import { useWeb3 } from 'hooks/useWeb3';
+import { ConnectWallet } from 'components/ConnectWallet';
+import {
+  getAccountLoanAssetAllowance,
+  getAccountLoanAssetBalance,
+} from 'lib/account';
+import { LoanFormAwaiting } from './LoanFormAwaiting';
 
 type LoanFormProps = {
   loan: Loan;
 };
 export function LoanForm({ loan }: LoanFormProps) {
+  const { account } = useWeb3();
   const [formOpen, setFormOpen] = useState(false);
+  const [balance, setBalance] = useState(0);
+  const [needsAllowance, setNeedsAllowance] = useState(true);
   const toggleForm = useCallback(() => setFormOpen((prev) => !prev), []);
+
+  useEffect(() => {
+    if (account) {
+      Promise.all([
+        getAccountLoanAssetBalance(
+          account,
+          loan.loanAssetContractAddress,
+          ethers.BigNumber.from(loan.loanAssetDecimals),
+        ),
+        getAccountLoanAssetAllowance(account, loan.loanAssetContractAddress),
+      ]).then(([balance, allowanceAmount]) => {
+        setBalance(balance);
+        setNeedsAllowance(allowanceAmount.lt(loan.loanAmount));
+      });
+    }
+  }, [
+    account,
+    loan.loanAssetContractAddress,
+    loan.loanAssetDecimals,
+    loan.loanAmount,
+  ]);
+
+  if (!account) {
+    return (
+      <div className={styles.form}>
+        <ConnectWallet />
+      </div>
+    );
+  }
 
   if (!formOpen) {
     return (
@@ -28,66 +63,14 @@ export function LoanForm({ loan }: LoanFormProps) {
   }
 
   if (loan.lastAccumulatedTimestamp.eq(0)) {
-    return <LoanFormAwaiting loan={loan} />;
+    return (
+      <LoanFormAwaiting
+        loan={loan}
+        balance={balance}
+        needsAllowance={needsAllowance}
+      />
+    );
   }
 
   return null;
-}
-
-function LoanFormAwaiting({ loan }: LoanFormProps) {
-  const initialAmount = useMemo(
-    () =>
-      parseFloat(
-        ethers.utils.formatUnits(loan.loanAmount, loan.loanAssetDecimals),
-      ),
-    [loan.loanAmount, loan.loanAssetDecimals],
-  );
-  const initialInterestRate = useMemo(
-    () => parseFloat(formattedAnnualRate(loan.perSecondInterestRate)),
-    [loan.perSecondInterestRate],
-  );
-  const initialDuration = useMemo(
-    () => secondsBigNumToDays(loan.durationSeconds),
-    [loan.durationSeconds],
-  );
-  return (
-    <Formik
-      initialValues={{
-        amount: initialAmount,
-        interestRate: initialInterestRate,
-        duration: initialDuration,
-      }}
-      validationSchema={Yup.object({
-        amount: Yup.number().min(initialAmount),
-        interestRate: Yup.number().min(initialInterestRate),
-        duration: Yup.number().min(initialDuration),
-      })}
-      onSubmit={console.log}>
-      {(formik) => (
-        <form className={styles.form} onSubmit={formik.handleSubmit}>
-          <CompletedButton buttonText="Lend against this NFT" />
-
-          <label htmlFor="amount">
-            <span>Amount ({loan.loanAssetSymbol})</span>
-            <Field name="amount" />
-          </label>
-          <ErrorMessage name="amount" />
-
-          <label htmlFor="interestRate">
-            <span>Interest Rate</span>
-            <Field name="interestRate" />
-          </label>
-          <ErrorMessage name="interestRate" />
-
-          <label htmlFor="duration">
-            <span>Duration (Days)</span>
-            <Field name="duration" />
-          </label>
-          <ErrorMessage name="duration" />
-
-          <Button type="submit">Lend</Button>
-        </form>
-      )}
-    </Formik>
-  );
 }
