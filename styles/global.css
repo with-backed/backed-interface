@@ -20,6 +20,7 @@
   /* layout */
   --max-width-header: 1224px;
   --max-width: 980px;
+  --column-width: 130px;
   --line-height: 1.6;
 
   /* padding and gaps */

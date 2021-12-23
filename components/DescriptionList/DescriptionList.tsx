@@ -7,11 +7,16 @@ interface DescriptionListProps
     HTMLDListElement
   > {
   orientation?: 'horizontal' | 'vertical';
+  clamped?: boolean;
 }
 
 export const DescriptionList = ({
   children,
   orientation = 'vertical',
+  clamped = false,
 }: DescriptionListProps) => {
-  return <dl className={styles[orientation]}>{children}</dl>;
+  const className = [styles[orientation], clamped ? styles.clamped : ''].join(
+    ' ',
+  );
+  return <dl className={className}>{children}</dl>;
 };

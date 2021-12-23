@@ -6,6 +6,10 @@
   align-items: center;
 }
 
+.clamped {
+  grid-template-columns: var(--column-width) 1fr;
+}
+
 .horizontal,
 .vertical {
   margin: 0;

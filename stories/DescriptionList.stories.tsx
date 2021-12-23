@@ -34,3 +34,25 @@ export const List = () => (
     </DescriptionList>
   </>
 );
+
+export const ClampedVersusFluid = () => (
+  <>
+    <DescriptionList orientation="horizontal">
+      <dt>Total accrued interest</dt>
+      <dd>12.5 DAI</dd>
+      <dt>A particularly long label for this one</dt>
+      <dd>yep</dd>
+      <dt>normal</dt>
+      <dd>Hello!</dd>
+    </DescriptionList>
+    <br />
+    <DescriptionList orientation="horizontal" clamped>
+      <dt>Total accrued interest</dt>
+      <dd>12.5 DAI</dd>
+      <dt>A particularly long label for this one</dt>
+      <dd>yep</dd>
+      <dt>normal</dt>
+      <dd>Hello!</dd>
+    </DescriptionList>
+  </>
+);
