@@ -1,5 +1,6 @@
 import { DescriptionList } from 'components/DescriptionList';
 import { TwoColumn } from 'components/layouts/TwoColumn';
+import { LoanForm } from 'components/LoanForm';
 import { Media } from 'components/Media';
 import { Fallback } from 'components/Media/Fallback';
 import { useLoanDetails } from 'hooks/useLoanDetails';
@@ -46,6 +47,7 @@ export function LoanHeader({ collateralMedia, loan }: LoanHeaderProps) {
         {!collateralMedia && <Fallback />}
         <div>
           <List details={details} />
+          <LoanForm loan={loan} />
         </div>
       </TwoColumn>
     </div>
@@ -66,7 +68,7 @@ function LoanHeaderLoadingList({
   },
 }: ListProps) {
   return (
-    <DescriptionList orientation="horizontal">
+    <DescriptionList orientation="horizontal" clamped>
       <dt>{formattedLoanID}</dt>
       <dd>{formattedPrincipal}</dd>
       <dt>Interest Rate</dt>
@@ -88,7 +90,7 @@ function LoanHeaderAwaitingList({
   },
 }: ListProps) {
   return (
-    <DescriptionList orientation="horizontal">
+    <DescriptionList orientation="horizontal" clamped>
       <dt>{formattedLoanID}</dt>
       <dd>{formattedPrincipal}</dd>
       <dt>Interest Rate</dt>
@@ -111,7 +113,7 @@ function LoanHeaderClosedList({
   },
 }: ListProps) {
   return (
-    <DescriptionList orientation="horizontal">
+    <DescriptionList orientation="horizontal" clamped>
       <dt>{formattedLoanID}</dt>
       <dd>{formattedPrincipal}</dd>
       <dt>Interest Rate</dt>
@@ -142,7 +144,7 @@ function LoanHeaderAccruingList({
   },
 }: ListProps) {
   return (
-    <DescriptionList orientation="horizontal">
+    <DescriptionList orientation="horizontal" clamped>
       <dt>{formattedLoanID}</dt>
       <dd>{formattedPrincipal}</dd>
       <dt>Interest Rate</dt>
@@ -173,7 +175,7 @@ function LoanHeaderPastDueList({
   },
 }: ListProps) {
   return (
-    <DescriptionList orientation="horizontal">
+    <DescriptionList orientation="horizontal" clamped>
       <dt>{formattedLoanID}</dt>
       <dd>{formattedPrincipal}</dd>
       <dt>Interest Rate</dt>
