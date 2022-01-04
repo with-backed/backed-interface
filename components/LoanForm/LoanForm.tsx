@@ -69,6 +69,7 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
         loan={loan}
         balance={balance}
         needsAllowance={needsAllowance}
+        setNeedsAllowance={setNeedsAllowance}
         refresh={refresh}
       />
     );

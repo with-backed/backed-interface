@@ -1,6 +1,5 @@
 import {
   AllowButton,
-  Button,
   CompletedButton,
   TransactionButton,
 } from 'components/Button';
@@ -28,12 +27,14 @@ type LoanFormAwaitingProps = {
   loan: Loan;
   balance: number;
   needsAllowance: boolean;
+  setNeedsAllowance: (value: boolean) => void;
   refresh: () => void;
 };
 export function LoanFormAwaiting({
   loan,
   balance,
   needsAllowance,
+  setNeedsAllowance,
   refresh,
 }: LoanFormAwaitingProps) {
   const { account } = useWeb3();
@@ -52,7 +53,6 @@ export function LoanFormAwaiting({
     () => secondsBigNumToDays(loan.durationSeconds),
     [loan.durationSeconds],
   );
-  const [allowed, setAllowed] = useState(!needsAllowance);
   const [txHash, setTxHash] = useState('');
   const [transactionPending, setTransactionPending] = useState(false);
   const handleSubmit = useCallback(
@@ -61,13 +61,15 @@ export function LoanFormAwaiting({
       const interestRatePerSecond = ethers.BigNumber.from(
         Math.floor(interestRate * 10 ** INTEREST_RATE_PERCENT_DECIMALS),
       ).div(SECONDS_IN_YEAR);
+
       const t = await loanFacilitator.underwriteLoan(
         loan.id,
         interestRatePerSecond,
-        amount,
+        ethers.utils.parseUnits(amount.toString(), loan.loanAssetDecimals),
         daysToSecondsBigNum(duration),
         account!,
       );
+
       setTransactionPending(true);
       setTxHash(t.hash);
       t.wait()
@@ -87,7 +89,7 @@ export function LoanFormAwaiting({
           console.error(err);
         });
     },
-    [account, loan.id, refresh],
+    [account, loan.id, loan.loanAssetDecimals, refresh],
   );
 
   return (
@@ -127,7 +129,7 @@ export function LoanFormAwaiting({
           <AllowButton
             contractAddress={loan.loanAssetContractAddress}
             symbol={loan.loanAssetSymbol}
-            callback={() => setAllowed(true)}
+            callback={() => setNeedsAllowance(false)}
             done={!needsAllowance}
           />
           <TransactionButton
@@ -135,7 +137,7 @@ export function LoanFormAwaiting({
             type="submit"
             txHash={txHash}
             isPending={transactionPending}
-            disabled={!allowed}
+            disabled={needsAllowance}
           />
         </form>
       )}
