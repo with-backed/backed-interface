@@ -142,6 +142,7 @@ function LoanHeaderAccruingList({
     formattedPrincipal,
     formattedInterestAccrued,
     formattedEstimatedPaybackAtMaturity,
+    formattedTimeRemaining,
   },
 }: ListProps) {
   return (
@@ -157,7 +158,7 @@ function LoanHeaderAccruingList({
       <dt>Duration</dt>
       <dd>{formattedTotalDuration}</dd>
       <dt>Remaining</dt>
-      <dd>some amount of time</dd>
+      <dd>{formattedTimeRemaining}</dd>
       <dt>Est. Payback</dt>
       <dd>{formattedEstimatedPaybackAtMaturity}</dd>
     </DescriptionList>
