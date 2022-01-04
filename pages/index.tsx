@@ -1,3 +1,4 @@
+import { PageWrapper } from 'components/layouts/PageWrapper';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { LoanCard } from 'components/LoanCard';
 import { loans } from 'lib/loans/loans';
@@ -23,7 +24,7 @@ type HomeProps = {
 };
 export default function Home({ loans }: HomeProps) {
   return (
-    <>
+    <PageWrapper>
       <ThreeColumn>
         {loans.map((loan) => (
           <LoanCard key={loan.id.toString()} loan={parseSubgraphLoan(loan)} />
@@ -37,6 +38,6 @@ export default function Home({ loans }: HomeProps) {
       {process.env.NEXT_PUBLIC_ENV === 'rinkeby' && (
         <Link href="/test">Get Rinkeby DAI and an NFT!</Link>
       )}
-    </>
+    </PageWrapper>
   );
 }

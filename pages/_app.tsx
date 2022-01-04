@@ -22,9 +22,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <TimestampProvider>
         <AppWrapper>
           <PawnShopHeader />
-          <PageWrapper>
-            <Component {...pageProps} />
-          </PageWrapper>
+          <Component {...pageProps} />
         </AppWrapper>
       </TimestampProvider>
     </Web3ReactProvider>

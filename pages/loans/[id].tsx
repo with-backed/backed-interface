@@ -1,9 +1,12 @@
 import { GetServerSideProps } from 'next';
 import { Loan } from 'lib/types/Loan';
 import { ethers } from 'ethers';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { loanById } from 'lib/loans/loanById';
 import { LoanPage } from 'components/Loan/LoanPage';
+import { LoanHeader } from 'components/LoanHeader';
+import { LoanInfo } from 'components/LoanInfo';
+import { CollateralMedia } from 'lib/types/CollateralMedia';
 
 export type LoanPageProps = {
   loanInfoJson: string;
@@ -31,12 +34,16 @@ export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
 };
 
 export default function Loans({ loanInfoJson }: LoanPageProps) {
-  const loanInfo = useMemo(
-    () => parseLoanInfoJson(loanInfoJson),
-    [loanInfoJson],
-  );
+  const loan = useMemo(() => parseLoanInfoJson(loanInfoJson), [loanInfoJson]);
+  const [collateralMedia, setCollateralMedia] =
+    useState<CollateralMedia | null>(null);
 
-  return <LoanPage serverLoanInfo={loanInfo} />;
+  return (
+    <>
+      <LoanHeader loan={loan} collateralMedia={collateralMedia} />
+      <LoanInfo loan={loan} />
+    </>
+  );
 }
 
 const parseLoanInfoJson = (loanInfoJson: string): Loan => {

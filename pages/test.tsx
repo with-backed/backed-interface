@@ -6,18 +6,21 @@ import { Fieldset } from 'components/Fieldset';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { ConnectWallet } from 'components/ConnectWallet';
 import { useWeb3 } from 'hooks/useWeb3';
+import { PageWrapper } from 'components/layouts/PageWrapper';
 
 export default function Test() {
   const { account } = useWeb3();
   return (
-    <ThreeColumn>
-      <Fieldset legend="mint an NFT">
-        {account == null ? <ConnectWallet /> : <MintPunk />}
-      </Fieldset>
-      <Fieldset legend="mint DAI">
-        {account == null ? <ConnectWallet /> : <MintDAI />}
-      </Fieldset>
-    </ThreeColumn>
+    <PageWrapper>
+      <ThreeColumn>
+        <Fieldset legend="mint an NFT">
+          {account == null ? <ConnectWallet /> : <MintPunk />}
+        </Fieldset>
+        <Fieldset legend="mint DAI">
+          {account == null ? <ConnectWallet /> : <MintDAI />}
+        </Fieldset>
+      </ThreeColumn>
+    </PageWrapper>
   );
 }
 

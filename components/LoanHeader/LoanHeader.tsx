@@ -4,14 +4,10 @@ import { LoanForm } from 'components/LoanForm';
 import { Media } from 'components/Media';
 import { Fallback } from 'components/Media/Fallback';
 import { useLoanDetails } from 'hooks/useLoanDetails';
+import { CollateralMedia } from 'lib/types/CollateralMedia';
 import { Loan } from 'lib/types/Loan';
 import React, { useMemo } from 'react';
 import styles from './LoanHeader.module.css';
-
-type CollateralMedia = {
-  mediaUrl: string;
-  mediaMimeType: string;
-};
 
 type LoanHeaderProps = {
   loan: Loan;
