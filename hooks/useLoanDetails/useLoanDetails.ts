@@ -50,6 +50,7 @@ export function useLoanDetails(loan: Loan) {
     loanAssetDecimals,
     loanAssetSymbol,
     perSecondInterestRate,
+    endDateTimestamp,
   } = loan;
   const timestamp = useTimestamp();
   const formattedStatus = useMemo(
@@ -109,6 +110,12 @@ export function useLoanDetails(loan: Loan) {
     loanAssetDecimals,
     perSecondInterestRate,
   ]);
+  const formattedTimeRemaining = useMemo(() => {
+    if (!timestamp || endDateTimestamp === 0) {
+      return '--';
+    }
+    return humanizedDuration(endDateTimestamp - timestamp);
+  }, [endDateTimestamp, timestamp]);
 
   return {
     formattedInterestAccrued,
@@ -119,5 +126,6 @@ export function useLoanDetails(loan: Loan) {
     formattedTotalDuration,
     formattedTotalPayback,
     formattedEstimatedPaybackAtMaturity,
+    formattedTimeRemaining,
   };
 }

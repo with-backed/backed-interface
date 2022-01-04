@@ -1,11 +1,12 @@
 import { Button } from 'components/Button';
 import { EtherscanTransactionLink } from 'components/EtherscanLink';
-import React, { useCallback } from 'react';
+import React, { ButtonHTMLAttributes, useCallback } from 'react';
+import { ButtonProps } from './Button';
 import { CompletedButton } from './CompletedButton';
 
-interface TransactionButtonProps {
+interface TransactionButtonProps extends ButtonProps {
   text: string;
-  onClick: () => void;
+  onClick?: () => void;
   txHash: string;
   isPending: boolean;
   disabled?: boolean;
@@ -17,9 +18,10 @@ export function TransactionButton({
   txHash,
   isPending,
   disabled = false,
+  type,
 }: TransactionButtonProps) {
   const handleClick = useCallback(() => {
-    if (txHash != '' || disabled) {
+    if (txHash != '' || disabled || !onClick) {
       return;
     }
     onClick();
@@ -45,7 +47,7 @@ export function TransactionButton({
   }
 
   return (
-    <Button onClick={handleClick} disabled={disabled}>
+    <Button type={type} onClick={handleClick} disabled={disabled}>
       {text}
     </Button>
   );
