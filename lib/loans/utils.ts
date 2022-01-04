@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { SCALAR } from 'lib/constants';
 import { Loan } from 'lib/types/Loan';
 import { SubgraphLoan } from 'lib/types/SubgraphLoan';
 
@@ -17,6 +18,7 @@ export function parseSubgraphLoan(loan: SubgraphLoan): Loan {
     interestOwed = loanAmount
       .mul(perSecondInterestRate)
       .mul(now.sub(lastAccumulatedTimestamp))
+      .div(SCALAR)
       .add(accumulatedInterest);
   }
 
