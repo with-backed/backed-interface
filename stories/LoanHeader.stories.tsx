@@ -9,6 +9,7 @@ import {
   now,
 } from 'lib/mockData';
 import { TimestampContext } from 'hooks/useTimestamp/useTimestamp';
+import noop from 'lodash/noop';
 
 export default {
   title: 'components/LoanHeader',
@@ -32,7 +33,11 @@ export function LoanHeaderAwaiting() {
   return (
     <>
       <PawnShopHeader />
-      <LoanHeader loan={baseLoan} collateralMedia={collateralMedia} />
+      <LoanHeader
+        loan={baseLoan}
+        collateralMedia={collateralMedia}
+        refresh={noop}
+      />
     </>
   );
 }
@@ -44,6 +49,7 @@ export function LoanHeaderWithLenderAccruing() {
       <LoanHeader
         loan={loanWithLenderAccruing}
         collateralMedia={collateralMedia}
+        refresh={noop}
       />
     </>
   );
@@ -56,6 +62,7 @@ export function LoanHeaderWithLenderPastDue() {
       <LoanHeader
         loan={loanWithLenderPastDue}
         collateralMedia={collateralMedia}
+        refresh={noop}
       />
     </>
   );
@@ -65,7 +72,11 @@ export function LoanHeaderClosed() {
   return (
     <>
       <PawnShopHeader />
-      <LoanHeader loan={closedLoan} collateralMedia={collateralMedia} />
+      <LoanHeader
+        loan={closedLoan}
+        collateralMedia={collateralMedia}
+        refresh={noop}
+      />
     </>
   );
 }
