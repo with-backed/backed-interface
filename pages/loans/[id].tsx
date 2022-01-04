@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 import { Loan } from 'lib/types/Loan';
 import { ethers } from 'ethers';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { loanById } from 'lib/loans/loanById';
 import { LoanHeader } from 'components/LoanHeader';
 import { LoanInfo } from 'components/LoanInfo';
@@ -34,9 +34,21 @@ export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
 };
 
 export default function Loans({ loanInfoJson }: LoanPageProps) {
-  const loan = useMemo(() => parseLoanInfoJson(loanInfoJson), [loanInfoJson]);
+  const serverLoan = useMemo(
+    () => parseLoanInfoJson(loanInfoJson),
+    [loanInfoJson],
+  );
+  const [loan, setLoan] = useState(serverLoan);
   const [collateralMedia, setCollateralMedia] =
     useState<CollateralMedia | null>(null);
+
+  const refresh = useCallback(() => {
+    loanById(loan.id.toString()).then((loan) => {
+      if (loan) {
+        setLoan(loan);
+      }
+    });
+  }, [loan.id]);
 
   useEffect(() => {
     getNFTInfoFromTokenInfo(
@@ -52,7 +64,11 @@ export default function Loans({ loanInfoJson }: LoanPageProps) {
 
   return (
     <>
-      <LoanHeader loan={loan} collateralMedia={collateralMedia} />
+      <LoanHeader
+        loan={loan}
+        collateralMedia={collateralMedia}
+        refresh={refresh}
+      />
       <LoanInfo loan={loan} />
     </>
   );

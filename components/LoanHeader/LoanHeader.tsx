@@ -12,6 +12,7 @@ import styles from './LoanHeader.module.css';
 type LoanHeaderProps = {
   loan: Loan;
   collateralMedia: CollateralMedia | null;
+  refresh: () => void;
 };
 
 const listComponentLookup: {
@@ -24,7 +25,11 @@ const listComponentLookup: {
   'Accruing interest': LoanHeaderAccruingList,
 };
 
-export function LoanHeader({ collateralMedia, loan }: LoanHeaderProps) {
+export function LoanHeader({
+  collateralMedia,
+  loan,
+  refresh,
+}: LoanHeaderProps) {
   const details = useLoanDetails(loan);
   const List = useMemo(
     () => listComponentLookup[details.formattedStatus],
@@ -43,7 +48,7 @@ export function LoanHeader({ collateralMedia, loan }: LoanHeaderProps) {
         {!collateralMedia && <Fallback />}
         <div>
           <List details={details} />
-          <LoanForm loan={loan} />
+          <LoanForm loan={loan} refresh={refresh} />
         </div>
       </TwoColumn>
     </div>

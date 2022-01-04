@@ -13,8 +13,9 @@ import { LoanFormAwaiting } from './LoanFormAwaiting';
 
 type LoanFormProps = {
   loan: Loan;
+  refresh: () => void;
 };
-export function LoanForm({ loan }: LoanFormProps) {
+export function LoanForm({ loan, refresh }: LoanFormProps) {
   const { account } = useWeb3();
   const [formOpen, setFormOpen] = useState(false);
   const [balance, setBalance] = useState(0);
@@ -42,6 +43,10 @@ export function LoanForm({ loan }: LoanFormProps) {
     loan.loanAmount,
   ]);
 
+  if (loan.closed) {
+    return null;
+  }
+
   if (!account) {
     return (
       <div className={styles.form}>
@@ -58,16 +63,13 @@ export function LoanForm({ loan }: LoanFormProps) {
     );
   }
 
-  if (loan.closed) {
-    return null;
-  }
-
   if (loan.lastAccumulatedTimestamp.eq(0)) {
     return (
       <LoanFormAwaiting
         loan={loan}
         balance={balance}
         needsAllowance={needsAllowance}
+        refresh={refresh}
       />
     );
   }

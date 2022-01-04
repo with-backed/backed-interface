@@ -1,23 +1,42 @@
-import { AllowButton, Button, CompletedButton } from 'components/Button';
+import {
+  AllowButton,
+  Button,
+  CompletedButton,
+  TransactionButton,
+} from 'components/Button';
 import { ethers } from 'ethers';
 import { ErrorMessage, Field, Formik } from 'formik';
-import { secondsBigNumToDays } from 'lib/duration';
+import { useWeb3 } from 'hooks/useWeb3';
+import { jsonRpcLoanFacilitator, web3LoanFacilitator } from 'lib/contracts';
+import { daysToSecondsBigNum, secondsBigNumToDays } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
 import { Loan } from 'lib/types/Loan';
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import * as Yup from 'yup';
 import styles from './LoanForm.module.css';
+
+const SECONDS_IN_YEAR = 31_536_000;
+const INTEREST_RATE_PERCENT_DECIMALS = 8;
+
+interface Values {
+  amount: number;
+  duration: number;
+  interestRate: number;
+}
 
 type LoanFormAwaitingProps = {
   loan: Loan;
   balance: number;
   needsAllowance: boolean;
+  refresh: () => void;
 };
 export function LoanFormAwaiting({
   loan,
   balance,
   needsAllowance,
+  refresh,
 }: LoanFormAwaitingProps) {
+  const { account } = useWeb3();
   const initialAmount = useMemo(
     () =>
       parseFloat(
@@ -34,6 +53,42 @@ export function LoanFormAwaiting({
     [loan.durationSeconds],
   );
   const [allowed, setAllowed] = useState(!needsAllowance);
+  const [txHash, setTxHash] = useState('');
+  const [transactionPending, setTransactionPending] = useState(false);
+  const handleSubmit = useCallback(
+    async ({ amount, duration, interestRate }: Values) => {
+      const loanFacilitator = web3LoanFacilitator();
+      const interestRatePerSecond = ethers.BigNumber.from(
+        Math.floor(interestRate * 10 ** INTEREST_RATE_PERCENT_DECIMALS),
+      ).div(SECONDS_IN_YEAR);
+      const t = await loanFacilitator.underwriteLoan(
+        loan.id,
+        interestRatePerSecond,
+        amount,
+        daysToSecondsBigNum(duration),
+        account!,
+      );
+      setTransactionPending(true);
+      setTxHash(t.hash);
+      t.wait()
+        .then(() => {
+          const loanFacilitator = jsonRpcLoanFacilitator();
+          const filter = loanFacilitator.filters.UnderwriteLoan(
+            loan.id,
+            account,
+          );
+          loanFacilitator.once(filter, () => {
+            setTransactionPending(false);
+            refresh();
+          });
+        })
+        .catch((err) => {
+          setTransactionPending(false);
+          console.error(err);
+        });
+    },
+    [account, loan.id, refresh],
+  );
 
   return (
     <Formik
@@ -44,10 +99,10 @@ export function LoanFormAwaiting({
       }}
       validationSchema={Yup.object({
         amount: Yup.number().min(initialAmount).max(balance),
-        interestRate: Yup.number().min(initialInterestRate),
+        interestRate: Yup.number().max(initialInterestRate),
         duration: Yup.number().min(initialDuration),
       })}
-      onSubmit={console.log}>
+      onSubmit={handleSubmit}>
       {(formik) => (
         <form className={styles.form} onSubmit={formik.handleSubmit}>
           <CompletedButton buttonText="Lend against this NFT" />
@@ -73,10 +128,15 @@ export function LoanFormAwaiting({
             contractAddress={loan.loanAssetContractAddress}
             symbol={loan.loanAssetSymbol}
             callback={() => setAllowed(true)}
+            done={!needsAllowance}
           />
-          <Button disabled={!allowed} type="submit">
-            Lend
-          </Button>
+          <TransactionButton
+            text="Lend"
+            type="submit"
+            txHash={txHash}
+            isPending={transactionPending}
+            disabled={!allowed}
+          />
         </form>
       )}
     </Formik>
