@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { SCALAR } from 'lib/constants';
 import { Loan } from 'lib/types/Loan';
 import { SubgraphLoan } from 'lib/types/SubgraphLoan';
 
@@ -11,12 +12,13 @@ export function parseSubgraphLoan(loan: SubgraphLoan): Loan {
   const lastAccumulatedTimestamp = ethers.BigNumber.from(
     loan.lastAccumulatedTimestamp,
   );
-  const now = ethers.BigNumber.from(Date.now());
+  const now = ethers.BigNumber.from(Date.now()).div(1000);
   let interestOwed = ethers.BigNumber.from(0);
   if (!lastAccumulatedTimestamp.eq(0)) {
     interestOwed = loanAmount
-      .mul(perSecondInterestRate)
       .mul(now.sub(lastAccumulatedTimestamp))
+      .mul(perSecondInterestRate)
+      .div(SCALAR)
       .add(accumulatedInterest);
   }
 
