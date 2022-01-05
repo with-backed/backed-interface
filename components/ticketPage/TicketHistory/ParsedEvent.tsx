@@ -5,7 +5,13 @@ import {
 import { ethers } from 'ethers';
 import { secondsToDays } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
-import React, { FunctionComponent, useMemo } from 'react';
+import React, {
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import {
   BuyoutUnderwriterEvent,
   CloseEvent,
@@ -72,10 +78,24 @@ function EventHeader({ event }: Pick<ParsedEventProps<ethers.Event>, 'event'>) {
 const EventDetailList: FunctionComponent<
   Pick<ParsedEventProps<ethers.Event>, 'event'>
 > = ({ children, event, ...props }) => {
+  const [timestamp, setTimestamp] = useState<string | null>(null);
+  const getTimestamp = useCallback(async () => {
+    const { timestamp } = await event.getBlock();
+    setTimestamp(toLocaleDateTime(timestamp));
+  }, [event]);
+
+  useEffect(() => {
+    getTimestamp();
+  }, [getTimestamp]);
+
   return (
     <section>
       <EventHeader event={event} />
-      <DescriptionList {...props}>{children}</DescriptionList>
+      <DescriptionList {...props}>
+        <dt>date</dt>
+        <dd>{timestamp}</dd>
+        {children}
+      </DescriptionList>
     </section>
   );
 };
