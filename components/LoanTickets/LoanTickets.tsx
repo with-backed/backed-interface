@@ -29,17 +29,14 @@ function BorrowerColumn({ loan }: BorrowerColumnProps) {
   return (
     <div className={styles.column}>
       <PawnTicketArt tokenId={loan.id} />
+      <OpenSeaAddressLink
+        assetId={loan.id.toNumber()}
+        contractAddress={BORROW_CONTRACT.address}>
+        View on OpenSea
+      </OpenSeaAddressLink>
       <DescriptionList>
         <dt>Borrower</dt>
-        <dd title={loan.borrower}>
-          {loan.borrower.slice(0, 9)}...
-          <br />
-          <OpenSeaAddressLink
-            assetId={loan.id.toNumber()}
-            contractAddress={BORROW_CONTRACT.address}>
-            View on OpenSea
-          </OpenSeaAddressLink>
-        </dd>
+        <dd title={loan.borrower}>{loan.borrower.slice(0, 9)}...</dd>
         <dt>Current cost to repay</dt>
         <dd>{formattedTotalPayback}</dd>
       </DescriptionList>
@@ -69,17 +66,14 @@ function LenderColumn({ loan }: LenderColumnProps) {
   return (
     <div className={styles.column}>
       <PawnLoanArt tokenId={loan.id} />
+      <OpenSeaAddressLink
+        assetId={loan.id.toNumber()}
+        contractAddress={LEND_CONTRACT.address}>
+        View on OpenSea
+      </OpenSeaAddressLink>
       <DescriptionList>
         <dt>Lender</dt>
-        <dd>
-          {loan.lender.slice(0, 9)}...
-          <br />
-          <OpenSeaAddressLink
-            assetId={loan.id.toNumber()}
-            contractAddress={LEND_CONTRACT.address}>
-            View on OpenSea
-          </OpenSeaAddressLink>
-        </dd>
+        <dd>{loan.lender.slice(0, 9)}...</dd>
         <dt>Interest Accrued to Date</dt>
         <dd>{formattedInterestAccrued}</dd>
       </DescriptionList>

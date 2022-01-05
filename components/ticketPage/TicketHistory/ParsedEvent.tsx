@@ -5,7 +5,13 @@ import {
 import { ethers } from 'ethers';
 import { secondsToDays } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
-import React, { FunctionComponent, useMemo } from 'react';
+import React, {
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import {
   BuyoutUnderwriterEvent,
   CloseEvent,
@@ -72,10 +78,24 @@ function EventHeader({ event }: Pick<ParsedEventProps<ethers.Event>, 'event'>) {
 const EventDetailList: FunctionComponent<
   Pick<ParsedEventProps<ethers.Event>, 'event'>
 > = ({ children, event, ...props }) => {
+  const [timestamp, setTimestamp] = useState<string | null>(null);
+  const getTimestamp = useCallback(async () => {
+    const { timestamp } = await event.getBlock();
+    setTimestamp(toLocaleDateTime(timestamp));
+  }, [event]);
+
+  useEffect(() => {
+    getTimestamp();
+  }, [getTimestamp]);
+
   return (
     <section>
       <EventHeader event={event} />
-      <DescriptionList {...props}>{children}</DescriptionList>
+      <DescriptionList {...props}>
+        <dt>date</dt>
+        <dd>{timestamp}</dd>
+        {children}
+      </DescriptionList>
     </section>
   );
 };
@@ -86,15 +106,6 @@ function CreateLoan({
 }: ParsedEventProps<CreateLoanEvent>) {
   const { maxInterestRate, minDurationSeconds, minLoanAmount, minter } =
     event.args;
-
-  const minterLink = useMemo(
-    () => (
-      <EtherscanAddressLink address={minter} title={minter}>
-        {minter?.slice(0, 10)}...
-      </EtherscanAddressLink>
-    ),
-    [minter],
-  );
 
   const formattedMaxInterestRate = useMemo(
     () => formattedAnnualRate(maxInterestRate),
@@ -114,7 +125,7 @@ function CreateLoan({
   return (
     <EventDetailList event={event}>
       <dt>minter</dt>
-      <dd>{minterLink}</dd>
+      <dd>{minter?.slice(0, 10)}...</dd>
       <dt>max interest rate</dt>
       <dd>{formattedMaxInterestRate}%</dd>
       <dt>minimum loan amount</dt>
@@ -133,15 +144,6 @@ function UnderwriteLoan({
 }: ParsedEventProps<UnderwriteLoanEvent>) {
   const { durationSeconds, interestRate, loanAmount, underwriter } = event.args;
 
-  const underwriterLink = useMemo(
-    () => (
-      <EtherscanAddressLink address={underwriter} title={underwriter}>
-        {underwriter?.slice(0, 10)}...
-      </EtherscanAddressLink>
-    ),
-    [underwriter],
-  );
-
   const formattedInterestRate = useMemo(
     () => formattedAnnualRate(interestRate),
     [interestRate],
@@ -158,7 +160,7 @@ function UnderwriteLoan({
   return (
     <EventDetailList event={event}>
       <dt>lender</dt>
-      <dd>{underwriterLink}</dd>
+      <dd> {underwriter?.slice(0, 10)}...</dd>
       <dt>interest rate</dt>
       <dd>{formattedInterestRate}%</dd>
       <dt>loan amount</dt>
@@ -178,26 +180,6 @@ function BuyoutUnderwriter({
   const { interestEarned, replacedAmount, replacedLoanOwner, underwriter } =
     event.args;
 
-  const newLenderLink = useMemo(
-    () => (
-      <EtherscanAddressLink address={underwriter} title={underwriter}>
-        {underwriter.slice(0, 10)}...
-      </EtherscanAddressLink>
-    ),
-    [underwriter],
-  );
-
-  const replacedLenderLink = useMemo(
-    () => (
-      <EtherscanAddressLink
-        address={replacedLoanOwner}
-        title={replacedLoanOwner}>
-        {replacedLoanOwner.slice(0, 10)}...
-      </EtherscanAddressLink>
-    ),
-    [replacedLoanOwner],
-  );
-
   const formattedInterestPaid = useMemo(
     () => ethers.utils.formatUnits(interestEarned, loanAssetDecimals),
     [interestEarned, loanAssetDecimals],
@@ -211,9 +193,9 @@ function BuyoutUnderwriter({
   return (
     <EventDetailList event={event}>
       <dt>new lender</dt>
-      <dd>{newLenderLink}</dd>
+      <dd>{underwriter.slice(0, 10)}...</dd>
       <dt>bought-out lender</dt>
-      <dd>{replacedLenderLink}</dd>
+      <dd>{replacedLoanOwner.slice(0, 10)}...</dd>
       <dt>interest paid</dt>
       <dd>
         {formattedInterestPaid} {loanAssetSymbol}
@@ -232,24 +214,6 @@ function Repay({
 }: ParsedEventProps<RepayEvent>) {
   const { interestEarned, loanAmount, loanOwner, repayer } = event.args as any;
 
-  const repayerLink = useMemo(
-    () => (
-      <EtherscanAddressLink address={repayer} title={repayer}>
-        {repayer.slice(0, 10)}...
-      </EtherscanAddressLink>
-    ),
-    [repayer],
-  );
-
-  const loanOwnerLink = useMemo(
-    () => (
-      <EtherscanAddressLink address={loanOwner} title={loanOwner}>
-        {loanOwner.slice(0, 10)}...
-      </EtherscanAddressLink>
-    ),
-    [loanOwner],
-  );
-
   const formattedInterestEarned = useMemo(
     () => ethers.utils.formatUnits(interestEarned, loanAssetDecimals),
     [interestEarned, loanAssetDecimals],
@@ -263,9 +227,9 @@ function Repay({
   return (
     <EventDetailList event={event}>
       <dt>repayer</dt>
-      <dd>{repayerLink}</dd>
+      <dd>{repayer.slice(0, 10)}...</dd>
       <dt>paid to</dt>
-      <dd>{loanOwnerLink}</dd>
+      <dd>{loanOwner.slice(0, 10)}...</dd>
       <dt>interest earned</dt>
       <dd>
         {formattedInterestEarned} {loanAssetSymbol}
@@ -291,30 +255,12 @@ function OwnershipTransferred({
 }: ParsedEventProps<OwnershipTransferredEvent>) {
   const { newOwner, previousOwner } = event.args;
 
-  const newOwnerLink = useMemo(
-    () => (
-      <EtherscanAddressLink address={newOwner} title={newOwner}>
-        {newOwner.slice(0, 10)}...
-      </EtherscanAddressLink>
-    ),
-    [newOwner],
-  );
-
-  const previousOwnerLink = useMemo(
-    () => (
-      <EtherscanAddressLink address={previousOwner} title={previousOwner}>
-        {previousOwner.slice(0, 10)}...
-      </EtherscanAddressLink>
-    ),
-    [previousOwner],
-  );
-
   return (
     <EventDetailList event={event}>
       <dt>new owner</dt>
-      <dd>{newOwnerLink}</dd>
+      <dd>{newOwner.slice(0, 10)}...</dd>
       <dt>previous owner</dt>
-      <dd>{previousOwnerLink}</dd>
+      <dd>{previousOwner.slice(0, 10)}...</dd>
     </EventDetailList>
   );
 }
