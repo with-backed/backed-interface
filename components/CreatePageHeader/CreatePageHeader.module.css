@@ -1,0 +1,25 @@
+.create-page-header {
+  display: flex;
+  width: 100%;
+  background: var(--background-white);
+  justify-content: center;
+  padding-bottom: var(--gap);
+  padding-top: calc(var(--gap) / 2);
+}
+
+.create-page-header > div {
+  max-width: var(--max-width);
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.explainer {
+  border-radius: var(--border-radius-large);
+  box-shadow: var(--box-shadow-blue);
+  padding: var(--padding-loan-card);
+  align-self: start;
+}
