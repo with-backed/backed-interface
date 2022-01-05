@@ -2,7 +2,7 @@ import { FiveColumn } from 'components/layouts/FiveColumn';
 import { LoanCard } from 'components/LoanCard';
 import subgraphLoans from 'lib/loans/subgraph/subgraphLoans';
 import { parseSubgraphLoan } from 'lib/loans/utils';
-import { SubgraphLoan } from 'lib/types/SubgraphLoan';
+import { Loan as SubgraphLoan } from 'types/generated/graphql/nftLoans';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 import React from 'react';

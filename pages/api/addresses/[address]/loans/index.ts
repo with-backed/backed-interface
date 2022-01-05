@@ -1,5 +1,5 @@
 import { getAllSubgraphLoansForAddress } from 'lib/loans/subgraph/getAllSubgraphLoansForAddress';
-import { SubgraphLoan } from 'lib/types/SubgraphLoan';
+import { Loan as SubgraphLoan } from 'types/generated/graphql/nftLoans';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(
