@@ -1,7 +1,7 @@
 import { Button } from 'components/Button';
 import { ethers } from 'ethers';
 import { Loan } from 'lib/types/Loan';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styles from './LoanForm.module.css';
 import { useWeb3 } from 'hooks/useWeb3';
 import { ConnectWallet } from 'components/ConnectWallet';
@@ -10,6 +10,8 @@ import {
   getAccountLoanAssetBalance,
 } from 'lib/account';
 import { LoanFormAwaiting } from './LoanFormAwaiting';
+import { useTimestamp } from 'hooks/useTimestamp';
+import { LoanFormBetterTerms } from './LoanFormBetterTerms';
 
 type LoanFormProps = {
   loan: Loan;
@@ -17,10 +19,17 @@ type LoanFormProps = {
 };
 export function LoanForm({ loan, refresh }: LoanFormProps) {
   const { account } = useWeb3();
+  const timestamp = useTimestamp();
   const [formOpen, setFormOpen] = useState(false);
   const [balance, setBalance] = useState(0);
   const [needsAllowance, setNeedsAllowance] = useState(true);
   const toggleForm = useCallback(() => setFormOpen((prev) => !prev), []);
+  const buttonText = useMemo(() => {
+    if (loan.lastAccumulatedTimestamp.eq(0)) {
+      return 'Lend against this NFT';
+    }
+    return 'Offer better terms';
+  }, [loan.lastAccumulatedTimestamp]);
 
   useEffect(() => {
     if (account) {
@@ -55,10 +64,20 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
     );
   }
 
+  if (
+    loan.lastAccumulatedTimestamp.add(loan.durationSeconds).lte(timestamp || 0)
+  ) {
+    return 'This loan is past due';
+  }
+
+  // if (account.toUpperCase() === loan.lender?.toUpperCase()) {
+  //   return null;
+  // }
+
   if (!formOpen) {
     return (
       <div className={styles.form}>
-        <Button onClick={toggleForm}>Lend against this NFT</Button>
+        <Button onClick={toggleForm}>{buttonText}</Button>
       </div>
     );
   }
@@ -75,5 +94,13 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
     );
   }
 
-  return null;
+  return (
+    <LoanFormBetterTerms
+      loan={loan}
+      balance={balance}
+      needsAllowance={needsAllowance}
+      setNeedsAllowance={setNeedsAllowance}
+      refresh={refresh}
+    />
+  );
 }

@@ -10,23 +10,22 @@ import { secondsBigNumToDays } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
 import { Loan } from 'lib/types/Loan';
 import React, { useMemo } from 'react';
-import * as Yup from 'yup';
 import styles from './LoanForm.module.css';
 
-type LoanFormAwaitingProps = {
+type LoanFormBetterTermsProps = {
   loan: Loan;
   balance: number;
   needsAllowance: boolean;
   setNeedsAllowance: (value: boolean) => void;
   refresh: () => void;
 };
-export function LoanFormAwaiting({
+export function LoanFormBetterTerms({
   loan,
   balance,
   needsAllowance,
   setNeedsAllowance,
   refresh,
-}: LoanFormAwaitingProps) {
+}: LoanFormBetterTermsProps) {
   const initialAmount = useMemo(
     () =>
       parseFloat(
@@ -55,11 +54,40 @@ export function LoanFormAwaiting({
         interestRate: initialInterestRate,
         duration: initialDuration,
       }}
-      validationSchema={Yup.object({
-        amount: Yup.number().min(initialAmount).max(balance),
-        interestRate: Yup.number().max(initialInterestRate),
-        duration: Yup.number().min(initialDuration),
-      })}
+      validate={({ amount, duration, interestRate }) => {
+        const isValidAmount = amount >= initialAmount;
+        const isValidDuration = duration >= initialDuration;
+        const isValidInterestRate = interestRate <= initialInterestRate;
+        const hasTenPercentImprovement =
+          amount >= initialAmount + initialAmount * 0.1 ||
+          duration >= initialDuration + initialDuration * 0.1 ||
+          interestRate <= initialInterestRate - initialInterestRate * 0.1;
+
+        const errors: { [key: string]: string } = {};
+        if (!isValidAmount) {
+          errors.amount = `Amount must be at least ${initialAmount}, and at most your current balance of ${balance}`;
+        }
+        if (!isValidDuration) {
+          errors.duration = `Duration must be at least ${initialDuration}`;
+        }
+        if (!isValidInterestRate) {
+          errors.interestRate = `Interest rate must at most ${initialInterestRate}`;
+        }
+
+        if (
+          isValidAmount &&
+          isValidDuration &&
+          isValidInterestRate &&
+          !hasTenPercentImprovement
+        ) {
+          const message = `At least one value must be a 10% improvement over the current terms.`;
+          errors.amount = message;
+          errors.duration = message;
+          errors.interestRate = message;
+        }
+
+        return errors;
+      }}
       onSubmit={underwrite}>
       {(formik) => (
         <form className={styles.form} onSubmit={formik.handleSubmit}>
