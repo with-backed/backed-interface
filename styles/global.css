@@ -26,12 +26,16 @@
   /* padding and gaps */
   --padding-button: 0.3rem 1rem;
   --padding-container: 2.5rem;
+  --padding-loan-card: 1.5rem;
   --gap: 2.5rem;
 
   /* backgrounds */
   --background-radial-gradient: radial-gradient(#ffffff, #f6f2f0);
   --background-fieldset: rgba(255, 255, 255, 0.8);
   --background-white: #ffffff;
+
+  /* shadows */
+  --box-shadow: 0 0 50px 2px rgb(171 155 150 / 30%) 
 
   /* border styles */
   --border-radius-small: 0.3rem;

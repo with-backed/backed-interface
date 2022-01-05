@@ -12,9 +12,10 @@
   height: 100%;
   width: 100%;
   border-radius: var(--border-radius-small);
-  padding: var(--padding-container);
+  padding: var(--padding-loan-card);
   gap: 0.66rem;
   background: var(--background-fieldset);
+  box-shadow: var(--box-shadow);
 }
 
 .attributes {
