@@ -3,8 +3,8 @@ import { useCallback, useState, useEffect } from 'react';
 import { jsonRpcLoanFacilitator } from 'lib/contracts';
 import { Fieldset } from 'components/Fieldset';
 import { ParsedEvent } from './ParsedEvent';
-import styles from './TicketHistory.module.css';
 import { Loan } from 'lib/types/Loan';
+import styles from './TicketHistory.module.css';
 
 interface TicketHistoryProps {
   loanInfo: Loan;
@@ -24,12 +24,12 @@ export function TicketHistory({ loanInfo }: TicketHistoryProps) {
 
   return (
     <Fieldset legend="🎬 Activity">
-      <ol className={styles['top-level-list']}>
+      <div className={styles.container}>
         {history !== null &&
           history.map((e: ethers.Event, i) => (
             <ParsedEvent event={e} loanInfo={loanInfo} key={i} />
           ))}
-      </ol>
+      </div>
     </Fieldset>
   );
 }

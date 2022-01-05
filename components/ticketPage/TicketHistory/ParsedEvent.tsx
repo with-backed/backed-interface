@@ -5,13 +5,7 @@ import {
 import { ethers } from 'ethers';
 import { secondsToDays } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
-import React, {
-  FunctionComponent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { FunctionComponent, useMemo } from 'react';
 import {
   BuyoutUnderwriterEvent,
   CloseEvent,
@@ -23,6 +17,7 @@ import {
 } from 'abis/types/NFTLoanFacilitator';
 import styles from './TicketHistory.module.css';
 import { Loan } from 'lib/types/Loan';
+import { DescriptionList } from 'components/DescriptionList';
 
 const eventDetailComponents: { [key: string]: (...props: any) => JSX.Element } =
   {
@@ -65,20 +60,10 @@ function camelToSentenceCase(text: string) {
 }
 
 function EventHeader({ event }: Pick<ParsedEventProps<ethers.Event>, 'event'>) {
-  const [timestamp, setTimestamp] = useState<string | null>(null);
-
-  const getTimestamp = useCallback(async () => {
-    const { timestamp } = await event.getBlock();
-    setTimestamp(toLocaleDateTime(timestamp));
-  }, [event]);
-
-  useEffect(() => {
-    getTimestamp();
-  }, [getTimestamp]);
   return (
     <h3 className={styles['event-header']}>
       <EtherscanTransactionLink transactionHash={event.transactionHash}>
-        <b>{camelToSentenceCase(event.event as string)}</b> {timestamp}
+        {camelToSentenceCase(event.event as string)}
       </EtherscanTransactionLink>
     </h3>
   );
@@ -88,14 +73,10 @@ const EventDetailList: FunctionComponent<
   Pick<ParsedEventProps<ethers.Event>, 'event'>
 > = ({ children, event, ...props }) => {
   return (
-    <li>
-      <section>
-        <EventHeader event={event} />
-        <ul {...props} className={styles.list}>
-          {children}
-        </ul>
-      </section>
-    </li>
+    <section>
+      <EventHeader event={event} />
+      <DescriptionList {...props}>{children}</DescriptionList>
+    </section>
   );
 };
 
@@ -132,12 +113,16 @@ function CreateLoan({
 
   return (
     <EventDetailList event={event}>
-      <li>minter: {minterLink}</li>
-      <li>max interest rate: {formattedMaxInterestRate}%</li>
-      <li>
-        minimum loan amount: {formattedMinLoanAmount} {loanAssetSymbol}
-      </li>
-      <li>minimum duration: {minDuration} days</li>
+      <dt>minter</dt>
+      <dd>{minterLink}</dd>
+      <dt>max interest rate</dt>
+      <dd>{formattedMaxInterestRate}%</dd>
+      <dt>minimum loan amount</dt>
+      <dd>
+        {formattedMinLoanAmount} {loanAssetSymbol}
+      </dd>
+      <dt>minimum duration</dt>
+      <dd>{minDuration} days</dd>
     </EventDetailList>
   );
 }
@@ -172,12 +157,16 @@ function UnderwriteLoan({
 
   return (
     <EventDetailList event={event}>
-      <li>lender: {underwriterLink}</li>
-      <li>interest rate: {formattedInterestRate}%</li>
-      <li>
-        loan amount: {formattedLoanAmount} {loanAssetSymbol}
-      </li>
-      <li>duration: {formattedDuration} days</li>
+      <dt>lender</dt>
+      <dd>{underwriterLink}</dd>
+      <dt>interest rate</dt>
+      <dd>{formattedInterestRate}%</dd>
+      <dt>loan amount</dt>
+      <dd>
+        {formattedLoanAmount} {loanAssetSymbol}
+      </dd>
+      <dt>duration</dt>
+      <dd>{formattedDuration} days</dd>
     </EventDetailList>
   );
 }
@@ -221,14 +210,18 @@ function BuyoutUnderwriter({
 
   return (
     <EventDetailList event={event}>
-      <li>new lender: {newLenderLink}</li>
-      <li>bought-out lender: {replacedLenderLink}</li>
-      <li>
-        interest paid: {formattedInterestPaid} {loanAssetSymbol}
-      </li>
-      <li>
-        loan amount: {formattedLoanAmount} {loanAssetSymbol}
-      </li>
+      <dt>new lender</dt>
+      <dd>{newLenderLink}</dd>
+      <dt>bought-out lender</dt>
+      <dd>{replacedLenderLink}</dd>
+      <dt>interest paid</dt>
+      <dd>
+        {formattedInterestPaid} {loanAssetSymbol}
+      </dd>
+      <dt>loan amount</dt>
+      <dd>
+        {formattedLoanAmount} {loanAssetSymbol}
+      </dd>
     </EventDetailList>
   );
 }
@@ -269,14 +262,18 @@ function Repay({
 
   return (
     <EventDetailList event={event}>
-      <li>repayer: {repayerLink}</li>
-      <li>paid to: {loanOwnerLink}</li>
-      <li>
-        interest earned: {formattedInterestEarned} {loanAssetSymbol}
-      </li>
-      <li>
-        loan amount: {formattedLoanAmount} {loanAssetSymbol}
-      </li>
+      <dt>repayer</dt>
+      <dd>{repayerLink}</dd>
+      <dt>paid to</dt>
+      <dd>{loanOwnerLink}</dd>
+      <dt>interest earned</dt>
+      <dd>
+        {formattedInterestEarned} {loanAssetSymbol}
+      </dd>
+      <dt>loan amount</dt>
+      <dd>
+        {formattedLoanAmount} {loanAssetSymbol}
+      </dd>
     </EventDetailList>
   );
 }
@@ -314,8 +311,10 @@ function OwnershipTransferred({
 
   return (
     <EventDetailList event={event}>
-      <li>new owner: {newOwnerLink}</li>
-      <li>previous owner: {previousOwnerLink}</li>
+      <dt>new owner</dt>
+      <dd>{newOwnerLink}</dd>
+      <dt>previous owner</dt>
+      <dd>{previousOwnerLink}</dd>
     </EventDetailList>
   );
 }

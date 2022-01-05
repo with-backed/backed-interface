@@ -34,3 +34,7 @@
 .horizontal > dt {
   text-align: right;
 }
+
+.vertical > dt {
+  margin-bottom: -1rem;
+}
