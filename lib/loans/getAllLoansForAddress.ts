@@ -1,5 +1,5 @@
 import { Loan } from 'lib/types/Loan';
-import { SubgraphLoan } from 'lib/types/SubgraphLoan';
+import { Loan as SubgraphLoan } from 'types/generated/graphql/nftLoans';
 import { parseSubgraphLoan } from './utils';
 
 export async function getAllLoansForAddress(address: string): Promise<Loan[]> {

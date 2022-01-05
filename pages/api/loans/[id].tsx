@@ -1,5 +1,5 @@
 import { subgraphLoanById } from 'lib/loans/subgraph/subgraphLoanById';
-import { SubgraphLoan } from 'lib/types/SubgraphLoan';
+import { Loan as SubgraphLoan } from 'types/generated/graphql/nftLoans';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 // TODO: Should probably not just relying on

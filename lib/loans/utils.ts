@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { SCALAR } from 'lib/constants';
 import { Loan } from 'lib/types/Loan';
-import { SubgraphLoan } from 'lib/types/SubgraphLoan';
+import { Loan as SubgraphLoan } from 'types/generated/graphql/nftLoans';
 
 export function parseSubgraphLoan(loan: SubgraphLoan): Loan {
   const loanAmount = ethers.BigNumber.from(loan.loanAmount);
@@ -32,8 +32,10 @@ export function parseSubgraphLoan(loan: SubgraphLoan): Loan {
     durationSeconds: ethers.BigNumber.from(loan.durationSeconds),
     loanAmount: loanAmount,
     loanAssetDecimals: loan.loanAssetDecimal,
-    lender: loan.lendTicketHolder,
-    borrower: loan.borrowTicketHolder,
+    lender: loan.lendTicketHolder || null,
+    borrower:
+      loan.borrowTicketHolder || '0x0000000000000000000000000000000000000000',
     interestOwed: interestOwed,
+    endDateTimestamp: loan.endDateTimestamp || 0,
   };
 }
