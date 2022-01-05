@@ -11,7 +11,6 @@
   flex-direction: column;
   height: 100%;
   width: 100%;
-  border: thin var(--neutral-100) solid;
   border-radius: var(--border-radius-small);
   padding: var(--padding-container);
   gap: 0.66rem;
