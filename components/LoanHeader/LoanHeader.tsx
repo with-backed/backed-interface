@@ -70,7 +70,9 @@ function LoanHeaderLoadingList({
 }: ListProps) {
   return (
     <DescriptionList orientation="horizontal" clamped>
-      <dt>{formattedLoanID}</dt>
+      <dt>Loan ID</dt>
+      <dd>{formattedLoanID}</dd>
+      <dt>Loan Amount</dt>
       <dd>{formattedPrincipal}</dd>
       <dt>Interest Rate</dt>
       <dd>{formattedInterestRate}</dd>
@@ -88,14 +90,19 @@ function LoanHeaderAwaitingList({
     formattedInterestRate,
     formattedLoanID,
     formattedPrincipal,
+    formattedTotalDuration,
   },
 }: ListProps) {
   return (
     <DescriptionList orientation="horizontal" clamped>
-      <dt>{formattedLoanID}</dt>
+      <dt>Loan ID</dt>
+      <dd>{formattedLoanID}</dd>
+      <dt>Loan Amount</dt>
       <dd>{formattedPrincipal}</dd>
       <dt>Interest Rate</dt>
       <dd>{formattedInterestRate}</dd>
+      <dt>Duration</dt>
+      <dd>{formattedTotalDuration}</dd>
       <dt>Status</dt>
       <dd>{formattedStatus}</dd>
     </DescriptionList>
@@ -115,7 +122,9 @@ function LoanHeaderClosedList({
 }: ListProps) {
   return (
     <DescriptionList orientation="horizontal" clamped>
-      <dt>{formattedLoanID}</dt>
+      <dt>Loan ID</dt>
+      <dd>{formattedLoanID}</dd>
+      <dt>Loan Amount</dt>
       <dd>{formattedPrincipal}</dd>
       <dt>Interest Rate</dt>
       <dd>{formattedInterestRate}</dd>
@@ -147,7 +156,9 @@ function LoanHeaderAccruingList({
 }: ListProps) {
   return (
     <DescriptionList orientation="horizontal" clamped>
-      <dt>{formattedLoanID}</dt>
+      <dt>Loan ID</dt>
+      <dd>{formattedLoanID}</dd>
+      <dt>Loan Amount</dt>
       <dd>{formattedPrincipal}</dd>
       <dt>Interest Rate</dt>
       <dd>{formattedInterestRate}</dd>
@@ -178,7 +189,9 @@ function LoanHeaderPastDueList({
 }: ListProps) {
   return (
     <DescriptionList orientation="horizontal" clamped>
-      <dt>{formattedLoanID}</dt>
+      <dt>Loan ID</dt>
+      <dd>{formattedLoanID}</dd>
+      <dt>Loan Amount</dt>
       <dd>{formattedPrincipal}</dd>
       <dt>Interest Rate</dt>
       <dd>{formattedInterestRate}</dd>

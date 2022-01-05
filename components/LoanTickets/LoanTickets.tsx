@@ -2,11 +2,21 @@ import { DescriptionList } from 'components/DescriptionList';
 import { EtherscanAddressLink } from 'components/EtherscanLink';
 import { Fieldset } from 'components/Fieldset';
 import { Fallback } from 'components/Media/Fallback';
+import { OpenSeaAddressLink } from 'components/OpenSeaLink';
 import { PawnLoanArt, PawnTicketArt } from 'components/ticketPage/PawnArt';
 import { useLoanDetails } from 'hooks/useLoanDetails';
+import { jsonRpcERC721Contract } from 'lib/contracts';
 import { Loan } from 'lib/types/Loan';
 import React from 'react';
 import styles from './LoanTickets.module.css';
+
+const BORROW_CONTRACT = jsonRpcERC721Contract(
+  process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT || '',
+);
+
+const LEND_CONTRACT = jsonRpcERC721Contract(
+  process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT || '',
+);
 
 type LoanTicketsProps = {
   loan: Loan;
@@ -24,9 +34,11 @@ function BorrowerColumn({ loan }: BorrowerColumnProps) {
         <dd title={loan.borrower}>
           {loan.borrower.slice(0, 9)}...
           <br />
-          <EtherscanAddressLink address={loan.borrower}>
-            View on Etherscan
-          </EtherscanAddressLink>
+          <OpenSeaAddressLink
+            assetId={loan.id.toNumber()}
+            contractAddress={BORROW_CONTRACT.address}>
+            View on OpenSea
+          </OpenSeaAddressLink>
         </dd>
         <dt>Current cost to repay</dt>
         <dd>{formattedTotalPayback}</dd>
@@ -62,9 +74,11 @@ function LenderColumn({ loan }: LenderColumnProps) {
         <dd>
           {loan.lender.slice(0, 9)}...
           <br />
-          <EtherscanAddressLink address={loan.lender}>
-            View on Etherscan
-          </EtherscanAddressLink>
+          <OpenSeaAddressLink
+            assetId={loan.id.toNumber()}
+            contractAddress={LEND_CONTRACT.address}>
+            View on OpenSea
+          </OpenSeaAddressLink>
         </dd>
         <dt>Interest Accrued to Date</dt>
         <dd>{formattedInterestAccrued}</dd>

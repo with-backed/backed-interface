@@ -26,10 +26,15 @@
   margin: 0;
   text-transform: uppercase;
   font-size: var(--font-small);
+  font-family: var(--sans);
   letter-spacing: 0.12rem;
   line-height: 32px;
 }
 
 .horizontal > dt {
   text-align: right;
+}
+
+.vertical > dt {
+  margin-bottom: -1rem;
 }

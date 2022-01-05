@@ -28,7 +28,7 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
     if (loan.lastAccumulatedTimestamp.eq(0)) {
       return 'Lend against this NFT';
     }
-    return 'Offer better terms';
+    return 'Lend with better terms';
   }, [loan.lastAccumulatedTimestamp]);
 
   useEffect(() => {
