@@ -90,6 +90,7 @@ function LoanHeaderAwaitingList({
     formattedInterestRate,
     formattedLoanID,
     formattedPrincipal,
+    formattedTotalDuration,
   },
 }: ListProps) {
   return (
@@ -100,6 +101,8 @@ function LoanHeaderAwaitingList({
       <dd>{formattedPrincipal}</dd>
       <dt>Interest Rate</dt>
       <dd>{formattedInterestRate}</dd>
+      <dt>Duration</dt>
+      <dd>{formattedTotalDuration}</dd>
       <dt>Status</dt>
       <dd>{formattedStatus}</dd>
     </DescriptionList>
