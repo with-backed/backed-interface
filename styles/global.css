@@ -19,12 +19,12 @@
 
   /* layout */
   --max-width-header: 1224px;
-  --max-width: 980px;
+  --max-width: 1100px;
   --column-width: 130px;
   --line-height: 1.6;
 
   /* padding and gaps */
-  --padding-button: 0.3rem 1rem;
+  --padding-button: 0.3rem 0.25rem;
   --padding-container: 2.5rem;
   --padding-loan-card: 1.5rem;
   --gap: 2.5rem;
@@ -35,7 +35,8 @@
   --background-white: #ffffff;
 
   /* shadows */
-  --box-shadow: 0 0 50px 2px rgb(171 155 150 / 30%) 
+  --box-shadow: 0 0 50px 2px rgb(171 155 150 / 30%);
+  --box-shadow-blue: 0px 0px 20px rgba(0, 0, 238, 0.1);
 
   /* border styles */
   --border-radius-small: 0.3rem;
