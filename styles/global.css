@@ -25,8 +25,8 @@
 
   /* padding and gaps */
   --padding-button: 0.3rem 1rem;
-  --padding-container: 1.43rem;
-  --gap: 2.86rem;
+  --padding-container: 2.5rem;
+  --gap: 2.5rem;
 
   /* backgrounds */
   --background-radial-gradient: radial-gradient(#ffffff, #f6f2f0);
