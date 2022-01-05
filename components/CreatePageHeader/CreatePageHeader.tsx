@@ -15,12 +15,24 @@ enum State {
   Submitting,
 }
 
+const explainers = {
+  [State.NotConnected]: ExplainerNotConnected,
+  [State.NeedsToSelect]: ExplainerNeedsToSelect,
+  [State.NeedsToAuthorize]: ExplainerNeedsToAuthorize,
+  [State.AuthorizationInProgress]: ExplainerAuthorizationInProgress,
+  [State.Form]: ExplainerForm,
+  [State.Ready]: ExplainerReady,
+  [State.Submitting]: ExplainerSubmitting,
+};
+
 export function CreatePageHeader() {
   const { account } = useWeb3();
 
   const state = useMemo(() => {
     return State.NotConnected;
   }, []);
+
+  const Explainer = useMemo(() => explainers[state], [state]);
 
   return (
     <div className={styles['create-page-header']}>
@@ -31,7 +43,7 @@ export function CreatePageHeader() {
           <AuthorizeNFTButton state={state} />
           <MintBorrowerTicketButton state={state} />
         </div>
-        <ExplainerNotConnected />
+        <Explainer />
       </ThreeColumn>
     </div>
   );
