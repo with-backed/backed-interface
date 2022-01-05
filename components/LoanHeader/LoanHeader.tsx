@@ -70,7 +70,9 @@ function LoanHeaderLoadingList({
 }: ListProps) {
   return (
     <DescriptionList orientation="horizontal" clamped>
-      <dt>{formattedLoanID}</dt>
+      <dt>Loan ID</dt>
+      <dd>{formattedLoanID}</dd>
+      <dt>Loan Amount</dt>
       <dd>{formattedPrincipal}</dd>
       <dt>Interest Rate</dt>
       <dd>{formattedInterestRate}</dd>
@@ -92,7 +94,9 @@ function LoanHeaderAwaitingList({
 }: ListProps) {
   return (
     <DescriptionList orientation="horizontal" clamped>
-      <dt>{formattedLoanID}</dt>
+      <dt>Loan ID</dt>
+      <dd>{formattedLoanID}</dd>
+      <dt>Loan Amount</dt>
       <dd>{formattedPrincipal}</dd>
       <dt>Interest Rate</dt>
       <dd>{formattedInterestRate}</dd>
@@ -115,7 +119,9 @@ function LoanHeaderClosedList({
 }: ListProps) {
   return (
     <DescriptionList orientation="horizontal" clamped>
-      <dt>{formattedLoanID}</dt>
+      <dt>Loan ID</dt>
+      <dd>{formattedLoanID}</dd>
+      <dt>Loan Amount</dt>
       <dd>{formattedPrincipal}</dd>
       <dt>Interest Rate</dt>
       <dd>{formattedInterestRate}</dd>
@@ -147,7 +153,9 @@ function LoanHeaderAccruingList({
 }: ListProps) {
   return (
     <DescriptionList orientation="horizontal" clamped>
-      <dt>{formattedLoanID}</dt>
+      <dt>Loan ID</dt>
+      <dd>{formattedLoanID}</dd>
+      <dt>Loan Amount</dt>
       <dd>{formattedPrincipal}</dd>
       <dt>Interest Rate</dt>
       <dd>{formattedInterestRate}</dd>
@@ -178,7 +186,9 @@ function LoanHeaderPastDueList({
 }: ListProps) {
   return (
     <DescriptionList orientation="horizontal" clamped>
-      <dt>{formattedLoanID}</dt>
+      <dt>Loan ID</dt>
+      <dd>{formattedLoanID}</dd>
+      <dt>Loan Amount</dt>
       <dd>{formattedPrincipal}</dd>
       <dt>Interest Rate</dt>
       <dd>{formattedInterestRate}</dd>
