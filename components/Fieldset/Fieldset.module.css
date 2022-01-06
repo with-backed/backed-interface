@@ -7,6 +7,6 @@
 
 .legend {
   line-height: 0;
-  font-size: var(--font-medium);
+  font-size: var(--font-large);
   text-transform: capitalize;
 }
