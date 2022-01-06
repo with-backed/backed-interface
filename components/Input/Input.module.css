@@ -19,3 +19,8 @@
   composes: input;
   background: var(--background-radial-gradient);
 }
+
+.dark:focus {
+  box-shadow: none;
+  background: var(--highlight-active-10);
+}
