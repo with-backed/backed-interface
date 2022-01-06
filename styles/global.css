@@ -94,3 +94,7 @@ a {
 a:visited {
   color: var(--highlight-visited-100);
 }
+
+p {
+  line-height: 2rem;
+}

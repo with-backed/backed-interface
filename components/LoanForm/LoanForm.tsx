@@ -12,6 +12,7 @@ import {
 import { LoanFormAwaiting } from './LoanFormAwaiting';
 import { useTimestamp } from 'hooks/useTimestamp';
 import { LoanFormBetterTerms } from './LoanFormBetterTerms';
+import { LoanFormRepay } from './LoanFormRepay';
 
 type LoanFormProps = {
   loan: Loan;
@@ -24,12 +25,19 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
   const [balance, setBalance] = useState(0);
   const [needsAllowance, setNeedsAllowance] = useState(true);
   const toggleForm = useCallback(() => setFormOpen((prev) => !prev), []);
+  const viewerIsBorrower = useMemo(
+    () => account?.toUpperCase() === loan.lender?.toUpperCase(),
+    [account, loan.lender],
+  );
   const buttonText = useMemo(() => {
+    if (viewerIsBorrower) {
+      return 'Repay loan & claim NFT';
+    }
     if (loan.lastAccumulatedTimestamp.eq(0)) {
       return 'Lend against this NFT';
     }
     return 'Lend with better terms';
-  }, [loan.lastAccumulatedTimestamp]);
+  }, [loan.lastAccumulatedTimestamp, viewerIsBorrower]);
 
   useEffect(() => {
     if (account) {
@@ -70,10 +78,6 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
     return <span>This loan is past due</span>;
   }
 
-  // if (account.toUpperCase() === loan.lender?.toUpperCase()) {
-  //   return null;
-  // }
-
   if (!formOpen) {
     return (
       <div className={styles.form}>
@@ -85,6 +89,18 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
   if (loan.lastAccumulatedTimestamp.eq(0)) {
     return (
       <LoanFormAwaiting
+        loan={loan}
+        balance={balance}
+        needsAllowance={needsAllowance}
+        setNeedsAllowance={setNeedsAllowance}
+        refresh={refresh}
+      />
+    );
+  }
+
+  if (viewerIsBorrower) {
+    return (
+      <LoanFormRepay
         loan={loan}
         balance={balance}
         needsAllowance={needsAllowance}
