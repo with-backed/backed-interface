@@ -1,4 +1,5 @@
 import { Button, CompletedButton, TransactionButton } from 'components/Button';
+import { Input } from 'components/Input';
 import { ethers } from 'ethers';
 import { ErrorMessage, Field, Formik } from 'formik';
 import { useWeb3 } from 'hooks/useWeb3';
@@ -131,19 +132,37 @@ export function CreatePageForm({
 
           <label htmlFor="loanAmount">
             <span>Minimum Loan Amount</span>
-            <Field name="loanAmount" type="number" placeholder="0" />
+            <Field
+              name="loanAmount"
+              type="number"
+              placeholder="0"
+              as={Input}
+              color="dark"
+            />
           </label>
           <ErrorMessage name="loanAmount" />
 
           <label htmlFor="interestRate">
             <span>Maximum Interest Rate</span>
-            <Field name="interestRate" type="number" placeholder={`0 %`} />
+            <Field
+              name="interestRate"
+              type="number"
+              placeholder={`0 %`}
+              as={Input}
+              color="dark"
+            />
           </label>
           <ErrorMessage name="interestRate" />
 
           <label htmlFor="duration">
             <span>Minimum Duration</span>
-            <Field name="duration" type="number" placeholder="0 Days" />
+            <Field
+              name="duration"
+              type="number"
+              placeholder="0 Days"
+              as={Input}
+              color="dark"
+            />
           </label>
           <ErrorMessage name="loanAmount" />
 
