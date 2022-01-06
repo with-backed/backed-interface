@@ -12,6 +12,7 @@ import { Loan } from 'types/Loan';
 import React, { useMemo } from 'react';
 import * as Yup from 'yup';
 import styles from './LoanForm.module.css';
+import { Input } from 'components/Input';
 
 type LoanFormAwaitingProps = {
   loan: Loan;
@@ -67,19 +68,19 @@ export function LoanFormAwaiting({
 
           <label htmlFor="amount">
             <span>Amount ({loan.loanAssetSymbol})</span>
-            <Field name="amount" />
+            <Field name="amount" as={Input} color="dark" />
           </label>
           <ErrorMessage name="amount" />
 
           <label htmlFor="interestRate">
             <span>Interest Rate</span>
-            <Field name="interestRate" />
+            <Field name="interestRate" as={Input} color="dark" />
           </label>
           <ErrorMessage name="interestRate" />
 
           <label htmlFor="duration">
             <span>Duration (Days)</span>
-            <Field name="duration" />
+            <Field name="duration" as={Input} color="dark" />
           </label>
           <ErrorMessage name="duration" />
           <AllowButton

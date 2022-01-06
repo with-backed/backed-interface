@@ -37,6 +37,7 @@
   /* shadows */
   --box-shadow: 0 0 50px 2px rgb(171 155 150 / 30%);
   --box-shadow-blue: 0px 0px 20px rgba(0, 0, 238, 0.1);
+  --box-shadow-blue-hard: rgba(0, 0, 238, 0.1) 0px 3px 8px;
 
   /* border styles */
   --border-radius-small: 0.3rem;
