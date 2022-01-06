@@ -1,1 +1,0 @@
-export { LoanDurationCard } from './LoanDurationCard';
