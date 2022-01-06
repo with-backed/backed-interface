@@ -9,7 +9,3 @@
   display: flex;
   flex-direction: column;
 }
-
-.column a {
-  text-decoration: none;
-}

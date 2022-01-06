@@ -17,7 +17,7 @@ export const CollateralInfo = ({ loan }: CollateralInfoProps) => {
   return (
     <Fieldset legend="🖼️ Collateral">
       <DescriptionList>
-        <dt>#{tokenId}</dt>
+        <dd>#{tokenId}</dd>
         <dd>
           <OpenSeaAddressLink
             contractAddress={loan.collateralContractAddress}

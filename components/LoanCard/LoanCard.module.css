@@ -1,11 +1,3 @@
-.link {
-  text-decoration: none;
-}
-
-.link:hover {
-  text-decoration: none;
-}
-
 .card {
   display: flex;
   flex-direction: column;

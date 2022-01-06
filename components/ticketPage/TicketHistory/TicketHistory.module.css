@@ -10,11 +10,7 @@
   margin: 0;
 }
 
-.event-header > a {
-  text-decoration: none;
-}
-
-.event-header::after {
+.event-header > a::after {
   padding-left: 1ch;
   content: '🔗';
 }
