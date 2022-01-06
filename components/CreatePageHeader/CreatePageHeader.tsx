@@ -1,58 +1,113 @@
-import { Button, CompletedButton } from 'components/Button';
+import {
+  Button,
+  CompletedButton,
+  DialogDisclosureButton,
+  TransactionButton,
+} from 'components/Button';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
-import { Fallback } from 'components/Media/Fallback';
+import { ethers } from 'ethers';
 import { useWeb3 } from 'hooks/useWeb3';
-import React, { useMemo } from 'react';
+import {
+  getNftContractAddress,
+  HIDDEN_NFT_ADDRESSES,
+  isNFTApprovedForCollateral,
+  NFTEntity,
+} from 'lib/eip721Subraph';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useDialogState, DialogStateReturn } from 'reakit/Dialog';
 import styles from './CreatePageHeader.module.css';
-
-enum State {
-  NotConnected = 0,
-  NeedsToSelect,
-  NeedsToAuthorize,
-  AuthorizationInProgress,
-  Form,
-  Ready,
-  Submitting,
-}
-
-const explainers = {
-  [State.NotConnected]: ExplainerNotConnected,
-  [State.NeedsToSelect]: ExplainerNeedsToSelect,
-  [State.NeedsToAuthorize]: ExplainerNeedsToAuthorize,
-  [State.AuthorizationInProgress]: ExplainerAuthorizationInProgress,
-  [State.Form]: ExplainerForm,
-  [State.Ready]: ExplainerReady,
-  [State.Submitting]: ExplainerSubmitting,
-};
+import { Provider } from 'urql';
+import { eip721Client } from 'lib/urql';
+import { NFTCollateralPicker } from 'components/createPage/NFTCollateralPicker/NFTCollateralPicker';
+import { NFTMedia } from 'components/Media/NFTMedia';
+import { jsonRpcERC721Contract, web3Erc721Contract } from 'lib/contracts';
+import { State } from './State';
+import { explainers } from './explainers';
+import { CreatePageForm } from './CreatePageForm';
 
 export function CreatePageHeader() {
   const { account } = useWeb3();
+  const dialog = useDialogState();
+
+  const [selectedNFT, setSelectedNFT] = useState<NFTEntity | null>(null);
+  const [collateralAddress, collateralTokenID] = useMemo(() => {
+    if (!selectedNFT) {
+      return ['', ethers.BigNumber.from(-1)];
+    }
+    return [getNftContractAddress(selectedNFT), selectedNFT.identifier];
+  }, [selectedNFT]);
+
+  const initialIsCollateralApproved = useMemo(() => {
+    return Boolean(selectedNFT && isNFTApprovedForCollateral(selectedNFT));
+  }, [selectedNFT]);
+  const [isCollateralApproved, setIsCollateralApproved] = useState(
+    initialIsCollateralApproved,
+  );
+  const [submittingApproval, setSubmittingApproval] = useState(false);
 
   const state = useMemo(() => {
-    return State.NotConnected;
-  }, []);
+    if (!account) {
+      return State.NotConnected;
+    }
+    if (!selectedNFT) {
+      return State.NeedsToSelect;
+    }
+    if (!isCollateralApproved && !submittingApproval) {
+      return State.NeedsToAuthorize;
+    }
+    if (submittingApproval) {
+      return State.AuthorizationInProgress;
+    }
+    return State.Form;
+  }, [account, isCollateralApproved, selectedNFT, submittingApproval]);
 
   const Explainer = useMemo(() => explainers[state], [state]);
 
   return (
     <div className={styles['create-page-header']}>
       <ThreeColumn>
-        <Fallback />
+        <NFTMedia
+          collateralAddress={collateralAddress}
+          collateralTokenID={collateralTokenID}
+        />
         <div className={styles['button-container']}>
-          <SelectNFTButton state={state} />
-          <AuthorizeNFTButton state={state} />
-          <MintBorrowerTicketButton state={state} />
+          <SelectNFTButton dialog={dialog} state={state} />
+          <AuthorizeNFTButton
+            state={state}
+            collateralAddress={collateralAddress}
+            collateralTokenID={collateralTokenID}
+            setIsCollateralApproved={setIsCollateralApproved}
+            setSubmittingApproval={setSubmittingApproval}
+            submittingApproval={submittingApproval}
+          />
+          <CreatePageForm
+            collateralAddress={collateralAddress}
+            collateralTokenID={collateralTokenID}
+            state={state}
+          />
         </div>
         <Explainer />
       </ThreeColumn>
+      <Provider value={eip721Client}>
+        <NFTCollateralPicker
+          hiddenNFTAddresses={HIDDEN_NFT_ADDRESSES}
+          connectedWallet={account || ''}
+          handleSetSelectedNFT={setSelectedNFT}
+          dialog={dialog}
+        />
+      </Provider>
     </div>
   );
 }
 
-type ButtonProps = {
+interface ButtonProps {
   state: State;
-};
-function SelectNFTButton({ state }: ButtonProps) {
+}
+
+interface SelectNFTButtonProps extends ButtonProps {
+  dialog: DialogStateReturn;
+}
+function SelectNFTButton({ state, dialog }: SelectNFTButtonProps) {
   const text = useMemo(() => 'Select an NFT', []);
   const isDisabled = state === State.NotConnected;
   const isDone = state > State.NeedsToSelect;
@@ -64,89 +119,82 @@ function SelectNFTButton({ state }: ButtonProps) {
     return <CompletedButton buttonText={text} success />;
   }
 
-  return <Button>{text}</Button>;
+  return <DialogDisclosureButton {...dialog}>{text}</DialogDisclosureButton>;
 }
 
-function AuthorizeNFTButton({ state }: ButtonProps) {
+interface AuthorizeNFTButtonProps extends ButtonProps {
+  collateralTokenID: ethers.BigNumber;
+  collateralAddress: string;
+  setIsCollateralApproved: (value: boolean) => void;
+  setSubmittingApproval: (value: boolean) => void;
+  submittingApproval: boolean;
+}
+function AuthorizeNFTButton({
+  collateralAddress,
+  collateralTokenID,
+  setIsCollateralApproved,
+  setSubmittingApproval,
+  state,
+  submittingApproval,
+}: AuthorizeNFTButtonProps) {
+  const { account } = useWeb3();
+  const [transactionHash, setTransactionHash] = useState('');
+
+  const waitForApproval = useCallback(async () => {
+    const contract = jsonRpcERC721Contract(collateralAddress);
+    const filter = contract.filters.Approval(
+      account,
+      process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT,
+      collateralTokenID,
+    );
+    contract.once(filter, () => {
+      setSubmittingApproval(false);
+      setIsCollateralApproved(true);
+    });
+  }, [
+    account,
+    collateralAddress,
+    setIsCollateralApproved,
+    collateralTokenID,
+    setSubmittingApproval,
+  ]);
+
+  const approve = useCallback(async () => {
+    const web3Contract = web3Erc721Contract(collateralAddress);
+    const t = await web3Contract.approve(
+      process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT || '',
+      collateralTokenID,
+    );
+    setTransactionHash(t.hash);
+    setSubmittingApproval(true);
+    t.wait()
+      .then(() => {
+        waitForApproval();
+        setSubmittingApproval(true);
+      })
+      .catch((err) => {
+        setSubmittingApproval(false);
+        console.error(err);
+      });
+  }, [
+    collateralAddress,
+    waitForApproval,
+    collateralTokenID,
+    setSubmittingApproval,
+  ]);
   const text = useMemo(() => 'Authorize NFT', []);
   const isDisabled = state < State.NeedsToAuthorize;
-  const isDone = state > State.NeedsToAuthorize;
-
-  if (isDisabled) {
-    return <Button disabled>{text}</Button>;
-  }
-  if (isDone) {
-    return <CompletedButton buttonText={text} success />;
-  }
-
-  return <Button>{text}</Button>;
-}
-
-function MintBorrowerTicketButton({ state }: ButtonProps) {
-  const text = useMemo(() => 'Mint Borrower Ticket', []);
-  const isDisabled = state < State.Ready;
 
   if (isDisabled) {
     return <Button disabled>{text}</Button>;
   }
 
-  return <Button>{text}</Button>;
-}
-
-function ExplainerNotConnected() {
   return (
-    <div className={styles.explainer}>
-      First, connect your wallet!
-      <br />← Then follow these steps to create a loan and make it available to
-      lenders.
-    </div>
-  );
-}
-
-function ExplainerNeedsToSelect() {
-  return (
-    <div className={styles.explainer}>
-      ← Start creating a loan by selecting an NFT to use as collateral. It will
-      be locked up by the contract for the duration of the loan.
-    </div>
-  );
-}
-
-function ExplainerNeedsToAuthorize() {
-  return (
-    <div className={styles.explainer}>
-      ← This allows the Pawn Shop to hold your NFT until you repay any loan you
-      receive, and to trasnfer it to the lender if you choose not to repay.
-    </div>
-  );
-}
-
-function ExplainerAuthorizationInProgress() {
-  return <div className={styles.explainer}>← This can take a few minutes.</div>;
-}
-
-function ExplainerForm() {
-  return (
-    <div className={styles.explainer}>
-      ← Set your loan terms. Any lender who wishes can meet these terms, and you
-      will automatically receive the loan amount minus a 1% origination fee.
-    </div>
-  );
-}
-
-function ExplainerReady() {
-  return (
-    <div className={styles.explainer}>
-      ← This is the last step of creating a loan. You will be issued an NFT
-      representing your rights and obligations as a borrower. This cannot be
-      undone without closing the loan and repaying any loan amount you’ve
-      received and interest accrued.
-    </div>
-  );
-}
-
-function ExplainerSubmitting() {
-  return (
-    <div className={styles.explainer}>← This can take a few more minutes.</div>
+    <TransactionButton
+      text={text}
+      onClick={approve}
+      txHash={transactionHash}
+      isPending={submittingApproval}
+    />
   );
 }
