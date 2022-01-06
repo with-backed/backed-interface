@@ -1,5 +1,6 @@
 import { Button, CompletedButton, TransactionButton } from 'components/Button';
 import { Input } from 'components/Input';
+import { Select } from 'components/Select';
 import { ethers } from 'ethers';
 import { ErrorMessage, Field, Formik } from 'formik';
 import { useWeb3 } from 'hooks/useWeb3';
@@ -10,6 +11,7 @@ import {
 } from 'lib/contracts';
 import { getLoanAssets, LoanAsset } from 'lib/loanAssets';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { OptionsOrGroups } from 'react-select';
 import * as Yup from 'yup';
 import styles from './CreatePageHeader.module.css';
 import { State } from './State';
@@ -52,7 +54,9 @@ export function CreatePageForm({
       interestRate,
       duration,
     }) => {
-      const assetContract = jsonRpcERC20Contract(loanAssetContractAddress);
+      const assetContract = jsonRpcERC20Contract(
+        loanAssetContractAddress.value,
+      );
       const loanAssetDecimals = await assetContract.decimals();
       const durationInSeconds = Math.ceil(duration * SECONDS_IN_A_DAY);
       const interestRatePerSecond = ethers.BigNumber.from(
@@ -65,7 +69,7 @@ export function CreatePageForm({
         collateralAddress,
         interestRatePerSecond,
         ethers.utils.parseUnits(loanAmount.toString(), loanAssetDecimals),
-        loanAssetContractAddress,
+        loanAssetContractAddress.value,
         durationInSeconds,
         // If they've gotten this far, they must have an account.
         account!,
@@ -90,6 +94,14 @@ export function CreatePageForm({
     setLoanAssetOptions(assets);
   }, []);
 
+  const initialLoanAssetContractAddress = useMemo(() => {
+    if (loanAssetOptions.length > 0) {
+      const { address, symbol } = loanAssetOptions[0];
+      return { value: address, label: symbol };
+    }
+    return undefined;
+  }, [loanAssetOptions]);
+
   useEffect(() => {
     loadAssets();
   }, [loadAssets]);
@@ -101,14 +113,16 @@ export function CreatePageForm({
   return (
     <Formik
       initialValues={{
-        loanAssetContractAddress:
-          loanAssetOptions.length > 0 ? loanAssetOptions[0].address : '',
+        loanAssetContractAddress: initialLoanAssetContractAddress,
         loanAmount: 0,
         interestRate: 0,
         duration: 0,
       }}
       validationSchema={Yup.object({
-        loanAssetContractAddress: Yup.string(),
+        loanAssetContractAddress: Yup.object({
+          value: Yup.string(),
+          address: Yup.string(),
+        }),
         loanAmount: Yup.number().moreThan(0),
         interestRate: Yup.number().min(MIN_RATE),
         duration: Yup.number().moreThan(0),
@@ -119,15 +133,17 @@ export function CreatePageForm({
         <form className={styles.form} onSubmit={formik.handleSubmit}>
           <label htmlFor="loanAssetContractAddress">
             <span>Loan Denomination</span>
-            <Field name="loanAssetContractAddress" as="select">
-              {loanAssetOptions.map(({ symbol, address }) => {
-                return (
-                  <option value={address} key={address}>
-                    {symbol}
-                  </option>
-                );
-              })}
-            </Field>
+            <Field
+              name="loanAssetContractAddress"
+              as={Select}
+              options={loanAssetOptions.map(({ symbol, address }) => ({
+                value: address,
+                label: symbol,
+              }))}
+              onChange={(option: { [key: string]: string }) =>
+                formik.setFieldValue('loanAssetContractAddress', option)
+              }
+            />
           </label>
 
           <label htmlFor="loanAmount">

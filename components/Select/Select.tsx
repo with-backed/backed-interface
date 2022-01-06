@@ -22,6 +22,7 @@ const customStyles: StylesConfig = {
     ...provided,
     background: 'var(--background-white)',
     paddingTop: '2rem',
+    paddingBottom: '0.5rem',
     marginTop: '-1.5rem',
     borderRadius: 'var(--border-radius-large)',
   }),
