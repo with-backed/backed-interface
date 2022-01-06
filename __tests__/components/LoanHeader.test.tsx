@@ -9,6 +9,7 @@ import {
   loanWithLenderPastDue,
   now,
 } from 'lib/mockData';
+import noop from 'lodash/noop';
 
 jest.mock('components/Media', () => ({
   ...jest.requireActual('components/Media'),
@@ -39,6 +40,7 @@ describe('LoanHeader', () => {
       <LoanHeader
         collateralMedia={collateralMedia}
         loan={loanWithLenderAccruing}
+        refresh={noop}
       />,
     );
     getByText('Loading...');
@@ -50,6 +52,7 @@ describe('LoanHeader', () => {
       <LoanHeader
         collateralMedia={collateralMedia}
         loan={loanWithLenderPastDue}
+        refresh={noop}
       />,
     );
     getByText('Loading...');
@@ -57,7 +60,11 @@ describe('LoanHeader', () => {
 
   it('renders an awaiting lender status for loans that have not started', () => {
     const { getByText } = render(
-      <LoanHeader collateralMedia={collateralMedia} loan={baseLoan} />,
+      <LoanHeader
+        collateralMedia={collateralMedia}
+        loan={baseLoan}
+        refresh={noop}
+      />,
     );
     getByText('Awaiting lender');
   });
@@ -67,6 +74,7 @@ describe('LoanHeader', () => {
       <LoanHeader
         collateralMedia={collateralMedia}
         loan={loanWithLenderAccruing}
+        refresh={noop}
       />,
     );
     getByText('Accruing interest');
@@ -77,6 +85,7 @@ describe('LoanHeader', () => {
       <LoanHeader
         collateralMedia={collateralMedia}
         loan={loanWithLenderPastDue}
+        refresh={noop}
       />,
     );
     getByText('Past due');
@@ -84,14 +93,18 @@ describe('LoanHeader', () => {
 
   it('renders a closed status for completed loans', () => {
     const { getByText } = render(
-      <LoanHeader collateralMedia={collateralMedia} loan={closedLoan} />,
+      <LoanHeader
+        collateralMedia={collateralMedia}
+        loan={closedLoan}
+        refresh={noop}
+      />,
     );
     getByText('Closed');
   });
 
   it('renders the image fallback when we do not have the media info', () => {
     const { container } = render(
-      <LoanHeader collateralMedia={null} loan={closedLoan} />,
+      <LoanHeader collateralMedia={null} loan={closedLoan} refresh={noop} />,
     );
     const fallback = container.querySelector('.fallback');
     expect(fallback).not.toBeNull();

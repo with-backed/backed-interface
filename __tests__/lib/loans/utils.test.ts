@@ -1,6 +1,9 @@
 import { ethers } from 'ethers';
 import { Loan } from 'types/Loan';
-import { SubgraphLoan } from 'lib/types/SubgraphLoan';
+import {
+  Loan as SubgraphLoan,
+  LoanStatus,
+} from 'types/generated/graphql/nftLoans';
 import { parseSubgraphLoan } from 'lib/loans/utils';
 
 describe('parseSubgraphLoan', () => {
@@ -10,6 +13,7 @@ describe('parseSubgraphLoan', () => {
   let collateralContractAddress = '0x325a0dd968cafaf2cc01232564c49ad0b1d71313';
   let collateralTokenId = '1';
   let durationSeconds = '864000';
+  let createdAtTimestamp = 1439776108;
   let endDateTimestamp = 1639776108;
   let id = '1';
   let lastAccumulatedTimestamp = '0';
@@ -20,6 +24,8 @@ describe('parseSubgraphLoan', () => {
   let loanAssetSymbol = 'DAI';
   let perSecondInterestRate = '15';
   const collateralTokenURI = 'gopher://gopher.pawnshop.internet';
+  const collateralName = 'This is a name';
+  const status = LoanStatus.Active;
   let subgraphLoan: SubgraphLoan;
 
   function result(): Loan {
@@ -44,6 +50,9 @@ describe('parseSubgraphLoan', () => {
       loanAssetSymbol,
       perSecondInterestRate,
       collateralTokenURI,
+      collateralName,
+      status,
+      createdAtTimestamp,
     });
 
     // freeze date for calculations
