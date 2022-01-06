@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { GetNFTInfoResponse, getNFTInfo } from 'lib/getNFTInfo';
 import { Media } from 'components/Media';
 import { jsonRpcERC721Contract } from 'lib/contracts';
+import { Fallback } from './Fallback';
 
 interface NFTMediaProps {
   collateralAddress: string;
@@ -33,7 +34,7 @@ export function NFTMedia({
   }, [load]);
 
   if (!nftInfo) {
-    return null;
+    return <Fallback />;
   }
 
   return (
