@@ -1,31 +1,21 @@
-.wrapper {
-  width: 100%;
-}
-
 .input {
-  padding: 5px;
+  padding: var(--padding-button);
   border: none;
+  outline: none;
+  border-radius: var(--border-radius-large);
   height: 40px;
   width: 100%;
-  border: 1px solid var(--neutral-100);
-  background: var(--background-fieldset);
 }
 
-.errorInput {
+.input:focus {
+  box-shadow: var(--box-shadow-blue-hard);
+}
+
+.light {
   composes: input;
-  border: 1px solid var(--highlight-alert-100);
 }
 
-.label {
-  font-size: 15px;
-  color: var(--neutral-100);
-}
-
-.errorLabel {
-  composes: label;
-  color: var(--highlight-alert-100);
-}
-
-.errorMessage {
-  color: var(--highlight-alert-100);
+.dark {
+  composes: input;
+  background: var(--background-radial-gradient);
 }
