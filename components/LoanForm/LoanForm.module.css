@@ -19,10 +19,3 @@
   line-height: 32px;
   text-align: right;
 }
-
-.form > label > input {
-  height: 41px;
-  border-radius: 12px;
-  border: thin var(--neutral-50) solid;
-  padding: 0 1rem;
-}
