@@ -20,9 +20,9 @@ import {
   RepayEvent,
   SeizeCollateralEvent,
   UnderwriteLoanEvent,
-} from 'abis/types/NFTLoanFacilitator';
+} from 'types/generated/abis/NFTLoanFacilitator';
 import styles from './TicketHistory.module.css';
-import { Loan } from 'lib/types/Loan';
+import { Loan } from 'types/Loan';
 import { DescriptionList } from 'components/DescriptionList';
 
 const eventDetailComponents: { [key: string]: (...props: any) => JSX.Element } =

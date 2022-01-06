@@ -9,7 +9,7 @@ import AllowButton from 'components/ticketPage/underwriteCard/AllowButton';
 import { TransactionButton } from 'components/ticketPage/TransactionButton';
 import { Fieldset } from 'components/Fieldset';
 import { useWeb3 } from 'hooks/useWeb3';
-import { Loan } from 'lib/types/Loan';
+import { Loan } from 'types/Loan';
 
 interface RepayCardProps {
   loanInfo: Loan;

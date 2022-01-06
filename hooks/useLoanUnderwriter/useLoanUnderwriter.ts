@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 import { useWeb3 } from 'hooks/useWeb3';
 import { jsonRpcLoanFacilitator, web3LoanFacilitator } from 'lib/contracts';
 import { daysToSecondsBigNum } from 'lib/duration';
-import { Loan } from 'lib/types/Loan';
+import { Loan } from 'types/Loan';
 import { useCallback, useState } from 'react';
 
 interface Values {

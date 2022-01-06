@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { SCALAR } from 'lib/constants';
-import { Loan } from 'lib/types/Loan';
+import { Loan } from 'types/Loan';
 import { Loan as SubgraphLoan } from 'types/generated/graphql/nftLoans';
 
 export function parseSubgraphLoan(loan: SubgraphLoan): Loan {

@@ -6,7 +6,7 @@ import { OpenSeaAddressLink } from 'components/OpenSeaLink';
 import { PawnLoanArt, PawnTicketArt } from 'components/ticketPage/PawnArt';
 import { useLoanDetails } from 'hooks/useLoanDetails';
 import { jsonRpcERC721Contract } from 'lib/contracts';
-import { Loan } from 'lib/types/Loan';
+import { Loan } from 'types/Loan';
 import React from 'react';
 import styles from './LoanTickets.module.css';
 

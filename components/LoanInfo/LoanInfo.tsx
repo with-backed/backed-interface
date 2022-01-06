@@ -4,7 +4,7 @@ import { TwoColumn } from 'components/layouts/TwoColumn';
 import { RepaymentInfo } from 'components/RepaymentInfo';
 import { TicketHistory } from 'components/ticketPage/TicketHistory';
 import { ethers } from 'ethers';
-import { Loan } from 'lib/types/Loan';
+import { Loan } from 'types/Loan';
 import React, { useMemo } from 'react';
 import styles from './LoanInfo.module.css';
 import chunk from 'lodash/chunk';

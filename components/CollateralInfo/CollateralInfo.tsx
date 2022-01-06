@@ -1,7 +1,7 @@
 import { DescriptionList } from 'components/DescriptionList';
 import { Fieldset } from 'components/Fieldset';
 import { OpenSeaAddressLink } from 'components/OpenSeaLink';
-import { Loan } from 'lib/types/Loan';
+import { Loan } from 'types/Loan';
 import React, { useMemo } from 'react';
 
 type CollateralInfoProps = {

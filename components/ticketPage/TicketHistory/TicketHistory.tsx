@@ -3,7 +3,7 @@ import { useCallback, useState, useEffect } from 'react';
 import { jsonRpcLoanFacilitator } from 'lib/contracts';
 import { Fieldset } from 'components/Fieldset';
 import { ParsedEvent } from './ParsedEvent';
-import { Loan } from 'lib/types/Loan';
+import { Loan } from 'types/Loan';
 import styles from './TicketHistory.module.css';
 
 interface TicketHistoryProps {

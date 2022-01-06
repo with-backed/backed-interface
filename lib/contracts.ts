@@ -4,7 +4,7 @@ import {
   ERC721,
   ERC721__factory,
   NFTLoanFacilitator__factory,
-} from '../abis/types';
+} from 'types/generated/abis';
 
 const jsonRpcProvider = new ethers.providers.JsonRpcProvider(
   process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,

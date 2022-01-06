@@ -4,7 +4,7 @@ import { web3LoanFacilitator, jsonRpcLoanFacilitator } from 'lib/contracts';
 import { Fieldset } from 'components/Fieldset';
 import { useWeb3 } from 'hooks/useWeb3';
 import { TransactionButton } from 'components/ticketPage/TransactionButton';
-import { Loan } from 'lib/types/Loan';
+import { Loan } from 'types/Loan';
 
 interface SeizeCollateralCardProps {
   loanInfo: Loan;

@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import CollateralMediaCard from 'components/ticketPage/CollateralMediaCard';
 import { PawnLoanArt, PawnTicketArt } from 'components/ticketPage/PawnArt';
 import { UnderwriteCard } from 'components/ticketPage/UnderwriteCard';
-import { Loan } from 'lib/types/Loan';
+import { Loan } from 'types/Loan';
 import { RepayCard } from 'components/ticketPage/RepayCard';
 import { TicketHistory } from 'components/ticketPage/TicketHistory';
 import SeizeCollateralCard from 'components/ticketPage/SeizeCollateralCard';

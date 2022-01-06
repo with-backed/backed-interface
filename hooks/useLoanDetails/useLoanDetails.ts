@@ -3,7 +3,7 @@ import { useTimestamp } from 'hooks/useTimestamp';
 import { SCALAR } from 'lib/constants';
 import { humanizedDuration } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
-import { Loan } from 'lib/types/Loan';
+import { Loan } from 'types/Loan';
 import { useMemo } from 'react';
 
 type LoanStatusParams = {

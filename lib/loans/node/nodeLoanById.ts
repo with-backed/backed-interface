@@ -4,7 +4,7 @@ import {
   jsonRpcERC721Contract,
   jsonRpcLoanFacilitator,
 } from 'lib/contracts';
-import { Loan } from 'lib/types/Loan';
+import { Loan } from 'types/Loan';
 
 export async function nodeLoanById(loanId: string): Promise<Loan> {
   const id = ethers.BigNumber.from(loanId);

@@ -1,4 +1,4 @@
-import { Loan } from 'lib/types/Loan';
+import { Loan } from 'types/Loan';
 import { Loan as SubgraphLoan } from 'types/generated/graphql/nftLoans';
 import { parseSubgraphLoan } from './utils';
 

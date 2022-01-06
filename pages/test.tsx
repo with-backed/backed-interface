@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ethers } from 'ethers';
-import { MockDAI__factory, MockPUNK__factory } from 'abis/types';
+import { MockDAI__factory, MockPUNK__factory } from 'types/generated/abis';
 import { TransactionButton } from 'components/ticketPage/TransactionButton';
 import { Fieldset } from 'components/Fieldset';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
