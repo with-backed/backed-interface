@@ -26,6 +26,10 @@ const customStyles: StylesConfig = {
     marginTop: '-1.5rem',
     borderRadius: 'var(--border-radius-large)',
   }),
+  valueContainer: (provided) => ({
+    ...provided,
+    padding: 'none',
+  }),
 };
 
 interface SelectProps extends React.ComponentProps<typeof ReactSelect> {}
