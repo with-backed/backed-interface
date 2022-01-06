@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { NFTResponseData } from 'pages/api/nftInfo/[uri]';
-import { ERC721 } from '../abis/types';
+import { ERC721 } from 'types/generated/abis';
 
 export interface GetNFTInfoArgs {
   contract: ERC721;

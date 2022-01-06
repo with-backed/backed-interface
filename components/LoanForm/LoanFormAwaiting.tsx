@@ -8,7 +8,7 @@ import { ErrorMessage, Field, Formik } from 'formik';
 import { useLoanUnderwriter } from 'hooks/useLoanUnderwriter';
 import { secondsBigNumToDays } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
-import { Loan } from 'lib/types/Loan';
+import { Loan } from 'types/Loan';
 import React, { useMemo } from 'react';
 import * as Yup from 'yup';
 import styles from './LoanForm.module.css';

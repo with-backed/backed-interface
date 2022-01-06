@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { jsonRpcLoanFacilitator, web3LoanFacilitator } from 'lib/contracts';
 import { TransactionButton } from 'components/ticketPage/TransactionButton';
 import { useWeb3 } from 'hooks/useWeb3';
-import { Loan } from 'lib/types/Loan';
+import { Loan } from 'types/Loan';
 
 interface UnderwriteButtonProps {
   loanInfo: Loan;

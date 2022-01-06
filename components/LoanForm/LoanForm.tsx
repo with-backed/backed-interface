@@ -1,6 +1,6 @@
 import { Button } from 'components/Button';
 import { ethers } from 'ethers';
-import { Loan } from 'lib/types/Loan';
+import { Loan } from 'types/Loan';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styles from './LoanForm.module.css';
 import { useWeb3 } from 'hooks/useWeb3';

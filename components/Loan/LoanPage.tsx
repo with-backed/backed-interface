@@ -6,7 +6,7 @@ import React, {
 } from 'react';
 import { loanById } from 'lib/loans/loanById';
 import LoanPageBody from 'components/ticketPage/LoanPageBody';
-import { Loan } from 'lib/types/Loan';
+import { Loan } from 'types/Loan';
 
 type LoanProps = {
   serverLoanInfo: Loan;

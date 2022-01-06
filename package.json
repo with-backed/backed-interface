@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "yarn graphql:generate && yarn typechain --target ethers-v5 --out-dir ./abis/types './abis/*.json' && next dev",
-    "build": "yarn graphql:generate && yarn typechain --target ethers-v5 --out-dir ./abis/types './abis/*.json' && next build",
+    "dev": "yarn graphql:generate && yarn abis:generate && next dev",
+    "build": "yarn graphql:generate && yarn abis:generate && next build",
     "start": "next start",
     "storybook": "start-storybook -p 6006 -s ./public",
     "build-storybook": "build-storybook",
@@ -15,7 +15,8 @@
     "test": "jest",
     "test-coverage": "yarn test --collect-coverage=true",
     "graphql:generate": "yarn graphql:generate:nft-loans",
-    "graphql:generate:nft-loans": "graphql-codegen --config codegen/nftLoans.yml"
+    "graphql:generate:nft-loans": "graphql-codegen --config codegen/nftLoans.yml",
+    "abis:generate": "yarn typechain --target ethers-v5 --out-dir ./types/generated/abis './abis/*.json'"
   },
   "dependencies": {
     "@ethersproject/keccak256": "^5.4.0",

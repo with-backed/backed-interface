@@ -10,10 +10,10 @@ import {
   RepayEvent,
   SeizeCollateralEvent,
   UnderwriteLoanEvent,
-} from 'abis/types/NFTLoanFacilitator';
+} from 'types/generated/abis/NFTLoanFacilitator';
 import { Fieldset } from 'components/Fieldset';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
-import { Loan } from 'lib/types/Loan';
+import { Loan } from 'types/Loan';
 
 export default {
   title: 'Components/ticketPage/TicketHistory/ParsedEvent',

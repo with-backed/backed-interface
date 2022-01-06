@@ -4,7 +4,7 @@ import { useTokenMetadata } from 'hooks/useTokenMetadata';
 import { LoanCard } from 'components/LoanCard';
 import { GetNFTInfoResponse } from 'lib/getNFTInfo';
 import { ethers } from 'ethers';
-import { Loan } from 'lib/types/Loan';
+import { Loan } from 'types/Loan';
 
 jest.mock('hooks/useTokenMetadata', () => ({
   useTokenMetadata: jest.fn(),

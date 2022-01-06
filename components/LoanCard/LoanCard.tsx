@@ -7,7 +7,7 @@ import { useTokenMetadata } from 'hooks/useTokenMetadata';
 import { Media } from 'components/Media';
 import { GetNFTInfoResponse } from 'lib/getNFTInfo';
 import { Fallback } from 'components/Media/Fallback';
-import { Loan } from 'lib/types/Loan';
+import { Loan } from 'types/Loan';
 
 const Attributes: FunctionComponent = ({ children }) => {
   return <div className={styles.attributes}>{children}</div>;

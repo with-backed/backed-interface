@@ -4,8 +4,8 @@ import { LoanForm } from 'components/LoanForm';
 import { Media } from 'components/Media';
 import { Fallback } from 'components/Media/Fallback';
 import { useLoanDetails } from 'hooks/useLoanDetails';
-import { CollateralMedia } from 'lib/types/CollateralMedia';
-import { Loan } from 'lib/types/Loan';
+import { CollateralMedia } from 'types/CollateralMedia';
+import { Loan } from 'types/Loan';
 import React, { useMemo } from 'react';
 import styles from './LoanHeader.module.css';
 

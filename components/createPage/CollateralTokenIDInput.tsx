@@ -1,4 +1,4 @@
-import { ERC721 } from 'abis/types';
+import { ERC721 } from 'types/generated/abis';
 import { ethers } from 'ethers';
 import React, { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { Input } from 'components/Input';

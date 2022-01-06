@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import { getNFTInfo, GetNFTInfoResponse } from 'lib/getNFTInfo';
 import { Media } from 'components/Media';
-import { ERC721 } from 'abis/types';
+import { ERC721 } from 'types/generated/abis';
 import { jsonRpcERC721Contract } from 'lib/contracts';
 import { Fallback } from 'components/Media/Fallback';
 

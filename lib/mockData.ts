@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { Loan } from 'lib/types/Loan';
+import { Loan } from 'types/Loan';
 
 export const now = 1000000000;
 const durationSeconds = 259200;

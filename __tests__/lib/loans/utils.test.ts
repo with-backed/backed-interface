@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { Loan } from 'lib/types/Loan';
+import { Loan } from 'types/Loan';
 import { SubgraphLoan } from 'lib/types/SubgraphLoan';
 import { parseSubgraphLoan } from 'lib/loans/utils';
 

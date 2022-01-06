@@ -1,11 +1,11 @@
 import { GetServerSideProps } from 'next';
-import { Loan } from 'lib/types/Loan';
+import { Loan } from 'types/Loan';
 import { ethers } from 'ethers';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { loanById } from 'lib/loans/loanById';
 import { LoanHeader } from 'components/LoanHeader';
 import { LoanInfo } from 'components/LoanInfo';
-import { CollateralMedia } from 'lib/types/CollateralMedia';
+import { CollateralMedia } from 'types/CollateralMedia';
 import { getNFTInfoFromTokenInfo } from 'lib/getNFTInfo';
 
 export type LoanPageProps = {

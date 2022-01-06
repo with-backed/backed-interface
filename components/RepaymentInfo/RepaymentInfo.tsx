@@ -1,7 +1,7 @@
 import { DescriptionList } from 'components/DescriptionList';
 import { Fieldset } from 'components/Fieldset';
 import { useLoanDetails } from 'hooks/useLoanDetails';
-import { Loan } from 'lib/types/Loan';
+import { Loan } from 'types/Loan';
 import React from 'react';
 
 type RepaymentInfoProps = {
