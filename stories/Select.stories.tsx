@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 
 import { Select } from 'components/Select';
 
@@ -7,14 +7,12 @@ export default {
   component: Select,
 };
 
-const handleChange = (_event: ChangeEvent<HTMLSelectElement>) => {};
+const options = [
+  { value: 'chocolate', label: 'Chocolate' },
+  { value: 'strawberry', label: 'Strawberry' },
+  { value: 'vanilla', label: 'Vanilla' },
+];
 
 export const SelectStyles = () => {
-  return (
-    <Select title="Breakfast ingredients" onChange={handleChange}>
-      <option>Bacon</option>
-      <option>Eggs</option>
-      <option>Jam</option>
-    </Select>
-  );
+  return <Select placeholder="Flavor" options={options} />;
 };
