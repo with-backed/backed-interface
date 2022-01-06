@@ -88,6 +88,7 @@ h3 {
 
 a {
   color: var(--highlight-clickable-100);
+  text-decoration: none;
 }
 
 a:visited {

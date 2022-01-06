@@ -10,6 +10,6 @@
   flex-direction: column;
 }
 
-.column a {
-  text-decoration: none;
+.column > a {
+  margin-top: 1rem;
 }
