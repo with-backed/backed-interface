@@ -13,6 +13,11 @@ import * as Yup from 'yup';
 import styles from './CreatePageHeader.module.css';
 import { State } from './State';
 
+const SECONDS_IN_A_DAY = 60 * 60 * 24;
+const SECONDS_IN_A_YEAR = 31_536_000;
+const INTEREST_RATE_PERCENT_DECIMALS = 8;
+const MIN_RATE = 1 / 10 ** INTEREST_RATE_PERCENT_DECIMALS;
+
 type CreatePageFormProps = {
   collateralAddress: string;
   collateralTokenID: ethers.BigNumber;
@@ -48,15 +53,19 @@ export function CreatePageForm({
     }) => {
       const assetContract = jsonRpcERC20Contract(loanAssetContractAddress);
       const loanAssetDecimals = await assetContract.decimals();
+      const durationInSeconds = Math.ceil(duration * SECONDS_IN_A_DAY);
+      const interestRatePerSecond = ethers.BigNumber.from(
+        Math.floor(interestRate * 10 ** INTEREST_RATE_PERCENT_DECIMALS),
+      ).div(SECONDS_IN_A_YEAR);
 
       const contract = web3LoanFacilitator();
       const t = await contract.createLoan(
         collateralTokenID,
         collateralAddress,
-        interestRate,
+        interestRatePerSecond,
         ethers.utils.parseUnits(loanAmount.toString(), loanAssetDecimals),
         loanAssetContractAddress,
-        duration,
+        durationInSeconds,
         // If they've gotten this far, they must have an account.
         account!,
       );
@@ -90,12 +99,18 @@ export function CreatePageForm({
 
   return (
     <Formik
-      initialValues={{}}
+      initialValues={{
+        loanAssetContractAddress:
+          loanAssetOptions.length > 0 ? loanAssetOptions[0].address : '',
+        loanAmount: 0,
+        interestRate: 0,
+        duration: 0,
+      }}
       validationSchema={Yup.object({
         loanAssetContractAddress: Yup.string(),
-        loanAmount: Yup.number(),
-        interestRate: Yup.number(),
-        duration: Yup.number(),
+        loanAmount: Yup.number().moreThan(0),
+        interestRate: Yup.number().min(MIN_RATE),
+        duration: Yup.number().moreThan(0),
       })}
       isInitialValid={false}
       onSubmit={mint}>
@@ -116,19 +131,19 @@ export function CreatePageForm({
 
           <label htmlFor="loanAmount">
             <span>Minimum Loan Amount</span>
-            <Field name="loanAmount" />
+            <Field name="loanAmount" type="number" placeholder="0" />
           </label>
           <ErrorMessage name="loanAmount" />
 
           <label htmlFor="interestRate">
             <span>Maximum Interest Rate</span>
-            <Field name="interestRate" placeholder="0%" />
+            <Field name="interestRate" type="number" placeholder={`0 %`} />
           </label>
           <ErrorMessage name="interestRate" />
 
           <label htmlFor="duration">
             <span>Minimum Duration</span>
-            <Field name="duration" placeholder="0 Days" />
+            <Field name="duration" type="number" placeholder="0 Days" />
           </label>
           <ErrorMessage name="loanAmount" />
 
