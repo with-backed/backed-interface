@@ -154,6 +154,7 @@ export function CreatePageForm({
               placeholder="0"
               as={Input}
               color="dark"
+              unit={formik.values.loanAssetContractAddress?.label}
             />
           </label>
           <ErrorMessage name="loanAmount" />
@@ -163,9 +164,10 @@ export function CreatePageForm({
             <Field
               name="interestRate"
               type="number"
-              placeholder={`0 %`}
+              placeholder={`0`}
               as={Input}
               color="dark"
+              unit="%"
             />
           </label>
           <ErrorMessage name="interestRate" />
@@ -175,9 +177,10 @@ export function CreatePageForm({
             <Field
               name="duration"
               type="number"
-              placeholder="0 Days"
+              placeholder="0"
               as={Input}
               color="dark"
+              unit="Days"
             />
           </label>
           <ErrorMessage name="loanAmount" />

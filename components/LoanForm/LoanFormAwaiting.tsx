@@ -67,20 +67,38 @@ export function LoanFormAwaiting({
           <CompletedButton buttonText="Lend against this NFT" />
 
           <label htmlFor="amount">
-            <span>Amount ({loan.loanAssetSymbol})</span>
-            <Field name="amount" as={Input} color="dark" type="number" />
+            <span>Amount</span>
+            <Field
+              name="amount"
+              as={Input}
+              color="dark"
+              type="number"
+              unit={loan.loanAssetSymbol}
+            />
           </label>
           <ErrorMessage name="amount" />
 
           <label htmlFor="interestRate">
             <span>Interest Rate</span>
-            <Field name="interestRate" as={Input} color="dark" type="number" />
+            <Field
+              name="interestRate"
+              as={Input}
+              color="dark"
+              type="number"
+              unit="%"
+            />
           </label>
           <ErrorMessage name="interestRate" />
 
           <label htmlFor="duration">
-            <span>Duration (Days)</span>
-            <Field name="duration" as={Input} color="dark" type="number" />
+            <span>Duration</span>
+            <Field
+              name="duration"
+              as={Input}
+              color="dark"
+              type="number"
+              unit="Days"
+            />
           </label>
           <ErrorMessage name="duration" />
           <AllowButton
