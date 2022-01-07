@@ -1,8 +1,9 @@
-import { Button, CompletedButton, TransactionButton } from 'components/Button';
+import { Button, TransactionButton } from 'components/Button';
+import { FormErrors } from 'components/FormErrors';
 import { Input } from 'components/Input';
 import { Select } from 'components/Select';
 import { ethers } from 'ethers';
-import { ErrorMessage, Field, Formik } from 'formik';
+import { Field, Formik } from 'formik';
 import { useWeb3 } from 'hooks/useWeb3';
 import {
   jsonRpcERC20Contract,
@@ -11,7 +12,6 @@ import {
 } from 'lib/contracts';
 import { getLoanAssets, LoanAsset } from 'lib/loanAssets';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { OptionsOrGroups } from 'react-select';
 import * as Yup from 'yup';
 import styles from './CreatePageHeader.module.css';
 import { State } from './State';
@@ -166,7 +166,6 @@ export function CreatePageForm({
               unit={formik.values.loanAssetContractAddress?.label}
             />
           </label>
-          <ErrorMessage name="loanAmount" />
 
           <label htmlFor="interestRate">
             <span>Maximum Interest Rate</span>
@@ -179,7 +178,6 @@ export function CreatePageForm({
               unit="%"
             />
           </label>
-          <ErrorMessage name="interestRate" />
 
           <label htmlFor="duration">
             <span>Minimum Duration</span>
@@ -192,7 +190,8 @@ export function CreatePageForm({
               unit="Days"
             />
           </label>
-          <ErrorMessage name="loanAmount" />
+
+          <FormErrors errors={Object.values(formik.errors)} />
 
           <TransactionButton
             text={buttonText}
