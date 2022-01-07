@@ -55,6 +55,11 @@
   background: var(--background-white);
 }
 
+.light-unit:focus + .unit,
+.dark-unit:focus + .unit {
+  background: var(--highlight-active-10);
+}
+
 /* suppress spinners on number inputs */
 .input[type='number'] {
   -moz-appearance: textfield;
