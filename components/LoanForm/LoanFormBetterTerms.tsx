@@ -96,19 +96,19 @@ export function LoanFormBetterTerms({
 
           <label htmlFor="amount">
             <span>Amount ({loan.loanAssetSymbol})</span>
-            <Field name="amount" as={Input} color="dark" />
+            <Field name="amount" as={Input} color="dark" type="number" />
           </label>
           <ErrorMessage name="amount" />
 
           <label htmlFor="interestRate">
             <span>Interest Rate</span>
-            <Field name="interestRate" as={Input} color="dark" />
+            <Field name="interestRate" as={Input} color="dark" type="number" />
           </label>
           <ErrorMessage name="interestRate" />
 
           <label htmlFor="duration">
             <span>Duration (Days)</span>
-            <Field name="duration" as={Input} color="dark" />
+            <Field name="duration" as={Input} color="dark" type="number" />
           </label>
           <ErrorMessage name="duration" />
           <AllowButton
