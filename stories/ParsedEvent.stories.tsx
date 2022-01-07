@@ -13,7 +13,7 @@ import {
 } from 'types/generated/abis/NFTLoanFacilitator';
 import { Fieldset } from 'components/Fieldset';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
-import { Loan } from 'types/Loan';
+import { baseLoan } from 'lib/mockData';
 
 export default {
   title: 'Components/ticketPage/TicketHistory/ParsedEvent',
@@ -34,25 +34,8 @@ const replacedAmount = ethers.BigNumber.from(0);
 const getBlock = async (): Promise<ethers.providers.Block> =>
   ({ timestamp: 1999999999 } as any);
 
-const loanInfo: Loan = {
-  id: ethers.BigNumber.from(1),
-  loanAssetContractAddress: '0x123abc',
-  collateralContractAddress: '0xdef999',
-  collateralTokenId,
-  perSecondInterestRate: ethers.BigNumber.from(6),
-  accumulatedInterest: ethers.BigNumber.from(7700),
-  lastAccumulatedTimestamp: ethers.BigNumber.from(66),
-  durationSeconds: ethers.BigNumber.from(9001),
-  loanAmount: ethers.BigNumber.from(650),
-  closed: false,
-  loanAssetDecimals: 2,
-  loanAssetSymbol: ':D',
-  lender: '0xbadc0ffee',
-  borrower: '0xdeadbeef',
-  interestOwed: ethers.BigNumber.from(0),
-  endDateTimestamp: 445,
-  collateralTokenURI: '',
-};
+const loanInfo = baseLoan;
+
 const events: ethers.Event[] = [
   {
     event: 'Close',
