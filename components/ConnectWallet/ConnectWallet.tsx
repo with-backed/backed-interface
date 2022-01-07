@@ -66,12 +66,10 @@ export const ConnectWallet = () => {
   return (
     <>
       {!account && (
-        <DialogDisclosureButton {...dialog}>
-          Connect Wallet
-        </DialogDisclosureButton>
+        <DialogDisclosureButton {...dialog}>Connect</DialogDisclosureButton>
       )}
       {!!account && (
-        <CompletedButton buttonText={`🔑 ${account.slice(0, 7)}`} />
+        <CompletedButton buttonText={`🔓 ${account.slice(0, 7)}`} />
       )}
       <Modal
         dialog={dialog}
