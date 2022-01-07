@@ -4,7 +4,7 @@ import {
   TransactionButton,
 } from 'components/Button';
 import { ethers } from 'ethers';
-import { ErrorMessage, Field, Formik } from 'formik';
+import { Field, Formik } from 'formik';
 import { useLoanUnderwriter } from 'hooks/useLoanUnderwriter';
 import { secondsBigNumToDays } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
@@ -12,6 +12,7 @@ import { Loan } from 'types/Loan';
 import React, { useMemo } from 'react';
 import styles from './LoanForm.module.css';
 import { Input } from 'components/Input';
+import { FormErrors } from 'components/FormErrors';
 
 type LoanFormBetterTermsProps = {
   loan: Loan;
@@ -101,7 +102,6 @@ export function LoanFormBetterTerms({
               unit={loan.loanAssetSymbol}
             />
           </label>
-          <ErrorMessage name="amount" />
 
           <label htmlFor="interestRate">
             <span>Interest Rate</span>
@@ -113,7 +113,6 @@ export function LoanFormBetterTerms({
               unit="%"
             />
           </label>
-          <ErrorMessage name="interestRate" />
 
           <label htmlFor="duration">
             <span>Duration</span>
@@ -125,7 +124,7 @@ export function LoanFormBetterTerms({
               unit="Days"
             />
           </label>
-          <ErrorMessage name="duration" />
+          <FormErrors errors={Object.values(formik.errors)} />
           <AllowButton
             contractAddress={loan.loanAssetContractAddress}
             symbol={loan.loanAssetSymbol}
