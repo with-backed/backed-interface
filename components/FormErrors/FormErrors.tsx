@@ -12,8 +12,7 @@ export function FormErrors({ errors }: FormErrorsProps) {
   return (
     <div className={styles.wrapper}>
       <p>
-        🚧 The following errors must be corrected before the form can be
-        submitted. 🚧
+        The following errors must be corrected before the form can be submitted.
       </p>
       <ul>
         {errors.map((error) => {

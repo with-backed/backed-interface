@@ -4,3 +4,8 @@
   box-shadow: var(--box-shadow-blue);
   padding: var(--padding-loan-card);
 }
+
+.wrapper li {
+  list-style-type: '🚧';
+  padding-left: 0.5rem;
+}
