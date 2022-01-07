@@ -1,4 +1,9 @@
-import React, { FunctionComponent, InputHTMLAttributes } from 'react';
+import React, {
+  FunctionComponent,
+  InputHTMLAttributes,
+  useCallback,
+  useRef,
+} from 'react';
 
 import styles from './Input.module.css';
 
@@ -14,6 +19,19 @@ export const Input: FunctionComponent<InputProps> = ({
 }) => {
   const className = unit ? styles[`${color}-unit`] : styles[color];
 
+  const inputRef = useRef<HTMLInputElement>(null);
+  const handleWheel = useCallback(() => {
+    if (!inputRef.current) {
+      return;
+    }
+    // this stops the scroll event from changing the input (annoying)
+    inputRef.current.blur();
+    // this refocuses the input briefly after scrolling to prevent a different annoyance
+    setTimeout(() => {
+      inputRef.current?.focus();
+    });
+  }, []);
+
   if (unit) {
     return (
       <div className={styles.wrapper}>
@@ -22,5 +40,12 @@ export const Input: FunctionComponent<InputProps> = ({
       </div>
     );
   }
-  return <input className={className} {...props} />;
+  return (
+    <input
+      className={className}
+      {...props}
+      ref={inputRef}
+      onWheel={handleWheel}
+    />
+  );
 };
