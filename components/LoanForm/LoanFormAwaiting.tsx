@@ -79,7 +79,7 @@ export function LoanFormAwaiting({
       onSubmit={underwrite}>
       {(formik) => (
         <form className={styles.form} onSubmit={formik.handleSubmit}>
-          <CompletedButton buttonText="Lend against this NFT" />
+          <CompletedButton buttonText="Lend" />
 
           <label htmlFor="amount">
             <span>Amount</span>
