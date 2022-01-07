@@ -57,6 +57,9 @@ export function LoanFormAwaiting({
         interestRate: initialInterestRate,
         duration: initialDuration,
       }}
+      validateOnBlur={false}
+      validateOnChange={false}
+      validateOnMount={false}
       validationSchema={Yup.object({
         amount: Yup.number()
           .min(initialAmount, `Loan amount must be at least ${initialAmount}.`)

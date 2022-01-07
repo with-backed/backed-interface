@@ -118,6 +118,9 @@ export function CreatePageForm({
         interestRate: 0,
         duration: 0,
       }}
+      validateOnBlur={false}
+      validateOnChange={false}
+      validateOnMount={false}
       validationSchema={Yup.object({
         loanAssetContractAddress: Yup.object({
           value: Yup.string(),

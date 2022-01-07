@@ -56,6 +56,9 @@ export function LoanFormBetterTerms({
         interestRate: initialInterestRate,
         duration: initialDuration,
       }}
+      validateOnBlur={false}
+      validateOnChange={false}
+      validateOnMount={false}
       validate={({ amount, duration, interestRate }) => {
         const isValidAmount = amount >= initialAmount;
         const isValidDuration = duration >= initialDuration;
