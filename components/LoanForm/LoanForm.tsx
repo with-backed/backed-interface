@@ -13,6 +13,8 @@ import { LoanFormAwaiting } from './LoanFormAwaiting';
 import { useTimestamp } from 'hooks/useTimestamp';
 import { LoanFormBetterTerms } from './LoanFormBetterTerms';
 import { LoanFormRepay } from './LoanFormRepay';
+import { LoanFormEarlyClosure } from './LoanFormEarlyClosure';
+import { LoanFormSeizeCollateral } from './LoanFormSeizeCollateral';
 
 type LoanFormProps = {
   loan: Loan;
@@ -34,7 +36,7 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
       return 'Repay loan & claim NFT';
     }
     if (loan.lastAccumulatedTimestamp.eq(0)) {
-      return 'Lend against this NFT';
+      return 'Lend';
     }
     return 'Offer better terms';
   }, [loan.lastAccumulatedTimestamp, viewerIsBorrower]);
@@ -76,7 +78,18 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
     !loan.lastAccumulatedTimestamp.eq(0) &&
     loan.lastAccumulatedTimestamp.add(loan.durationSeconds).lte(timestamp || 0)
   ) {
-    return <span>This loan is past due</span>;
+    if (account.toUpperCase() === loan.lender?.toUpperCase()) {
+      return <LoanFormSeizeCollateral loan={loan} refresh={refresh} />;
+    }
+    return null;
+  }
+
+  if (
+    loan.lastAccumulatedTimestamp.eq(0) &&
+    account.toUpperCase() === loan.borrower.toUpperCase()
+  ) {
+    // This form is just a button, so it doesn't need the form toggling logic below.
+    return <LoanFormEarlyClosure loan={loan} refresh={refresh} />;
   }
 
   if (!formOpen) {
