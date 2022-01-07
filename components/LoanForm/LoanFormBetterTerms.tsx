@@ -90,7 +90,7 @@ export function LoanFormBetterTerms({
       onSubmit={underwrite}>
       {(formik) => (
         <form className={styles.form} onSubmit={formik.handleSubmit}>
-          <CompletedButton buttonText="Lend against this NFT" />
+          <CompletedButton buttonText="Offer better terms" />
 
           <label htmlFor="amount">
             <span>Amount</span>

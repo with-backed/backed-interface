@@ -54,10 +54,7 @@ export function AllowButton({
       });
   }, [contractAddress, waitForApproval]);
 
-  const buttonText = useMemo(
-    () => `allow pawn shop to move your ${symbol}`,
-    [symbol],
-  );
+  const buttonText = useMemo(() => `Authorize ${symbol}`, [symbol]);
 
   if (done) {
     return (
