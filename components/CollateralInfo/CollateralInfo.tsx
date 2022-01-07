@@ -13,7 +13,7 @@ export const CollateralInfo = ({ loan }: CollateralInfoProps) => {
     () => loan.collateralTokenId.toNumber(),
     [loan.collateralTokenId],
   );
-  console.log(loan);
+
   return (
     <Fieldset legend="🖼️ Collateral">
       <DescriptionList>
