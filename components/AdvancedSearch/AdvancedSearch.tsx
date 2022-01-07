@@ -86,6 +86,7 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
 
   const onTextInputChanged = (
     event: ChangeEvent<HTMLInputElement>,
+    value: string,
     setValue: (val: string) => void,
   ) => {
     const newValue = event.target.value.trim();
