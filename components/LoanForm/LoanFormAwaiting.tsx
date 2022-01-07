@@ -57,6 +57,9 @@ export function LoanFormAwaiting({
         interestRate: initialInterestRate,
         duration: initialDuration,
       }}
+      validateOnBlur={false}
+      validateOnChange={false}
+      validateOnMount={false}
       validationSchema={Yup.object({
         amount: Yup.number()
           .min(initialAmount, `Loan amount must be at least ${initialAmount}.`)
@@ -76,7 +79,7 @@ export function LoanFormAwaiting({
       onSubmit={underwrite}>
       {(formik) => (
         <form className={styles.form} onSubmit={formik.handleSubmit}>
-          <CompletedButton buttonText="Lend against this NFT" />
+          <CompletedButton buttonText="Lend" />
 
           <label htmlFor="amount">
             <span>Amount</span>
