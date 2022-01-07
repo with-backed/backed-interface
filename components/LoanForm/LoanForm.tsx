@@ -14,6 +14,7 @@ import { useTimestamp } from 'hooks/useTimestamp';
 import { LoanFormBetterTerms } from './LoanFormBetterTerms';
 import { LoanFormRepay } from './LoanFormRepay';
 import { LoanFormEarlyClosure } from './LoanFormEarlyClosure';
+import { LoanFormSeizeCollateral } from './LoanFormSeizeCollateral';
 
 type LoanFormProps = {
   loan: Loan;
@@ -77,7 +78,10 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
     !loan.lastAccumulatedTimestamp.eq(0) &&
     loan.lastAccumulatedTimestamp.add(loan.durationSeconds).lte(timestamp || 0)
   ) {
-    return <span>This loan is past due</span>;
+    if (account.toUpperCase() === loan.lender?.toUpperCase()) {
+      return <LoanFormSeizeCollateral loan={loan} refresh={refresh} />;
+    }
+    return null;
   }
 
   if (
