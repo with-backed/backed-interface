@@ -5,6 +5,7 @@ export type Loan = {
   loanAssetContractAddress: string;
   collateralContractAddress: string;
   collateralTokenId: ethers.BigNumber;
+  collateralName: string;
   perSecondInterestRate: ethers.BigNumber;
   accumulatedInterest: ethers.BigNumber;
   lastAccumulatedTimestamp: ethers.BigNumber;
