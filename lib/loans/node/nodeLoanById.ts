@@ -49,10 +49,12 @@ export async function nodeLoanById(loanId: string): Promise<Loan> {
     collateralContractAddress,
   );
   const collateralTokenURI = await collateralAssetContract.tokenURI(id);
+  const collateralName = await collateralAssetContract.name();
 
   return {
     id,
     loanAssetContractAddress,
+    collateralName,
     collateralContractAddress,
     collateralTokenId,
     perSecondInterestRate,
