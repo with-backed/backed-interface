@@ -2,7 +2,12 @@ import React, { ButtonHTMLAttributes, ComponentProps } from 'react';
 import { DialogDisclosure } from 'reakit/Dialog';
 import styles from './Button.module.css';
 
-export type ButtonKind = 'primary' | 'secondary' | 'tertiary' | 'highlight';
+export type ButtonKind =
+  | 'primary'
+  | 'secondary'
+  | 'tertiary'
+  | 'highlight'
+  | 'white';
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   kind?: ButtonKind;

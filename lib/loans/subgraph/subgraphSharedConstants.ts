@@ -8,6 +8,7 @@ export const ALL_LOAN_PROPERTIES = `
     lastAccumulatedTimestamp
     durationSeconds
     loanAmount
+    status
     closed
     loanAssetDecimal
     loanAssetSymbol
