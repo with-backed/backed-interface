@@ -60,7 +60,7 @@ export function AllowButton({
     return (
       <CompletedButton
         buttonText={buttonText}
-        message={<span>Permission already granted</span>}
+        message={<span>Permission granted</span>}
         success
       />
     );
