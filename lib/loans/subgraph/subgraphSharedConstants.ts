@@ -15,6 +15,7 @@ export const ALL_LOAN_PROPERTIES = `
     borrowTicketHolder
     endDateTimestamp
     collateralTokenURI
+    collateralName
 `;
 
 const CREATE_EVENT_PROPERTIES = `

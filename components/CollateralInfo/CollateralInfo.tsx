@@ -13,7 +13,7 @@ export const CollateralInfo = ({ loan }: CollateralInfoProps) => {
     () => loan.collateralTokenId.toNumber(),
     [loan.collateralTokenId],
   );
-
+  console.log(loan);
   return (
     <Fieldset legend="🖼️ Collateral">
       <DescriptionList>
@@ -25,6 +25,8 @@ export const CollateralInfo = ({ loan }: CollateralInfoProps) => {
             View on OpenSea
           </OpenSeaAddressLink>
         </dd>
+        <dt>Collection</dt>
+        <dd>{loan.collateralName}</dd>
       </DescriptionList>
     </Fieldset>
   );
