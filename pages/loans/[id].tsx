@@ -7,6 +7,7 @@ import { LoanHeader } from 'components/LoanHeader';
 import { LoanInfo } from 'components/LoanInfo';
 import { CollateralMedia } from 'types/CollateralMedia';
 import { getNFTInfoFromTokenInfo } from 'lib/getNFTInfo';
+import { nodeLoanById } from 'lib/loans/node/nodeLoanById';
 
 export type LoanPageProps = {
   loanInfoJson: string;
@@ -43,7 +44,7 @@ export default function Loans({ loanInfoJson }: LoanPageProps) {
     useState<CollateralMedia | null>(null);
 
   const refresh = useCallback(() => {
-    loanById(loan.id.toString()).then((loan) => {
+    nodeLoanById(loan.id.toString()).then((loan) => {
       if (loan) {
         setLoan(loan);
       }
