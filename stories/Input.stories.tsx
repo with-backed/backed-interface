@@ -21,6 +21,7 @@ export const InputStyles = () => {
         <Input title="default input" />
         <Input title="error input" placeholder="Neato" />
         <Input title="message input" value="Neato" />
+        <Input title="number input" value="337" unit="Days" />
       </div>
       <div
         style={{
@@ -33,6 +34,7 @@ export const InputStyles = () => {
         <Input color="dark" title="default input" />
         <Input color="dark" title="error input" placeholder="Neato" />
         <Input color="dark" title="message input" value="Neato" />
+        <Input color="dark" title="number input" value="337" unit="Days" />
       </div>
     </>
   );

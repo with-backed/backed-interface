@@ -8,11 +8,17 @@
 }
 
 .input:focus {
-  box-shadow: var(--box-shadow-blue-hard);
+  background: var(--highlight-active-10);
 }
 
 .light {
   composes: input;
+}
+
+.light-unit {
+  composes: light;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
 }
 
 .dark {
@@ -20,9 +26,33 @@
   background: var(--background-radial-gradient);
 }
 
-.dark:focus {
-  box-shadow: none;
-  background: var(--highlight-active-10);
+.dark-unit {
+  composes: dark;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.unit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+  height: 40px;
+  padding: var(--padding-button);
+}
+
+.dark + .unit {
+  background: var(--background-radial-gradient);
+}
+
+.light + .unit {
+  background: var(--background-white);
 }
 
 /* suppress spinners on number inputs */
