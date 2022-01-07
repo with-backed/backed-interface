@@ -8,6 +8,7 @@ import { CollateralMedia } from 'types/CollateralMedia';
 import { Loan } from 'types/Loan';
 import React, { useMemo } from 'react';
 import styles from './LoanHeader.module.css';
+import { ThreeColumn } from 'components/layouts/ThreeColumn';
 
 type LoanHeaderProps = {
   loan: Loan;
@@ -37,7 +38,7 @@ export function LoanHeader({
   );
   return (
     <div className={styles['loan-header']}>
-      <TwoColumn>
+      <ThreeColumn>
         {collateralMedia && (
           <Media
             media={collateralMedia.mediaUrl}
@@ -50,7 +51,7 @@ export function LoanHeader({
           <List details={details} />
           <LoanForm loan={loan} refresh={refresh} />
         </div>
-      </TwoColumn>
+      </ThreeColumn>
     </div>
   );
 }
