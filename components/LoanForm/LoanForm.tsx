@@ -73,6 +73,7 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
   }
 
   if (
+    !loan.lastAccumulatedTimestamp.eq(0) &&
     loan.lastAccumulatedTimestamp.add(loan.durationSeconds).lte(timestamp || 0)
   ) {
     return <span>This loan is past due</span>;
