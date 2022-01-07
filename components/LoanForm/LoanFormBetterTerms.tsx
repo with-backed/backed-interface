@@ -81,10 +81,7 @@ export function LoanFormBetterTerms({
           isValidInterestRate &&
           !hasTenPercentImprovement
         ) {
-          const message = `At least one value must be a 10% improvement over the current terms.`;
-          errors.amount = message;
-          errors.duration = message;
-          errors.interestRate = message;
+          errors.form = `At least one value must be a 10% improvement over the current terms.`;
         }
 
         return errors;

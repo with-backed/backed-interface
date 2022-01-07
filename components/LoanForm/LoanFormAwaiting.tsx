@@ -57,9 +57,20 @@ export function LoanFormAwaiting({
         duration: initialDuration,
       }}
       validationSchema={Yup.object({
-        amount: Yup.number().min(initialAmount).max(balance),
-        interestRate: Yup.number().max(initialInterestRate),
-        duration: Yup.number().min(initialDuration),
+        amount: Yup.number()
+          .min(initialAmount, `Loan amount must be at least ${initialAmount}.`)
+          .max(
+            balance,
+            `Loan amount cannot exceed your current balance of ${balance}`,
+          ),
+        interestRate: Yup.number().max(
+          initialInterestRate,
+          `Interest rate must be no greater than ${initialInterestRate}%.`,
+        ),
+        duration: Yup.number().min(
+          initialDuration,
+          `Loan duration must be at least ${initialDuration} days.`,
+        ),
       })}
       onSubmit={underwrite}>
       {(formik) => (

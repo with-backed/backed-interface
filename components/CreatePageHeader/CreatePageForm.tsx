@@ -123,9 +123,18 @@ export function CreatePageForm({
           value: Yup.string(),
           address: Yup.string(),
         }),
-        loanAmount: Yup.number().moreThan(0),
-        interestRate: Yup.number().min(MIN_RATE),
-        duration: Yup.number().moreThan(0),
+        loanAmount: Yup.number().moreThan(
+          0,
+          'Loan amount must be greater than zero.',
+        ),
+        interestRate: Yup.number().min(
+          MIN_RATE,
+          `Interest rate must be greater than the minimum value of ${MIN_RATE}.`,
+        ),
+        duration: Yup.number().moreThan(
+          0,
+          'Duration must be longer than 0 days.',
+        ),
       })}
       isInitialValid={false}
       onSubmit={mint}>
