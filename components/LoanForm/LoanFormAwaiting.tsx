@@ -4,7 +4,7 @@ import {
   TransactionButton,
 } from 'components/Button';
 import { ethers } from 'ethers';
-import { ErrorMessage, Field, Formik } from 'formik';
+import { Field, Formik } from 'formik';
 import { useLoanUnderwriter } from 'hooks/useLoanUnderwriter';
 import { secondsBigNumToDays } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
@@ -13,6 +13,7 @@ import React, { useMemo } from 'react';
 import * as Yup from 'yup';
 import styles from './LoanForm.module.css';
 import { Input } from 'components/Input';
+import { FormErrors } from 'components/FormErrors';
 
 type LoanFormAwaitingProps = {
   loan: Loan;
@@ -57,9 +58,20 @@ export function LoanFormAwaiting({
         duration: initialDuration,
       }}
       validationSchema={Yup.object({
-        amount: Yup.number().min(initialAmount).max(balance),
-        interestRate: Yup.number().max(initialInterestRate),
-        duration: Yup.number().min(initialDuration),
+        amount: Yup.number()
+          .min(initialAmount, `Loan amount must be at least ${initialAmount}.`)
+          .max(
+            balance,
+            `Loan amount cannot exceed your current balance of ${balance}`,
+          ),
+        interestRate: Yup.number().max(
+          initialInterestRate,
+          `Interest rate must be no greater than ${initialInterestRate}%.`,
+        ),
+        duration: Yup.number().min(
+          initialDuration,
+          `Loan duration must be at least ${initialDuration} days.`,
+        ),
       })}
       onSubmit={underwrite}>
       {(formik) => (
@@ -67,22 +79,38 @@ export function LoanFormAwaiting({
           <CompletedButton buttonText="Lend against this NFT" />
 
           <label htmlFor="amount">
-            <span>Amount ({loan.loanAssetSymbol})</span>
-            <Field name="amount" as={Input} color="dark" />
+            <span>Amount</span>
+            <Field
+              name="amount"
+              as={Input}
+              color="dark"
+              type="number"
+              unit={loan.loanAssetSymbol}
+            />
           </label>
-          <ErrorMessage name="amount" />
 
           <label htmlFor="interestRate">
             <span>Interest Rate</span>
-            <Field name="interestRate" as={Input} color="dark" />
+            <Field
+              name="interestRate"
+              as={Input}
+              color="dark"
+              type="number"
+              unit="%"
+            />
           </label>
-          <ErrorMessage name="interestRate" />
 
           <label htmlFor="duration">
-            <span>Duration (Days)</span>
-            <Field name="duration" as={Input} color="dark" />
+            <span>Duration</span>
+            <Field
+              name="duration"
+              as={Input}
+              color="dark"
+              type="number"
+              unit="Days"
+            />
           </label>
-          <ErrorMessage name="duration" />
+          <FormErrors errors={Object.values(formik.errors)} />
           <AllowButton
             contractAddress={loan.loanAssetContractAddress}
             symbol={loan.loanAssetSymbol}

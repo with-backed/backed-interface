@@ -4,7 +4,7 @@ import {
   TransactionButton,
 } from 'components/Button';
 import { ethers } from 'ethers';
-import { ErrorMessage, Field, Formik } from 'formik';
+import { Field, Formik } from 'formik';
 import { useLoanUnderwriter } from 'hooks/useLoanUnderwriter';
 import { secondsBigNumToDays } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
@@ -12,6 +12,7 @@ import { Loan } from 'types/Loan';
 import React, { useMemo } from 'react';
 import styles from './LoanForm.module.css';
 import { Input } from 'components/Input';
+import { FormErrors } from 'components/FormErrors';
 
 type LoanFormBetterTermsProps = {
   loan: Loan;
@@ -81,10 +82,7 @@ export function LoanFormBetterTerms({
           isValidInterestRate &&
           !hasTenPercentImprovement
         ) {
-          const message = `At least one value must be a 10% improvement over the current terms.`;
-          errors.amount = message;
-          errors.duration = message;
-          errors.interestRate = message;
+          errors.form = `At least one value must be a 10% improvement over the current terms.`;
         }
 
         return errors;
@@ -92,25 +90,41 @@ export function LoanFormBetterTerms({
       onSubmit={underwrite}>
       {(formik) => (
         <form className={styles.form} onSubmit={formik.handleSubmit}>
-          <CompletedButton buttonText="Lend against this NFT" />
+          <CompletedButton buttonText="Offer better terms" />
 
           <label htmlFor="amount">
-            <span>Amount ({loan.loanAssetSymbol})</span>
-            <Field name="amount" as={Input} color="dark" />
+            <span>Amount</span>
+            <Field
+              name="amount"
+              as={Input}
+              color="dark"
+              type="number"
+              unit={loan.loanAssetSymbol}
+            />
           </label>
-          <ErrorMessage name="amount" />
 
           <label htmlFor="interestRate">
             <span>Interest Rate</span>
-            <Field name="interestRate" as={Input} color="dark" />
+            <Field
+              name="interestRate"
+              as={Input}
+              color="dark"
+              type="number"
+              unit="%"
+            />
           </label>
-          <ErrorMessage name="interestRate" />
 
           <label htmlFor="duration">
-            <span>Duration (Days)</span>
-            <Field name="duration" as={Input} color="dark" />
+            <span>Duration</span>
+            <Field
+              name="duration"
+              as={Input}
+              color="dark"
+              type="number"
+              unit="Days"
+            />
           </label>
-          <ErrorMessage name="duration" />
+          <FormErrors errors={Object.values(formik.errors)} />
           <AllowButton
             contractAddress={loan.loanAssetContractAddress}
             symbol={loan.loanAssetSymbol}

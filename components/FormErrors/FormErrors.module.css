@@ -1,0 +1,11 @@
+.wrapper {
+  font-family: var(--sans);
+  border-radius: var(--border-radius-large);
+  box-shadow: var(--box-shadow-blue);
+  padding: var(--padding-loan-card);
+}
+
+.wrapper li {
+  list-style-type: '🚧';
+  padding-left: 0.5rem;
+}
