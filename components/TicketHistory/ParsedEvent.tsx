@@ -1,7 +1,4 @@
-import {
-  EtherscanAddressLink,
-  EtherscanTransactionLink,
-} from 'components/EtherscanLink';
+import { EtherscanTransactionLink } from 'components/EtherscanLink';
 import { ethers } from 'ethers';
 import { secondsToDays } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
@@ -24,6 +21,11 @@ import {
 import styles from './TicketHistory.module.css';
 import { Loan } from 'types/Loan';
 import { DescriptionList } from 'components/DescriptionList';
+import { BetterEvent } from 'pages/api/loans/history/[id]';
+
+const jsonRpcProvider = new ethers.providers.JsonRpcProvider(
+  process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
+);
 
 const eventDetailComponents: { [key: string]: (...props: any) => JSX.Element } =
   {
@@ -40,7 +42,7 @@ type ParsedEventProps<T> = {
   event: T;
   loan: Loan;
 };
-export function ParsedEvent({ event, loan }: ParsedEventProps<ethers.Event>) {
+export function ParsedEvent({ event, loan }: ParsedEventProps<BetterEvent>) {
   const component =
     // keeping typescript happy and having some measure of runtime safety
     eventDetailComponents[event.event || '__INTERNAL_DID_NOT_RECEIVE_EVENT'];
@@ -62,7 +64,7 @@ function camelToSentenceCase(text: string) {
   return result.charAt(0).toUpperCase() + result.slice(1);
 }
 
-function EventHeader({ event }: Pick<ParsedEventProps<ethers.Event>, 'event'>) {
+function EventHeader({ event }: Pick<ParsedEventProps<BetterEvent>, 'event'>) {
   return (
     <h3 className={styles['event-header']}>
       <EtherscanTransactionLink transactionHash={event.transactionHash}>
@@ -73,11 +75,12 @@ function EventHeader({ event }: Pick<ParsedEventProps<ethers.Event>, 'event'>) {
 }
 
 const EventDetailList: FunctionComponent<
-  Pick<ParsedEventProps<ethers.Event>, 'event'>
+  Pick<ParsedEventProps<BetterEvent>, 'event'>
 > = ({ children, event, ...props }) => {
   const [timestamp, setTimestamp] = useState<string | null>(null);
   const getTimestamp = useCallback(async () => {
-    const { timestamp } = await event.getBlock();
+    const timestamp = (await jsonRpcProvider.getBlock(event.blockHash))
+      .timestamp;
     setTimestamp(toLocaleDateTime(timestamp));
   }, [event]);
 
@@ -90,7 +93,7 @@ const EventDetailList: FunctionComponent<
       <EventHeader event={event} />
       <DescriptionList {...props}>
         <dt>date</dt>
-        <dd>{timestamp}</dd>
+        <dd>{timestamp || '--'}</dd>
         {children}
       </DescriptionList>
     </section>
