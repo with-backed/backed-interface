@@ -12,13 +12,12 @@ const fetcher = (...args: Parameters<typeof fetch>): Promise<BetterEvent[]> =>
     if (Array.isArray(json)) {
       const events = json;
       return events.map((e) => {
-        const parsedArgs = { ...e.args };
-        Object.entries(parsedArgs).forEach(([key, value]) => {
+        Object.entries(e.args).forEach(([key, value]) => {
           if ((value as any).type === 'BigNumber') {
-            parsedArgs[key] = ethers.BigNumber.from((value as any).hex);
+            e.args[key] = ethers.BigNumber.from((value as any).hex);
           }
         });
-        return { ...e, args: parsedArgs };
+        return e;
       });
     }
     return [];
