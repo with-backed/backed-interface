@@ -82,6 +82,10 @@
     width: 60%;
 }
 
+.inputs > input[type=tel] {
+    width: 100px;
+}
+
 .loanStatusButtons {
     display: flex;
     flex-direction: row;

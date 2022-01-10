@@ -30,13 +30,13 @@ export default function LoanNumericInput({
       <div className={styles.inputLabel}>{label}</div>
       <div className={styles.inputs}>
         <Input
-          style={{ width: '100px' }}
+          type="number"
           onChange={(event) => handleNumericChanged(event, setMin)}
           placeholder="Min"
         />
         <span className={styles.to}>to</span>
         <Input
-          style={{ width: '100px' }}
+          type="number"
           onChange={(event) => handleNumericChanged(event, setMax)}
           placeholder="Max"
         />
