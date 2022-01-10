@@ -1,6 +1,10 @@
 import { ALL_LOAN_PROPERTIES } from './subgraphSharedConstants';
 import { nftBackedLoansClient } from '../../urql';
-import { Loan, LoanStatus } from 'types/generated/graphql/nftLoans';
+import {
+  Loan,
+  LoanStatus,
+  Loan_OrderBy,
+} from 'types/generated/graphql/nftLoans';
 import { ethers } from 'ethers';
 import { annualRateToPerSecond } from 'lib/interest';
 import { daysToSecondsBigNum } from 'lib/duration';
@@ -21,12 +25,6 @@ export default async function subgraphLoans(): Promise<Loan[]> {
   } = await nftBackedLoansClient.query(homepageQuery).toPromise();
 
   return loans;
-}
-
-export enum SearchQuerySort {
-  CreatedAtTimestamp = 'createdAtTimestamp',
-  PerSecondInterestRate = 'perSecondInterestRate',
-  LoanAmount = 'loanAmount',
 }
 
 const searchQuery = (
@@ -100,7 +98,7 @@ export async function searchLoans(
   loanInterestMax: number,
   loanDurationMin: number,
   loanDurationMax: number,
-  selectedSort: SearchQuerySort,
+  selectedSort: Loan_OrderBy,
 ): Promise<Loan[]> {
   const {
     data: { loans },

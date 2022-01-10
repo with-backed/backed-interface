@@ -1,8 +1,12 @@
 import { Button } from 'components/Button';
 import { FormWrapper } from 'components/layouts/FormWrapper';
-import { searchLoans, SearchQuerySort } from 'lib/loans/subgraph/subgraphLoans';
+import { searchLoans } from 'lib/loans/subgraph/subgraphLoans';
 import { useEffect, useRef, useState } from 'react';
-import { Loan, LoanStatus } from 'types/generated/graphql/nftLoans';
+import {
+  Loan,
+  LoanStatus,
+  Loan_OrderBy,
+} from 'types/generated/graphql/nftLoans';
 import styles from './AdvancedSearch.module.css';
 import CollateralSearchInput from './CollateralInput';
 import LoanNumericInput from './LoanNumericInput';
@@ -24,8 +28,8 @@ export const useIsMount = () => {
 
 export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
   const [showSearch, setShowSearch] = useState<boolean>(false);
-  const [selectedSort, setSelectedSort] = useState<SearchQuerySort>(
-    SearchQuerySort.CreatedAtTimestamp,
+  const [selectedSort, setSelectedSort] = useState<Loan_OrderBy>(
+    Loan_OrderBy.CreatedAtTimestamp,
   );
   const [statuses, setStatuses] = useState<LoanStatus[]>([
     LoanStatus.AwaitingLender,

@@ -37,7 +37,9 @@ export default function CollateralSearchInput({
     <div className={styles.inputGroup}>
       <div className={styles.inputLabel}>Collection</div>
       <div className={styles.inputs}>
-        <Input onChange={handleChange} placeholder="Enter collection" />
+        <label htmlFor="collateralCollection">
+          <Input onChange={handleChange} placeholder="Enter collection" />
+        </label>
       </div>
     </div>
   );
