@@ -1,7 +1,6 @@
 import styles from './AdvancedSearch.module.css';
 import { Input } from 'components/Input';
 import { ChangeEvent } from 'react';
-import { ethers } from 'ethers';
 
 type LoanNumericInputProps = {
   setMin: (val: number) => void;

@@ -1,14 +1,12 @@
 import { Button } from 'components/Button';
 import { FormWrapper } from 'components/layouts/FormWrapper';
 import { searchLoans, SearchQuerySort } from 'lib/loans/subgraph/subgraphLoans';
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Loan, LoanStatus } from 'types/generated/graphql/nftLoans';
 import styles from './AdvancedSearch.module.css';
 import CollateralSearchInput from './CollateralInput';
 import LoanNumericInput from './LoanNumericInput';
 import LoanStatusButtons from './LoanStatusButtons';
-import LoanTokenInput from './LoanTokenInput';
-import LoanUserAddressInput from './LoanUserAddressInput';
 import SearchTextInput from './SearchTextInput';
 import SortDropdown from './SortDropdown';
 

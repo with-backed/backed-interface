@@ -1,7 +1,7 @@
 import { ALL_LOAN_PROPERTIES } from './subgraphSharedConstants';
 import { nftBackedLoansClient } from '../../urql';
 import { Loan, LoanStatus } from 'types/generated/graphql/nftLoans';
-import { BigNumber, ethers } from 'ethers';
+import { ethers } from 'ethers';
 import { annualRateToPerSecond } from 'lib/interest';
 import { daysToSecondsBigNum } from 'lib/duration';
 
@@ -31,11 +31,8 @@ export enum SearchQuerySort {
 
 const searchQuery = (
   lendTicketHolder: string,
-  loanAmountMin: number,
   loanAmountMax: number,
-  perSecondInterestRateMin: number,
   perSecondInterestRateMax: number,
-  durationSecondsMin: number,
   durationSecondsMax: number,
 ) => `
   query(
@@ -65,21 +62,10 @@ const searchQuery = (
             ? 'lendTicketHolder_starts_with: $lendTicketHolder'
             : ''
         }
-        ${loanAmountMin != 0 ? 'loanAmount_gt: $loanAmountMin' : ''}
         ${loanAmountMax != 0 ? 'loanAmount_lt: $loanAmountMax' : ''}
-        ${
-          perSecondInterestRateMin != 0
-            ? 'perSecondInterestRate_gt: $perSecondInterestRateMin'
-            : ''
-        }
         ${
           perSecondInterestRateMax != 0
             ? 'perSecondInterestRate_lt: $perSecondInterestRateMax'
-            : ''
-        }
-        ${
-          durationSecondsMin != 0
-            ? 'durationSeconds_gt: $durationSecondsMin'
             : ''
         }
         ${
@@ -117,11 +103,8 @@ export async function searchLoans(
     .query(
       searchQuery(
         lendTicketHolder,
-        loanAmountMin,
         loanAmountMax,
-        loanInterestMin,
         loanInterestMax,
-        loanDurationMin,
         loanDurationMax,
       ),
       {
