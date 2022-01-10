@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ParsedEvent } from 'components/ticketPage/TicketHistory/ParsedEvent';
+import { ParsedEvent } from 'components/TicketHistory/ParsedEvent';
 import { ethers } from 'ethers';
 import {
   BuyoutUnderwriterEvent,
@@ -16,7 +16,7 @@ import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { baseLoan } from 'lib/mockData';
 
 export default {
-  title: 'Components/ticketPage/TicketHistory/ParsedEvent',
+  title: 'Components/TicketHistory/ParsedEvent',
   component: ParsedEvent,
 };
 
