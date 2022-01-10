@@ -14,6 +14,7 @@ import {
 import { Fieldset } from 'components/Fieldset';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { baseLoan } from 'lib/mockData';
+import { BetterEvent } from 'pages/api/loans/history/[id]';
 
 export default {
   title: 'Components/TicketHistory/ParsedEvent',
@@ -36,7 +37,7 @@ const getBlock = async (): Promise<ethers.providers.Block> =>
 
 const loan = baseLoan;
 
-const events: ethers.Event[] = [
+const events: BetterEvent[] = [
   {
     event: 'Close',
     args: { id },
