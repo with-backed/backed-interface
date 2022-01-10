@@ -38,17 +38,14 @@ const eventDetailComponents: { [key: string]: (...props: any) => JSX.Element } =
 
 type ParsedEventProps<T> = {
   event: T;
-  loanInfo: Loan;
+  loan: Loan;
 };
-export function ParsedEvent({
-  event,
-  loanInfo,
-}: ParsedEventProps<ethers.Event>) {
+export function ParsedEvent({ event, loan }: ParsedEventProps<ethers.Event>) {
   const component =
     // keeping typescript happy and having some measure of runtime safety
     eventDetailComponents[event.event || '__INTERNAL_DID_NOT_RECEIVE_EVENT'];
   if (component) {
-    return React.createElement(component, { event, loanInfo });
+    return React.createElement(component, { event, loan });
   }
   console.warn(new Error(`received unhandled event type: ${event.event}`));
   return null;
@@ -102,7 +99,7 @@ const EventDetailList: FunctionComponent<
 
 function CreateLoan({
   event,
-  loanInfo: { loanAssetDecimals, loanAssetSymbol },
+  loan: { loanAssetDecimals, loanAssetSymbol },
 }: ParsedEventProps<CreateLoanEvent>) {
   const { maxInterestRate, minDurationSeconds, minLoanAmount, minter } =
     event.args;
@@ -140,7 +137,7 @@ function CreateLoan({
 
 function UnderwriteLoan({
   event,
-  loanInfo: { loanAssetDecimals, loanAssetSymbol },
+  loan: { loanAssetDecimals, loanAssetSymbol },
 }: ParsedEventProps<UnderwriteLoanEvent>) {
   const { durationSeconds, interestRate, loanAmount, underwriter } = event.args;
 
@@ -175,7 +172,7 @@ function UnderwriteLoan({
 
 function BuyoutUnderwriter({
   event,
-  loanInfo: { loanAssetDecimals, loanAssetSymbol },
+  loan: { loanAssetDecimals, loanAssetSymbol },
 }: ParsedEventProps<BuyoutUnderwriterEvent>) {
   const { interestEarned, replacedAmount, replacedLoanOwner, underwriter } =
     event.args;
@@ -210,7 +207,7 @@ function BuyoutUnderwriter({
 
 function Repay({
   event,
-  loanInfo: { loanAssetDecimals, loanAssetSymbol },
+  loan: { loanAssetDecimals, loanAssetSymbol },
 }: ParsedEventProps<RepayEvent>) {
   const { interestEarned, loanAmount, loanOwner, repayer } = event.args as any;
 

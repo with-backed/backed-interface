@@ -45,7 +45,7 @@ export function LoanInfo({ loan }: LoanInfoProps) {
       <TwoColumn>
         <Column>
           <CollateralInfo loan={loan} />
-          <TicketHistory loanInfo={loan} />
+          <TicketHistory loan={loan} />
         </Column>
         <Column>
           <RepaymentInfo loan={loan} />

@@ -7,16 +7,16 @@ import { Loan } from 'types/Loan';
 import styles from './TicketHistory.module.css';
 
 interface TicketHistoryProps {
-  loanInfo: Loan;
+  loan: Loan;
 }
 
-export function TicketHistory({ loanInfo }: TicketHistoryProps) {
+export function TicketHistory({ loan }: TicketHistoryProps) {
   const [history, setHistory] = useState<ethers.Event[] | null>(null);
 
   const setup = useCallback(async () => {
-    const history = await getTicketHistory(loanInfo.id);
+    const history = await getTicketHistory(loan.id);
     setHistory(history);
-  }, [loanInfo.id]);
+  }, [loan.id]);
 
   useEffect(() => {
     setup();
@@ -27,7 +27,7 @@ export function TicketHistory({ loanInfo }: TicketHistoryProps) {
       <div className={styles.container}>
         {history !== null &&
           history.map((e: ethers.Event, i) => (
-            <ParsedEvent event={e} loanInfo={loanInfo} key={i} />
+            <ParsedEvent event={e} loan={loan} key={i} />
           ))}
       </div>
     </Fieldset>
