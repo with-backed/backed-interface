@@ -30,7 +30,7 @@ interface TicketHistoryProps {
 
 export function TicketHistory({ loan }: TicketHistoryProps) {
   const { data } = useSWR(`/api/loans/history/${loan.id}`, fetcher);
-  console.log({ data });
+
   return (
     <Fieldset legend="🎬 Activity">
       <div className={styles.container}>
