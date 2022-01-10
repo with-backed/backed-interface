@@ -35,7 +35,7 @@ function ExplainerNeedsToAuthorize() {
   return (
     <div className={styles.explainer}>
       This allows the Pawn Shop to hold your NFT until you repay any loan you
-      receive, and to trasnfer it to the lender if you choose not to repay.
+      receive, and to transfer it to the lender if you choose not to repay.
     </div>
   );
 }
