@@ -2,12 +2,11 @@ import { CollateralInfo } from 'components/CollateralInfo';
 import { Column } from 'components/Column';
 import { TwoColumn } from 'components/layouts/TwoColumn';
 import { RepaymentInfo } from 'components/RepaymentInfo';
-import { TicketHistory } from 'components/ticketPage/TicketHistory';
+import { TicketHistory } from 'components/TicketHistory';
 import { ethers } from 'ethers';
 import { Loan } from 'types/Loan';
 import React, { useMemo } from 'react';
 import styles from './LoanInfo.module.css';
-import chunk from 'lodash/chunk';
 import { LoanTickets } from 'components/LoanTickets';
 
 type LoanInfoProps = {
@@ -46,7 +45,7 @@ export function LoanInfo({ loan }: LoanInfoProps) {
       <TwoColumn>
         <Column>
           <CollateralInfo loan={loan} />
-          <TicketHistory loanInfo={loan} />
+          <TicketHistory loan={loan} />
         </Column>
         <Column>
           <RepaymentInfo loan={loan} />

@@ -7,16 +7,16 @@ import { Loan } from 'types/Loan';
 import styles from './TicketHistory.module.css';
 
 interface TicketHistoryProps {
-  loanInfo: Loan;
+  loan: Loan;
 }
 
-export function TicketHistory({ loanInfo }: TicketHistoryProps) {
+export function TicketHistory({ loan }: TicketHistoryProps) {
   const [history, setHistory] = useState<ethers.Event[] | null>(null);
 
   const setup = useCallback(async () => {
-    const history = await getTicketHistory(loanInfo.id);
+    const history = await getTicketHistory(loan.id);
     setHistory(history);
-  }, [loanInfo.id]);
+  }, [loan.id]);
 
   useEffect(() => {
     setup();
@@ -27,7 +27,7 @@ export function TicketHistory({ loanInfo }: TicketHistoryProps) {
       <div className={styles.container}>
         {history !== null &&
           history.map((e: ethers.Event, i) => (
-            <ParsedEvent event={e} loanInfo={loanInfo} key={i} />
+            <ParsedEvent event={e} loan={loan} key={i} />
           ))}
       </div>
     </Fieldset>
@@ -35,6 +35,8 @@ export function TicketHistory({ loanInfo }: TicketHistoryProps) {
 }
 
 const getTicketHistory = async (loanId: ethers.BigNumber) => {
+  const t0 = performance.now();
+
   const contract = jsonRpcLoanFacilitator();
 
   const mintTicketFilter = contract.filters.CreateLoan(loanId, null);
@@ -53,17 +55,21 @@ const getTicketHistory = async (loanId: ethers.BigNumber) => {
     seizeCollateralFilter,
   ];
 
+  const [...events] = await Promise.all(
+    filters.map((filter) => {
+      return contract.queryFilter(
+        filter,
+        parseInt(process.env.NEXT_PUBLIC_FACILITATOR_START_BLOCK || ''),
+      );
+    }),
+  );
+
   // TODO: keep track of TypedEvents so we don't have to do a type coercion
   // in ParsedEvent
-  let allEvents: ethers.Event[] = [];
-  for (let i = 0; i < filters.length; i++) {
-    const results = await contract.queryFilter(
-      filters[i],
-      parseInt(process.env.NEXT_PUBLIC_FACILITATOR_START_BLOCK || ''),
-    );
-    allEvents = allEvents.concat(results);
-  }
-  allEvents.sort((a, b) => b.blockNumber - a.blockNumber);
+  const allEvents = events.flat().sort((a, b) => b.blockNumber - a.blockNumber);
+
+  const t1 = performance.now();
+  console.log(`Call to getTicketHistoryPromiseAll took ${t1 - t0}ms`);
 
   return allEvents;
 };
