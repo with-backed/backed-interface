@@ -34,7 +34,7 @@ const replacedAmount = ethers.BigNumber.from(0);
 const getBlock = async (): Promise<ethers.providers.Block> =>
   ({ timestamp: 1999999999 } as any);
 
-const loanInfo = baseLoan;
+const loan = baseLoan;
 
 const events: ethers.Event[] = [
   {
@@ -45,7 +45,7 @@ const events: ethers.Event[] = [
   {
     event: 'Repay',
     args: {
-      repayer: loanInfo.borrower,
+      repayer: loan.borrower,
       loanOwner: underwriter,
       interestEarned,
       loanAmount: minLoanAmount,
@@ -108,7 +108,7 @@ export const ParsedEvents = () => {
     <ThreeColumn>
       <Fieldset legend="loan history">
         {events.map((e, i) => (
-          <ParsedEvent key={i} event={e} loanInfo={loanInfo} />
+          <ParsedEvent key={i} event={e} loan={loan} />
         ))}
       </Fieldset>
     </ThreeColumn>
