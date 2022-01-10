@@ -2,7 +2,7 @@ import { FiveColumn } from 'components/layouts/FiveColumn';
 import { LoanCard } from 'components/LoanCard';
 import subgraphLoans, { searchLoans } from 'lib/loans/subgraph/subgraphLoans';
 import { parseSubgraphLoan } from 'lib/loans/utils';
-import { Loan, Loan as SubgraphLoan } from 'types/generated/graphql/nftLoans';
+import { Loan as SubgraphLoan } from 'types/generated/graphql/nftLoans';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
@@ -20,9 +20,9 @@ type HomeProps = {
   loans: SubgraphLoan[];
 };
 export default function Home({ loans }: HomeProps) {
-  const [searchedLoans, setSearchedLoans] = useState<Loan[] | undefined>(
-    undefined,
-  );
+  const [searchedLoans, setSearchedLoans] = useState<
+    SubgraphLoan[] | undefined
+  >(undefined);
 
   return (
     <>
