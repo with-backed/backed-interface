@@ -1,14 +1,15 @@
 import { Select } from 'components/Select';
+import { SearchQuerySort } from 'lib/loans/subgraph/subgraphLoans';
 import styles from './AdvancedSearch.module.css';
 
 type SortDropdownProps = {
-  setSelectedSort: (val: string) => void;
+  setSelectedSort: (val: SearchQuerySort) => void;
 };
 
 const sortOptions = [
-  { value: 'createdAtTimestamp', label: 'Recent Activity' },
-  { value: 'perSecondInterestRate', label: 'APY' },
-  { value: 'loanAmount', label: 'Loan Amount' },
+  { value: SearchQuerySort.CreatedAtTimestamp, label: 'Recent Activity' },
+  { value: SearchQuerySort.PerSecondInterestRate, label: 'APY' },
+  { value: SearchQuerySort.LoanAmount, label: 'Loan Amount' },
 ];
 
 export default function SortDropdown({ setSelectedSort }: SortDropdownProps) {

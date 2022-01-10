@@ -23,6 +23,12 @@ export default async function subgraphLoans(): Promise<Loan[]> {
   return loans;
 }
 
+export enum SearchQuerySort {
+  CreatedAtTimestamp = 'createdAtTimestamp',
+  PerSecondInterestRate = 'perSecondInterestRate',
+  LoanAmount = 'loanAmount',
+}
+
 const searchQuery = (
   loanAmountMin: number,
   loanAmountMax: number,
@@ -95,9 +101,8 @@ export async function searchLoans(
   loanInterestMax: number,
   loanDurationMin: number,
   loanDurationMax: number,
-  selectedSort: string,
+  selectedSort: SearchQuerySort,
 ): Promise<Loan[]> {
-  console.log(daysToSecondsBigNum(loanDurationMax).toString());
   const {
     data: { loans },
   } = await nftBackedLoansClient
