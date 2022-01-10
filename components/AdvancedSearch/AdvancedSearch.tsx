@@ -9,6 +9,7 @@ import LoanNumericInput from './LoanNumericInput';
 import LoanStatusButtons from './LoanStatusButtons';
 import LoanTokenInput from './LoanTokenInput';
 import LoanUserAddressInput from './LoanUserAddressInput';
+import SearchTextInput from './SearchTextInput';
 import SortDropdown from './SortDropdown';
 
 type AdvancedSearchProps = {
@@ -28,15 +29,16 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
   const [selectedSort, setSelectedSort] = useState<SearchQuerySort>(
     SearchQuerySort.CreatedAtTimestamp,
   );
-
   const [statuses, setStatuses] = useState<LoanStatus[]>([
     LoanStatus.AwaitingLender,
     LoanStatus.Active,
   ]);
+
   const [collectionAddress, setCollectionAddress] = useState<string>('');
   const [collectionName, setCollectionName] = useState<string>('');
   const [loanToken, setLoanToken] = useState<string>('');
   const [borrowerAddress, setBorrowerAddress] = useState<string>('');
+  const [lenderAddress, setLenderAddress] = useState<string>('');
 
   const [loanAmountMin, setLoanAmountMin] = useState<number>(0);
   const [loanAmountMax, setLoanAmountMax] = useState<number>(0);
@@ -55,6 +57,7 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
         collectionName,
         loanToken,
         borrowerAddress,
+        lenderAddress,
         loanAmountMin,
         loanAmountMax,
         loanInterestMin,
@@ -73,6 +76,7 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
     handleSearchFinished,
     loanToken,
     borrowerAddress,
+    lenderAddress,
     loanAmountMin,
     loanAmountMax,
     loanInterestMin,
@@ -82,32 +86,6 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
     selectedSort,
     isMount,
   ]);
-
-  const onTextInputChanged = (
-    event: ChangeEvent<HTMLInputElement>,
-    value: string,
-    setValue: (val: string) => void,
-  ) => {
-    const newValue = event.target.value.trim();
-
-    if (newValue.length < 3) {
-      setValue('');
-    } else {
-      setValue(newValue);
-    }
-  };
-
-  const onNumericChanged = (
-    event: ChangeEvent<HTMLInputElement>,
-    setValue: (val: number) => void,
-  ) => {
-    const newValue = parseInt(event.target.value.trim());
-    if (isNaN(newValue)) {
-      setValue(0);
-    } else {
-      setValue(parseInt(event.target.value.trim()));
-    }
-  };
 
   return (
     <div className={styles.searchWrapper}>
@@ -159,10 +137,10 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
                 ? styles.inputGroupWrapperOpen
                 : styles.inputGroupWrapperClosed
             }`}>
-            <LoanTokenInput
-              handleTextInputChanged={onTextInputChanged}
-              loanToken={loanToken}
-              setLoanToken={setLoanToken}
+            <SearchTextInput
+              label="Loan Token"
+              placeholder="Enter symbol"
+              setTextValue={setLoanToken}
             />
           </div>
           <div
@@ -171,10 +149,22 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
                 ? styles.inputGroupWrapperOpen
                 : styles.inputGroupWrapperClosed
             }`}>
-            <LoanUserAddressInput
-              handleTextInputChanged={onTextInputChanged}
-              address={borrowerAddress}
-              setAddress={setBorrowerAddress}
+            <SearchTextInput
+              label="Borrower"
+              placeholder="Enter 0x..."
+              setTextValue={setBorrowerAddress}
+            />
+          </div>
+          <div
+            className={`${
+              showSearch
+                ? styles.inputGroupWrapperOpen
+                : styles.inputGroupWrapperClosed
+            }`}>
+            <SearchTextInput
+              label="Lender"
+              placeholder="Enter 0x..."
+              setTextValue={setLenderAddress}
             />
           </div>
           <div
@@ -184,7 +174,6 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
                 : styles.inputGroupWrapperClosed
             }`}>
             <LoanNumericInput
-              handleNumericChanged={onNumericChanged}
               label="Loan Amount"
               setMin={setLoanAmountMin}
               setMax={setLoanAmountMax}
@@ -197,7 +186,6 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
                 : styles.inputGroupWrapperClosed
             }`}>
             <LoanNumericInput
-              handleNumericChanged={onNumericChanged}
               label="Interest Rate"
               setMin={setLoanInterestMin}
               setMax={setLoanInterestMax}
@@ -210,7 +198,6 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
                 : styles.inputGroupWrapperClosed
             }`}>
             <LoanNumericInput
-              handleNumericChanged={onNumericChanged}
               label="Duration"
               setMin={setLoanDurationMin}
               setMax={setLoanDurationMax}

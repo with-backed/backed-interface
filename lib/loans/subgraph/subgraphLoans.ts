@@ -30,6 +30,7 @@ export enum SearchQuerySort {
 }
 
 const searchQuery = (
+  lendTicketHolder: string,
   loanAmountMin: number,
   loanAmountMax: number,
   perSecondInterestRateMin: number,
@@ -43,6 +44,7 @@ const searchQuery = (
     $collateralName: String,
     $loanAssetSymbol: String,
     $borrowTicketHolder: String,
+    $lendTicketHolder: String,
     $loanAmountMin: BigInt,
     $loanAmountMax: BigInt,
     $perSecondInterestRateMin: BigInt,
@@ -58,6 +60,11 @@ const searchQuery = (
         collateralName_starts_with: $collateralName,
         loanAssetSymbol_starts_with: $loanAssetSymbol,
         borrowTicketHolder_starts_with: $borrowTicketHolder,
+        ${
+          lendTicketHolder != ''
+            ? 'lendTicketHolder_starts_with: $lendTicketHolder'
+            : ''
+        }
         ${loanAmountMin != 0 ? 'loanAmount_gt: $loanAmountMin' : ''}
         ${loanAmountMax != 0 ? 'loanAmount_lt: $loanAmountMax' : ''}
         ${
@@ -95,6 +102,7 @@ export async function searchLoans(
   collateralName: string,
   loanAssetSymbol: string,
   borrowTicketHolder: string,
+  lendTicketHolder: string,
   loanAmountMin: number,
   loanAmountMax: number,
   loanInterestMin: number,
@@ -108,6 +116,7 @@ export async function searchLoans(
   } = await nftBackedLoansClient
     .query(
       searchQuery(
+        lendTicketHolder,
         loanAmountMin,
         loanAmountMax,
         loanInterestMin,
@@ -121,6 +130,7 @@ export async function searchLoans(
         collateralName,
         loanAssetSymbol,
         borrowTicketHolder,
+        lendTicketHolder,
         loanAmountMin: formatNumberForGraph(loanAmountMin),
         loanAmountMax: formatNumberForGraph(loanAmountMax),
         perSecondInterestRateMin: annualRateToPerSecond(loanInterestMin),
