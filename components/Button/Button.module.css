@@ -51,6 +51,16 @@
   background: var(--highlight-active-20);
 }
 
+.white {
+  composes: button;
+  background: var(--background-white);
+}
+
+.highlight:hover,
+.highlight:focus {
+  background: var(--highlight-active-20);
+}
+
 .button:disabled {
   color: var(--neutral-50);
   background: var(--neutral-5);

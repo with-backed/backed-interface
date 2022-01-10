@@ -1,11 +1,12 @@
 import { FiveColumn } from 'components/layouts/FiveColumn';
 import { LoanCard } from 'components/LoanCard';
-import subgraphLoans from 'lib/loans/subgraph/subgraphLoans';
+import subgraphLoans, { searchLoans } from 'lib/loans/subgraph/subgraphLoans';
 import { parseSubgraphLoan } from 'lib/loans/utils';
 import { Loan as SubgraphLoan } from 'types/generated/graphql/nftLoans';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { AdvancedSearch } from 'components/AdvancedSearch/AdvancedSearch';
 
 export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
   return {
@@ -19,10 +20,17 @@ type HomeProps = {
   loans: SubgraphLoan[];
 };
 export default function Home({ loans }: HomeProps) {
+  const [searchedLoans, setSearchedLoans] = useState<
+    SubgraphLoan[] | undefined
+  >(undefined);
+
   return (
     <>
+      <AdvancedSearch
+        handleSearchFinished={(loans) => setSearchedLoans(loans)}
+      />
       <FiveColumn>
-        {loans.map((loan) => (
+        {(searchedLoans || loans).map((loan) => (
           <LoanCard key={loan.id.toString()} loan={parseSubgraphLoan(loan)} />
         ))}
       </FiveColumn>
