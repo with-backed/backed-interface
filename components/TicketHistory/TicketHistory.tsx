@@ -35,6 +35,8 @@ export function TicketHistory({ loan }: TicketHistoryProps) {
 }
 
 const getTicketHistory = async (loanId: ethers.BigNumber) => {
+  const t0 = performance.now();
+
   const contract = jsonRpcLoanFacilitator();
 
   const mintTicketFilter = contract.filters.CreateLoan(loanId, null);
@@ -53,17 +55,21 @@ const getTicketHistory = async (loanId: ethers.BigNumber) => {
     seizeCollateralFilter,
   ];
 
+  const [...events] = await Promise.all(
+    filters.map((filter) => {
+      return contract.queryFilter(
+        filter,
+        parseInt(process.env.NEXT_PUBLIC_FACILITATOR_START_BLOCK || ''),
+      );
+    }),
+  );
+
   // TODO: keep track of TypedEvents so we don't have to do a type coercion
   // in ParsedEvent
-  let allEvents: ethers.Event[] = [];
-  for (let i = 0; i < filters.length; i++) {
-    const results = await contract.queryFilter(
-      filters[i],
-      parseInt(process.env.NEXT_PUBLIC_FACILITATOR_START_BLOCK || ''),
-    );
-    allEvents = allEvents.concat(results);
-  }
-  allEvents.sort((a, b) => b.blockNumber - a.blockNumber);
+  const allEvents = events.flat().sort((a, b) => b.blockNumber - a.blockNumber);
+
+  const t1 = performance.now();
+  console.log(`Call to getTicketHistoryPromiseAll took ${t1 - t0}ms`);
 
   return allEvents;
 };
