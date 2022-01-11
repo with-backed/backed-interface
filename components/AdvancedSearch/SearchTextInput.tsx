@@ -6,12 +6,14 @@ type SearchTextInputProps = {
   label: string;
   placeholder: string;
   setTextValue: (token: string) => void;
+  error?: string;
 };
 
 export default function SearchTextInput({
   label,
   placeholder,
   setTextValue,
+  error,
 }: SearchTextInputProps) {
   const handleTextInputChanged = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -27,14 +29,17 @@ export default function SearchTextInput({
   );
 
   return (
-    <div className={styles.inputGroup}>
-      <div className={styles.inputLabel}>{label}</div>
-      <div className={styles.inputs}>
-        <Input
-          onChange={(event) => handleTextInputChanged(event)}
-          placeholder={placeholder}
-        />
+    <div className={styles.inputWrapper}>
+      <span>{label}</span>
+      <div className={styles.inputGroup}>
+        <label>
+          <Input
+            onChange={(event) => handleTextInputChanged(event)}
+            placeholder={placeholder}
+          />
+        </label>
       </div>
+      {error && <div className={styles.errors}>{error}</div>}
     </div>
   );
 }

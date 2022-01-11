@@ -1,15 +1,15 @@
 import { Select } from 'components/Select';
-import { SearchQuerySort } from 'lib/loans/subgraph/subgraphLoans';
+import { Loan_OrderBy } from 'types/generated/graphql/nftLoans';
 import styles from './AdvancedSearch.module.css';
 
 type SortDropdownProps = {
-  setSelectedSort: (val: SearchQuerySort) => void;
+  setSelectedSort: (val: Loan_OrderBy) => void;
 };
 
 const sortOptions = [
-  { value: SearchQuerySort.CreatedAtTimestamp, label: 'Recent Activity' },
-  { value: SearchQuerySort.PerSecondInterestRate, label: 'APY' },
-  { value: SearchQuerySort.LoanAmount, label: 'Loan Amount' },
+  { value: Loan_OrderBy.CreatedAtTimestamp, label: 'Recent Activity' },
+  { value: Loan_OrderBy.PerSecondInterestRate, label: 'APY' },
+  { value: Loan_OrderBy.LoanAmount, label: 'Loan Amount' },
 ];
 
 export default function SortDropdown({ setSelectedSort }: SortDropdownProps) {

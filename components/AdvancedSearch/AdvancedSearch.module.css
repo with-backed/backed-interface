@@ -10,7 +10,7 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    margin-bottom: 30px;
+    margin-bottom: var(--gap);
 }
 
 .searchButton {
@@ -23,10 +23,6 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-}
-
-.sortDropdown select {
-    background: var(--highlight-active-10);
 }
 
 .sortDropdown > div {
@@ -55,7 +51,11 @@
     transition-timing-function: ease-in-out;
     transition-duration: 0.2s;
     transition-property: opacity, transform;
-  }
+}
+
+.loanAssetDropdownOpen {
+    z-index: 1;
+}
   
 .inputGroupWrapperClosed {
     opacity: 0;
@@ -66,24 +66,39 @@
     transition-delay: 0.5s;
 }
 
-.inputGroup {
+.inputWrapper {
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin: 2px 0;
 }
 
-
-.inputLabel {
-    width: 9%;
+.inputWrapper > span {
+    width: 160px;
 }
 
-.inputs {
+.inputGroup {
     width: 60%;
 }
 
-.inputs > input[type=tel] {
+.numericInputGroup {
+    width: auto;
+}
+
+.loanAssetDropdown > div {
+    width: 300px;
+}
+
+.numericInputGroup input {
     width: 100px;
+}
+
+.errors {
+    margin-left: 10px;
+    text-align: center;
+    font-family: var(--sans);
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--box-shadow-red);
+    padding: 0.9rem;
 }
 
 .loanStatusButtons {
@@ -92,13 +107,13 @@
     align-items: center;
 }
 
-.buttonWrapper:first-child {
-    margin-left: 0px;
-}
-
 .buttonWrapper {
     margin: 0px 10px;
     font-size: var(--font-medium);
+}
+
+.buttonWrapper:first-child {
+    margin-left: 0px;
 }
 
 .to {

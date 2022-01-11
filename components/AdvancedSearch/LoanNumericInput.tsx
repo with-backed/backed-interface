@@ -6,6 +6,7 @@ type LoanNumericInputProps = {
   setMin: (val: number) => void;
   setMax: (val: number) => void;
   label: string;
+  error?: string;
 };
 
 const handleNumericChanged = (
@@ -24,23 +25,29 @@ export default function LoanNumericInput({
   setMin,
   setMax,
   label,
+  error,
 }: LoanNumericInputProps) {
   return (
-    <div className={styles.inputGroup}>
-      <div className={styles.inputLabel}>{label}</div>
-      <div className={styles.inputs}>
-        <Input
-          type="number"
-          onChange={(event) => handleNumericChanged(event, setMin)}
-          placeholder="Min"
-        />
+    <div className={styles.inputWrapper}>
+      <span>{label}</span>
+      <div className={`${styles.numericInputGroup}`}>
+        <label>
+          <Input
+            type="number"
+            onChange={(event) => handleNumericChanged(event, setMin)}
+            placeholder="Min"
+          />
+        </label>
         <span className={styles.to}>to</span>
-        <Input
-          type="number"
-          onChange={(event) => handleNumericChanged(event, setMax)}
-          placeholder="Max"
-        />
+        <label>
+          <Input
+            type="number"
+            onChange={(event) => handleNumericChanged(event, setMax)}
+            placeholder="Max"
+          />
+        </label>
       </div>
+      {error && <div className={styles.errors}>{error}</div>}
     </div>
   );
 }
