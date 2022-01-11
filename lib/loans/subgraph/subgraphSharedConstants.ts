@@ -20,46 +20,60 @@ export const ALL_LOAN_PROPERTIES = `
 `;
 
 const CREATE_EVENT_PROPERTIES = `
-    id, 
+    id,
     timestamp,
-    creator
+    blockNumber,
+    creator,
+    maxPerSecondInterestRate,
+    minDurationSeconds,
+    minLoanAmount
 `;
 
 const LEND_EVENT_PROPERTIES = `
     id, 
-    timestamp,
     lender,
     loanAmount,
+    durationSeconds,
     perSecondInterestRate,
-    durationSeconds
+    timestamp,
+    blockNumber,
+    borrowTicketHolder
 `;
 
 const BUYOUT_EVENT_PROPERTIES = `
     id,
     newLender,
-    previousLender,
+    lendTicketOwner,
     loanAmount,
     interestEarned,
-    timestamp
+    timestamp,
+    blockNumber
 `;
 
 const REPAY_EVENT_PROPERTIES = `
     id,
     repayer,
-    paidTo,
-    loanAmount, 
+    loanAmount,
     interestEarned,
-    timestamp
+    timestamp,
+    blockNumber,
+    lendTicketHolder,
+    borrowTicketHolder
 `;
 
 const COLLATERAL_SEIZURE_EVENT_PROPERTIES = `
     id,
-    timestamp
+    timestamp,
+    blockNumber,
+    lendTicketHolder,
+    borrowTicketHolder
 `;
 
 const CLOSE_EVENT_PROPERTIES = `
     id,
-    timestamp
+    timestamp,
+    blockNumber,
+    closer
 `;
 
 export const ALL_EVENTS = `
