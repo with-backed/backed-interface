@@ -33,9 +33,9 @@ export default function LoanStatusButtons({
   );
 
   return (
-    <div className={styles.inputGroup}>
-      <div className={styles.inputLabel}>{label}</div>
-      <div className={styles.loanStatusButtons}>
+    <label>
+      <span>{label}</span>
+      <div className={`${styles.loanStatusButtons}`}>
         {Object.keys(labelToEnum).map((l) => (
           <div className={styles.buttonWrapper} key={l}>
             <Button
@@ -48,6 +48,6 @@ export default function LoanStatusButtons({
           </div>
         ))}
       </div>
-    </div>
+    </label>
   );
 }

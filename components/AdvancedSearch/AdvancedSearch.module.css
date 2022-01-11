@@ -25,10 +25,6 @@
     align-items: center;
 }
 
-.sortDropdown select {
-    background: var(--highlight-active-10);
-}
-
 .sortDropdown > div {
     margin-right: 8px;
 }
@@ -55,7 +51,11 @@
     transition-timing-function: ease-in-out;
     transition-duration: 0.2s;
     transition-property: opacity, transform;
-  }
+}
+
+.loanAssetDropdownOpen {
+    z-index: 1;
+}
   
 .inputGroupWrapperClosed {
     opacity: 0;
@@ -66,24 +66,22 @@
     transition-delay: 0.5s;
 }
 
+.searchWrapper label {
+    width: 60%;
+    display: grid;
+    grid-template-columns: var(--column-width) 1fr;
+    column-gap: var(--gap);
+    align-items: center;
+}
+
 .inputGroup {
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin: 2px 0;
 }
 
-
-.inputLabel {
-    width: 11%;
-}
-
-.textInputs {
-    width: 60%;
-}
-
-.numericInputs {
-    max-width: 40%;
+.loanAssetDropdownOpen label > div {
+    width: 300px;
 }
 
 .numericInputs input[type=tel] {

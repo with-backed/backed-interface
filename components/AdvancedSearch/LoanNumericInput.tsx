@@ -28,26 +28,22 @@ export default function LoanNumericInput({
   error,
 }: LoanNumericInputProps) {
   return (
-    <div className={styles.inputGroup}>
-      <div className={styles.inputLabel}>{label}</div>
-      <div className={styles.numericInputs}>
-        <label>
-          <Input
-            type="number"
-            onChange={(event) => handleNumericChanged(event, setMin)}
-            placeholder="Min"
-          />
-        </label>
+    <label>
+      <span>{label}</span>
+      <div className={`${styles.numericInputs} ${styles.inputGroup}`}>
+        <Input
+          type="number"
+          onChange={(event) => handleNumericChanged(event, setMin)}
+          placeholder="Min"
+        />
         <span className={styles.to}>to</span>
-        <label>
-          <Input
-            type="number"
-            onChange={(event) => handleNumericChanged(event, setMax)}
-            placeholder="Max"
-          />
-        </label>
+        <Input
+          type="number"
+          onChange={(event) => handleNumericChanged(event, setMax)}
+          placeholder="Max"
+        />
+        {error && <div className={styles.errors}>{error}</div>}
       </div>
-      {error && <div className={styles.errors}>{error}</div>}
-    </div>
+    </label>
   );
 }

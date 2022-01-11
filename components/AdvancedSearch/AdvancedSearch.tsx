@@ -14,6 +14,7 @@ import {
 } from 'types/generated/graphql/nftLoans';
 import styles from './AdvancedSearch.module.css';
 import CollateralSearchInput from './CollateralInput';
+import LoanAssetDropdown from './LoanAssetDropdown';
 import LoanNumericInput from './LoanNumericInput';
 import LoanStatusButtons from './LoanStatusButtons';
 import SearchTextInput from './SearchTextInput';
@@ -39,7 +40,7 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
 
   const [collectionAddress, setCollectionAddress] = useState<string>('');
   const [collectionName, setCollectionName] = useState<string>('');
-  const [loanToken, setLoanToken] = useState<string>('');
+  const [loanAsset, setLoanAsset] = useState<string>('');
   const [borrowerAddress, setBorrowerAddress] = useState<string>('');
   const [lenderAddress, setLenderAddress] = useState<string>('');
 
@@ -65,7 +66,7 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
   const isMount = useIsMount();
 
   const loanTokenSearchInvalid =
-    (!!loanAmountMin.nominal || !!loanAmountMax.nominal) && !loanToken;
+    (!!loanAmountMin.nominal || !!loanAmountMax.nominal) && !loanAsset;
   const bytesSearchInvalid = areBytesInvalid([
     borrowerAddress,
     lenderAddress,
@@ -79,7 +80,7 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
         statuses,
         collectionAddress,
         collectionName,
-        loanToken,
+        loanAsset,
         borrowerAddress,
         lenderAddress,
         loanAmountMin,
@@ -101,7 +102,7 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
     collectionAddress,
     collectionName,
     handleSearchFinished,
-    loanToken,
+    loanAsset,
     borrowerAddress,
     lenderAddress,
     loanAmountMin,
@@ -170,13 +171,8 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
               showSearch
                 ? styles.inputGroupWrapperOpen
                 : styles.inputGroupWrapperClosed
-            }`}>
-            <SearchTextInput
-              label="Loan Token"
-              placeholder="Enter symbol"
-              setTextValue={setLoanToken}
-              transformer={(old: string) => old.toUpperCase()}
-            />
+            } ${showSearch ? styles.loanAssetDropdownOpen : ''}`}>
+            <LoanAssetDropdown setSelectedAsset={setLoanAsset} />
           </div>
           <div
             className={`${

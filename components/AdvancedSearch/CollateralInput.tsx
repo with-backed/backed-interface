@@ -36,14 +36,9 @@ export default function CollateralSearchInput({
   );
 
   return (
-    <div className={styles.inputGroup}>
-      <div className={styles.inputLabel}>Collection</div>
-      <div className={styles.textInputs}>
-        <label>
-          <Input onChange={handleChange} placeholder="Enter collection" />
-        </label>
-      </div>
-      {error && <div className={styles.errors}>{error}</div>}
-    </div>
+    <label htmlFor="loanAssetContractAddress">
+      <span>Collection</span>
+      <Input onChange={handleChange} placeholder="Enter collection" />
+    </label>
   );
 }
