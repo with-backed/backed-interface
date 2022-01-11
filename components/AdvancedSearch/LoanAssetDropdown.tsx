@@ -1,6 +1,7 @@
 import { Select } from 'components/Select';
 import { getLoanAssets, LoanAsset } from 'lib/loanAssets';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import styles from './AdvancedSearch.module.css';
 
 type LoanAssetDropdownProps = {
   setSelectedAsset: (val: string) => void;
@@ -20,7 +21,7 @@ export default function LoanAssetDropdown({
   }, [loadAssets]);
 
   return (
-    <label>
+    <label className={styles.loanAssetDropdown}>
       <span>Loan Asset</span>
       <div>
         <Select

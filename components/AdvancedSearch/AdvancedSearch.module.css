@@ -10,7 +10,7 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    margin-bottom: 30px;
+    margin-bottom: var(--gap);
 }
 
 .searchButton {
@@ -67,7 +67,7 @@
 }
 
 .searchWrapper label {
-    width: 60%;
+    width: 65%;
     display: grid;
     grid-template-columns: var(--column-width) 1fr;
     column-gap: var(--gap);
@@ -80,11 +80,11 @@
     align-items: center;
 }
 
-.loanAssetDropdownOpen label > div {
+.loanAssetDropdown > div {
     width: 300px;
 }
 
-.numericInputs input[type=tel] {
+.numericInputs input {
     width: 100px;
 }
 
@@ -102,13 +102,13 @@
     align-items: center;
 }
 
-.buttonWrapper:first-child {
-    margin-left: 0px;
-}
-
 .buttonWrapper {
     margin: 0px 10px;
     font-size: var(--font-medium);
+}
+
+.buttonWrapper:first-child {
+    margin-left: 0px;
 }
 
 .to {
