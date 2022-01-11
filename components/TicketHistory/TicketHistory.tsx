@@ -5,30 +5,24 @@ import { Fieldset } from 'components/Fieldset';
 import { ParsedEvent } from './ParsedEvent';
 import { Loan } from 'types/Loan';
 import styles from './TicketHistory.module.css';
+import type { Event } from 'types/Event';
 
 interface TicketHistoryProps {
   loan: Loan;
+  events: Event[];
 }
 
-export function TicketHistory({ loan }: TicketHistoryProps) {
-  const [history, setHistory] = useState<ethers.Event[] | null>(null);
-
-  const setup = useCallback(async () => {
-    const history = await getTicketHistory(loan.id);
-    setHistory(history);
-  }, [loan.id]);
-
-  useEffect(() => {
-    setup();
-  }, [setup]);
-
+export function TicketHistory({ loan, events }: TicketHistoryProps) {
   return (
     <Fieldset legend="🎬 Activity">
       <div className={styles.container}>
-        {history !== null &&
-          history.map((e: ethers.Event, i) => (
-            <ParsedEvent event={e} loan={loan} key={i} />
-          ))}
+        {events.map((e) => (
+          <ParsedEvent
+            event={e}
+            loan={loan}
+            key={e.typename + e.id + e.timestamp}
+          />
+        ))}
       </div>
     </Fieldset>
   );

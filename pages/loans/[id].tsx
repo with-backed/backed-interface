@@ -8,16 +8,22 @@ import { LoanInfo } from 'components/LoanInfo';
 import { CollateralMedia } from 'types/CollateralMedia';
 import { getNFTInfoFromTokenInfo } from 'lib/getNFTInfo';
 import { nodeLoanById } from 'lib/loans/node/nodeLoanById';
+import { subgraphLoanHistoryById } from 'lib/loans/subgraph/subgraphLoanEventsById';
+import { Event } from 'types/Event';
 
 export type LoanPageProps = {
   loanInfoJson: string;
+  historyJson: string;
 };
 
 export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
   context,
 ) => {
   const id = context.params?.id as string;
-  const loan = await loanById(id);
+  const [loan, history] = await Promise.all([
+    loanById(id),
+    subgraphLoanHistoryById(id),
+  ]);
 
   // The Graph didn't have loan, and fallback call errored.
   if (!loan) {
@@ -27,17 +33,23 @@ export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
   }
 
   const loanInfoJson = JSON.stringify(loan);
+  const historyJson = JSON.stringify(history);
   return {
     props: {
       loanInfoJson,
+      historyJson,
     },
   };
 };
 
-export default function Loans({ loanInfoJson }: LoanPageProps) {
+export default function Loans({ loanInfoJson, historyJson }: LoanPageProps) {
   const serverLoan = useMemo(
     () => parseLoanInfoJson(loanInfoJson),
     [loanInfoJson],
+  );
+  const serverEvents = useMemo(
+    () => parseHistoryJson(historyJson),
+    [historyJson],
   );
   const [loan, setLoan] = useState(serverLoan);
   const [collateralMedia, setCollateralMedia] =
@@ -70,7 +82,7 @@ export default function Loans({ loanInfoJson }: LoanPageProps) {
         collateralMedia={collateralMedia}
         refresh={refresh}
       />
-      <LoanInfo loan={loan} />
+      <LoanInfo loan={loan} events={serverEvents} />
     </>
   );
 }
@@ -87,4 +99,9 @@ const parseLoanInfoJson = (loanInfoJson: string): Loan => {
     }
   });
   return loanInfo;
+};
+
+const parseHistoryJson = (historyJson: string): Event[] => {
+  const events = JSON.parse(historyJson);
+  return events;
 };
