@@ -36,8 +36,8 @@ export default function SearchTextInput({
           onChange={(event) => handleTextInputChanged(event)}
           placeholder={placeholder}
         />
-        {error && <div className={styles.errors}>{error}</div>}
       </div>
+      {error && <div className={styles.errors}>{error}</div>}
     </label>
   );
 }

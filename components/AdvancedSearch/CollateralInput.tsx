@@ -36,9 +36,11 @@ export default function CollateralSearchInput({
   );
 
   return (
-    <label htmlFor="loanAssetContractAddress">
+    <label>
       <span>Collection</span>
-      <Input onChange={handleChange} placeholder="Enter collection" />
+      <div className={styles.inputGroup}>
+        <Input onChange={handleChange} placeholder="Enter collection" />
+      </div>
     </label>
   );
 }

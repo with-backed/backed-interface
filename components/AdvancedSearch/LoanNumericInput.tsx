@@ -30,7 +30,7 @@ export default function LoanNumericInput({
   return (
     <label>
       <span>{label}</span>
-      <div className={`${styles.numericInputs} ${styles.inputGroup}`}>
+      <div className={`${styles.numericInputGroup}`}>
         <Input
           type="number"
           onChange={(event) => handleNumericChanged(event, setMin)}
@@ -42,8 +42,8 @@ export default function LoanNumericInput({
           onChange={(event) => handleNumericChanged(event, setMax)}
           placeholder="Max"
         />
-        {error && <div className={styles.errors}>{error}</div>}
       </div>
+      {error && <div className={styles.errors}>{error}</div>}
     </label>
   );
 }

@@ -67,33 +67,38 @@
 }
 
 .searchWrapper label {
-    width: 65%;
-    display: grid;
-    grid-template-columns: var(--column-width) 1fr;
-    column-gap: var(--gap);
-    align-items: center;
-}
-
-.inputGroup {
     display: flex;
     flex-direction: row;
     align-items: center;
+}
+
+.searchWrapper label > span {
+    width: 12%;
+}
+
+.inputGroup {
+    width: 60%;
+}
+
+.numericInputGroup {
+    width: auto;
 }
 
 .loanAssetDropdown > div {
     width: 300px;
 }
 
-.numericInputs input {
+.numericInputGroup input {
     width: 100px;
 }
 
 .errors {
     margin-left: 10px;
+    text-align: center;
     font-family: var(--sans);
     border-radius: var(--border-radius-large);
     box-shadow: var(--box-shadow-red);
-    padding: 1rem;
+    padding: 0.9rem;
 }
 
 .loanStatusButtons {

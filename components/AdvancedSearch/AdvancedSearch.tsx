@@ -24,7 +24,7 @@ type AdvancedSearchProps = {
   handleSearchFinished: (loans: Loan[]) => void;
 };
 
-const BYTES_INVALID_ERROR = "Oops, that doesn't look like a valid address";
+const BYTES_INVALID_ERROR = 'Invalid address inputted';
 const areBytesInvalid = (bytes: string[]) =>
   bytes.filter((b) => b.length % 2 !== 0).length > 0;
 
