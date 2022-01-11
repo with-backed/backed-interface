@@ -53,13 +53,13 @@ const searchQuery = (
     loans(where: 
       {
         status_in: $statuses,
-        collateralContractAddress_starts_with: $collateralContractAddress,
-        collateralName_starts_with: $collateralName,
-        loanAssetSymbol_starts_with: $loanAssetSymbol,
-        borrowTicketHolder_starts_with: $borrowTicketHolder,
+        collateralContractAddress_contains: $collateralContractAddress,
+        collateralName_contains: $collateralName,
+        loanAssetSymbol_contains: $loanAssetSymbol,
+        borrowTicketHolder_contains: $borrowTicketHolder,
         ${
           lendTicketHolder != ''
-            ? 'lendTicketHolder_starts_with: $lendTicketHolder'
+            ? 'lendTicketHolder_contains: $lendTicketHolder'
             : ''
         }
         ${loanAmountMax != 0 ? 'loanAmount_lt: $loanAmountMax' : ''}
@@ -81,6 +81,11 @@ const searchQuery = (
     }
   }
 `;
+
+export type LoanAmountInputType = {
+  loanAssetDecimal: number;
+  nominal: number;
+};
 
 export async function searchLoans(
   statuses: LoanStatus[],
