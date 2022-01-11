@@ -22,7 +22,7 @@ export default function LoanAssetDropdown({
 
   return (
     <div className={`${styles.inputWrapper} ${styles.loanAssetDropdown}`}>
-      <span>Loan Asset</span>
+      <span>Loan Token</span>
       <div className={styles.inputGroup}>
         <Select
           onChange={(option: any) => setSelectedAsset(option.label)}
