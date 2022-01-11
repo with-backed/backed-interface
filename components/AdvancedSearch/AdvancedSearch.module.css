@@ -66,13 +66,13 @@
     transition-delay: 0.5s;
 }
 
-.searchWrapper label {
+.inputWrapper {
     display: flex;
     flex-direction: row;
     align-items: center;
 }
 
-.searchWrapper label > span {
+.inputWrapper > span {
     width: 160px;
 }
 

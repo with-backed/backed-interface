@@ -21,7 +21,7 @@ export default function LoanAssetDropdown({
   }, [loadAssets]);
 
   return (
-    <label className={styles.loanAssetDropdown}>
+    <div className={`${styles.inputWrapper} ${styles.loanAssetDropdown}`}>
       <span>Loan Asset</span>
       <div className={styles.inputGroup}>
         <Select
@@ -32,6 +32,6 @@ export default function LoanAssetDropdown({
           }))}
         />
       </div>
-    </label>
+    </div>
   );
 }

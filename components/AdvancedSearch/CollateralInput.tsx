@@ -36,12 +36,14 @@ export default function CollateralSearchInput({
   );
 
   return (
-    <label>
+    <div className={styles.inputWrapper}>
       <span>Collection</span>
       <div className={styles.inputGroup}>
-        <Input onChange={handleChange} placeholder="Enter collection" />
+        <label>
+          <Input onChange={handleChange} placeholder="Enter collection" />
+        </label>
       </div>
       {error && <div className={styles.errors}>{error}</div>}
-    </label>
+    </div>
   );
 }

@@ -29,15 +29,17 @@ export default function SearchTextInput({
   );
 
   return (
-    <label>
+    <div className={styles.inputWrapper}>
       <span>{label}</span>
       <div className={styles.inputGroup}>
-        <Input
-          onChange={(event) => handleTextInputChanged(event)}
-          placeholder={placeholder}
-        />
+        <label>
+          <Input
+            onChange={(event) => handleTextInputChanged(event)}
+            placeholder={placeholder}
+          />
+        </label>
       </div>
       {error && <div className={styles.errors}>{error}</div>}
-    </label>
+    </div>
   );
 }

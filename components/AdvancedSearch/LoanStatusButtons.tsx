@@ -33,7 +33,7 @@ export default function LoanStatusButtons({
   );
 
   return (
-    <label>
+    <div className={styles.inputWrapper}>
       <span>{label}</span>
       <div className={`${styles.loanStatusButtons}`}>
         {Object.keys(labelToEnum).map((l) => (
@@ -48,6 +48,6 @@ export default function LoanStatusButtons({
           </div>
         ))}
       </div>
-    </label>
+    </div>
   );
 }
