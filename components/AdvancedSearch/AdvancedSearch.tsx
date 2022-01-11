@@ -1,6 +1,9 @@
 import { Button } from 'components/Button';
 import { FormWrapper } from 'components/layouts/FormWrapper';
-import { searchLoans } from 'lib/loans/subgraph/subgraphLoans';
+import {
+  LoanAmountInputType,
+  searchLoans,
+} from 'lib/loans/subgraph/subgraphLoans';
 import { useEffect, useRef, useState } from 'react';
 import {
   Loan,
@@ -42,8 +45,18 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
   const [borrowerAddress, setBorrowerAddress] = useState<string>('');
   const [lenderAddress, setLenderAddress] = useState<string>('');
 
-  const [loanAmountMin, setLoanAmountMin] = useState<number>(0);
-  const [loanAmountMax, setLoanAmountMax] = useState<number>(0);
+  // based on results of search, set loanAssetDecimal so we know how to parse loanAmountMin and loanAmountMax
+  const [loanAssetDecimal, setLoanAssetDecimal] = useState<number>(18);
+
+  // couple loanAssetDecimal and nominal amount user wants to filter by, and only set them together in lock-step to avoid unnecessary re-renders
+  const [loanAmountMin, setLoanAmountMin] = useState<LoanAmountInputType>({
+    loanAssetDecimal: 18,
+    nominal: 0,
+  });
+  const [loanAmountMax, setLoanAmountMax] = useState<LoanAmountInputType>({
+    loanAssetDecimal: 18,
+    nominal: 0,
+  });
   const [loanInterestMin, setLoanInterestMin] = useState<number>(0);
   const [loanInterestMax, setLoanInterestMax] = useState<number>(0);
   const [loanDurationMin, setLoanDurationMin] = useState<number>(0);
@@ -69,6 +82,7 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
         selectedSort,
       );
       handleSearchFinished(results);
+      setLoanAssetDecimal(results[0]?.loanAssetDecimal || 18);
     }
     if (!isMount) triggerSearch();
   }, [
@@ -143,6 +157,7 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
               label="Loan Token"
               placeholder="Enter symbol"
               setTextValue={setLoanToken}
+              transformer={(old: string) => old.toUpperCase()}
             />
           </div>
           <div
@@ -177,8 +192,12 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
             }`}>
             <LoanNumericInput
               label="Loan Amount"
-              setMin={setLoanAmountMin}
-              setMax={setLoanAmountMax}
+              setMin={(nominal: number) =>
+                setLoanAmountMin({ loanAssetDecimal, nominal })
+              }
+              setMax={(nominal: number) =>
+                setLoanAmountMax({ loanAssetDecimal, nominal })
+              }
             />
           </div>
           <div

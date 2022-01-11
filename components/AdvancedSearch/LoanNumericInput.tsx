@@ -29,17 +29,21 @@ export default function LoanNumericInput({
     <div className={styles.inputGroup}>
       <div className={styles.inputLabel}>{label}</div>
       <div className={styles.inputs}>
-        <Input
-          type="number"
-          onChange={(event) => handleNumericChanged(event, setMin)}
-          placeholder="Min"
-        />
+        <label>
+          <Input
+            type="number"
+            onChange={(event) => handleNumericChanged(event, setMin)}
+            placeholder="Min"
+          />
+        </label>
         <span className={styles.to}>to</span>
-        <Input
-          type="number"
-          onChange={(event) => handleNumericChanged(event, setMax)}
-          placeholder="Max"
-        />
+        <label>
+          <Input
+            type="number"
+            onChange={(event) => handleNumericChanged(event, setMax)}
+            placeholder="Max"
+          />
+        </label>
       </div>
     </div>
   );

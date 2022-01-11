@@ -92,8 +92,8 @@ export async function searchLoans(
   loanAssetSymbol: string,
   borrowTicketHolder: string,
   lendTicketHolder: string,
-  loanAmountMin: number,
-  loanAmountMax: number,
+  loanAmountMin: LoanAmountInputType,
+  loanAmountMax: LoanAmountInputType,
   loanInterestMin: number,
   loanInterestMax: number,
   loanDurationMin: number,
@@ -106,7 +106,7 @@ export async function searchLoans(
     .query(
       searchQuery(
         lendTicketHolder,
-        loanAmountMax,
+        loanAmountMax.nominal,
         loanInterestMax,
         loanDurationMax,
       ),
@@ -131,6 +131,8 @@ export async function searchLoans(
   return loans;
 }
 
-const formatNumberForGraph = (num: number): string => {
-  return ethers.utils.parseUnits(num.toString()).toString();
+const formatNumberForGraph = (loanAmount: LoanAmountInputType): string => {
+  return ethers.utils
+    .parseUnits(loanAmount.nominal.toString(), loanAmount.loanAssetDecimal)
+    .toString();
 };

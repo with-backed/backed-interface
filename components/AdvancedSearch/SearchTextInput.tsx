@@ -6,12 +6,14 @@ type SearchTextInputProps = {
   label: string;
   placeholder: string;
   setTextValue: (token: string) => void;
+  transformer?: (old: string) => string;
 };
 
 export default function SearchTextInput({
   label,
   placeholder,
   setTextValue,
+  transformer = (old: string) => old,
 }: SearchTextInputProps) {
   const handleTextInputChanged = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -20,20 +22,22 @@ export default function SearchTextInput({
       if (newValue.length < 3) {
         setTextValue('');
       } else {
-        setTextValue(newValue);
+        setTextValue(transformer(newValue));
       }
     },
-    [setTextValue],
+    [setTextValue, transformer],
   );
 
   return (
     <div className={styles.inputGroup}>
       <div className={styles.inputLabel}>{label}</div>
       <div className={styles.inputs}>
-        <Input
-          onChange={(event) => handleTextInputChanged(event)}
-          placeholder={placeholder}
-        />
+        <label>
+          <Input
+            onChange={(event) => handleTextInputChanged(event)}
+            placeholder={placeholder}
+          />
+        </label>
       </div>
     </div>
   );

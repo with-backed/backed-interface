@@ -25,7 +25,7 @@ export default function CollateralSearchInput({
           setCollectionAddress(newValue);
           setCollectionName('');
         } else {
-          setCollectionName(newValue);
+          setCollectionName(newValue.toLowerCase());
           setCollectionAddress('');
         }
       }
@@ -37,7 +37,7 @@ export default function CollateralSearchInput({
     <div className={styles.inputGroup}>
       <div className={styles.inputLabel}>Collection</div>
       <div className={styles.inputs}>
-        <label htmlFor="collateralCollection">
+        <label>
           <Input onChange={handleChange} placeholder="Enter collection" />
         </label>
       </div>

@@ -82,7 +82,7 @@
     width: 60%;
 }
 
-.inputs > input[type=tel] {
+.inputs input[type=tel] {
     width: 100px;
 }
 
