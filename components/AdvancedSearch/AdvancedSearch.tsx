@@ -44,7 +44,9 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
   const [lenderAddress, setLenderAddress] = useState<string>('');
 
   // based on results of search, set loanAssetDecimal so we know how to parse loanAmountMin and loanAmountMax
-  const [loanAssetDecimal, setLoanAssetDecimal] = useState<number>(18);
+  const [loanAssetDecimal, setLoanAssetDecimal] = useState<number>(
+    DEFAULT_ASSET_DECIMALS,
+  );
 
   // couple loanAssetDecimal and nominal amount user wants to filter by, and only set them together in lock-step to avoid unnecessary re-renders
   const [loanAmountMin, setLoanAmountMin] = useState<LoanAmountInputType>({
