@@ -7,11 +7,13 @@ type CollateralSearchInputProps = {
   collectionName: string;
   setCollectionAddress: (address: string) => void;
   setCollectionName: (name: string) => void;
+  error?: string;
 };
 
 export default function CollateralSearchInput({
   setCollectionAddress,
   setCollectionName,
+  error,
 }: CollateralSearchInputProps) {
   const handleChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -36,11 +38,12 @@ export default function CollateralSearchInput({
   return (
     <div className={styles.inputGroup}>
       <div className={styles.inputLabel}>Collection</div>
-      <div className={styles.inputs}>
+      <div className={styles.textInputs}>
         <label>
           <Input onChange={handleChange} placeholder="Enter collection" />
         </label>
       </div>
+      {error && <div className={styles.errors}>{error}</div>}
     </div>
   );
 }

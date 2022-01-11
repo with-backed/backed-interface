@@ -2,6 +2,7 @@ const localLoanAssetsURI = '/loanAssets/local.json';
 const rinkebyLoanAssetsURI = '/loanAssets/rinkeby.json';
 const mainnetLoanAssetsURI = 'https://tokens.coingecko.com/uniswap/all.json';
 
+export const DEFAULT_ASSET_DECIMALS = 18;
 export interface LoanAsset {
   address: string;
   symbol: string;

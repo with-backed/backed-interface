@@ -7,6 +7,7 @@ type SearchTextInputProps = {
   placeholder: string;
   setTextValue: (token: string) => void;
   transformer?: (old: string) => string;
+  error?: string;
 };
 
 export default function SearchTextInput({
@@ -14,6 +15,7 @@ export default function SearchTextInput({
   placeholder,
   setTextValue,
   transformer = (old: string) => old,
+  error,
 }: SearchTextInputProps) {
   const handleTextInputChanged = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -31,7 +33,7 @@ export default function SearchTextInput({
   return (
     <div className={styles.inputGroup}>
       <div className={styles.inputLabel}>{label}</div>
-      <div className={styles.inputs}>
+      <div className={styles.textInputs}>
         <label>
           <Input
             onChange={(event) => handleTextInputChanged(event)}
@@ -39,6 +41,7 @@ export default function SearchTextInput({
           />
         </label>
       </div>
+      {error && <div className={styles.errors}>{error}</div>}
     </div>
   );
 }

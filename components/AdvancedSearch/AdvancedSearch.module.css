@@ -75,15 +75,27 @@
 
 
 .inputLabel {
-    width: 9%;
+    width: 11%;
 }
 
-.inputs {
+.textInputs {
     width: 60%;
 }
 
-.inputs input[type=tel] {
+.numericInputs {
+    max-width: 40%;
+}
+
+.numericInputs input[type=tel] {
     width: 100px;
+}
+
+.errors {
+    margin-left: 10px;
+    font-family: var(--sans);
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--box-shadow-red);
+    padding: 1rem;
 }
 
 .loanStatusButtons {

@@ -1,10 +1,12 @@
 import { Button } from 'components/Button';
 import { FormWrapper } from 'components/layouts/FormWrapper';
+import { DEFAULT_ASSET_DECIMALS } from 'lib/loanAssets';
 import {
   LoanAmountInputType,
   searchLoans,
 } from 'lib/loans/subgraph/subgraphLoans';
-import { useEffect, useRef, useState } from 'react';
+import { useIsMount } from 'lib/useIsMount';
+import { useEffect, useState } from 'react';
 import {
   Loan,
   LoanStatus,
@@ -21,13 +23,9 @@ type AdvancedSearchProps = {
   handleSearchFinished: (loans: Loan[]) => void;
 };
 
-export const useIsMount = () => {
-  const isMountRef = useRef(true);
-  useEffect(() => {
-    isMountRef.current = false;
-  }, []);
-  return isMountRef.current;
-};
+const BYTES_INVALID_ERROR = "Oops, that doesn't look like a valid address";
+const areBytesInvalid = (bytes: string[]) =>
+  bytes.filter((b) => b.length % 2 !== 0).length > 0;
 
 export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
   const [showSearch, setShowSearch] = useState<boolean>(false);
@@ -50,11 +48,11 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
 
   // couple loanAssetDecimal and nominal amount user wants to filter by, and only set them together in lock-step to avoid unnecessary re-renders
   const [loanAmountMin, setLoanAmountMin] = useState<LoanAmountInputType>({
-    loanAssetDecimal: 18,
+    loanAssetDecimal: DEFAULT_ASSET_DECIMALS,
     nominal: 0,
   });
   const [loanAmountMax, setLoanAmountMax] = useState<LoanAmountInputType>({
-    loanAssetDecimal: 18,
+    loanAssetDecimal: DEFAULT_ASSET_DECIMALS,
     nominal: 0,
   });
   const [loanInterestMin, setLoanInterestMin] = useState<number>(0);
@@ -64,8 +62,17 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
 
   const isMount = useIsMount();
 
+  const loanTokenSearchInvalid =
+    (!!loanAmountMin.nominal || !!loanAmountMax.nominal) && !loanToken;
+  const bytesSearchInvalid = areBytesInvalid([
+    borrowerAddress,
+    lenderAddress,
+    collectionAddress,
+  ]);
+
   useEffect(() => {
     async function triggerSearch() {
+      if (loanTokenSearchInvalid || bytesSearchInvalid) return;
       const results = await searchLoans(
         statuses,
         collectionAddress,
@@ -82,7 +89,9 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
         selectedSort,
       );
       handleSearchFinished(results);
-      setLoanAssetDecimal(results[0]?.loanAssetDecimal || 18);
+      setLoanAssetDecimal(
+        results[0]?.loanAssetDecimal || DEFAULT_ASSET_DECIMALS,
+      );
     }
     if (!isMount) triggerSearch();
   }, [
@@ -101,6 +110,8 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
     loanDurationMax,
     selectedSort,
     isMount,
+    loanTokenSearchInvalid,
+    bytesSearchInvalid,
   ]);
 
   return (
@@ -145,6 +156,11 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
               collectionName={collectionName}
               setCollectionAddress={setCollectionAddress}
               setCollectionName={setCollectionName}
+              error={
+                areBytesInvalid([collectionAddress])
+                  ? BYTES_INVALID_ERROR
+                  : undefined
+              }
             />
           </div>
           <div
@@ -170,6 +186,11 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
               label="Borrower"
               placeholder="Enter 0x..."
               setTextValue={setBorrowerAddress}
+              error={
+                areBytesInvalid([borrowerAddress])
+                  ? BYTES_INVALID_ERROR
+                  : undefined
+              }
             />
           </div>
           <div
@@ -182,6 +203,11 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
               label="Lender"
               placeholder="Enter 0x..."
               setTextValue={setLenderAddress}
+              error={
+                areBytesInvalid([lenderAddress])
+                  ? BYTES_INVALID_ERROR
+                  : undefined
+              }
             />
           </div>
           <div
@@ -197,6 +223,11 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
               }
               setMax={(nominal: number) =>
                 setLoanAmountMax({ loanAssetDecimal, nominal })
+              }
+              error={
+                loanTokenSearchInvalid
+                  ? 'First, enter a symbol for the loan token'
+                  : undefined
               }
             />
           </div>
