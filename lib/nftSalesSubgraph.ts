@@ -1,4 +1,44 @@
 import { ethers } from 'ethers';
+import { Sale as NFTSale, SaleType } from 'types/generated/graphql/nftSales';
+import { nftSalesClient } from './urql';
+
+const graphqlQuery = `
+  query(
+    $nftContractAddress: String!,
+    $tokenId: String!,
+    $first: Int!,
+  ) {
+    sales(where: {
+      nftContractAddress: $nftContractAddress,
+      tokenId: $tokenId,
+    },
+    first: $first,
+    orderBy: timestamp
+    ) {
+      nftContractAddress
+      price
+    }
+  }
+`;
+
+export async function queryMostRecentSaleForNFT(
+  nftContractAddress: string,
+  tokenId: string,
+): Promise<NFTSale> {
+  const {
+    data: { sales },
+  } = await nftSalesClient
+    .query(graphqlQuery, {
+      nftContractAddress,
+      tokenId,
+      first: 1,
+    })
+    .toPromise();
+
+  return sales;
+}
+
+// MOCK METHODS TO GENERATE FAKE SALES FOR RINKEBY
 
 const NFT_EXCHANGES = {
   '0x5206e78b21ce315ce284fb24cf05e0585a93b1d9': 'OpenSea',
@@ -10,20 +50,6 @@ const PAYMENT_TOKENS = {
   '0xc778417e063141139fce010982780140aa0cd5ab': 'WETH',
   '0x6916577695D0774171De3ED95d03A3239139Eddb': 'DAI',
 };
-
-export interface NFTSaleEntity {
-  id: string;
-  nftContractAddress: string;
-  nftTokenId: string;
-  saleType: string;
-  blockNumber: ethers.BigNumber;
-  timestamp: ethers.BigNumber;
-  seller: string;
-  buyer: string;
-  exchange: string;
-  paymentToken: string;
-  price: ethers.BigNumber;
-}
 
 const genRanHex = (size: number = 40) =>
   '0x' +
@@ -37,7 +63,7 @@ const randomNumber = (upperBound: number) =>
 export const generateFakeSaleForNFT = (
   nftContractAddress: string,
   nftTokenId: string,
-): NFTSaleEntity => {
+): NFTSale => {
   return {
     id: genRanHex(),
     blockNumber: ethers.BigNumber.from(randomNumber(1000000)),
@@ -45,12 +71,10 @@ export const generateFakeSaleForNFT = (
     seller: genRanHex(),
     nftContractAddress,
     nftTokenId,
-    saleType: 'SINGLE',
+    saleType: SaleType.Single,
     paymentToken: Object.keys(PAYMENT_TOKENS)[randomNumber(2)],
     price: ethers.BigNumber.from(randomNumber(1000)),
     exchange: Object.keys(NFT_EXCHANGES)[randomNumber(1)],
-    timestamp: ethers.BigNumber.from(
-      new Date(2020, randomNumber(11), 15).getTime(),
-    ),
+    timestamp: new Date(2020, randomNumber(11), 15).getTime(),
   };
 };
