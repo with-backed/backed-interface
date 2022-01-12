@@ -1,54 +1,31 @@
-import {
-  EtherscanAddressLink,
-  EtherscanTransactionLink,
-} from 'components/EtherscanLink';
+import { EtherscanTransactionLink } from 'components/EtherscanLink';
 import { ethers } from 'ethers';
 import { secondsToDays } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
-import React, {
-  FunctionComponent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
-import {
-  BuyoutUnderwriterEvent,
-  CloseEvent,
-  CreateLoanEvent,
-  OwnershipTransferredEvent,
-  RepayEvent,
-  SeizeCollateralEvent,
-  UnderwriteLoanEvent,
-} from 'types/generated/abis/NFTLoanFacilitator';
+import React, { FunctionComponent, useMemo } from 'react';
 import styles from './TicketHistory.module.css';
 import { Loan } from 'types/Loan';
 import { DescriptionList } from 'components/DescriptionList';
+import type * as Event from 'types/Event';
 
-const eventDetailComponents: { [key: string]: (...props: any) => JSX.Element } =
-  {
-    BuyoutUnderwriter,
-    Close,
-    CreateLoan,
-    OwnershipTransferred,
-    Repay,
-    SeizeCollateral,
-    UnderwriteLoan,
-  };
+const eventDetailComponents = {
+  BuyoutEvent,
+  CloseEvent,
+  CreateEvent,
+  RepaymentEvent,
+  CollateralSeizureEvent,
+  LendEvent,
+};
 
 type ParsedEventProps<T> = {
   event: T;
   loan: Loan;
 };
-export function ParsedEvent({ event, loan }: ParsedEventProps<ethers.Event>) {
-  const component =
-    // keeping typescript happy and having some measure of runtime safety
-    eventDetailComponents[event.event || '__INTERNAL_DID_NOT_RECEIVE_EVENT'];
-  if (component) {
-    return React.createElement(component, { event, loan });
-  }
-  console.warn(new Error(`received unhandled event type: ${event.event}`));
-  return null;
+export function ParsedEvent({ event, loan }: ParsedEventProps<Event.Event>) {
+  const component = eventDetailComponents[event.typename];
+
+  // I don't love this
+  return React.createElement(component as any, { event, loan });
 }
 
 function toLocaleDateTime(seconds: number) {
@@ -62,51 +39,50 @@ function camelToSentenceCase(text: string) {
   return result.charAt(0).toUpperCase() + result.slice(1);
 }
 
-function EventHeader({ event }: Pick<ParsedEventProps<ethers.Event>, 'event'>) {
+type EventHeaderProps = {
+  event: Event.Event;
+};
+
+function EventHeader({ event }: EventHeaderProps) {
   return (
     <h3 className={styles['event-header']}>
-      <EtherscanTransactionLink transactionHash={event.transactionHash}>
-        {camelToSentenceCase(event.event as string)}
+      <EtherscanTransactionLink transactionHash={event.id}>
+        {camelToSentenceCase(event.typename as string)}
       </EtherscanTransactionLink>
     </h3>
   );
 }
 
-const EventDetailList: FunctionComponent<
-  Pick<ParsedEventProps<ethers.Event>, 'event'>
-> = ({ children, event, ...props }) => {
-  const [timestamp, setTimestamp] = useState<string | null>(null);
-  const getTimestamp = useCallback(async () => {
-    const { timestamp } = await event.getBlock();
-    setTimestamp(toLocaleDateTime(timestamp));
-  }, [event]);
-
-  useEffect(() => {
-    getTimestamp();
-  }, [getTimestamp]);
-
+const EventDetailList: FunctionComponent<EventHeaderProps> = ({
+  children,
+  event,
+  ...props
+}) => {
   return (
     <section>
       <EventHeader event={event} />
       <DescriptionList {...props}>
         <dt>date</dt>
-        <dd>{timestamp}</dd>
+        <dd>{toLocaleDateTime(event.timestamp)}</dd>
         {children}
       </DescriptionList>
     </section>
   );
 };
 
-function CreateLoan({
+function CreateEvent({
   event,
   loan: { loanAssetDecimals, loanAssetSymbol },
-}: ParsedEventProps<CreateLoanEvent>) {
-  const { maxInterestRate, minDurationSeconds, minLoanAmount, minter } =
-    event.args;
-
+}: ParsedEventProps<Event.CreateEvent>) {
+  const {
+    maxPerSecondInterestRate,
+    minLoanAmount,
+    minDurationSeconds,
+    creator,
+  } = event;
   const formattedMaxInterestRate = useMemo(
-    () => formattedAnnualRate(maxInterestRate),
-    [maxInterestRate],
+    () => formattedAnnualRate(ethers.BigNumber.from(maxPerSecondInterestRate)),
+    [maxPerSecondInterestRate],
   );
 
   const formattedMinLoanAmount = useMemo(
@@ -115,14 +91,14 @@ function CreateLoan({
   );
 
   const minDuration = useMemo(
-    () => secondsToDays(minDurationSeconds.toNumber()),
+    () => secondsToDays(ethers.BigNumber.from(minDurationSeconds).toNumber()),
     [minDurationSeconds],
   );
 
   return (
     <EventDetailList event={event}>
       <dt>minter</dt>
-      <dd>{minter?.slice(0, 10)}...</dd>
+      <dd>{creator.slice(0, 10)}...</dd>
       <dt>max interest rate</dt>
       <dd>{formattedMaxInterestRate}%</dd>
       <dt>minimum loan amount</dt>
@@ -135,29 +111,29 @@ function CreateLoan({
   );
 }
 
-function UnderwriteLoan({
+function LendEvent({
   event,
   loan: { loanAssetDecimals, loanAssetSymbol },
-}: ParsedEventProps<UnderwriteLoanEvent>) {
-  const { durationSeconds, interestRate, loanAmount, underwriter } = event.args;
+}: ParsedEventProps<Event.LendEvent>) {
+  const { durationSeconds, perSecondInterestRate, loanAmount, lender } = event;
 
   const formattedInterestRate = useMemo(
-    () => formattedAnnualRate(interestRate),
-    [interestRate],
+    () => formattedAnnualRate(ethers.BigNumber.from(perSecondInterestRate)),
+    [perSecondInterestRate],
   );
   const formattedLoanAmount = useMemo(
     () => ethers.utils.formatUnits(loanAmount, loanAssetDecimals),
     [loanAmount, loanAssetDecimals],
   );
   const formattedDuration = useMemo(
-    () => secondsToDays(durationSeconds.toNumber()),
+    () => secondsToDays(parseInt(durationSeconds)),
     [durationSeconds],
   );
 
   return (
     <EventDetailList event={event}>
       <dt>lender</dt>
-      <dd> {underwriter?.slice(0, 10)}...</dd>
+      <dd> {lender?.slice(0, 10)}...</dd>
       <dt>interest rate</dt>
       <dd>{formattedInterestRate}%</dd>
       <dt>loan amount</dt>
@@ -170,12 +146,11 @@ function UnderwriteLoan({
   );
 }
 
-function BuyoutUnderwriter({
+function BuyoutEvent({
   event,
   loan: { loanAssetDecimals, loanAssetSymbol },
-}: ParsedEventProps<BuyoutUnderwriterEvent>) {
-  const { interestEarned, replacedAmount, replacedLoanOwner, underwriter } =
-    event.args;
+}: ParsedEventProps<Event.BuyoutEvent>) {
+  const { interestEarned, loanAmount, lendTicketOwner, newLender } = event;
 
   const formattedInterestPaid = useMemo(
     () => ethers.utils.formatUnits(interestEarned, loanAssetDecimals),
@@ -183,16 +158,16 @@ function BuyoutUnderwriter({
   );
 
   const formattedLoanAmount = useMemo(
-    () => ethers.utils.formatUnits(replacedAmount, loanAssetDecimals),
-    [replacedAmount, loanAssetDecimals],
+    () => ethers.utils.formatUnits(loanAmount, loanAssetDecimals),
+    [loanAmount, loanAssetDecimals],
   );
 
   return (
     <EventDetailList event={event}>
       <dt>new lender</dt>
-      <dd>{underwriter.slice(0, 10)}...</dd>
+      <dd>{newLender.slice(0, 10)}...</dd>
       <dt>bought-out lender</dt>
-      <dd>{replacedLoanOwner.slice(0, 10)}...</dd>
+      <dd>{lendTicketOwner.slice(0, 10)}...</dd>
       <dt>interest paid</dt>
       <dd>
         {formattedInterestPaid} {loanAssetSymbol}
@@ -205,11 +180,11 @@ function BuyoutUnderwriter({
   );
 }
 
-function Repay({
+function RepaymentEvent({
   event,
   loan: { loanAssetDecimals, loanAssetSymbol },
-}: ParsedEventProps<RepayEvent>) {
-  const { interestEarned, loanAmount, loanOwner, repayer } = event.args as any;
+}: ParsedEventProps<Event.RepaymentEvent>) {
+  const { interestEarned, loanAmount, lendTicketHolder, repayer } = event;
 
   const formattedInterestEarned = useMemo(
     () => ethers.utils.formatUnits(interestEarned, loanAssetDecimals),
@@ -223,10 +198,10 @@ function Repay({
 
   return (
     <EventDetailList event={event}>
-      <dt>repayer</dt>
+      <dt>RepaymentEventer</dt>
       <dd>{repayer.slice(0, 10)}...</dd>
       <dt>paid to</dt>
-      <dd>{loanOwner.slice(0, 10)}...</dd>
+      <dd>{lendTicketHolder.slice(0, 10)}...</dd>
       <dt>interest earned</dt>
       <dd>
         {formattedInterestEarned} {loanAssetSymbol}
@@ -239,25 +214,12 @@ function Repay({
   );
 }
 
-function SeizeCollateral({ event }: ParsedEventProps<SeizeCollateralEvent>) {
-  return <EventDetailList event={event} />;
-}
-
-function Close({ event }: ParsedEventProps<CloseEvent>) {
-  return <EventDetailList event={event} />;
-}
-
-function OwnershipTransferred({
+function CollateralSeizureEvent({
   event,
-}: ParsedEventProps<OwnershipTransferredEvent>) {
-  const { newOwner, previousOwner } = event.args;
+}: ParsedEventProps<Event.CollateralSeizureEvent>) {
+  return <EventDetailList event={event} />;
+}
 
-  return (
-    <EventDetailList event={event}>
-      <dt>new owner</dt>
-      <dd>{newOwner.slice(0, 10)}...</dd>
-      <dt>previous owner</dt>
-      <dd>{previousOwner.slice(0, 10)}...</dd>
-    </EventDetailList>
-  );
+function CloseEvent({ event }: ParsedEventProps<Event.CloseEvent>) {
+  return <EventDetailList event={event} />;
 }
