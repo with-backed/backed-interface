@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { jsonRpcLoanFacilitator } from 'lib/contracts';
+import { jsonRpcERC721Contract, jsonRpcLoanFacilitator } from 'lib/contracts';
 import {
   BuyoutEvent,
   CloseEvent,
@@ -17,7 +17,12 @@ import {
   SeizeCollateralEvent,
 } from 'types/generated/abis/NFTLoanFacilitator';
 
-export async function nodeLoanHistoryById(loanId: ethers.BigNumberish) {
+const BORROW_CONTRACT = jsonRpcERC721Contract(
+  process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT || '',
+);
+
+export async function nodeLoanHistoryById(loanIdString: string) {
+  const loanId = ethers.BigNumber.from(loanIdString);
   const contract = jsonRpcLoanFacilitator();
 
   const createLoanFilter = contract.filters.CreateLoan(loanId, null);
@@ -52,9 +57,9 @@ export async function nodeLoanHistoryById(loanId: ethers.BigNumberish) {
     }),
   );
 
-  const events: Event[] = [];
+  let events: Event[] = [];
 
-  createLoanEvents.forEach(async (event) => {
+  for (const event of createLoanEvents) {
     const { blockNumber, transactionHash, args } = event as CreateLoanEvent;
     const timestamp = (await event.getBlock()).timestamp;
 
@@ -63,51 +68,53 @@ export async function nodeLoanHistoryById(loanId: ethers.BigNumberish) {
       id: transactionHash,
       timestamp,
       typename: 'CreateEvent',
-      creator: args.minter,
-      maxPerSecondInterestRate: args.maxInterestRate,
-      minDurationSeconds: args.minDurationSeconds,
-      minLoanAmount: args.minLoanAmount,
+      creator: args.minter.toLowerCase(),
+      maxPerSecondInterestRate: args.maxInterestRate.toString(),
+      minDurationSeconds: args.minDurationSeconds.toString(),
+      minLoanAmount: args.minLoanAmount.toString(),
     };
     events.push(parsedEvent);
-  });
+  }
 
-  closeLoanEvents.forEach(async (event) => {
+  for (const event of closeLoanEvents) {
     const { blockNumber, transactionHash, args } =
       event as unknown as NodeCloseEvent;
     const timestamp = (await event.getBlock()).timestamp;
+    const closer = (await event.getTransaction()).from;
 
     const parsedEvent: CloseEvent = {
       blockNumber,
       id: transactionHash,
       timestamp,
       typename: 'CloseEvent',
-      // wrong
-      closer: args.id,
+      closer: closer.toLowerCase(),
     };
     events.push(parsedEvent);
-  });
+  }
 
-  underwriteLoanEvents.forEach(async (event) => {
+  for (const event of underwriteLoanEvents) {
     const { blockNumber, transactionHash, args } =
       event as unknown as UnderwriteLoanEvent;
     const timestamp = (await event.getBlock()).timestamp;
+    const borrowTicketHolder = (
+      await BORROW_CONTRACT.ownerOf(loanId)
+    ).toLowerCase();
 
     const parsedEvent: LendEvent = {
       blockNumber,
       id: transactionHash,
       timestamp,
       typename: 'LendEvent',
-      loanAmount: args.loanAmount,
-      // wrong
-      borrowTicketHolder: args.id,
-      durationSeconds: args.durationSeconds,
-      perSecondInterestRate: args.interestRate,
-      lender: args.underwriter,
+      loanAmount: args.loanAmount.toString(),
+      borrowTicketHolder,
+      durationSeconds: args.durationSeconds.toString(),
+      perSecondInterestRate: args.interestRate.toString(),
+      lender: args.underwriter.toLowerCase(),
     };
     events.push(parsedEvent);
-  });
+  }
 
-  buyoutUnderwriterEvents.forEach(async (event) => {
+  for (const event of buyoutUnderwriterEvents) {
     const { blockNumber, transactionHash, args } =
       event as unknown as BuyoutUnderwriterEvent;
     const timestamp = (await event.getBlock()).timestamp;
@@ -117,15 +124,15 @@ export async function nodeLoanHistoryById(loanId: ethers.BigNumberish) {
       id: transactionHash,
       timestamp,
       typename: 'BuyoutEvent',
-      loanAmount: args.replacedAmount,
-      interestEarned: args.interestEarned,
-      lendTicketOwner: args.underwriter,
-      newLender: args.underwriter,
+      loanAmount: args.replacedAmount.toString(),
+      interestEarned: args.interestEarned.toString(),
+      lendTicketOwner: args.replacedLoanOwner.toLowerCase(),
+      newLender: args.underwriter.toLowerCase(),
     };
     events.push(parsedEvent);
-  });
+  }
 
-  repayLoanEvents.forEach(async (event) => {
+  for (const event of repayLoanEvents) {
     const { blockNumber, transactionHash, args } =
       event as unknown as RepayEvent;
     const timestamp = (await event.getBlock()).timestamp;
@@ -135,31 +142,33 @@ export async function nodeLoanHistoryById(loanId: ethers.BigNumberish) {
       id: transactionHash,
       timestamp,
       typename: 'BuyoutEvent',
-      loanAmount: args.loanAmount,
-      interestEarned: args.interestEarned,
-      lendTicketOwner: args.loanOwner,
-      newLender: args.repayer,
+      loanAmount: args.loanAmount.toString(),
+      interestEarned: args.interestEarned.toString(),
+      lendTicketOwner: args.loanOwner.toLowerCase(),
+      newLender: args.repayer.toLowerCase(),
     };
     events.push(parsedEvent);
-  });
+  }
 
-  seizeCollateralEvents.forEach(async (event) => {
+  for (const event of seizeCollateralEvents) {
     const { blockNumber, transactionHash, args } =
       event as unknown as SeizeCollateralEvent;
     const timestamp = (await event.getBlock()).timestamp;
+    const tx = await event.getTransaction();
+    const borrowTicketHolder = (
+      await BORROW_CONTRACT.ownerOf(loanId)
+    ).toLowerCase();
 
     const parsedEvent: CollateralSeizureEvent = {
       blockNumber,
       id: transactionHash,
       timestamp,
       typename: 'CollateralSeizureEvent',
-      // wrong
-      borrowTicketHolder: args.id,
-      // wrong
-      lendTicketHolder: args.id,
+      borrowTicketHolder,
+      lendTicketHolder: tx.from.toLowerCase(),
     };
     events.push(parsedEvent);
-  });
+  }
 
   const allEvents = events.sort((a, b) => b.blockNumber - a.blockNumber);
   return allEvents;
