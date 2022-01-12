@@ -7,6 +7,7 @@ import {
   Event,
   LendEvent,
   CollateralSeizureEvent,
+  RepaymentEvent,
 } from 'types/Event';
 import {
   CreateLoanEvent,
@@ -19,6 +20,10 @@ import {
 
 const BORROW_CONTRACT = jsonRpcERC721Contract(
   process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT || '',
+);
+
+const LEND_CONTRACT = jsonRpcERC721Contract(
+  process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT || '',
 );
 
 export async function nodeLoanHistoryById(loanIdString: string) {
@@ -97,7 +102,7 @@ export async function nodeLoanHistoryById(loanIdString: string) {
       event as unknown as UnderwriteLoanEvent;
     const timestamp = (await event.getBlock()).timestamp;
     const borrowTicketHolder = (
-      await BORROW_CONTRACT.ownerOf(loanId)
+      await BORROW_CONTRACT.ownerOf(args.id)
     ).toLowerCase();
 
     const parsedEvent: LendEvent = {
@@ -136,16 +141,23 @@ export async function nodeLoanHistoryById(loanIdString: string) {
     const { blockNumber, transactionHash, args } =
       event as unknown as RepayEvent;
     const timestamp = (await event.getBlock()).timestamp;
+    const borrowTicketHolder = (
+      await BORROW_CONTRACT.ownerOf(args.id)
+    ).toLowerCase();
+    const lendTicketHolder = (
+      await LEND_CONTRACT.ownerOf(args.id)
+    ).toLowerCase();
 
-    const parsedEvent: BuyoutEvent = {
+    const parsedEvent: RepaymentEvent = {
       blockNumber,
       id: transactionHash,
       timestamp,
-      typename: 'BuyoutEvent',
+      typename: 'RepaymentEvent',
       loanAmount: args.loanAmount.toString(),
       interestEarned: args.interestEarned.toString(),
-      lendTicketOwner: args.loanOwner.toLowerCase(),
-      newLender: args.repayer.toLowerCase(),
+      borrowTicketHolder,
+      lendTicketHolder,
+      repayer: args.repayer.toLowerCase(),
     };
     events.push(parsedEvent);
   }
@@ -156,7 +168,7 @@ export async function nodeLoanHistoryById(loanIdString: string) {
     const timestamp = (await event.getBlock()).timestamp;
     const tx = await event.getTransaction();
     const borrowTicketHolder = (
-      await BORROW_CONTRACT.ownerOf(loanId)
+      await BORROW_CONTRACT.ownerOf(args.id)
     ).toLowerCase();
 
     const parsedEvent: CollateralSeizureEvent = {
