@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
 import { Sale as NFTSale, SaleType } from 'types/generated/graphql/nftSales';
+import { ALL_SALE_INFO_PROPERTIES } from './loans/subgraph/subgraphSharedConstants';
 import { nftSalesClient } from './urql';
 
 const graphqlQuery = `
@@ -15,8 +16,7 @@ const graphqlQuery = `
     first: $first,
     orderBy: timestamp
     ) {
-      nftContractAddress
-      price
+      ${ALL_SALE_INFO_PROPERTIES}
     }
   }
 `;
