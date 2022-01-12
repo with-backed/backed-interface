@@ -1,20 +1,27 @@
 import { ethers } from 'ethers';
-import { Sale as NFTSale, SaleType } from 'types/generated/graphql/nftSales';
+import {
+  Sale as NFTSale,
+  SaleType,
+  Sale_OrderBy,
+} from 'types/generated/graphql/nftSales';
 import { ALL_SALE_INFO_PROPERTIES } from './loans/subgraph/subgraphSharedConstants';
 import { nftSalesClient } from './urql';
 
 const graphqlQuery = `
   query(
     $nftContractAddress: String!,
-    $tokenId: String!,
+    $nftTokenId: String!,
     $first: Int!,
+    $orderBy: String,
+    $orderDirection: String,
   ) {
     sales(where: {
       nftContractAddress: $nftContractAddress,
-      tokenId: $tokenId,
+      nftTokenId: $nftTokenId,
     },
     first: $first,
-    orderBy: timestamp
+    orderBy: $orderBy,
+    orderDirection: $orderDirection,
     ) {
       ${ALL_SALE_INFO_PROPERTIES}
     }
@@ -23,19 +30,21 @@ const graphqlQuery = `
 
 export async function queryMostRecentSaleForNFT(
   nftContractAddress: string,
-  tokenId: string,
+  nftTokenId: string,
 ): Promise<NFTSale> {
   const {
     data: { sales },
   } = await nftSalesClient
     .query(graphqlQuery, {
       nftContractAddress,
-      tokenId,
+      nftTokenId,
       first: 1,
+      orderBy: Sale_OrderBy.Timestamp,
+      orderDirection: 'desc',
     })
     .toPromise();
 
-  return sales;
+  return sales[0];
 }
 
 // MOCK METHODS TO GENERATE FAKE SALES FOR RINKEBY
@@ -73,7 +82,7 @@ export const generateFakeSaleForNFT = (
     nftTokenId,
     saleType: SaleType.Single,
     paymentToken: Object.keys(PAYMENT_TOKENS)[randomNumber(2)],
-    price: ethers.BigNumber.from(randomNumber(1000)),
+    price: ethers.utils.formatUnits(randomNumber(1000)), // BigInts get sent down the wire as strings with TheGraph
     exchange: Object.keys(NFT_EXCHANGES)[randomNumber(1)],
     timestamp: new Date(2020, randomNumber(11), 15).getTime(),
   };

@@ -24,7 +24,11 @@ export async function getCollateralSaleInfo(
   const erc20Contract = jsonRpcERC20Contract(recentSale.paymentToken);
 
   const recentSaleToken = await erc20Contract.symbol();
-  const recentSalePrice = ethers.BigNumber.from(recentSale.price).toNumber();
+  const recentSaleTokenDecimals = await erc20Contract.decimals();
+
+  const recentSalePrice = ethers.utils
+    .parseUnits(recentSale.price, recentSaleTokenDecimals)
+    .toNumber();
 
   return {
     floorPrice: await getFloorPrice(nftContractAddress),
