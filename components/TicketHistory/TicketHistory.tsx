@@ -17,11 +17,7 @@ export function TicketHistory({ loan, events }: TicketHistoryProps) {
     <Fieldset legend="🎬 Activity">
       <div className={styles.container}>
         {events.map((e) => (
-          <ParsedEvent
-            event={e}
-            loan={loan}
-            key={e.typename + e.id + e.timestamp}
-          />
+          <ParsedEvent event={e} loan={loan} key={e.typename + e.id} />
         ))}
       </div>
     </Fieldset>

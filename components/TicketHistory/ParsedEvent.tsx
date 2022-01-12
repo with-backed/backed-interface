@@ -46,7 +46,7 @@ type EventHeaderProps = {
 function EventHeader({ event }: EventHeaderProps) {
   return (
     <h3 className={styles['event-header']}>
-      <EtherscanTransactionLink transactionHash={'placeholder'}>
+      <EtherscanTransactionLink transactionHash={event.id}>
         {camelToSentenceCase(event.typename as string)}
       </EtherscanTransactionLink>
     </h3>
