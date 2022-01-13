@@ -25,7 +25,8 @@ export default function LoanAssetDropdown({
       <span>Loan Token</span>
       <div className={styles.inputGroup}>
         <Select
-          onChange={(option: any) => setSelectedAsset(option.label)}
+          isClearable
+          onChange={(option: any) => setSelectedAsset(option?.label || '')}
           options={loanAssetOptions.map(({ symbol, address }) => ({
             value: address,
             label: symbol,

@@ -29,6 +29,10 @@
     margin-right: 8px;
 }
 
+.sortSelectWrapper > div {
+    min-width: 220px;
+}
+
 .searchOpen {
     transition-timing-function: cubic-bezier(0.895, 0.03, 0.685, 0.22);
     transition-duration: 0.5s;
