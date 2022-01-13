@@ -1,33 +1,49 @@
-import * as nftLoans from 'types/generated/graphql/nftLoans';
+import { ethers } from 'ethers';
 
-export type BuyoutEvent = Omit<
-  nftLoans.BuyoutEvent & { typename: 'BuyoutEvent' },
-  'loan' | '__typename'
->;
-export type CloseEvent = Omit<
-  nftLoans.CloseEvent & { typename: 'CloseEvent' },
-  'loan' | '__typename'
->;
-export type CollateralSeizureEvent = Omit<
-  nftLoans.CollateralSeizureEvent & {
-    typename: 'CollateralSeizureEvent';
-  },
-  'loan' | '__typename'
->;
-export type CreateEvent = Omit<
-  nftLoans.CreateEvent & { typename: 'CreateEvent' },
-  'loan' | '__typename'
->;
-export type LendEvent = Omit<
-  nftLoans.LendEvent & { typename: 'LendEvent' },
-  'loan' | '__typename'
->;
-export type RepaymentEvent = Omit<
-  nftLoans.RepaymentEvent & {
-    typename: 'RepaymentEvent';
-  },
-  'loan' | '__typename'
->;
+type BaseEvent = {
+  id: ethers.BigNumber;
+  blockNumber: number;
+};
+
+export type BuyoutEvent = BaseEvent & {
+  typename: 'BuyoutEvent';
+  underwriter: string;
+  replacedLoanOwner: string;
+  interestEarned: ethers.BigNumber;
+  replacedAmount: ethers.BigNumber;
+};
+
+export type CloseEvent = BaseEvent & {
+  typename: 'CloseEvent';
+};
+
+export type CollateralSeizureEvent = BaseEvent & {
+  typename: 'CollateralSeizureEvent';
+};
+
+export type CreateEvent = BaseEvent & {
+  typename: 'CreateEvent';
+  minter: string;
+  maxInterestRate: ethers.BigNumber;
+  minLoanAmount: ethers.BigNumber;
+  minDurationSeconds: ethers.BigNumber;
+};
+
+export type LendEvent = BaseEvent & {
+  typename: 'LendEvent';
+  underwriter: string;
+  interestRate: ethers.BigNumber;
+  loanAmount: ethers.BigNumber;
+  durationSeconds: ethers.BigNumber;
+};
+
+export type RepaymentEvent = BaseEvent & {
+  typename: 'RepaymentEvent';
+  repayer: string;
+  loanOwner: string;
+  interestEarned: ethers.BigNumber;
+  loanAmount: ethers.BigNumber;
+};
 
 export type Event =
   | BuyoutEvent
