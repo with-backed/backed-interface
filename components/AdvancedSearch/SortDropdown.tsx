@@ -16,10 +16,12 @@ export default function SortDropdown({ setSelectedSort }: SortDropdownProps) {
   return (
     <div className={styles.sortDropdown}>
       <div>Sort by</div>
-      <Select
-        onChange={(option: any) => setSelectedSort(option.value)}
-        options={sortOptions}
-      />
+      <div className={styles.sortSelectWrapper}>
+        <Select
+          onChange={(option: any) => setSelectedSort(option.value)}
+          options={sortOptions}
+        />
+      </div>
     </div>
   );
 }

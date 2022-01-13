@@ -33,7 +33,7 @@ const customStyles: StylesConfig = {
 };
 
 interface SelectProps extends React.ComponentProps<typeof ReactSelect> {}
-export function Select({ ...props }: SelectProps) {
+export function Select({ isClearable = false, ...props }: SelectProps) {
   const defaultValue = useMemo(() => {
     if (props && props.options && props.options.length > 0) {
       return props.options[0];
@@ -45,6 +45,7 @@ export function Select({ ...props }: SelectProps) {
       openMenuOnFocus
       styles={customStyles}
       defaultValue={defaultValue}
+      isClearable={isClearable}
       {...props}
     />
   );
