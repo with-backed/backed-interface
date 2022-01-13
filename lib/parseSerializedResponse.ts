@@ -13,7 +13,7 @@ export function parseSerializedResponse(jsonString: string) {
  * Given an object, return a new object with the same values, except all serialized BigNumbers are instantiated.
  * @param obj
  */
-function toObjectWithBigNumbers(obj: { [key: string]: any }) {
+export function toObjectWithBigNumbers(obj: { [key: string]: any }) {
   const result = Object.assign({}, obj);
   Object.keys(result).forEach((key) => {
     if (result[key] && result[key].hex) {

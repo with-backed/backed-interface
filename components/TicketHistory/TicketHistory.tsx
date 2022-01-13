@@ -4,27 +4,28 @@ import { Loan } from 'types/Loan';
 import styles from './TicketHistory.module.css';
 import type { Event } from 'types/Event';
 import useSWR from 'swr';
-import { parseSerializedResponse } from 'lib/parseSerializedResponse';
+import { toObjectWithBigNumbers } from 'lib/parseSerializedResponse';
+import { useMemo } from 'react';
 
 interface TicketHistoryProps {
   loan: Loan;
 }
 
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
 export function TicketHistory({ loan }: TicketHistoryProps) {
-  const { data } = useSWR<Event[]>(
-    `/api/loans/history/${loan.id}`,
-    async (url) => {
-      const response = await fetch(url);
-      const json = await response.json();
-      return parseSerializedResponse(json) as Event[];
-    },
+  const { data } = useSWR(`/api/loans/history/${loan.id}`, fetcher);
+
+  const parsedData = useMemo(
+    () => (data ? (data.map(toObjectWithBigNumbers) as Event[]) : []),
+    [data],
   );
 
   return (
     <Fieldset legend="🎬 Activity">
       <div className={styles.container}>
-        {!!data &&
-          data.map((e) => (
+        {!!parsedData &&
+          parsedData.map((e) => (
             <ParsedEvent event={e} loan={loan} key={e.typename + e.id} />
           ))}
       </div>
