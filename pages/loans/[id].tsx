@@ -13,7 +13,7 @@ import {
   CollateralSaleInfo,
   getCollateralSaleInfo,
 } from 'lib/loans/collateralSaleInfo';
-import { SWRConfig } from 'swr';
+import { SWRConfig, useSWRConfig } from 'swr';
 
 export type LoanPageProps = {
   loanInfoJson: string;
@@ -82,17 +82,19 @@ function LoansInner({
   serverLoan: Loan;
   collateralSaleInfo: CollateralSaleInfo;
 }) {
+  const { mutate } = useSWRConfig();
   const [loan, setLoan] = useState(serverLoan);
   const [collateralMedia, setCollateralMedia] =
     useState<CollateralMedia | null>(null);
 
   const refresh = useCallback(() => {
+    mutate(`/api/loans/history/${loan.id}`);
     nodeLoanById(loan.id.toString()).then((loan) => {
       if (loan) {
         setLoan(loan);
       }
     });
-  }, [loan.id]);
+  }, [loan.id, mutate]);
 
   useEffect(() => {
     getNFTInfoFromTokenInfo(
