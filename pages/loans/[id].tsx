@@ -10,10 +10,15 @@ import { getNFTInfoFromTokenInfo } from 'lib/getNFTInfo';
 import { nodeLoanById } from 'lib/loans/node/nodeLoanById';
 import { subgraphLoanHistoryById } from 'lib/loans/subgraph/subgraphLoanEventsById';
 import { Event } from 'types/Event';
+import {
+  CollateralSaleInfo,
+  getCollateralSaleInfo,
+} from 'lib/loans/collateralSaleInfo';
 
 export type LoanPageProps = {
   loanInfoJson: string;
   historyJson: string;
+  collateralSaleInfo: CollateralSaleInfo;
 };
 
 export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
@@ -38,11 +43,15 @@ export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
     props: {
       loanInfoJson,
       historyJson,
+      collateralSaleInfo: await getCollateralSaleInfo(
+        loan.collateralContractAddress,
+        loan.collateralTokenId.toString(),
+      ),
     },
   };
 };
 
-export default function Loans({ loanInfoJson, historyJson }: LoanPageProps) {
+export default function Loans({ loanInfoJson, historyJson, collateralSaleInfo }: LoanPageProps) {
   const serverLoan = useMemo(
     () => parseLoanInfoJson(loanInfoJson),
     [loanInfoJson],
@@ -82,7 +91,7 @@ export default function Loans({ loanInfoJson, historyJson }: LoanPageProps) {
         collateralMedia={collateralMedia}
         refresh={refresh}
       />
-      <LoanInfo loan={loan} events={serverEvents} />
+      <LoanInfo loan={loan} events={serverEvents} collateralSaleInfo={collateralSaleInfo} />
     </>
   );
 }

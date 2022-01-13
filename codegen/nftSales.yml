@@ -1,0 +1,8 @@
+overwrite: true
+schema: "https://api.thegraph.com/subgraphs/name/adamgobes/nft-sales-indexer"
+generates:
+  types/generated/graphql/nftSales.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "urql-introspection"

@@ -1,6 +1,11 @@
 import React from 'react';
 import { LoanInfo } from 'components/LoanInfo';
-import { baseLoan, events, loanWithLenderAccruing } from 'lib/mockData';
+import {
+  baseLoan,
+  events,
+  loanWithLenderAccruing,
+  saleInfo,
+} from 'lib/mockData';
 
 export default {
   title: 'components/LoanInfo',
@@ -14,9 +19,17 @@ const collateralMedia = {
 };
 
 export function LoanInfoNoLender() {
-  return <LoanInfo loan={baseLoan} events={events} />;
+  return (
+    <LoanInfo loan={baseLoan} events={events} collateralSaleInfo={saleInfo} />
+  );
 }
 
 export function LoanInfoWithLender() {
-  return <LoanInfo loan={loanWithLenderAccruing} events={events} />;
+  return (
+    <LoanInfo
+      loan={loanWithLenderAccruing}
+      events={events}
+      collateralSaleInfo={saleInfo}
+    />
+  );
 }

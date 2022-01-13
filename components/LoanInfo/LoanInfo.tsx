@@ -9,10 +9,12 @@ import React, { useMemo } from 'react';
 import styles from './LoanInfo.module.css';
 import { LoanTickets } from 'components/LoanTickets';
 import type { Event } from 'types/Event';
+import { CollateralSaleInfo } from 'lib/loans/collateralSaleInfo';
 
 type LoanInfoProps = {
   loan: Loan;
   events: Event[];
+  collateralSaleInfo: CollateralSaleInfo;
 };
 
 function addressStringToHSL(address: string) {
@@ -26,7 +28,7 @@ function addressStringToHSL(address: string) {
   return `hsl(${h}, ${s}%, ${l}%)`;
 }
 
-export function LoanInfo({ loan, events }: LoanInfoProps) {
+export function LoanInfo({ loan, events, collateralSaleInfo }: LoanInfoProps) {
   const { collateralContractAddress, loanAssetContractAddress } = loan;
   const primary = useMemo(
     () => addressStringToHSL(collateralContractAddress),
@@ -46,7 +48,7 @@ export function LoanInfo({ loan, events }: LoanInfoProps) {
       <div className={styles.mask} />
       <TwoColumn>
         <Column>
-          <CollateralInfo loan={loan} />
+          <CollateralInfo loan={loan} collateralSaleInfo={collateralSaleInfo} />
           <TicketHistory loan={loan} events={events} />
         </Column>
         <Column>

@@ -96,3 +96,17 @@ export const ALL_EVENTS = `
         ${CLOSE_EVENT_PROPERTIES}
     }
 `;
+
+export const ALL_SALE_INFO_PROPERTIES = `
+    id
+    nftContractAddress
+    nftTokenId
+    saleType
+    blockNumber
+    timestamp
+    seller
+    buyer
+    exchange
+    paymentToken
+    price
+`;
