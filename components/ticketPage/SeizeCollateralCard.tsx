@@ -36,25 +36,16 @@ export default function SeizeCollateralCard({
       // If they've gotten this far, they have an account.
       account as string,
     );
+    setTxHash(t.hash);
     t.wait()
-      .then((receipt) => {
-        setTxHash(t.hash);
-        setWaitingForTx(true);
-        wait();
+      .then(() => {
+        seizeCollateralSuccessCallback();
+        setWaitingForTx(false);
       })
       .catch((err) => {
         setWaitingForTx(false);
         console.log(err);
       });
-  };
-
-  const wait = async () => {
-    const loanFacilitator = jsonRpcLoanFacilitator();
-    const filter = loanFacilitator.filters.SeizeCollateral(loanInfo.id);
-    loanFacilitator.once(filter, () => {
-      seizeCollateralSuccessCallback();
-      setWaitingForTx(false);
-    });
   };
 
   const totalOwed = `${amountOwed} ${loanInfo.loanAssetSymbol}`;

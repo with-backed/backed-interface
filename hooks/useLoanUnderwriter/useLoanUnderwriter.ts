@@ -43,12 +43,8 @@ export function useLoanUnderwriter(
       setTxHash(t.hash);
       t.wait()
         .then(() => {
-          const loanFacilitator = jsonRpcLoanFacilitator();
-          const filter = loanFacilitator.filters.UnderwriteLoan(id, account);
-          loanFacilitator.once(filter, () => {
-            setTransactionPending(false);
-            refresh();
-          });
+          setTransactionPending(false);
+          refresh();
         })
         .catch((err) => {
           setTransactionPending(false);
