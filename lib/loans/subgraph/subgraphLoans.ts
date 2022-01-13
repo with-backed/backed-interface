@@ -13,9 +13,8 @@ import { annualRateToPerSecond } from 'lib/interest';
 import { daysToSecondsBigNum } from 'lib/duration';
 import { gql } from 'urql';
 
-
 const homepageQuery = gql`
-    query($where: { [key: string]: Boolean } , $first: Int, $orderBy: String, $orderDirect: String) {
+    query($where: Loan_filter , $first: Int, $orderBy: String, $orderDirect: String) {
         loans(where: $where, first: $first, orderBy: $orderBy, orderDirection: $orderDirection) {
             ${ALL_LOAN_PROPERTIES}
         }
@@ -32,8 +31,6 @@ export default async function subgraphLoans(): Promise<Loan[]> {
     orderBy: Loan_OrderBy.CreatedAtTimestamp,
     orderDirection: OrderDirection.Desc,
   };
-  const x = await nftBackedLoansClient.query(homepageQuery, query).toPromise();
-  console.log(x);
 
   const {
     data: { loans },
