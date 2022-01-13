@@ -140,25 +140,6 @@ function AuthorizeNFTButton({
   const { account } = useWeb3();
   const [transactionHash, setTransactionHash] = useState('');
 
-  const waitForApproval = useCallback(async () => {
-    const contract = jsonRpcERC721Contract(collateralAddress);
-    const filter = contract.filters.Approval(
-      account,
-      process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT,
-      collateralTokenID,
-    );
-    contract.once(filter, () => {
-      setSubmittingApproval(false);
-      setIsCollateralApproved(true);
-    });
-  }, [
-    account,
-    collateralAddress,
-    setIsCollateralApproved,
-    collateralTokenID,
-    setSubmittingApproval,
-  ]);
-
   const approve = useCallback(async () => {
     const web3Contract = web3Erc721Contract(collateralAddress);
     const t = await web3Contract.approve(
@@ -169,19 +150,14 @@ function AuthorizeNFTButton({
     setSubmittingApproval(true);
     t.wait()
       .then(() => {
-        waitForApproval();
-        setSubmittingApproval(true);
+        setSubmittingApproval(false);
+        setIsCollateralApproved(true);
       })
       .catch((err) => {
         setSubmittingApproval(false);
         console.error(err);
       });
-  }, [
-    collateralAddress,
-    waitForApproval,
-    collateralTokenID,
-    setSubmittingApproval,
-  ]);
+  }, [collateralAddress, collateralTokenID, setSubmittingApproval]);
   const text = useMemo(() => 'Authorize NFT', []);
   const isDisabled = state < State.NeedsToAuthorize;
 

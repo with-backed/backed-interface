@@ -23,12 +23,8 @@ export function LoanFormSeizeCollateral({
 
     t.wait()
       .then(() => {
-        const loanFacilitator = jsonRpcLoanFacilitator();
-        const filter = loanFacilitator.filters.SeizeCollateral(loan.id);
-        loanFacilitator.once(filter, () => {
-          setIsPending(false);
-          refresh();
-        });
+        setIsPending(false);
+        refresh();
       })
       .catch((err) => {
         setIsPending(false);

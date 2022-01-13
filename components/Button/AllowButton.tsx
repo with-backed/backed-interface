@@ -22,19 +22,6 @@ export function AllowButton({
   const [txHash, setTxHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
 
-  const waitForApproval = useCallback(() => {
-    const contract = jsonRpcERC20Contract(contractAddress);
-    const filter = contract.filters.Approval(
-      account,
-      process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT,
-      null,
-    );
-    contract.once(filter, () => {
-      callback();
-      setWaitingForTx(false);
-    });
-  }, [account, callback, contractAddress]);
-
   const allow = useCallback(async () => {
     const contract = web3Erc20Contract(contractAddress);
     const t = await contract.approve(
@@ -45,14 +32,14 @@ export function AllowButton({
     setTxHash(t.hash);
     t.wait()
       .then(() => {
-        setWaitingForTx(true);
-        waitForApproval();
+        callback();
+        setWaitingForTx(false);
       })
       .catch((err) => {
         setWaitingForTx(false);
         console.log(err);
       });
-  }, [contractAddress, waitForApproval]);
+  }, [contractAddress]);
 
   const buttonText = useMemo(() => `Authorize ${symbol}`, [symbol]);
 

@@ -30,30 +30,20 @@ export function LoanFormRepay({
   const [txHash, setTxHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
 
-  const wait = useCallback(async () => {
-    const loanFacilitator = jsonRpcLoanFacilitator();
-    const filter = loanFacilitator.filters.Repay(loan.id);
-    loanFacilitator.once(filter, () => {
-      refresh();
-      setWaitingForTx(false);
-    });
-  }, [loan.id, refresh]);
-
   const repay = useCallback(async () => {
     const t = await web3LoanFacilitator().repayAndCloseLoan(loan.id);
     setWaitingForTx(true);
     setTxHash(t.hash);
     t.wait()
       .then(() => {
-        setTxHash(t.hash);
-        setWaitingForTx(true);
-        wait();
+        refresh();
+        setWaitingForTx(false);
       })
       .catch((err) => {
         setWaitingForTx(false);
         console.error(err);
       });
-  }, [loan.id, wait]);
+  }, [loan.id]);
 
   return (
     <div className={styles.form}>
