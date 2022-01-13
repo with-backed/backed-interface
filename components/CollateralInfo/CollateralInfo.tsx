@@ -31,7 +31,7 @@ export const CollateralInfo = ({
           </OpenSeaAddressLink>
         </dd>
 
-        <dt>Last Sale</dt>
+        <dt>Item&apos;s Last Sale</dt>
         <dd>
           {collateralSaleInfo.recentSale.price}{' '}
           {collateralSaleInfo.recentSale.paymentToken}
