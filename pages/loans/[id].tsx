@@ -9,11 +9,13 @@ import { CollateralMedia } from 'types/CollateralMedia';
 import { getNFTInfoFromTokenInfo } from 'lib/getNFTInfo';
 import { nodeLoanById } from 'lib/loans/node/nodeLoanById';
 import { subgraphLoanHistoryById } from 'lib/loans/subgraph/subgraphLoanEventsById';
-import { Event } from 'types/Event';
+import { SWRConfig, useSWRConfig } from 'swr';
 
 export type LoanPageProps = {
   loanInfoJson: string;
-  historyJson: string;
+  fallback: {
+    [key: string]: any;
+  };
 };
 
 export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
@@ -33,35 +35,43 @@ export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
   }
 
   const loanInfoJson = JSON.stringify(loan);
-  const historyJson = JSON.stringify(history);
   return {
     props: {
       loanInfoJson,
-      historyJson,
+      fallback: {
+        [`/api/loans/history/${id}`]: history,
+      },
     },
   };
 };
 
-export default function Loans({ loanInfoJson, historyJson }: LoanPageProps) {
+export default function Loans({ loanInfoJson, fallback }: LoanPageProps) {
   const serverLoan = useMemo(
     () => parseLoanInfoJson(loanInfoJson),
     [loanInfoJson],
   );
-  const serverEvents = useMemo(
-    () => parseHistoryJson(historyJson),
-    [historyJson],
+
+  return (
+    <SWRConfig value={{ fallback }}>
+      <LoansInner serverLoan={serverLoan} />
+    </SWRConfig>
   );
+}
+
+function LoansInner({ serverLoan }: { serverLoan: Loan }) {
   const [loan, setLoan] = useState(serverLoan);
   const [collateralMedia, setCollateralMedia] =
     useState<CollateralMedia | null>(null);
+  const { mutate } = useSWRConfig();
 
   const refresh = useCallback(() => {
+    mutate(`/api/loans/history/${loan.id}`);
     nodeLoanById(loan.id.toString()).then((loan) => {
       if (loan) {
         setLoan(loan);
       }
     });
-  }, [loan.id]);
+  }, [loan.id, mutate]);
 
   useEffect(() => {
     getNFTInfoFromTokenInfo(
@@ -82,7 +92,8 @@ export default function Loans({ loanInfoJson, historyJson }: LoanPageProps) {
         collateralMedia={collateralMedia}
         refresh={refresh}
       />
-      <LoanInfo loan={loan} events={serverEvents} />
+      <button onClick={refresh}>Refresh</button>
+      <LoanInfo loan={loan} />
     </>
   );
 }
@@ -99,9 +110,4 @@ const parseLoanInfoJson = (loanInfoJson: string): Loan => {
     }
   });
   return loanInfo;
-};
-
-const parseHistoryJson = (historyJson: string): Event[] => {
-  const events = JSON.parse(historyJson);
-  return events;
 };

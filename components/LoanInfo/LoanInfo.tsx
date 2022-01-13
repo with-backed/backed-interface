@@ -12,7 +12,6 @@ import type { Event } from 'types/Event';
 
 type LoanInfoProps = {
   loan: Loan;
-  events: Event[];
 };
 
 function addressStringToHSL(address: string) {
@@ -26,7 +25,7 @@ function addressStringToHSL(address: string) {
   return `hsl(${h}, ${s}%, ${l}%)`;
 }
 
-export function LoanInfo({ loan, events }: LoanInfoProps) {
+export function LoanInfo({ loan }: LoanInfoProps) {
   const { collateralContractAddress, loanAssetContractAddress } = loan;
   const primary = useMemo(
     () => addressStringToHSL(collateralContractAddress),
@@ -47,7 +46,7 @@ export function LoanInfo({ loan, events }: LoanInfoProps) {
       <TwoColumn>
         <Column>
           <CollateralInfo loan={loan} />
-          <TicketHistory loan={loan} events={events} />
+          <TicketHistory loan={loan} />
         </Column>
         <Column>
           <RepaymentInfo loan={loan} />
