@@ -1,17 +1,21 @@
 import { ALL_LOAN_PROPERTIES } from './subgraphSharedConstants';
 import { nftBackedLoansClient } from '../../urql';
 import {
+  QueryLoansArgs,
   Loan,
-  LoanStatus,
+  Loan_Filter,
   Loan_OrderBy,
+  OrderDirection,
+  LoanStatus,
 } from 'types/generated/graphql/nftLoans';
 import { ethers } from 'ethers';
 import { annualRateToPerSecond } from 'lib/interest';
 import { daysToSecondsBigNum } from 'lib/duration';
+import { gql } from 'urql';
 
-const homepageQuery = `
-    query {
-        loans(where: { closed: false}, first: 20, orderBy: createdAtTimestamp, orderDirection: desc) {
+const homepageQuery = gql`
+    query($where: Loan_filter , $first: Int, $orderBy: String, $orderDirect: String) {
+        loans(where: $where, first: $first, orderBy: $orderBy, orderDirection: $orderDirection) {
             ${ALL_LOAN_PROPERTIES}
         }
     }
@@ -20,9 +24,17 @@ const homepageQuery = `
 // TODO(Wilson): this is a temp fix just for this query. We should generalize this method to
 // take an arguments and return a cursor to return paginated results
 export default async function subgraphLoans(): Promise<Loan[]> {
+  const whereFilter: Loan_Filter = { closed: false };
+  const queryArgs: QueryLoansArgs = {
+    where: whereFilter,
+    first: 20,
+    orderBy: Loan_OrderBy.CreatedAtTimestamp,
+    orderDirection: OrderDirection.Desc,
+  };
+
   const {
     data: { loans },
-  } = await nftBackedLoansClient.query(homepageQuery).toPromise();
+  } = await nftBackedLoansClient.query(homepageQuery, queryArgs).toPromise();
 
   return loans;
 }
@@ -32,7 +44,7 @@ const searchQuery = (
   loanAmountMax: number,
   perSecondInterestRateMax: number,
   durationSecondsMax: number,
-) => `
+) => gql`
   query(
     $statuses: [String], 
     $collateralContractAddress: String,
