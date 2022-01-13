@@ -4,14 +4,20 @@ import { Loan } from 'types/Loan';
 import styles from './TicketHistory.module.css';
 import type { Event } from 'types/Event';
 import useSWR from 'swr';
+import { parseSerializedResponse } from 'lib/parseSerializedResponse';
 
 interface TicketHistoryProps {
   loan: Loan;
 }
 
 export function TicketHistory({ loan }: TicketHistoryProps) {
-  const { data } = useSWR<Event[]>(`/api/loans/history/${loan.id}`, (url) =>
-    fetch(url).then((res) => res.json()),
+  const { data } = useSWR<Event[]>(
+    `/api/loans/history/${loan.id}`,
+    async (url) => {
+      const response = await fetch(url);
+      const json = await response.json();
+      return parseSerializedResponse(json) as Event[];
+    },
   );
 
   return (
