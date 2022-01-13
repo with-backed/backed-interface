@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 
 type BaseEvent = {
-  id: ethers.BigNumber;
+  id: string;
   blockNumber: number;
   timestamp: number;
 };
