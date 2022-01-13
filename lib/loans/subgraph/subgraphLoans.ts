@@ -25,7 +25,7 @@ const homepageQuery = gql`
 // take an arguments and return a cursor to return paginated results
 export default async function subgraphLoans(): Promise<Loan[]> {
   const whereFilter: Loan_Filter = { closed: false };
-  const query: QueryLoansArgs = {
+  const queryArgs: QueryLoansArgs = {
     where: whereFilter,
     first: 20,
     orderBy: Loan_OrderBy.CreatedAtTimestamp,
@@ -34,7 +34,7 @@ export default async function subgraphLoans(): Promise<Loan[]> {
 
   const {
     data: { loans },
-  } = await nftBackedLoansClient.query(homepageQuery, query).toPromise();
+  } = await nftBackedLoansClient.query(homepageQuery, queryArgs).toPromise();
 
   return loans;
 }
