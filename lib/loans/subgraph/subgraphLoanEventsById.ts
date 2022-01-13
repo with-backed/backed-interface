@@ -35,7 +35,6 @@ export async function subgraphLoanHistoryById(id: string): Promise<Event[]> {
     events.push({
       ...event,
       typename: 'CreateEvent',
-      id: ethers.BigNumber.from(event.id),
       minter: event.creator,
       maxInterestRate: ethers.BigNumber.from(event.maxPerSecondInterestRate),
       minLoanAmount: ethers.BigNumber.from(event.minLoanAmount),
@@ -48,7 +47,6 @@ export async function subgraphLoanHistoryById(id: string): Promise<Event[]> {
     events.push({
       ...event,
       typename: 'CloseEvent',
-      id: ethers.BigNumber.from(event.id),
     });
   }
 
@@ -57,7 +55,6 @@ export async function subgraphLoanHistoryById(id: string): Promise<Event[]> {
     events.push({
       ...event,
       typename: 'CollateralSeizureEvent',
-      id: ethers.BigNumber.from(event.id),
     });
   }
 
@@ -66,7 +63,6 @@ export async function subgraphLoanHistoryById(id: string): Promise<Event[]> {
     events.push({
       ...event,
       typename: 'RepaymentEvent',
-      id: ethers.BigNumber.from(event.id),
       loanOwner: event.lendTicketHolder,
       interestEarned: ethers.BigNumber.from(event.interestEarned),
       loanAmount: ethers.BigNumber.from(event.loanAmount),
@@ -78,7 +74,7 @@ export async function subgraphLoanHistoryById(id: string): Promise<Event[]> {
       events.push({
         ...event,
         typename: 'LendEvent',
-        id: ethers.BigNumber.from(event.id),
+
         interestRate: ethers.BigNumber.from(event.perSecondInterestRate),
         loanAmount: ethers.BigNumber.from(event.loanAmount),
         durationSeconds: ethers.BigNumber.from(event.durationSeconds),
@@ -92,7 +88,7 @@ export async function subgraphLoanHistoryById(id: string): Promise<Event[]> {
       events.push({
         ...event,
         typename: 'BuyoutEvent',
-        id: ethers.BigNumber.from(event.id),
+
         interestEarned: ethers.BigNumber.from(event.interestEarned),
         replacedAmount: ethers.BigNumber.from(event.loanAmount),
         underwriter: event.newLender,
