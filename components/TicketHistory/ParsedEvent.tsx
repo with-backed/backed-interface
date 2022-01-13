@@ -46,7 +46,7 @@ type EventHeaderProps = {
 function EventHeader({ event }: EventHeaderProps) {
   return (
     <h3 className={styles['event-header']}>
-      <EtherscanTransactionLink transactionHash={event.id}>
+      <EtherscanTransactionLink transactionHash={event.id.toString()}>
         {camelToSentenceCase(event.typename as string)}
       </EtherscanTransactionLink>
     </h3>
@@ -74,15 +74,10 @@ function CreateEvent({
   event,
   loan: { loanAssetDecimals, loanAssetSymbol },
 }: ParsedEventProps<Event.CreateEvent>) {
-  const {
-    maxPerSecondInterestRate,
-    minLoanAmount,
-    minDurationSeconds,
-    creator,
-  } = event;
+  const { maxInterestRate, minLoanAmount, minDurationSeconds, minter } = event;
   const formattedMaxInterestRate = useMemo(
-    () => formattedAnnualRate(ethers.BigNumber.from(maxPerSecondInterestRate)),
-    [maxPerSecondInterestRate],
+    () => formattedAnnualRate(ethers.BigNumber.from(maxInterestRate)),
+    [maxInterestRate],
   );
 
   const formattedMinLoanAmount = useMemo(
@@ -98,7 +93,7 @@ function CreateEvent({
   return (
     <EventDetailList event={event}>
       <dt>minter</dt>
-      <dd>{creator.slice(0, 10)}...</dd>
+      <dd>{minter.slice(0, 10)}...</dd>
       <dt>max interest rate</dt>
       <dd>{formattedMaxInterestRate}%</dd>
       <dt>minimum loan amount</dt>
@@ -115,25 +110,25 @@ function LendEvent({
   event,
   loan: { loanAssetDecimals, loanAssetSymbol },
 }: ParsedEventProps<Event.LendEvent>) {
-  const { durationSeconds, perSecondInterestRate, loanAmount, lender } = event;
+  const { durationSeconds, interestRate, loanAmount, underwriter } = event;
 
   const formattedInterestRate = useMemo(
-    () => formattedAnnualRate(ethers.BigNumber.from(perSecondInterestRate)),
-    [perSecondInterestRate],
+    () => formattedAnnualRate(ethers.BigNumber.from(interestRate)),
+    [interestRate],
   );
   const formattedLoanAmount = useMemo(
     () => ethers.utils.formatUnits(loanAmount, loanAssetDecimals),
     [loanAmount, loanAssetDecimals],
   );
   const formattedDuration = useMemo(
-    () => secondsToDays(parseInt(durationSeconds)),
+    () => secondsToDays(durationSeconds.toNumber()),
     [durationSeconds],
   );
 
   return (
     <EventDetailList event={event}>
-      <dt>lender</dt>
-      <dd> {lender?.slice(0, 10)}...</dd>
+      <dt>underwriter</dt>
+      <dd> {underwriter?.slice(0, 10)}...</dd>
       <dt>interest rate</dt>
       <dd>{formattedInterestRate}%</dd>
       <dt>loan amount</dt>
@@ -150,7 +145,8 @@ function BuyoutEvent({
   event,
   loan: { loanAssetDecimals, loanAssetSymbol },
 }: ParsedEventProps<Event.BuyoutEvent>) {
-  const { interestEarned, loanAmount, lendTicketOwner, newLender } = event;
+  const { interestEarned, replacedAmount, replacedLoanOwner, underwriter } =
+    event;
 
   const formattedInterestPaid = useMemo(
     () => ethers.utils.formatUnits(interestEarned, loanAssetDecimals),
@@ -158,16 +154,16 @@ function BuyoutEvent({
   );
 
   const formattedLoanAmount = useMemo(
-    () => ethers.utils.formatUnits(loanAmount, loanAssetDecimals),
-    [loanAmount, loanAssetDecimals],
+    () => ethers.utils.formatUnits(replacedAmount, loanAssetDecimals),
+    [replacedAmount, loanAssetDecimals],
   );
 
   return (
     <EventDetailList event={event}>
-      <dt>new lender</dt>
-      <dd>{newLender.slice(0, 10)}...</dd>
-      <dt>bought-out lender</dt>
-      <dd>{lendTicketOwner.slice(0, 10)}...</dd>
+      <dt>new underwriter</dt>
+      <dd>{underwriter.slice(0, 10)}...</dd>
+      <dt>bought-out underwriter</dt>
+      <dd>{replacedLoanOwner.slice(0, 10)}...</dd>
       <dt>interest paid</dt>
       <dd>
         {formattedInterestPaid} {loanAssetSymbol}
@@ -184,7 +180,7 @@ function RepaymentEvent({
   event,
   loan: { loanAssetDecimals, loanAssetSymbol },
 }: ParsedEventProps<Event.RepaymentEvent>) {
-  const { interestEarned, loanAmount, lendTicketHolder, repayer } = event;
+  const { interestEarned, loanAmount, loanOwner, repayer } = event;
 
   const formattedInterestEarned = useMemo(
     () => ethers.utils.formatUnits(interestEarned, loanAssetDecimals),
@@ -201,7 +197,7 @@ function RepaymentEvent({
       <dt>RepaymentEventer</dt>
       <dd>{repayer.slice(0, 10)}...</dd>
       <dt>paid to</dt>
-      <dd>{lendTicketHolder.slice(0, 10)}...</dd>
+      <dd>{loanOwner.slice(0, 10)}...</dd>
       <dt>interest earned</dt>
       <dd>
         {formattedInterestEarned} {loanAssetSymbol}

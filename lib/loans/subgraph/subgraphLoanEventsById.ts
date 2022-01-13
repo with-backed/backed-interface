@@ -1,7 +1,15 @@
-import type { Event } from 'types/Event';
 import { nftBackedLoansClient } from 'lib/urql';
 import { ALL_EVENTS } from './subgraphSharedConstants';
-import { BuyoutEvent, LendEvent } from 'types/generated/graphql/nftLoans';
+import {
+  BuyoutEvent,
+  CloseEvent,
+  CollateralSeizureEvent,
+  CreateEvent,
+  LendEvent,
+  RepaymentEvent,
+} from 'types/generated/graphql/nftLoans';
+import { Event } from 'types/Event';
+import { ethers } from 'ethers';
 
 const graphqlQuery = `
 query ($id: ID!) {
@@ -23,30 +31,41 @@ export async function subgraphLoanHistoryById(id: string): Promise<Event[]> {
   const events: Event[] = [];
 
   if (loan.createEvent) {
+    const event = loan.createEvent as CreateEvent;
     events.push({
-      ...loan.createEvent,
+      ...event,
       typename: 'CreateEvent',
+      minter: event.creator,
+      maxInterestRate: ethers.BigNumber.from(event.maxPerSecondInterestRate),
+      minLoanAmount: ethers.BigNumber.from(event.minLoanAmount),
+      minDurationSeconds: ethers.BigNumber.from(event.minDurationSeconds),
     });
   }
 
   if (loan.closeEvent) {
+    const event = loan.closeEvent as CloseEvent;
     events.push({
-      ...loan.closeEvent,
+      ...event,
       typename: 'CloseEvent',
     });
   }
 
   if (loan.collateralSeizureEvent) {
+    const event = loan.collateralSeizureEvent as CollateralSeizureEvent;
     events.push({
-      ...loan.collateralSeizureEvent,
+      ...event,
       typename: 'CollateralSeizureEvent',
     });
   }
 
   if (loan.repaymentEvent) {
+    const event = loan.repaymentEvent as RepaymentEvent;
     events.push({
-      ...loan.repaymentEvent,
+      ...event,
       typename: 'RepaymentEvent',
+      loanOwner: event.lendTicketHolder,
+      interestEarned: ethers.BigNumber.from(event.interestEarned),
+      loanAmount: ethers.BigNumber.from(event.loanAmount),
     });
   }
 
@@ -55,6 +74,11 @@ export async function subgraphLoanHistoryById(id: string): Promise<Event[]> {
       events.push({
         ...event,
         typename: 'LendEvent',
+
+        interestRate: ethers.BigNumber.from(event.perSecondInterestRate),
+        loanAmount: ethers.BigNumber.from(event.loanAmount),
+        durationSeconds: ethers.BigNumber.from(event.durationSeconds),
+        underwriter: event.lender,
       });
     });
   }
@@ -64,6 +88,11 @@ export async function subgraphLoanHistoryById(id: string): Promise<Event[]> {
       events.push({
         ...event,
         typename: 'BuyoutEvent',
+
+        interestEarned: ethers.BigNumber.from(event.interestEarned),
+        replacedAmount: ethers.BigNumber.from(event.loanAmount),
+        underwriter: event.newLender,
+        replacedLoanOwner: event.lendTicketOwner,
       });
     });
   }
