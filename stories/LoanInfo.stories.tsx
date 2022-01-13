@@ -1,6 +1,6 @@
 import React from 'react';
 import { LoanInfo } from 'components/LoanInfo';
-import { baseLoan, events, loanWithLenderAccruing } from 'lib/mockData';
+import { baseLoan, loanWithLenderAccruing } from 'lib/mockData';
 
 export default {
   title: 'components/LoanInfo',
@@ -14,9 +14,9 @@ const collateralMedia = {
 };
 
 export function LoanInfoNoLender() {
-  return <LoanInfo loan={baseLoan} events={events} />;
+  return <LoanInfo loan={baseLoan} />;
 }
 
 export function LoanInfoWithLender() {
-  return <LoanInfo loan={loanWithLenderAccruing} events={events} />;
+  return <LoanInfo loan={loanWithLenderAccruing} />;
 }
