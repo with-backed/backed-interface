@@ -9,16 +9,18 @@ import { CollateralMedia } from 'types/CollateralMedia';
 import { getNFTInfoFromTokenInfo } from 'lib/getNFTInfo';
 import { nodeLoanById } from 'lib/loans/node/nodeLoanById';
 import { subgraphLoanHistoryById } from 'lib/loans/subgraph/subgraphLoanEventsById';
-import { Event } from 'types/Event';
 import {
   CollateralSaleInfo,
   getCollateralSaleInfo,
 } from 'lib/loans/collateralSaleInfo';
+import { SWRConfig } from 'swr';
 
 export type LoanPageProps = {
   loanInfoJson: string;
-  historyJson: string;
   collateralSaleInfo: CollateralSaleInfo;
+  fallback: {
+    [key: string]: any;
+  };
 };
 
 export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
@@ -38,28 +40,48 @@ export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
   }
 
   const loanInfoJson = JSON.stringify(loan);
-  const historyJson = JSON.stringify(history);
+
   return {
     props: {
       loanInfoJson,
-      historyJson,
       collateralSaleInfo: await getCollateralSaleInfo(
         loan.collateralContractAddress,
         loan.collateralTokenId.toString(),
       ),
+      fallback: {
+        [`/api/loans/history/${id}`]: history,
+      },
     },
   };
 };
 
-export default function Loans({ loanInfoJson, historyJson, collateralSaleInfo }: LoanPageProps) {
+export default function Loans({
+  loanInfoJson,
+  fallback,
+  collateralSaleInfo,
+}: LoanPageProps) {
   const serverLoan = useMemo(
     () => parseLoanInfoJson(loanInfoJson),
     [loanInfoJson],
   );
-  const serverEvents = useMemo(
-    () => parseHistoryJson(historyJson),
-    [historyJson],
+
+  return (
+    <SWRConfig value={{ fallback }}>
+      <LoansInner
+        serverLoan={serverLoan}
+        collateralSaleInfo={collateralSaleInfo}
+      />
+    </SWRConfig>
   );
+}
+
+function LoansInner({
+  serverLoan,
+  collateralSaleInfo,
+}: {
+  serverLoan: Loan;
+  collateralSaleInfo: CollateralSaleInfo;
+}) {
   const [loan, setLoan] = useState(serverLoan);
   const [collateralMedia, setCollateralMedia] =
     useState<CollateralMedia | null>(null);
@@ -91,7 +113,7 @@ export default function Loans({ loanInfoJson, historyJson, collateralSaleInfo }:
         collateralMedia={collateralMedia}
         refresh={refresh}
       />
-      <LoanInfo loan={loan} events={serverEvents} collateralSaleInfo={collateralSaleInfo} />
+      <LoanInfo loan={loan} collateralSaleInfo={collateralSaleInfo} />
     </>
   );
 }
@@ -108,9 +130,4 @@ const parseLoanInfoJson = (loanInfoJson: string): Loan => {
     }
   });
   return loanInfo;
-};
-
-const parseHistoryJson = (historyJson: string): Event[] => {
-  const events = JSON.parse(historyJson);
-  return events;
 };
