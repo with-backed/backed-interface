@@ -1,6 +1,5 @@
 import { GetServerSideProps } from 'next';
 import { Loan } from 'types/Loan';
-import { ethers } from 'ethers';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { loanById } from 'lib/loans/loanById';
 import { LoanHeader } from 'components/LoanHeader';
@@ -9,16 +8,19 @@ import { CollateralMedia } from 'types/CollateralMedia';
 import { getNFTInfoFromTokenInfo } from 'lib/getNFTInfo';
 import { nodeLoanById } from 'lib/loans/node/nodeLoanById';
 import { subgraphLoanHistoryById } from 'lib/loans/subgraph/subgraphLoanEventsById';
-import { Event } from 'types/Event';
 import {
   CollateralSaleInfo,
   getCollateralSaleInfo,
 } from 'lib/loans/collateralSaleInfo';
+import { SWRConfig, useSWRConfig } from 'swr';
+import { parseSerializedResponse } from 'lib/parseSerializedResponse';
 
 export type LoanPageProps = {
   loanInfoJson: string;
-  historyJson: string;
   collateralSaleInfo: CollateralSaleInfo;
+  fallback: {
+    [key: string]: any;
+  };
 };
 
 export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
@@ -39,38 +41,68 @@ export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
 
   const loanInfoJson = JSON.stringify(loan);
   const historyJson = JSON.stringify(history);
+
   return {
     props: {
       loanInfoJson,
-      historyJson,
       collateralSaleInfo: await getCollateralSaleInfo(
         loan.collateralContractAddress,
         loan.collateralTokenId.toString(),
       ),
+      fallback: {
+        [`/api/loans/history/${id}`]: historyJson,
+      },
     },
   };
 };
 
-export default function Loans({ loanInfoJson, historyJson, collateralSaleInfo }: LoanPageProps) {
+export default function Loans({
+  loanInfoJson,
+  fallback,
+  collateralSaleInfo,
+}: LoanPageProps) {
   const serverLoan = useMemo(
-    () => parseLoanInfoJson(loanInfoJson),
+    () => parseSerializedResponse(loanInfoJson) as Loan,
     [loanInfoJson],
   );
-  const serverEvents = useMemo(
-    () => parseHistoryJson(historyJson),
-    [historyJson],
+  const parsedFallback = useMemo(() => {
+    const result: { [key: string]: any } = {};
+    Object.keys(fallback).forEach((key) => {
+      result[key] = parseSerializedResponse(fallback[key]);
+    });
+    return result;
+  }, [fallback]);
+
+  return (
+    <SWRConfig value={{ fallback: parsedFallback }}>
+      <LoansInner
+        serverLoan={serverLoan}
+        collateralSaleInfo={collateralSaleInfo}
+      />
+    </SWRConfig>
   );
+}
+
+function LoansInner({
+  serverLoan,
+  collateralSaleInfo,
+}: {
+  serverLoan: Loan;
+  collateralSaleInfo: CollateralSaleInfo;
+}) {
+  const { mutate } = useSWRConfig();
   const [loan, setLoan] = useState(serverLoan);
   const [collateralMedia, setCollateralMedia] =
     useState<CollateralMedia | null>(null);
 
   const refresh = useCallback(() => {
+    mutate(`/api/loans/history/${loan.id}`);
     nodeLoanById(loan.id.toString()).then((loan) => {
       if (loan) {
         setLoan(loan);
       }
     });
-  }, [loan.id]);
+  }, [loan.id, mutate]);
 
   useEffect(() => {
     getNFTInfoFromTokenInfo(
@@ -91,26 +123,7 @@ export default function Loans({ loanInfoJson, historyJson, collateralSaleInfo }:
         collateralMedia={collateralMedia}
         refresh={refresh}
       />
-      <LoanInfo loan={loan} events={serverEvents} collateralSaleInfo={collateralSaleInfo} />
+      <LoanInfo loan={loan} collateralSaleInfo={collateralSaleInfo} />
     </>
   );
 }
-
-const parseLoanInfoJson = (loanInfoJson: string): Loan => {
-  const loanInfo = JSON.parse(loanInfoJson);
-  Object.keys(loanInfo).forEach((k: string) => {
-    if (loanInfo[k] == null) {
-      return;
-    }
-
-    if (loanInfo[k]['hex'] != null) {
-      loanInfo[k] = ethers.BigNumber.from(loanInfo[k]['hex']);
-    }
-  });
-  return loanInfo;
-};
-
-const parseHistoryJson = (historyJson: string): Event[] => {
-  const events = JSON.parse(historyJson);
-  return events;
-};
