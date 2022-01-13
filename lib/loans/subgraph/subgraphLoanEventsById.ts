@@ -30,7 +30,7 @@ export async function subgraphLoanHistoryById(id: string): Promise<Event[]> {
 
   const events: Event[] = [];
 
-  if (loan.createEvent) {
+  if (loan.createEvent && loan.createEvent !== null) {
     const event = loan.createEvent as CreateEvent;
     events.push({
       ...event,
@@ -42,7 +42,7 @@ export async function subgraphLoanHistoryById(id: string): Promise<Event[]> {
     });
   }
 
-  if (loan.closeEvent) {
+  if (loan.closeEvent && loan.closeEvent !== null) {
     const event = loan.closeEvent as CloseEvent;
     events.push({
       ...event,
@@ -50,7 +50,7 @@ export async function subgraphLoanHistoryById(id: string): Promise<Event[]> {
     });
   }
 
-  if (loan.collateralSeizureEvent) {
+  if (loan.collateralSeizureEvent && loan.collateralSeizureEvent !== null) {
     const event = loan.collateralSeizureEvent as CollateralSeizureEvent;
     events.push({
       ...event,
@@ -58,7 +58,7 @@ export async function subgraphLoanHistoryById(id: string): Promise<Event[]> {
     });
   }
 
-  if (loan.repaymentEvent) {
+  if (loan.repaymentEvent && loan.repaymentEvent !== null) {
     const event = loan.repaymentEvent as RepaymentEvent;
     events.push({
       ...event,
@@ -69,7 +69,7 @@ export async function subgraphLoanHistoryById(id: string): Promise<Event[]> {
     });
   }
 
-  if (loan.lendEvents) {
+  if (loan.lendEvents && Array.isArray(loan.lendEvents)) {
     loan.lendEvents.forEach((event: LendEvent) => {
       events.push({
         ...event,
@@ -83,7 +83,7 @@ export async function subgraphLoanHistoryById(id: string): Promise<Event[]> {
     });
   }
 
-  if (loan.buyoutEvents) {
+  if (loan.buyoutEvents && Array.isArray(loan.buyoutEvents)) {
     loan.buyoutEvents.forEach((event: BuyoutEvent) => {
       events.push({
         ...event,
