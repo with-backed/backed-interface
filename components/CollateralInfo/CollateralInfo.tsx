@@ -40,7 +40,7 @@ export const CollateralInfo = ({
         <dt>Collection</dt>
         <dd>{loan.collateralName}</dd>
 
-        <dt>Floor Price</dt>
+        <dt>Collection Floor Price</dt>
         <dd>{collateralSaleInfo.floorPrice} ETH</dd>
       </DescriptionList>
     </Fieldset>
