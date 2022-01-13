@@ -3,6 +3,7 @@ import { ethers } from 'ethers';
 type BaseEvent = {
   id: ethers.BigNumber;
   blockNumber: number;
+  timestamp: number;
 };
 
 export type BuyoutEvent = BaseEvent & {
