@@ -76,7 +76,7 @@ export async function getAllActiveLoansForAddress(
     .flat();
 }
 
-export type EventType =
+type EventType =
   | BuyoutEvent
   | CollateralSeizureEvent
   | RepaymentEvent
