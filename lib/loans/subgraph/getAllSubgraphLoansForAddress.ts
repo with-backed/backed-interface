@@ -243,7 +243,7 @@ async function getAllLendEvents(address: string): Promise<LendEvent[]> {
     .flat();
 }
 
-export async function getAllLoansFromEventsForAddress(
+export async function getAllEventsForAddress(
   address: string,
 ): Promise<Dictionary<[AllEventsType, ...AllEventsType[]]>> {
   const allEventLoans = await Promise.all([
