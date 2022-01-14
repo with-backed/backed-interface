@@ -1,12 +1,13 @@
 .dialog {
-  position: fixed;
+  position: absolute;
   top: 160px;
   left: 50%;
   transform: translate(-50%, 0);
+  z-index: 1000;
   background: var(--background-white);
   border-radius: var(--border-radius-large);
   box-shadow: var(--box-shadow);
-  z-index: 1000;
+  margin: 0 auto 1rem;
 }
 
 .regular {

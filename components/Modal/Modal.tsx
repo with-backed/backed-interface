@@ -17,7 +17,8 @@ export const Modal: FunctionComponent<ModalProps> = ({
     <Dialog
       tabIndex={0}
       className={`${styles.dialog} ${styles[width]}`}
-      {...dialog}>
+      {...dialog}
+      modal={false}>
       {Boolean(heading) && <h3 className={styles.heading}>{heading}</h3>}
       <div className={styles['scroll-box']}>{children}</div>
     </Dialog>
