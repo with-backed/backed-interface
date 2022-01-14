@@ -4,6 +4,11 @@ import { getNftContractAddress, NFTEntity, useNFTs } from 'lib/eip721Subraph';
 import { NFTMedia } from 'components/Media/NFTMedia';
 import { Modal } from 'components/Modal';
 import { DialogStateReturn } from 'reakit/Dialog';
+import { Button } from 'reakit/Button';
+import { useTokenMetadata } from 'hooks/useTokenMetadata';
+import { ethers } from 'ethers';
+import { Fallback } from 'components/Media/Fallback';
+import { Media } from 'components/Media';
 
 interface NFTCollateralPickerProps {
   connectedWallet: string;
@@ -28,8 +33,6 @@ export function NFTCollateralPicker({
 }: NFTCollateralPickerProps) {
   const { fetching, error, nfts } = useNFTs(connectedWallet);
 
-  const [showNFT, setShowNFT] = useState<ShowNFTStateType>({});
-
   const groupedNFTs: GroupedNFTCollections = useMemo(() => {
     return nfts.reduce(
       (groupedNFTs: GroupedNFTCollections, nextNFT: NFTEntity) => {
@@ -49,16 +52,6 @@ export function NFTCollateralPicker({
       {},
     );
   }, [nfts, hiddenNFTAddresses]);
-
-  const toggleShowForNFT = useCallback(
-    (nftAddress) => {
-      setShowNFT((prev) => ({
-        ...prev,
-        [nftAddress]: !showNFT[nftAddress],
-      }));
-    },
-    [showNFT, setShowNFT],
-  );
 
   const handleNFTClick = useCallback(
     (nft: NFTEntity) => {
@@ -88,78 +81,68 @@ export function NFTCollateralPicker({
 
   return (
     <Modal dialog={dialog} heading="✨ 🔍 Select an NFT 🖼 ✨">
-      <div className={styles.nftPicker}>
-        {Object.keys(groupedNFTs).map(
-          (nftContractAddress: string, i: number) => (
-            <div
-              key={nftContractAddress}
-              className={styles.collectionRowWrapper}>
-              <div
-                className={`${styles.centerAlignedRow} ${styles.nftCollectionRow}`}
-                onClick={() => toggleShowForNFT(nftContractAddress)}>
-                <div
-                  className={`${styles.centerAlignedRow} ${styles.nftCollectionNameAndIcon}`}>
-                  <div className={styles.collectionName}>
-                    {groupedNFTs[
-                      nftContractAddress
-                    ][0]?.registry.name.toLowerCase()}
-                  </div>
-                </div>
-                <div className={styles.centerAlignedRow}>
-                  <span>{groupedNFTs[nftContractAddress].length}</span>
-                  <div
-                    className={`${styles.caret} ${
-                      showNFT[nftContractAddress] ? styles.caretOpen : ''
-                    }`}>
-                    <Caret />
-                  </div>
-                </div>
-              </div>
-              <div
-                className={`${styles.nftGridWrapper} ${
-                  showNFT[nftContractAddress]
-                    ? styles.gridOpen
-                    : styles.gridClosed
-                } `}>
-                {groupedNFTs[nftContractAddress].map((nft: NFTEntity) => (
-                  <div
-                    key={nft.id}
-                    className={`${styles.nftGridItem} ${
-                      showNFT[nftContractAddress]
-                        ? styles.itemOpened
-                        : styles.itemClosed
-                    }`}>
-                    <div onClick={() => handleNFTClick(nft)}>
-                      <NFTMedia
-                        collateralAddress={getNftContractAddress(nft)}
-                        collateralTokenID={nft.identifier}
-                        forceImage
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ),
-        )}
+      <div className={styles.wrapper}>
+        {Object.entries(groupedNFTs).map(([contractAddress, nfts]) => {
+          return (
+            <NFTGroup
+              key={contractAddress}
+              nftCollectionName={nfts[0]?.registry.name.toLowerCase()}
+              nftContractAddress={contractAddress}
+              nfts={nfts}
+              handleNFTClick={handleNFTClick}
+            />
+          );
+        })}
       </div>
     </Modal>
   );
 }
 
-function Caret() {
+type NFTGroupProps = {
+  nftContractAddress: string;
+  nftCollectionName: string;
+  nfts: NFTEntity[];
+  handleNFTClick: (nft: NFTEntity) => void;
+};
+function NFTGroup({ nftCollectionName, nfts, handleNFTClick }: NFTGroupProps) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleClick = useCallback(() => setIsOpen((prev) => !prev), []);
   return (
-    <svg
-      width="35"
-      height="35"
-      viewBox="0 0 15 15"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg">
-      <path
-        d="M6.1584 3.13508C6.35985 2.94621 6.67627 2.95642 6.86514 3.15788L10.6151 7.15788C10.7954 7.3502 10.7954 7.64949 10.6151 7.84182L6.86514 11.8418C6.67627 12.0433 6.35985 12.0535 6.1584 11.8646C5.95694 11.6757 5.94673 11.3593 6.1356 11.1579L9.565 7.49985L6.1356 3.84182C5.94673 3.64036 5.95694 3.32394 6.1584 3.13508Z"
-        fill="currentColor"
-        fillRule="evenodd"
-        clipRule="evenodd"></path>
-    </svg>
+    <div className={styles['nft-group']}>
+      <Button
+        as="div"
+        className={styles[`nft-group-header${isOpen ? '-active' : ''}`]}
+        onClick={handleClick}>
+        <span>{nftCollectionName}</span>
+        <span className={styles['nft-count']}>{nfts.length}</span>
+      </Button>
+      {isOpen && (
+        <div className={styles['nft-list']}>
+          {nfts.map((nft) => (
+            <NFT nft={nft} handleNFTClick={handleNFTClick} key={nft.id} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+type NFTProps = {
+  nft: NFTEntity;
+  handleNFTClick: (nft: NFTEntity) => void;
+};
+function NFT({ handleNFTClick, nft }: NFTProps) {
+  const handleClick = useCallback(() => {
+    handleNFTClick(nft);
+  }, [handleNFTClick, nft]);
+  return (
+    <Button as="div" className={styles.nft} onClick={handleClick}>
+      <NFTMedia
+        collateralAddress={getNftContractAddress(nft)}
+        collateralTokenID={nft.identifier}
+        forceImage
+      />
+    </Button>
   );
 }

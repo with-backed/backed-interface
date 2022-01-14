@@ -1,107 +1,50 @@
-.centerAlignedRow {
+.wrapper {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
+  gap: 1rem;
 }
 
-.nftPicker {
+.nft-group {
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  justify-content: center;
 }
 
-.selectButton {
-  width: 99%;
-  text-align: center;
-  border-bottom: 1px solid var(--neutral-100);
-  padding-bottom: 20px;
-}
-
-.nftCollectionRow {
-  justify-content: space-between;
-  padding: var(--padding-container) 0;
-  line-height: var(--line-height);
-  cursor: pointer;
-  border-top: thin var(--neutral-100) solid;
-}
-
-.collectionRowWrapper:last-child .nftCollectionRow {
-  padding-bottom: 0px;
-}
-
-.nftCollectionNameAndIcon {
-  max-width: 60%;
-}
-
-.collectionName {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  text-transform: capitalize;
-}
-
-.collectionRowWrapper:last-child .break {
-  height: 0px;
-}
-
-.caret {
+.nft-group-header {
   display: flex;
+  width: 100%;
+  padding: 18px 22px;
+  background: var(--neutral-5);
+  border-radius: var(--border-radius-large);
   align-items: center;
-  margin: 0 6px;
-  transition: transform 0.3s ease-in-out;
+  cursor: pointer;
 }
 
-.caretOpen {
-  transform: rotate(90deg);
+.nft-group-header-active {
+  composes: nft-group-header;
+  background: var(--highlight-active-10);
 }
 
-.nftGridWrapper {
+.nft-count {
+  margin-left: auto;
+}
+
+@keyframes append-animate {
+  from {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+.nft-list {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  column-gap: var(--padding-container);
-  row-gap: var(--padding-container);
-}
-
-.gridOpen {
-  transition-timing-function: cubic-bezier(0.895, 0.03, 0.685, 0.22);
-  transition-duration: 0.5s;
-  transition-property: max-height;
-  max-height: 2000px;
-}
-
-.gridClosed {
-  max-height: 0;
-  overflow: hidden;
-  text-transform: cubic-bezier(0.95, 0.05, 0.795, 0.035);
-  transition-duration: 0.5s;
-  transition-property: max-height;
-}
-
-.nftGridItem {
-  box-sizing: border-box;
-}
-
-.nftGridItem:last-child {
-  margin-bottom: var(--padding-container);
-}
-
-.collectionRowWrapper:last-child .nftGridItem:first-child {
-  margin-top: var(--padding-container);
-}
-
-.itemOpened {
-  opacity: 1;
-  transform: translateY(0);
-  transition-delay: 0.2s;
-  transition-timing-function: ease-in-out;
-  transition-duration: 0.2s;
-  transition-property: opacity, transform;
-}
-
-.itemClosed {
-  opacity: 0;
-  transform: translateY(-1rem);
-  transition-timing-function: linear, ease;
-  transition-duration: 0.1s;
-  transition-property: opacity, transform;
-  transition-delay: 0.5s;
+  gap: 1rem;
+  margin-top: 1rem;
+  animation: append-animate 0.3s linear;
 }
