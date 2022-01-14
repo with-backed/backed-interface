@@ -76,7 +76,7 @@ export async function getAllActiveLoansForAddress(
     .flat();
 }
 
-export type AllEventsType =
+export type EventType =
   | BuyoutEvent
   | CollateralSeizureEvent
   | RepaymentEvent
@@ -87,6 +87,12 @@ type EventFilter =
   | CollateralSeizureEvent_Filter
   | RepaymentEvent_Filter
   | LendEvent_Filter;
+
+type EventQueryArgs =
+  | QueryBuyoutEventsArgs
+  | QueryCollateralSeizureEventsArgs
+  | QueryRepaymentEventsArgs
+  | QueryLendEventsArgs;
 
 function eventsQuery(eventName: string, whereFilterType: string) {
   return gql`
@@ -104,156 +110,78 @@ function eventsQuery(eventName: string, whereFilterType: string) {
   `;
 }
 
-async function getAllBuyoutEventsForAddress(
-  address: string,
-): Promise<BuyoutEvent[]> {
-  const sharedQueryArgs: QueryBuyoutEventsArgs = {
+async function getEventsForEventType<T>(
+  eventQueryname: string,
+  eventFilterType: string,
+  whereArgs: EventFilter[],
+): Promise<T[]> {
+  const sharedQueryArgs: EventQueryArgs = {
     orderBy: BuyoutEvent_OrderBy.Timestamp,
     orderDirection: OrderDirection.Desc,
   };
 
-  const asBuyerArgs: QueryBuyoutEventsArgs = {
-    ...sharedQueryArgs,
-    where: { newLender: address },
-  };
-  const asBoughtOutArgs: QueryBuyoutEventsArgs = {
-    ...sharedQueryArgs,
-    where: { lendTicketOwner: address },
-  };
-
-  const resultArray: { data?: { buyoutEvents: BuyoutEvent[] } }[] =
-    await Promise.all([
-      nftBackedLoansClient
-        .query(eventsQuery('buyoutEvents', 'BuyoutEvent_filter'), asBuyerArgs)
-        .toPromise(),
-      nftBackedLoansClient
-        .query(
-          eventsQuery('buyoutEvents', 'BuyoutEvent_filter'),
-          asBoughtOutArgs,
-        )
-        .toPromise(),
-    ]);
+  const resultArray: { data?: { [eventQueryname: string]: T[] } }[] =
+    await Promise.all(
+      whereArgs.map((where) =>
+        nftBackedLoansClient
+          .query(eventsQuery(eventQueryname, eventFilterType), {
+            ...sharedQueryArgs,
+            where,
+          })
+          .toPromise(),
+      ),
+    );
 
   return resultArray
-    .map((result) => (result.data ? result.data.buyoutEvents : []))
-    .flat();
-}
-
-async function getAllCollateralSeizedEvents(
-  address: string,
-): Promise<CollateralSeizureEvent[]> {
-  const sharedQueryArgs: QueryCollateralSeizureEventsArgs = {
-    orderBy: CollateralSeizureEvent_OrderBy.Timestamp,
-    orderDirection: OrderDirection.Desc,
-  };
-
-  const asSeized: QueryCollateralSeizureEventsArgs = {
-    ...sharedQueryArgs,
-    where: { lendTicketHolder: address },
-  };
-  const asSeizing: QueryCollateralSeizureEventsArgs = {
-    ...sharedQueryArgs,
-    where: { borrowTicketHolder: address },
-  };
-
-  const resultArray: {
-    data?: { collateralSeizureEvents: CollateralSeizureEvent[] };
-  }[] = await Promise.all([
-    nftBackedLoansClient
-      .query(
-        eventsQuery('collateralSeizureEvents', 'CollateralSeizureEvent_filter'),
-        asSeized,
-      )
-      .toPromise(),
-    nftBackedLoansClient
-      .query(
-        eventsQuery('collateralSeizureEvents', 'CollateralSeizureEvent_filter'),
-        asSeizing,
-      )
-      .toPromise(),
-  ]);
-
-  return resultArray
-    .map((result) => (result.data ? result.data.collateralSeizureEvents : []))
-    .flat();
-}
-
-async function getAllRepaymentEvents(
-  address: string,
-): Promise<RepaymentEvent[]> {
-  const sharedQueryArgs: QueryRepaymentEventsArgs = {
-    orderBy: RepaymentEvent_OrderBy.Timestamp,
-    orderDirection: OrderDirection.Desc,
-  };
-
-  const asPaid: QueryRepaymentEventsArgs = {
-    ...sharedQueryArgs,
-    where: { lendTicketHolder: address },
-  };
-  const asReceived: QueryRepaymentEventsArgs = {
-    ...sharedQueryArgs,
-    where: { borrowTicketHolder: address },
-  };
-
-  const resultArray: { data?: { repaymentEvents: RepaymentEvent[] } }[] =
-    await Promise.all([
-      nftBackedLoansClient
-        .query(eventsQuery('repaymentEvents', 'RepaymentEvent_filter'), asPaid)
-        .toPromise(),
-      nftBackedLoansClient
-        .query(
-          eventsQuery('repaymentEvents', 'RepaymentEvent_filter'),
-          asReceived,
-        )
-        .toPromise(),
-    ]);
-
-  return resultArray
-    .map((result) => (result.data ? result.data.repaymentEvents : []))
-    .flat();
-}
-
-async function getAllLendEvents(address: string): Promise<LendEvent[]> {
-  const sharedQueryArgs: QueryLendEventsArgs = {
-    orderBy: LendEvent_OrderBy.Timestamp,
-    orderDirection: OrderDirection.Desc,
-  };
-
-  const asLender: QueryLendEventsArgs = {
-    ...sharedQueryArgs,
-    where: { lender: address },
-  };
-  const asLendee: QueryLendEventsArgs = {
-    ...sharedQueryArgs,
-    where: { borrowTicketHolder: address },
-  };
-
-  const resultArray: { data?: { lendEvents: LendEvent[] } }[] =
-    await Promise.all([
-      nftBackedLoansClient
-        .query(eventsQuery('lendEvents', 'LendEvent_filter'), asLender)
-        .toPromise(),
-      nftBackedLoansClient
-        .query(eventsQuery('lendEvents', 'LendEvent_filter'), asLendee)
-        .toPromise(),
-    ]);
-
-  return resultArray
-    .map((result) => (result.data ? result.data.lendEvents : []))
+    .map((result) => (result.data ? result.data[eventQueryname] : []))
     .flat();
 }
 
 export async function getAllEventsForAddress(
   address: string,
-): Promise<Dictionary<[AllEventsType, ...AllEventsType[]]>> {
-  const allEventLoans = await Promise.all([
-    getAllBuyoutEventsForAddress(address),
-    getAllCollateralSeizedEvents(address),
-    getAllRepaymentEvents(address),
-    getAllLendEvents(address),
-  ]);
+): Promise<Dictionary<[EventType, ...EventType[]]>> {
+  const buyoutWhereFilters: BuyoutEvent_Filter[] = [
+    { newLender: address },
+    { lendTicketOwner: address },
+  ];
 
-  console.log(allEventLoans);
+  const collateralSeizedWhereFilters: CollateralSeizureEvent_Filter[] = [
+    { borrowTicketHolder: address },
+    { lendTicketHolder: address },
+  ];
+
+  const repaymentWhereFilters: RepaymentEvent_Filter[] = [
+    { borrowTicketHolder: address },
+    { lendTicketHolder: address },
+  ];
+
+  const lendWhereFilters: LendEvent_Filter[] = [
+    { borrowTicketHolder: address },
+    { lender: address },
+  ];
+
+  const allEventLoans = await Promise.all([
+    getEventsForEventType<BuyoutEvent>(
+      'buyoutEvents',
+      'BuyoutEvent_filter',
+      buyoutWhereFilters,
+    ),
+    getEventsForEventType<CollateralSeizureEvent>(
+      'collateralSeizedEvents',
+      'CollateralSeizureEvent_filter',
+      collateralSeizedWhereFilters,
+    ),
+    getEventsForEventType<RepaymentEvent>(
+      'repaymentEvents',
+      'RepaymentEvent_filter',
+      repaymentWhereFilters,
+    ),
+    getEventsForEventType<LendEvent>(
+      'lendEvents',
+      'LendEvent_filter',
+      lendWhereFilters,
+    ),
+  ]);
 
   return groupBy(allEventLoans.flat(), (event) => event.__typename?.toString());
 }
