@@ -19,7 +19,7 @@ export const ALL_LOAN_PROPERTIES = `
     collateralName
 `;
 
-const CREATE_EVENT_PROPERTIES = `
+export const CREATE_EVENT_PROPERTIES = `
     id,
     timestamp,
     blockNumber,
@@ -29,7 +29,7 @@ const CREATE_EVENT_PROPERTIES = `
     minLoanAmount
 `;
 
-const LEND_EVENT_PROPERTIES = `
+export const LEND_EVENT_PROPERTIES = `
     id, 
     lender,
     loanAmount,
@@ -40,7 +40,7 @@ const LEND_EVENT_PROPERTIES = `
     borrowTicketHolder
 `;
 
-const BUYOUT_EVENT_PROPERTIES = `
+export const BUYOUT_EVENT_PROPERTIES = `
     id,
     newLender,
     lendTicketOwner,
@@ -50,7 +50,7 @@ const BUYOUT_EVENT_PROPERTIES = `
     blockNumber
 `;
 
-const REPAY_EVENT_PROPERTIES = `
+export const REPAY_EVENT_PROPERTIES = `
     id,
     repayer,
     loanAmount,
@@ -61,7 +61,7 @@ const REPAY_EVENT_PROPERTIES = `
     borrowTicketHolder
 `;
 
-const COLLATERAL_SEIZURE_EVENT_PROPERTIES = `
+export const COLLATERAL_SEIZURE_EVENT_PROPERTIES = `
     id,
     timestamp,
     blockNumber,
@@ -69,7 +69,7 @@ const COLLATERAL_SEIZURE_EVENT_PROPERTIES = `
     borrowTicketHolder
 `;
 
-const CLOSE_EVENT_PROPERTIES = `
+export const CLOSE_EVENT_PROPERTIES = `
     id,
     timestamp,
     blockNumber,

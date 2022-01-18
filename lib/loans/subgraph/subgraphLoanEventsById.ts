@@ -10,6 +10,14 @@ import {
 } from 'types/generated/graphql/nftLoans';
 import { Event } from 'types/Event';
 import { ethers } from 'ethers';
+import {
+  buyoutEventToUnified,
+  closeEventToUnified,
+  collateralSeizureEventToUnified,
+  createEventToUnified,
+  lendEventToUnified,
+  repaymentEventToUnified,
+} from 'lib/eventTransformers';
 
 const graphqlQuery = `
 query ($id: ID!) {
@@ -32,68 +40,33 @@ export async function subgraphLoanHistoryById(id: string): Promise<Event[]> {
 
   if (loan.createEvent && loan.createEvent !== null) {
     const event = loan.createEvent as CreateEvent;
-    events.push({
-      ...event,
-      typename: 'CreateEvent',
-      minter: event.creator,
-      maxInterestRate: ethers.BigNumber.from(event.maxPerSecondInterestRate),
-      minLoanAmount: ethers.BigNumber.from(event.minLoanAmount),
-      minDurationSeconds: ethers.BigNumber.from(event.minDurationSeconds),
-    });
+    events.push(createEventToUnified(event));
   }
 
   if (loan.closeEvent && loan.closeEvent !== null) {
     const event = loan.closeEvent as CloseEvent;
-    events.push({
-      ...event,
-      typename: 'CloseEvent',
-    });
+    events.push(closeEventToUnified(event));
   }
 
   if (loan.collateralSeizureEvent && loan.collateralSeizureEvent !== null) {
     const event = loan.collateralSeizureEvent as CollateralSeizureEvent;
-    events.push({
-      ...event,
-      typename: 'CollateralSeizureEvent',
-    });
+    events.push(collateralSeizureEventToUnified(event));
   }
 
   if (loan.repaymentEvent && loan.repaymentEvent !== null) {
     const event = loan.repaymentEvent as RepaymentEvent;
-    events.push({
-      ...event,
-      typename: 'RepaymentEvent',
-      loanOwner: event.lendTicketHolder,
-      interestEarned: ethers.BigNumber.from(event.interestEarned),
-      loanAmount: ethers.BigNumber.from(event.loanAmount),
-    });
+    events.push(repaymentEventToUnified(event));
   }
 
   if (loan.lendEvents && Array.isArray(loan.lendEvents)) {
     loan.lendEvents.forEach((event: LendEvent) => {
-      events.push({
-        ...event,
-        typename: 'LendEvent',
-
-        interestRate: ethers.BigNumber.from(event.perSecondInterestRate),
-        loanAmount: ethers.BigNumber.from(event.loanAmount),
-        durationSeconds: ethers.BigNumber.from(event.durationSeconds),
-        underwriter: event.lender,
-      });
+      events.push(lendEventToUnified(event));
     });
   }
 
   if (loan.buyoutEvents && Array.isArray(loan.buyoutEvents)) {
     loan.buyoutEvents.forEach((event: BuyoutEvent) => {
-      events.push({
-        ...event,
-        typename: 'BuyoutEvent',
-
-        interestEarned: ethers.BigNumber.from(event.interestEarned),
-        replacedAmount: ethers.BigNumber.from(event.loanAmount),
-        underwriter: event.newLender,
-        replacedLoanOwner: event.lendTicketOwner,
-      });
+      events.push(buyoutEventToUnified(event));
     });
   }
 
