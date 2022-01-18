@@ -57,7 +57,8 @@ export async function nodeLoanEventsById(loanIdString: string) {
   let events: Event[] = [];
 
   for (const event of createLoanEvents) {
-    const { blockNumber, transactionHash, args } = event as CreateLoanEvent;
+    const { blockNumber, transactionHash, args } =
+      event as unknown as CreateLoanEvent;
     const timestamp = (await event.getBlock()).timestamp;
 
     const parsedEvent: CreateEvent = {
