@@ -18,7 +18,7 @@ import { useDialogState, DialogStateReturn } from 'reakit/Dialog';
 import styles from './CreatePageHeader.module.css';
 import { Provider } from 'urql';
 import { eip721Client } from 'lib/urql';
-import { NFTCollateralPicker } from 'components/createPage/NFTCollateralPicker/NFTCollateralPicker';
+import { NFTCollateralPicker } from 'components/NFTCollateralPicker/NFTCollateralPicker';
 import { NFTMedia } from 'components/Media/NFTMedia';
 import { jsonRpcERC721Contract, web3Erc721Contract } from 'lib/contracts';
 import { State } from './State';

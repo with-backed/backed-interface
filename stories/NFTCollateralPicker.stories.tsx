@@ -1,6 +1,6 @@
-import React, { useContext } from 'react';
+import React from 'react';
 
-import { NFTCollateralPicker } from 'components/createPage/NFTCollateralPicker/NFTCollateralPicker';
+import { NFTCollateralPicker } from 'components/NFTCollateralPicker/NFTCollateralPicker';
 import { Provider } from 'urql';
 import { eip721Client } from 'lib/urql';
 import { noop } from 'lodash';
