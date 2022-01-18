@@ -3,12 +3,13 @@ import {
   BuyoutEvent,
   BuyoutEvent_Filter,
   BuyoutEvent_OrderBy,
+  CreateEvent,
+  CloseEvent_Filter,
   CollateralSeizureEvent,
   CollateralSeizureEvent_Filter,
-  CollateralSeizureEvent_OrderBy,
+  CreateEvent_Filter,
   LendEvent,
   LendEvent_Filter,
-  LendEvent_OrderBy,
   Loan,
   Loan_Filter,
   Loan_OrderBy,
@@ -20,11 +21,19 @@ import {
   QueryRepaymentEventsArgs,
   RepaymentEvent,
   RepaymentEvent_Filter,
-  RepaymentEvent_OrderBy,
 } from 'types/generated/graphql/nftLoans';
 import { nftBackedLoansClient } from '../../urql';
 import { gql } from 'urql';
 import { Dictionary, groupBy } from 'lodash';
+import { Event } from 'types/Event';
+import {
+  buyoutEventToUnified,
+  closeEventToUnified,
+  collateralSeizureEventToUnified,
+  createEventToUnified,
+  lendEventToUnified,
+  repaymentEventToUnified,
+} from 'lib/eventTransformers';
 
 const activeLoansQuery = gql`
     query($where: Loan_filter , $first: Int, $orderBy: String, $orderDirection: String) {
@@ -76,12 +85,6 @@ export async function getAllActiveLoansForAddress(
     .flat();
 }
 
-type EventType =
-  | BuyoutEvent
-  | CollateralSeizureEvent
-  | RepaymentEvent
-  | LendEvent;
-
 type EventFilter =
   | BuyoutEvent_Filter
   | CollateralSeizureEvent_Filter
@@ -114,7 +117,8 @@ async function getEventsForEventType<T>(
   eventQueryname: string,
   eventFilterType: string,
   whereArgs: EventFilter[],
-): Promise<T[]> {
+  toUnified: (event: any) => Event,
+): Promise<Event[]> {
   const sharedQueryArgs: EventQueryArgs = {
     orderBy: BuyoutEvent_OrderBy.Timestamp,
     orderDirection: OrderDirection.Desc,
@@ -134,12 +138,13 @@ async function getEventsForEventType<T>(
 
   return resultArray
     .map((result) => (result.data ? result.data[eventQueryname] : []))
+    .map((event) => toUnified(event))
     .flat();
 }
 
 export async function getAllEventsForAddress(
   address: string,
-): Promise<Dictionary<[EventType, ...EventType[]]>> {
+): Promise<Dictionary<[Event, ...Event[]]>> {
   const buyoutWhereFilters: BuyoutEvent_Filter[] = [
     { newLender: address },
     { lendTicketOwner: address },
@@ -160,28 +165,48 @@ export async function getAllEventsForAddress(
     { lender: address },
   ];
 
+  const createWhereFilters: CreateEvent_Filter[] = [{ creator: address }];
+
+  const closeWhereFilters: CloseEvent_Filter[] = [{ closer: address }];
+
   const allEventLoans = await Promise.all([
     getEventsForEventType<BuyoutEvent>(
       'buyoutEvents',
       'BuyoutEvent_filter',
       buyoutWhereFilters,
+      buyoutEventToUnified,
     ),
     getEventsForEventType<CollateralSeizureEvent>(
       'collateralSeizedEvents',
       'CollateralSeizureEvent_filter',
       collateralSeizedWhereFilters,
+      collateralSeizureEventToUnified,
     ),
     getEventsForEventType<RepaymentEvent>(
       'repaymentEvents',
       'RepaymentEvent_filter',
       repaymentWhereFilters,
+      repaymentEventToUnified,
     ),
     getEventsForEventType<LendEvent>(
       'lendEvents',
       'LendEvent_filter',
       lendWhereFilters,
+      lendEventToUnified,
+    ),
+    getEventsForEventType<CreateEvent>(
+      'createEvents',
+      'CreateEvent_filter',
+      createWhereFilters,
+      createEventToUnified,
+    ),
+    getEventsForEventType<CloseEvent>(
+      'closeEvents',
+      'closeEvent_filter',
+      closeWhereFilters,
+      closeEventToUnified,
     ),
   ]);
 
-  return groupBy(allEventLoans.flat(), (event) => event.__typename?.toString());
+  return groupBy(allEventLoans.flat(), (event) => event.typename);
 }
