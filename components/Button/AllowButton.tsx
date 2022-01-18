@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { ethers } from 'ethers';
 import { TransactionButton } from 'components/Button';
-import { jsonRpcERC20Contract, web3Erc20Contract } from 'lib/contracts';
+import { web3Erc20Contract } from 'lib/contracts';
 import { useWeb3 } from 'hooks/useWeb3';
 import { CompletedButton } from 'components/Button';
 
@@ -39,7 +39,7 @@ export function AllowButton({
         setWaitingForTx(false);
         console.log(err);
       });
-  }, [contractAddress]);
+  }, [callback, contractAddress]);
 
   const buttonText = useMemo(() => `Authorize ${symbol}`, [symbol]);
 

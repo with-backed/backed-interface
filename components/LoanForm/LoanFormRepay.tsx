@@ -7,7 +7,7 @@ import { Loan } from 'types/Loan';
 import React, { useCallback, useState } from 'react';
 import styles from './LoanForm.module.css';
 import { useLoanDetails } from 'hooks/useLoanDetails';
-import { jsonRpcLoanFacilitator, web3LoanFacilitator } from 'lib/contracts';
+import { web3LoanFacilitator } from 'lib/contracts';
 
 type LoanFormRepayProps = {
   loan: Loan;
@@ -43,7 +43,7 @@ export function LoanFormRepay({
         setWaitingForTx(false);
         console.error(err);
       });
-  }, [loan.id]);
+  }, [loan.id, refresh]);
 
   return (
     <div className={styles.form}>
