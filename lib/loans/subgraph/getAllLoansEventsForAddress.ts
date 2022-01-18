@@ -21,6 +21,8 @@ import {
   QueryRepaymentEventsArgs,
   RepaymentEvent,
   RepaymentEvent_Filter,
+  QueryCreateEventsArgs,
+  QueryCloseEventsArgs,
 } from 'types/generated/graphql/nftLoans';
 import { nftBackedLoansClient } from '../../urql';
 import { gql } from 'urql';
@@ -86,12 +88,16 @@ export async function getAllActiveLoansForAddress(
 }
 
 type EventFilter =
+  | CreateEvent_Filter
+  | CloseEvent_Filter
   | BuyoutEvent_Filter
   | CollateralSeizureEvent_Filter
   | RepaymentEvent_Filter
   | LendEvent_Filter;
 
 type EventQueryArgs =
+  | QueryCreateEventsArgs
+  | QueryCloseEventsArgs
   | QueryBuyoutEventsArgs
   | QueryCollateralSeizureEventsArgs
   | QueryRepaymentEventsArgs
