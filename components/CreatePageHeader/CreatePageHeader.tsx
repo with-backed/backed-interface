@@ -20,7 +20,7 @@ import { Provider } from 'urql';
 import { eip721Client } from 'lib/urql';
 import { NFTCollateralPicker } from 'components/NFTCollateralPicker/NFTCollateralPicker';
 import { NFTMedia } from 'components/Media/NFTMedia';
-import { jsonRpcERC721Contract, web3Erc721Contract } from 'lib/contracts';
+import { web3Erc721Contract } from 'lib/contracts';
 import { State } from './State';
 import { explainers } from './explainers';
 import { CreatePageForm } from './CreatePageForm';
@@ -137,7 +137,6 @@ function AuthorizeNFTButton({
   state,
   submittingApproval,
 }: AuthorizeNFTButtonProps) {
-  const { account } = useWeb3();
   const [transactionHash, setTransactionHash] = useState('');
 
   const approve = useCallback(async () => {
@@ -157,7 +156,12 @@ function AuthorizeNFTButton({
         setSubmittingApproval(false);
         console.error(err);
       });
-  }, [collateralAddress, collateralTokenID, setSubmittingApproval]);
+  }, [
+    collateralAddress,
+    collateralTokenID,
+    setIsCollateralApproved,
+    setSubmittingApproval,
+  ]);
   const text = useMemo(() => 'Authorize NFT', []);
   const isDisabled = state < State.NeedsToAuthorize;
 
