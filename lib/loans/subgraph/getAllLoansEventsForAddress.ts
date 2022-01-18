@@ -1,4 +1,12 @@
-import { ALL_LOAN_PROPERTIES } from './subgraphSharedConstants';
+import {
+  ALL_LOAN_PROPERTIES,
+  BUYOUT_EVENT_PROPERTIES,
+  CLOSE_EVENT_PROPERTIES,
+  COLLATERAL_SEIZURE_EVENT_PROPERTIES,
+  CREATE_EVENT_PROPERTIES,
+  LEND_EVENT_PROPERTIES,
+  REPAY_EVENT_PROPERTIES,
+} from './subgraphSharedConstants';
 import {
   BuyoutEvent,
   BuyoutEvent_Filter,
@@ -103,7 +111,11 @@ type EventQueryArgs =
   | QueryRepaymentEventsArgs
   | QueryLendEventsArgs;
 
-function eventsQuery(eventName: string, whereFilterType: string) {
+function eventsQuery(
+  eventName: string,
+  whereFilterType: string,
+  properties: string,
+) {
   return gql`
     query($where: ${whereFilterType}, $first: Int, $orderBy: String, $orderDirection: String) {
       ${eventName}(
@@ -111,9 +123,7 @@ function eventsQuery(eventName: string, whereFilterType: string) {
         orderBy: $orderBy, 
         orderDirection: $orderDirection
       ) {
-        loan {
-          ${ALL_LOAN_PROPERTIES}
-        }
+        ${properties}
       }
     }
   `;
@@ -122,6 +132,7 @@ function eventsQuery(eventName: string, whereFilterType: string) {
 async function getEventsForEventType<T>(
   eventQueryname: string,
   eventFilterType: string,
+  properties: string,
   whereArgs: EventFilter[],
   toUnified: (event: any) => Event,
 ): Promise<Event[]> {
@@ -134,7 +145,7 @@ async function getEventsForEventType<T>(
     await Promise.all(
       whereArgs.map((where) =>
         nftBackedLoansClient
-          .query(eventsQuery(eventQueryname, eventFilterType), {
+          .query(eventsQuery(eventQueryname, eventFilterType, properties), {
             ...sharedQueryArgs,
             where,
           })
@@ -144,8 +155,8 @@ async function getEventsForEventType<T>(
 
   return resultArray
     .map((result) => (result.data ? result.data[eventQueryname] : []))
-    .map((event) => toUnified(event))
-    .flat();
+    .flat()
+    .map((event) => toUnified(event));
 }
 
 export async function getAllEventsForAddress(
@@ -179,36 +190,42 @@ export async function getAllEventsForAddress(
     getEventsForEventType<BuyoutEvent>(
       'buyoutEvents',
       'BuyoutEvent_filter',
+      BUYOUT_EVENT_PROPERTIES,
       buyoutWhereFilters,
       buyoutEventToUnified,
     ),
     getEventsForEventType<CollateralSeizureEvent>(
       'collateralSeizedEvents',
       'CollateralSeizureEvent_filter',
+      COLLATERAL_SEIZURE_EVENT_PROPERTIES,
       collateralSeizedWhereFilters,
       collateralSeizureEventToUnified,
     ),
     getEventsForEventType<RepaymentEvent>(
       'repaymentEvents',
       'RepaymentEvent_filter',
+      REPAY_EVENT_PROPERTIES,
       repaymentWhereFilters,
       repaymentEventToUnified,
     ),
     getEventsForEventType<LendEvent>(
       'lendEvents',
       'LendEvent_filter',
+      LEND_EVENT_PROPERTIES,
       lendWhereFilters,
       lendEventToUnified,
     ),
     getEventsForEventType<CreateEvent>(
       'createEvents',
       'CreateEvent_filter',
+      CREATE_EVENT_PROPERTIES,
       createWhereFilters,
       createEventToUnified,
     ),
     getEventsForEventType<CloseEvent>(
       'closeEvents',
       'closeEvent_filter',
+      CLOSE_EVENT_PROPERTIES,
       closeWhereFilters,
       closeEventToUnified,
     ),
