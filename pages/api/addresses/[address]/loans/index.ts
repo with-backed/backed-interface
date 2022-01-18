@@ -1,4 +1,4 @@
-import { getAllActiveLoansForAddress } from 'lib/loans/subgraph/getAllSubgraphLoansForAddress';
+import { getAllActiveLoansForAddress } from 'lib/loans/subgraph/getAllLoansEventsForAddress';
 import { Loan as SubgraphLoan } from 'types/generated/graphql/nftLoans';
 import { NextApiRequest, NextApiResponse } from 'next';
 
