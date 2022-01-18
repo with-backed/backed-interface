@@ -14,3 +14,11 @@
 .red {
   color: var(--highlight-alert-100);
 }
+
+.media {
+  grid-column: col-start / span 4;
+}
+
+.form {
+  grid-column: col-start 5 / 9;
+}

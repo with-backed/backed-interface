@@ -59,6 +59,7 @@
   --modal-width-narrow: 460px;
   --modal-width-regular: 580px;
   --modal-height: 580px;
+  --column-width: 130px;
 }
 
 html,

@@ -23,3 +23,20 @@
   display: flex;
   z-index: 0;
 }
+
+.column {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: var(--gap);
+}
+
+.left-column {
+  composes: column;
+  grid-column: col-start / span 4;
+}
+
+.right-column {
+  composes: column;
+  grid-column: col-start 5 / -1;
+}
