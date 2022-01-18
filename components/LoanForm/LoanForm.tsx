@@ -76,7 +76,10 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
 
   if (
     !loan.lastAccumulatedTimestamp.eq(0) &&
-    loan.lastAccumulatedTimestamp.add(loan.durationSeconds).lte(timestamp || 0)
+    loan.lastAccumulatedTimestamp
+      .add(loan.durationSeconds)
+      .lte(timestamp || 0) &&
+    account.toLowerCase() === loan.lender?.toLowerCase()
   ) {
     if (account.toUpperCase() === loan.lender?.toUpperCase()) {
       return <LoanFormSeizeCollateral loan={loan} refresh={refresh} />;
