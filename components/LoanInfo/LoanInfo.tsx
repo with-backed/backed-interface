@@ -1,6 +1,4 @@
 import { CollateralInfo } from 'components/CollateralInfo';
-import { Column } from 'components/Column';
-import { TwoColumn } from 'components/layouts/TwoColumn';
 import { RepaymentInfo } from 'components/RepaymentInfo';
 import { TicketHistory } from 'components/TicketHistory';
 import { ethers } from 'ethers';
@@ -8,8 +6,8 @@ import { Loan } from 'types/Loan';
 import React, { useMemo } from 'react';
 import styles from './LoanInfo.module.css';
 import { LoanTickets } from 'components/LoanTickets';
-import type { Event } from 'types/Event';
 import { CollateralSaleInfo } from 'lib/loans/collateralSaleInfo';
+import { TwelveColumn } from 'components/layouts/TwelveColumn';
 
 type LoanInfoProps = {
   loan: Loan;
@@ -45,16 +43,16 @@ export function LoanInfo({ loan, collateralSaleInfo }: LoanInfoProps) {
       }}
       className={styles.wrapper}>
       <div className={styles.mask} />
-      <TwoColumn>
-        <Column>
+      <TwelveColumn>
+        <div className={styles['left-column']}>
           <CollateralInfo loan={loan} collateralSaleInfo={collateralSaleInfo} />
           <TicketHistory loan={loan} />
-        </Column>
-        <Column>
+        </div>
+        <div className={styles['right-column']}>
           <RepaymentInfo loan={loan} />
           <LoanTickets loan={loan} />
-        </Column>
-      </TwoColumn>
+        </div>
+      </TwelveColumn>
     </div>
   );
 }

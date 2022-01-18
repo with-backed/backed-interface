@@ -1,5 +1,4 @@
 import { DescriptionList } from 'components/DescriptionList';
-import { TwoColumn } from 'components/layouts/TwoColumn';
 import { LoanForm } from 'components/LoanForm';
 import { Media } from 'components/Media';
 import { Fallback } from 'components/Media/Fallback';
@@ -8,7 +7,7 @@ import { CollateralMedia } from 'types/CollateralMedia';
 import { Loan } from 'types/Loan';
 import React, { useMemo } from 'react';
 import styles from './LoanHeader.module.css';
-import { ThreeColumn } from 'components/layouts/ThreeColumn';
+import { TwelveColumn } from 'components/layouts/TwelveColumn';
 
 type LoanHeaderProps = {
   loan: Loan;
@@ -38,20 +37,14 @@ export function LoanHeader({
   );
   return (
     <div className={styles['loan-header']}>
-      <ThreeColumn>
-        {collateralMedia && (
-          <Media
-            media={collateralMedia.mediaUrl}
-            mediaMimeType={collateralMedia.mediaMimeType}
-            autoPlay
-          />
-        )}
+      <TwelveColumn>
+        <div className={styles.media}>{collateralMedia && <Fallback />}</div>
         {!collateralMedia && <Fallback />}
-        <div>
+        <div className={styles.form}>
           <List details={details} />
           <LoanForm loan={loan} refresh={refresh} />
         </div>
-      </ThreeColumn>
+      </TwelveColumn>
     </div>
   );
 }
