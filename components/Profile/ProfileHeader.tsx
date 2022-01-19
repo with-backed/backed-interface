@@ -44,9 +44,10 @@ const headerInfo: HeaderInformation[] = [
     ),
     Data: ({ loans }): JSX.Element => (
       <div className={styles.amountsWrapper}>
-        {getAllPrincipalAmounts(loans).map((amount, i) => (
+        {getAllPrincipalAmounts(loans).map((amount, i, arr) => (
           <div key={i} className={styles.amount}>
-            {amount.nominal} {amount.symbol};
+            {amount.nominal} {amount.symbol}
+            {i !== arr.length - 1 && ';'}
           </div>
         ))}
       </div>
@@ -58,10 +59,11 @@ const headerInfo: HeaderInformation[] = [
     ),
     Data: ({ loans }): JSX.Element => (
       <div className={styles.amountsWrapper}>
-        {getAllInterestAmounts(loans).map((amount, i) => (
+        {getAllInterestAmounts(loans).map((amount, i, arr) => (
           <div key={i} className={styles.amount}>
             {' '}
-            {amount.nominal} {amount.symbol};
+            {amount.nominal} {amount.symbol}
+            {i !== arr.length - 1 && ';'}
           </div>
         ))}
       </div>

@@ -1,9 +1,4 @@
-import dayjs from 'dayjs';
-import {
-  computeInitialRemaining,
-  formatTimeDigit,
-  getDaysHoursMinutesSeconds,
-} from 'lib/duration';
+import { formatTimeDigit, getDaysHoursMinutesSeconds } from 'lib/duration';
 import { getNextLoanDue } from 'lib/loans/profileHeaderMethods';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Loan } from 'types/Loan';

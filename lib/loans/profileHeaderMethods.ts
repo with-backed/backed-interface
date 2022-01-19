@@ -4,6 +4,7 @@ import {
   getDaysHoursMinutesSeconds,
   LoanCountdown,
 } from 'lib/duration';
+import { groupBy } from 'lodash';
 import { Loan } from 'types/Loan';
 
 export function getActiveLoanCount(loans: Loan[]): number {
@@ -23,20 +24,37 @@ export function getNextLoanDue(loans: Loan[]): number {
   return nearestLoanDueDuration > 0 ? nearestLoanDueDuration : 0;
 }
 
-export function getAllPrincipalAmounts(
+type ERC20Amount = {
+  nominal: string;
+  symbol: string;
+};
+
+function getSummedFieldByERC20(
   loans: Loan[],
-): { nominal: string; symbol: string }[] {
-  return loans.map((l) => ({
-    nominal: ethers.utils.formatUnits(l.loanAmount, l.loanAssetDecimals),
-    symbol: l.loanAssetSymbol,
-  }));
+  selector: (loan: Loan) => ethers.BigNumber,
+): ERC20Amount[] {
+  const loansByERC20 = groupBy(loans, (l) => l.loanAssetContractAddress);
+  return Object.keys(loansByERC20).map((erc) => {
+    const symbol = loansByERC20[erc][0].loanAssetSymbol;
+    const decimals = loansByERC20[erc][0].loanAssetDecimals;
+
+    return {
+      symbol,
+      nominal: ethers.utils.formatUnits(
+        loansByERC20[erc].reduce(
+          (prev, current) => prev.add(selector(current)),
+          ethers.BigNumber.from(0),
+        ),
+        decimals,
+      ),
+    };
+  });
 }
 
-export function getAllInterestAmounts(
-  loans: Loan[],
-): { nominal: string; symbol: string }[] {
-  return loans.map((l) => ({
-    nominal: ethers.utils.formatUnits(l.interestOwed, l.loanAssetDecimals),
-    symbol: l.loanAssetSymbol,
-  }));
+export function getAllPrincipalAmounts(loans: Loan[]): ERC20Amount[] {
+  return getSummedFieldByERC20(loans, (loan) => loan.loanAmount);
+}
+
+export function getAllInterestAmounts(loans: Loan[]): ERC20Amount[] {
+  return getSummedFieldByERC20(loans, (loan) => loan.interestOwed);
 }
