@@ -92,6 +92,17 @@ export function LoanFormAwaiting({
             />
           </label>
 
+          <label htmlFor="duration">
+            <span>Duration</span>
+            <Field
+              name="duration"
+              as={Input}
+              color="dark"
+              type="number"
+              unit="Days"
+            />
+          </label>
+
           <label htmlFor="interestRate">
             <span>Interest Rate</span>
             <Field
@@ -103,16 +114,6 @@ export function LoanFormAwaiting({
             />
           </label>
 
-          <label htmlFor="duration">
-            <span>Duration</span>
-            <Field
-              name="duration"
-              as={Input}
-              color="dark"
-              type="number"
-              unit="Days"
-            />
-          </label>
           <FormErrors errors={Object.values(formik.errors)} />
           <AllowButton
             contractAddress={loan.loanAssetContractAddress}
