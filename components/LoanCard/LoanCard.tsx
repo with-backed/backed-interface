@@ -13,8 +13,14 @@ const Attributes: FunctionComponent = ({ children }) => {
   return <div className={styles.attributes}>{children}</div>;
 };
 
+export enum BorrowerOrLenderType {
+  Borrower = 'borrower',
+  Lender = 'lender',
+}
+
 type LoanCardProps = {
   loan: Loan;
+  borrowerOrLender?: BorrowerOrLenderType;
 };
 
 export function LoanCard({
@@ -27,6 +33,7 @@ export function LoanCard({
     collateralTokenURI,
     collateralTokenId,
   },
+  borrowerOrLender = undefined,
 }: LoanCardProps) {
   const title = `View loan #${id}`;
   const formattedLoanAmount = useMemo(
@@ -66,6 +73,7 @@ export function LoanCard({
         formattedLoanAmount={formattedLoanAmount}
         perSecondInterestRate={perSecondInterestRate}
         metadata={maybeMetadata.metadata}
+        borrowerOrLender={borrowerOrLender}
       />
     );
   }
@@ -77,6 +85,7 @@ type LoanCardLoadedProps = {
   formattedLoanAmount: string;
   perSecondInterestRate: ethers.BigNumber;
   metadata: GetNFTInfoResponse;
+  borrowerOrLender?: BorrowerOrLenderType;
 };
 /**
  * Only exported for the Storybook. Please use top-level LoanCard.
@@ -87,6 +96,7 @@ export function LoanCardLoaded({
   formattedLoanAmount,
   perSecondInterestRate,
   metadata: { mediaMimeType, mediaUrl, name },
+  borrowerOrLender = undefined,
 }: LoanCardLoadedProps) {
   return (
     <Link href={`/loans/${id}`}>
@@ -102,6 +112,15 @@ export function LoanCardLoaded({
             <span>{formattedLoanAmount}</span>
             <span>{formattedAnnualRate(perSecondInterestRate)}% interest</span>
           </Attributes>
+          {!!borrowerOrLender && (
+            <Attributes>
+              <span className={styles[borrowerOrLender]}>
+                {borrowerOrLender == BorrowerOrLenderType.Borrower
+                  ? 'You are the borrower'
+                  : 'You are the lender'}
+              </span>
+            </Attributes>
+          )}
         </div>
       </a>
     </Link>
