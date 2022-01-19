@@ -16,8 +16,7 @@ export function ProfileLoans({ address, loans }: ProfileLoansProps) {
           <LoanCard
             key={loan.id.toString()}
             loan={loan}
-            isBorrower={loan.borrower === address}
-            isLender={loan.lender === address}
+            selectedAddress={address}
           />
         ))}
       </ThreeColumn>

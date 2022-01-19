@@ -17,13 +17,15 @@ type ProfileHeaderProps = {
 };
 
 type HeaderInformation = {
-  Label: ({ borrower }: { borrower: boolean }) => JSX.Element;
+  Label: ({ borrower }: { address?: string; borrower: boolean }) => JSX.Element;
   Data: ({ loans }: { loans: Loan[] }) => JSX.Element;
 };
 
 const headerInfo: HeaderInformation[] = [
   {
-    Label: ({ borrower }) => <BorrowerLenderBubble borrower={borrower} />,
+    Label: ({ borrower, address }) => (
+      <BorrowerLenderBubble address={address || ''} borrower={borrower} />
+    ),
     Data: ({ loans }): JSX.Element => (
       <div>
         {getActiveLoanCount(loans)} Active; {getClosedLoanCount(loans)} Closed
@@ -84,7 +86,7 @@ export function ProfileHeader({ address, loans }: ProfileHeaderProps) {
           {headerInfo.map(({ Label, Data }, inner) => (
             <div className={styles.headerRow} key={inner}>
               <div className={styles.leftSide}>
-                <Label borrower={index === 0} />
+                <Label address={address} borrower={index === 0} />
               </div>
               <div className={styles.gutter} />
               <div className={styles.rightSide}>

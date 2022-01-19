@@ -16,8 +16,7 @@ const Attributes: FunctionComponent = ({ children }) => {
 
 type LoanCardProps = {
   loan: Loan;
-  isBorrower?: boolean;
-  isLender?: boolean;
+  selectedAddress?: string;
 };
 
 export function LoanCard({
@@ -29,9 +28,10 @@ export function LoanCard({
     perSecondInterestRate,
     collateralTokenURI,
     collateralTokenId,
+    borrower,
+    lender,
   },
-  isBorrower = false,
-  isLender = false,
+  selectedAddress = '',
 }: LoanCardProps) {
   const title = `View loan #${id}`;
   const formattedLoanAmount = useMemo(
@@ -71,8 +71,9 @@ export function LoanCard({
         formattedLoanAmount={formattedLoanAmount}
         perSecondInterestRate={perSecondInterestRate}
         metadata={maybeMetadata.metadata}
-        isBorrower={isBorrower}
-        isLender={isLender}
+        selectedAddress={selectedAddress}
+        isBorrower={selectedAddress === borrower}
+        isLender={selectedAddress === lender}
       />
     );
   }
@@ -84,6 +85,7 @@ type LoanCardLoadedProps = {
   formattedLoanAmount: string;
   perSecondInterestRate: ethers.BigNumber;
   metadata: GetNFTInfoResponse;
+  selectedAddress?: string;
   isBorrower?: boolean;
   isLender?: boolean;
 };
@@ -96,6 +98,7 @@ export function LoanCardLoaded({
   formattedLoanAmount,
   perSecondInterestRate,
   metadata: { mediaMimeType, mediaUrl, name },
+  selectedAddress,
   isBorrower,
   isLender,
 }: LoanCardLoadedProps) {
@@ -113,10 +116,17 @@ export function LoanCardLoaded({
             <span>{formattedLoanAmount}</span>
             <span>{formattedAnnualRate(perSecondInterestRate)}% interest</span>
           </Attributes>
-          {(isBorrower || isLender) && (
+          {!!selectedAddress && (
             <Attributes>
-              {isBorrower && <BorrowerLenderBubble borrower />}
-              {isLender && <BorrowerLenderBubble borrower={false} />}
+              {isBorrower && (
+                <BorrowerLenderBubble address={selectedAddress} borrower />
+              )}
+              {isLender && (
+                <BorrowerLenderBubble
+                  address={selectedAddress}
+                  borrower={false}
+                />
+              )}
             </Attributes>
           )}
         </div>
