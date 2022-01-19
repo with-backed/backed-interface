@@ -83,8 +83,8 @@ type LoanCardLoadedProps = {
   formattedLoanAmount: string;
   perSecondInterestRate: ethers.BigNumber;
   metadata: GetNFTInfoResponse;
-  isBorrower: boolean;
-  isLender: boolean;
+  isBorrower?: boolean;
+  isLender?: boolean;
 };
 /**
  * Only exported for the Storybook. Please use top-level LoanCard.
