@@ -8,7 +8,7 @@ import {
 import { useMemo } from 'react';
 import { Loan } from 'types/Loan';
 import { BorrowerLenderBubble } from './BorrowerLenderBubble';
-import { NextLoanCountdown } from './NextLoanCountdown';
+import { NextLoanDueCountdown } from './NextLoanDueCountdown';
 import styles from './profile.module.css';
 
 type ProfileHeaderProps = {
@@ -34,7 +34,7 @@ const headerInfo: HeaderInformation[] = [
   },
   {
     Label: () => <div>Next Loan Due</div>,
-    Data: ({ loans }): JSX.Element => <NextLoanCountdown loans={loans} />,
+    Data: ({ loans }): JSX.Element => <NextLoanDueCountdown loans={loans} />,
   },
   {
     Label: ({ borrower }) => (

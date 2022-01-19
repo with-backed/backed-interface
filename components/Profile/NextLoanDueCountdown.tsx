@@ -3,7 +3,7 @@ import { getNextLoanDue } from 'lib/loans/profileHeaderMethods';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Loan } from 'types/Loan';
 
-export function NextLoanCountdown({ loans }: { loans: Loan[] }) {
+export function NextLoanDueCountdown({ loans }: { loans: Loan[] }) {
   const [remainingSeconds, setRemainingSeconds] = useState(
     getNextLoanDue(loans),
   );
