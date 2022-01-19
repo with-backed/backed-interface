@@ -1,9 +1,5 @@
 import { ethers } from 'ethers';
-import {
-  getCurrentUnixTime,
-  getDaysHoursMinutesSeconds,
-  LoanCountdown,
-} from 'lib/duration';
+import { getCurrentUnixTime } from 'lib/duration';
 import { groupBy } from 'lodash';
 import { Loan } from 'types/Loan';
 
@@ -17,6 +13,7 @@ export function getClosedLoanCount(loans: Loan[]): number {
 }
 
 export function getNextLoanDue(loans: Loan[]): number {
+  if (loans.length === 0) return 0;
   const nearestLoanDueDuration =
     loans.sort(
       (loanOne, loanTwo) => loanOne.endDateTimestamp - loanTwo.endDateTimestamp,

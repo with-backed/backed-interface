@@ -10,7 +10,7 @@ type BubblesProps = {
 export function BorrowerLenderBubble({ address, borrower }: BubblesProps) {
   const { account } = useWeb3();
   const isConnectedUser = useMemo(
-    () => account && account === address,
+    () => account && account.toLowerCase() === address.toLowerCase(),
     [account, address],
   );
 
