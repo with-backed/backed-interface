@@ -79,6 +79,7 @@ export const createPageFormMachine = createMachine<Context>(
       authorizeNFT: {
         on: {
           SUBMITTED: { target: 'pendingAuthorization' },
+          ALREADY_APPROVED: { target: 'loanFormUnfocused' },
         },
       },
       pendingAuthorization: {
@@ -91,9 +92,8 @@ export const createPageFormMachine = createMachine<Context>(
         type: 'final',
       },
       loanFormUnfocused: {
+        always: { target: 'mintBorrowerTicket', cond: 'guardIsFilled' },
         on: {
-          // transient transition
-          '': { target: 'mintBorrowerTicket', cond: 'guardIsFilled' },
           DENOMINATION: { target: 'denomination' },
           LOAN_AMOUNT: { target: 'loanAmount' },
           DURATION: { target: 'minimumDuration' },

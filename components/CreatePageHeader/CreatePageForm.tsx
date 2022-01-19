@@ -1,4 +1,4 @@
-import { Button, TransactionButton } from 'components/Button';
+import { TransactionButton } from 'components/Button';
 import { FormErrors } from 'components/FormErrors';
 import { Input } from 'components/Input';
 import { Select } from 'components/Select';
@@ -11,10 +11,15 @@ import {
   web3LoanFacilitator,
 } from 'lib/contracts';
 import { getLoanAssets, LoanAsset } from 'lib/loanAssets';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  FocusEvent,
+} from 'react';
 import * as Yup from 'yup';
 import styles from './CreatePageHeader.module.css';
-import { State } from './State';
 
 const SECONDS_IN_A_DAY = 60 * 60 * 24;
 const SECONDS_IN_A_YEAR = 31_536_000;
@@ -24,13 +29,17 @@ const MIN_RATE = 1 / 10 ** INTEREST_RATE_PERCENT_DECIMALS;
 type CreatePageFormProps = {
   collateralAddress: string;
   collateralTokenID: ethers.BigNumber;
-  state: State;
+  onBlur: (filled: boolean) => void;
+  onFocus: (
+    type: 'DENOMINATION' | 'LOAN_AMOUNT' | 'DURATION' | 'INTEREST_RATE',
+  ) => void;
 };
 
 export function CreatePageForm({
   collateralAddress,
   collateralTokenID,
-  state,
+  onBlur,
+  onFocus,
 }: CreatePageFormProps) {
   const { account } = useWeb3();
   const buttonText = useMemo(() => 'Mint Borrower Ticket', []);
@@ -102,13 +111,20 @@ export function CreatePageForm({
     return undefined;
   }, [loanAssetOptions]);
 
+  const handleBlur = useCallback(
+    (event: FocusEvent<HTMLInputElement>) => {
+      if (event.target.value.length > 0) {
+        onBlur(true);
+      } else {
+        onBlur(false);
+      }
+    },
+    [onBlur],
+  );
+
   useEffect(() => {
     loadAssets();
   }, [loadAssets]);
-
-  if (state < State.Form) {
-    return <Button disabled>{buttonText}</Button>;
-  }
 
   return (
     <Formik
@@ -155,6 +171,8 @@ export function CreatePageForm({
               onChange={(option: { [key: string]: string }) =>
                 formik.setFieldValue('loanAssetContractAddress', option)
               }
+              onFocus={() => onFocus('DENOMINATION')}
+              onBlur={handleBlur}
             />
           </label>
 
@@ -167,18 +185,8 @@ export function CreatePageForm({
               as={Input}
               color="dark"
               unit={formik.values.loanAssetContractAddress?.label}
-            />
-          </label>
-
-          <label htmlFor="interestRate">
-            <span>Maximum Interest Rate</span>
-            <Field
-              name="interestRate"
-              type="number"
-              placeholder={`0`}
-              as={Input}
-              color="dark"
-              unit="%"
+              onFocus={() => onFocus('LOAN_AMOUNT')}
+              onBlur={handleBlur}
             />
           </label>
 
@@ -191,6 +199,22 @@ export function CreatePageForm({
               as={Input}
               color="dark"
               unit="Days"
+              onFocus={() => onFocus('DURATION')}
+              onBlur={handleBlur}
+            />
+          </label>
+
+          <label htmlFor="interestRate">
+            <span>Maximum Interest Rate</span>
+            <Field
+              name="interestRate"
+              type="number"
+              placeholder={`0`}
+              as={Input}
+              color="dark"
+              unit="%"
+              onFocus={() => onFocus('INTEREST_RATE')}
+              onBlur={handleBlur}
             />
           </label>
 
