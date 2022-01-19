@@ -1,7 +1,7 @@
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { LoanCard } from 'components/LoanCard';
 import { Loan } from 'types/Loan';
-import styles from './profileHeader.module.css';
+import styles from './profile.module.css';
 
 type ProfileLoansProps = {
   address: string;

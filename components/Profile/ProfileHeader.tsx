@@ -7,8 +7,9 @@ import {
 } from 'lib/loans/profileHeaderMethods';
 import { useMemo } from 'react';
 import { Loan } from 'types/Loan';
+import { BorrowerLenderBubble } from './BorrowerLenderBubble';
 import { NextLoanCountdown } from './NextLoanCountdown';
-import styles from './profileHeader.module.css';
+import styles from './profile.module.css';
 
 type ProfileHeaderProps = {
   address: string;
@@ -22,12 +23,7 @@ type HeaderInformation = {
 
 const headerInfo: HeaderInformation[] = [
   {
-    Label: ({ borrower }) => (
-      <div
-        className={`${styles.bubble} ${
-          borrower ? styles.borrowerBubble : styles.lenderBubble
-        }`}>{`You are the ${borrower ? 'borrower' : 'lender'}`}</div>
-    ),
+    Label: ({ borrower }) => <BorrowerLenderBubble borrower={borrower} />,
     Data: ({ loans }): JSX.Element => (
       <div>
         {getActiveLoanCount(loans)} Active; {getClosedLoanCount(loans)} Closed

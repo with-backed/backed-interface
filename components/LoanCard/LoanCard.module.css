@@ -34,13 +34,3 @@
   padding-top: 100%;
   background-color: var(--neutral-20);
 }
-
-span.borrower {
-  text-transform: uppercase;
-  background: var(--highlight-active-10);
-}
-
-span.lender {
-  text-transform: uppercase;
-  background: var(--neutral-30);
-}

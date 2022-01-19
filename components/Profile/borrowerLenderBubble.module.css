@@ -1,0 +1,14 @@
+.bubble {
+    color: black;
+    font-size: var(--font-small);
+    padding: 4px 10px;
+    border-radius: var(--border-radius-small);
+}
+
+.borrowerBubble {
+    background: var(--highlight-active-10);
+}
+
+.lenderBubble {
+    background: var(--neutral-30);
+}

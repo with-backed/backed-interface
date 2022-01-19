@@ -8,6 +8,7 @@ import { Media } from 'components/Media';
 import { GetNFTInfoResponse } from 'lib/getNFTInfo';
 import { Fallback } from 'components/Media/Fallback';
 import { Loan } from 'types/Loan';
+import { BorrowerLenderBubble } from 'components/Profile/BorrowerLenderBubble';
 
 const Attributes: FunctionComponent = ({ children }) => {
   return <div className={styles.attributes}>{children}</div>;
@@ -114,12 +115,8 @@ export function LoanCardLoaded({
           </Attributes>
           {(isBorrower || isLender) && (
             <Attributes>
-              {isBorrower && (
-                <span className={styles.borrower}>You are the borrower</span>
-              )}
-              {isLender && (
-                <span className={styles.lender}>You are the lender</span>
-              )}
+              {isBorrower && <BorrowerLenderBubble borrower />}
+              {isLender && <BorrowerLenderBubble borrower={false} />}
             </Attributes>
           )}
         </div>
