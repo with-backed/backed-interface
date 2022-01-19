@@ -1,6 +1,5 @@
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { LoanCard } from 'components/LoanCard';
-import { BorrowerOrLenderType } from 'components/LoanCard/LoanCard';
 import { Loan } from 'types/Loan';
 import styles from './profileHeader.module.css';
 
@@ -17,11 +16,8 @@ export function ProfileLoans({ address, loans }: ProfileLoansProps) {
           <LoanCard
             key={loan.id.toString()}
             loan={loan}
-            borrowerOrLender={
-              loan.borrower === address
-                ? BorrowerOrLenderType.Borrower
-                : BorrowerOrLenderType.Lender
-            }
+            isBorrower={loan.borrower === address}
+            isLender={loan.lender === address}
           />
         ))}
       </ThreeColumn>

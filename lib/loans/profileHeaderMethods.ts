@@ -7,6 +7,7 @@ import {
 import { Loan } from 'types/Loan';
 
 export function getActiveLoanCount(loans: Loan[]): number {
+  console.log({ loans });
   return loans.filter((l) => !l.closed).length;
 }
 
@@ -15,16 +16,11 @@ export function getClosedLoanCount(loans: Loan[]): number {
 }
 
 export function getNextLoanDue(loans: Loan[]): number {
-  console.log(
+  const nearestLoanDueDuration =
     loans.sort(
       (loanOne, loanTwo) => loanOne.endDateTimestamp - loanTwo.endDateTimestamp,
-    )[0].endDateTimestamp,
-  );
-  return (
-    loans.sort(
-      (loanOne, loanTwo) => loanOne.endDateTimestamp - loanTwo.endDateTimestamp,
-    )[0].endDateTimestamp - getCurrentUnixTime().toNumber()
-  );
+    )[0].endDateTimestamp - getCurrentUnixTime().toNumber();
+  return nearestLoanDueDuration > 0 ? nearestLoanDueDuration : 0;
 }
 
 export function getAllPrincipalAmounts(

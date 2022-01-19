@@ -13,14 +13,10 @@ const Attributes: FunctionComponent = ({ children }) => {
   return <div className={styles.attributes}>{children}</div>;
 };
 
-export enum BorrowerOrLenderType {
-  Borrower = 'borrower',
-  Lender = 'lender',
-}
-
 type LoanCardProps = {
   loan: Loan;
-  borrowerOrLender?: BorrowerOrLenderType;
+  isBorrower?: boolean;
+  isLender?: boolean;
 };
 
 export function LoanCard({
@@ -33,7 +29,8 @@ export function LoanCard({
     collateralTokenURI,
     collateralTokenId,
   },
-  borrowerOrLender = undefined,
+  isBorrower = false,
+  isLender = false,
 }: LoanCardProps) {
   const title = `View loan #${id}`;
   const formattedLoanAmount = useMemo(
@@ -73,7 +70,8 @@ export function LoanCard({
         formattedLoanAmount={formattedLoanAmount}
         perSecondInterestRate={perSecondInterestRate}
         metadata={maybeMetadata.metadata}
-        borrowerOrLender={borrowerOrLender}
+        isBorrower={isBorrower}
+        isLender={isLender}
       />
     );
   }
@@ -85,7 +83,8 @@ type LoanCardLoadedProps = {
   formattedLoanAmount: string;
   perSecondInterestRate: ethers.BigNumber;
   metadata: GetNFTInfoResponse;
-  borrowerOrLender?: BorrowerOrLenderType;
+  isBorrower: boolean;
+  isLender: boolean;
 };
 /**
  * Only exported for the Storybook. Please use top-level LoanCard.
@@ -96,7 +95,8 @@ export function LoanCardLoaded({
   formattedLoanAmount,
   perSecondInterestRate,
   metadata: { mediaMimeType, mediaUrl, name },
-  borrowerOrLender = undefined,
+  isBorrower,
+  isLender,
 }: LoanCardLoadedProps) {
   return (
     <Link href={`/loans/${id}`}>
@@ -112,13 +112,14 @@ export function LoanCardLoaded({
             <span>{formattedLoanAmount}</span>
             <span>{formattedAnnualRate(perSecondInterestRate)}% interest</span>
           </Attributes>
-          {!!borrowerOrLender && (
+          {(isBorrower || isLender) && (
             <Attributes>
-              <span className={styles[borrowerOrLender]}>
-                {borrowerOrLender == BorrowerOrLenderType.Borrower
-                  ? 'You are the borrower'
-                  : 'You are the lender'}
-              </span>
+              {isBorrower && (
+                <span className={styles.borrower}>You are the borrower</span>
+              )}
+              {isLender && (
+                <span className={styles.lender}>You are the lender</span>
+              )}
             </Attributes>
           )}
         </div>

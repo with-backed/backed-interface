@@ -1,11 +1,10 @@
 import { GetServerSideProps } from 'next';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React from 'react';
 import { getAllActiveLoansForAddress } from 'lib/loans/subgraph/getAllLoansEventsForAddress';
 import { Loan as RawSubgraphLoan } from 'types/generated/graphql/nftLoans';
 import { ProfileHeader } from 'components/Profile/ProfileHeader';
 import { parseSubgraphLoan } from 'lib/loans/utils';
 import { ProfileLoans } from 'components/Profile/ProfileLoans';
-import { Loan } from 'types/Loan';
 
 export type ProfilePageProps = {
   address: string;
