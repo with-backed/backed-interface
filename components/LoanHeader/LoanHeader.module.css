@@ -3,7 +3,7 @@
   width: 100%;
   background: var(--background-white);
   justify-content: center;
-  padding-bottom: var(--gap);
+  padding-bottom: 90px;
   padding-top: calc(var(--gap) / 2);
 }
 
