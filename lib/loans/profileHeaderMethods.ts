@@ -27,7 +27,7 @@ export function getNextLoanDue(loans: Loan[]): number {
   );
 }
 
-export function getTotalOwedPrincipal(
+export function getAllPrincipalAmounts(
   loans: Loan[],
 ): { nominal: string; symbol: string }[] {
   return loans.map((l) => ({
@@ -36,7 +36,7 @@ export function getTotalOwedPrincipal(
   }));
 }
 
-export function getTotalOwedInterest(
+export function getAllInterestAmounts(
   loans: Loan[],
 ): { nominal: string; symbol: string }[] {
   return loans.map((l) => ({
