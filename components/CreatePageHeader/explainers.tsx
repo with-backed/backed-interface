@@ -24,6 +24,9 @@ export const explainers = {
   loanAmount: LoanAmount,
   minimumDuration: MinimumDuration,
   maximumInterestRate: MaximumInterestRate,
+  mintBorrowerTicket: MintBorrowerTicket,
+  pendingMintBorrowerTicket: PendingMintBorrowerAuthorization,
+  mintBorrowerTicketSuccess: MintBorrowerTicketSuccess,
 };
 
 function NoWallet({ context }: ExplainerProps) {
@@ -132,8 +135,6 @@ function EstimatedRepayment({ context }: ExplainerProps) {
       .mul(durationSeconds)
       .mul(parsedLoanAmount)
       .div(SCALAR);
-    const end = new Date();
-    end.setDate(end.getDate() + context.duration);
     return (
       <>
         <br />
@@ -142,10 +143,35 @@ function EstimatedRepayment({ context }: ExplainerProps) {
           interestOverTerm.add(parsedLoanAmount),
           18,
         )}{' '}
-        DAI on {end.toLocaleDateString()}.
+        DAI at maturity.
       </>
     );
   }
 
   return null;
+}
+
+function MintBorrowerTicket({ context }: ExplainerProps) {
+  return (
+    <div className={styles.explainer}>
+      This is the last step of creating a loan. You will be issued an NFT
+      representing your rights and obligations as a borrower. This cannot be
+      undone without closing the loan and repaying any loan amount you&apos;ve
+      received and interest accrued.
+    </div>
+  );
+}
+
+function PendingMintBorrowerAuthorization({ context }: ExplainerProps) {
+  return (
+    <div className={styles.explainer}>This can take a few more minutes.</div>
+  );
+}
+
+function MintBorrowerTicketSuccess({ context }: ExplainerProps) {
+  return (
+    <div className={styles.explainer}>
+      Your loan is created and available for lenders to see!
+    </div>
+  );
 }
