@@ -38,7 +38,7 @@ const headerInfo: HeaderInformation[] = [
   },
   {
     Label: ({ borrower }) => (
-      <div>{borrower ? 'Total Owed Principal' : 'Oustanding Principal'}</div>
+      <div>{borrower ? 'Total Owed Principal' : 'Outstanding Principal'}</div>
     ),
     Data: ({ loans }): JSX.Element => (
       <div className={styles.amountsWrapper}>

@@ -20,8 +20,8 @@ export function BorrowerLenderBubble({ address, borrower }: BubblesProps) {
         borrower ? styles.borrowerBubble : styles.lenderBubble
       }`}>
       {isConnectedUser && `You are the ${borrower ? 'borrower' : 'lender'}`}
-      {!isConnectedUser &&
-        `${borrower ? 'Borrowed by' : 'Lent by'} ${address.substring(0, 7)}`}
+      {!isConnectedUser && `${borrower ? 'Borrower' : 'Lender'} `}
+      <span>{address.substring(0, 7)}</span>
     </div>
   );
 }
