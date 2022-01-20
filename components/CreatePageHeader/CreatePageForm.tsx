@@ -17,6 +17,7 @@ import React, {
   useMemo,
   useState,
   FocusEvent,
+  ChangeEvent,
 } from 'react';
 import * as Yup from 'yup';
 import styles from './CreatePageHeader.module.css';
@@ -29,17 +30,21 @@ const MIN_RATE = 1 / 10 ** INTEREST_RATE_PERCENT_DECIMALS;
 type CreatePageFormProps = {
   collateralAddress: string;
   collateralTokenID: ethers.BigNumber;
+  disabled: boolean;
   onBlur: (filled: boolean) => void;
   onFocus: (
     type: 'DENOMINATION' | 'LOAN_AMOUNT' | 'DURATION' | 'INTEREST_RATE',
   ) => void;
+  setInterestRate: (rate: number | null) => void;
 };
 
 export function CreatePageForm({
   collateralAddress,
   collateralTokenID,
+  disabled,
   onBlur,
   onFocus,
+  setInterestRate,
 }: CreatePageFormProps) {
   const { account } = useWeb3();
   const buttonText = useMemo(() => 'Mint Borrower Ticket', []);
@@ -180,6 +185,7 @@ export function CreatePageForm({
               }}
               onFocus={() => onFocus('DENOMINATION')}
               onBlur={handleSelectBlur}
+              isDisabled={disabled}
             />
           </label>
 
@@ -194,6 +200,7 @@ export function CreatePageForm({
               unit={formik.values.loanAssetContractAddress?.label}
               onFocus={() => onFocus('LOAN_AMOUNT')}
               onBlur={handleBlur}
+              disabled={disabled}
             />
           </label>
 
@@ -208,6 +215,7 @@ export function CreatePageForm({
               unit="Days"
               onFocus={() => onFocus('DURATION')}
               onBlur={handleBlur}
+              disabled={disabled}
             />
           </label>
 
@@ -220,8 +228,18 @@ export function CreatePageForm({
               as={Input}
               color="dark"
               unit="%"
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                const { value } = event.target;
+                const parsedValue = parseFloat(value);
+                if (isNaN(parsedValue)) {
+                  setInterestRate(null);
+                } else {
+                  setInterestRate(parsedValue);
+                }
+              }}
               onFocus={() => onFocus('INTEREST_RATE')}
               onBlur={handleBlur}
+              disabled={disabled}
             />
           </label>
 
@@ -232,7 +250,7 @@ export function CreatePageForm({
             type="submit"
             txHash={txHash}
             isPending={waitingForTx}
-            disabled={!formik.isValid}
+            disabled={disabled || !formik.isValid}
           />
         </form>
       )}

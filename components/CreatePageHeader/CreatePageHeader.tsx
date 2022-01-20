@@ -1,5 +1,6 @@
 import { useMachine } from '@xstate/react';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
+import { NFTMedia } from 'components/Media/NFTMedia';
 import { NFTCollateralPicker } from 'components/NFTCollateralPicker/NFTCollateralPicker';
 import { ethers } from 'ethers';
 import { useWeb3 } from 'hooks/useWeb3';
@@ -16,6 +17,7 @@ import { AuthorizeNFTButton } from './AuthorizeNFTButton';
 import { CreatePageForm } from './CreatePageForm';
 import { createPageFormMachine } from './createPageFormMachine';
 import styles from './CreatePageHeader.module.css';
+import { ExplainerContext, explainers } from './explainers';
 import { SelectNFTButton } from './SelectNFTButton';
 
 export function CreatePageHeader() {
@@ -77,11 +79,25 @@ export function CreatePageHeader() {
     }
   }, [account, current, send]);
 
+  const [interestRate, setInterestRate] = useState<number | null>(null);
+  const context: ExplainerContext = useMemo(
+    () => ({ interestRate }),
+    [interestRate],
+  );
+
+  const Explainer = useMemo(
+    () => (explainers as any)[current.toStrings()[0]] || null,
+    [current],
+  );
+
   return (
     <div className={styles['create-page-header']}>
       <ThreeColumn>
+        <NFTMedia
+          collateralAddress={collateralAddress}
+          collateralTokenID={collateralTokenID}
+        />
         <div className={styles['button-container']}>
-          <h1>{current.toStrings()}</h1>
           <SelectNFTButton
             dialog={dialog}
             disabled={current.matches('noWallet')}
@@ -100,10 +116,18 @@ export function CreatePageHeader() {
           <CreatePageForm
             collateralAddress={collateralAddress}
             collateralTokenID={collateralTokenID}
+            disabled={
+              current.matches('noWallet') ||
+              current.matches('selectNFT') ||
+              current.matches('authorizeNFT') ||
+              current.matches('pendingAuthorization')
+            }
             onFocus={onFocus}
             onBlur={onBlur}
+            setInterestRate={setInterestRate}
           />
         </div>
+        <Explainer context={context} />
       </ThreeColumn>
       <Provider value={eip721Client}>
         <NFTCollateralPicker
