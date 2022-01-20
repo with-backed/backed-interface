@@ -110,17 +110,20 @@ export function CreatePageForm({
     }
     return undefined;
   }, [loanAssetOptions]);
+  const [loanAssetContractAddress, setLoanAssetContractAddress] = useState(
+    initialLoanAssetContractAddress,
+  );
 
   const handleBlur = useCallback(
     (event: FocusEvent<HTMLInputElement>) => {
-      if (event.target.value.length > 0) {
-        onBlur(true);
-      } else {
-        onBlur(false);
-      }
+      onBlur(event.target.value.length > 0);
     },
     [onBlur],
   );
+
+  const handleSelectBlur = useCallback(() => {
+    onBlur(!!loanAssetContractAddress);
+  }, [loanAssetContractAddress, onBlur]);
 
   useEffect(() => {
     loadAssets();
@@ -130,9 +133,9 @@ export function CreatePageForm({
     <Formik
       initialValues={{
         loanAssetContractAddress: initialLoanAssetContractAddress,
-        loanAmount: 0,
-        interestRate: 0,
-        duration: 0,
+        loanAmount: undefined,
+        interestRate: undefined,
+        duration: undefined,
       }}
       validateOnBlur={false}
       validateOnChange={false}
@@ -168,11 +171,15 @@ export function CreatePageForm({
                 value: address,
                 label: symbol,
               }))}
-              onChange={(option: { [key: string]: string }) =>
-                formik.setFieldValue('loanAssetContractAddress', option)
-              }
+              onChange={(option: { [key: string]: string }) => {
+                setLoanAssetContractAddress({
+                  value: option.value,
+                  label: option.label,
+                });
+                formik.setFieldValue('loanAssetContractAddress', option);
+              }}
               onFocus={() => onFocus('DENOMINATION')}
-              onBlur={handleBlur}
+              onBlur={handleSelectBlur}
             />
           </label>
 
