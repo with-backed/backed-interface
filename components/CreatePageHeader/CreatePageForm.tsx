@@ -35,7 +35,9 @@ type CreatePageFormProps = {
   onFocus: (
     type: 'DENOMINATION' | 'LOAN_AMOUNT' | 'DURATION' | 'INTEREST_RATE',
   ) => void;
+  setDuration: (rate: number | null) => void;
   setInterestRate: (rate: number | null) => void;
+  setLoanAmount: (rate: number | null) => void;
 };
 
 export function CreatePageForm({
@@ -44,7 +46,9 @@ export function CreatePageForm({
   disabled,
   onBlur,
   onFocus,
+  setDuration,
   setInterestRate,
+  setLoanAmount,
 }: CreatePageFormProps) {
   const { account } = useWeb3();
   const buttonText = useMemo(() => 'Mint Borrower Ticket', []);
@@ -201,6 +205,15 @@ export function CreatePageForm({
               onFocus={() => onFocus('LOAN_AMOUNT')}
               onBlur={handleBlur}
               disabled={disabled}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                const { value } = event.target;
+                const parsedValue = parseFloat(value);
+                if (isNaN(parsedValue)) {
+                  setLoanAmount(null);
+                } else {
+                  setLoanAmount(parsedValue);
+                }
+              }}
             />
           </label>
 
@@ -216,6 +229,15 @@ export function CreatePageForm({
               onFocus={() => onFocus('DURATION')}
               onBlur={handleBlur}
               disabled={disabled}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                const { value } = event.target;
+                const parsedValue = parseFloat(value);
+                if (isNaN(parsedValue)) {
+                  setDuration(null);
+                } else {
+                  setDuration(parsedValue);
+                }
+              }}
             />
           </label>
 

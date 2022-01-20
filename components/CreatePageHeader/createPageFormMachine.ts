@@ -164,6 +164,10 @@ export const createPageFormMachine = createMachine<Context>(
       mintBorrowerTicket: {
         on: {
           SUBMITTED: { target: 'pendingMintBorrowerTicket' },
+          DENOMINATION: { target: 'denomination' },
+          LOAN_AMOUNT: { target: 'loanAmount' },
+          DURATION: { target: 'minimumDuration' },
+          INTEREST_RATE: { target: 'maximumInterestRate' },
         },
       },
       pendingMintBorrowerTicket: {

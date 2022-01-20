@@ -1,10 +1,14 @@
 import { ethers } from 'ethers';
+import { SCALAR } from 'lib/constants';
+import { daysToSecondsBigNum } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
 import React from 'react';
 import styles from './CreatePageHeader.module.css';
 
 export type ExplainerContext = {
   interestRate: number | null;
+  loanAmount: number | null;
+  duration: number | null;
 };
 type ExplainerProps = {
   context: ExplainerContext;
@@ -100,8 +104,7 @@ function MaximumInterestRate({ context }: ExplainerProps) {
         Because interest is stored and calculated per second instead of
         annually, the loan ticket will show an APR of{' '}
         {formattedAnnualRate(interestRatePerSecond)}%.
-        <br />
-        The estimated repayment will be XXX DAI on [DATE].
+        <EstimatedRepayment context={context} />
       </div>
     );
   }
@@ -111,4 +114,38 @@ function MaximumInterestRate({ context }: ExplainerProps) {
       interest rate you&apos;ll pay.
     </div>
   );
+}
+
+function EstimatedRepayment({ context }: ExplainerProps) {
+  if (context.interestRate && context.loanAmount && context.duration) {
+    // TODO: remove hack
+    const loanAssetDecimals = 18;
+    const interestRatePerSecond = ethers.BigNumber.from(
+      Math.floor(context.interestRate * 10 ** INTEREST_RATE_PERCENT_DECIMALS),
+    ).div(SECONDS_IN_YEAR);
+    const durationSeconds = daysToSecondsBigNum(context.duration);
+    const parsedLoanAmount = ethers.utils.parseUnits(
+      context.loanAmount.toString(),
+      loanAssetDecimals,
+    );
+    const interestOverTerm = interestRatePerSecond
+      .mul(durationSeconds)
+      .mul(parsedLoanAmount)
+      .div(SCALAR);
+    const end = new Date();
+    end.setDate(end.getDate() + context.duration);
+    return (
+      <>
+        <br />
+        The estimated repayment will be{' '}
+        {ethers.utils.formatUnits(
+          interestOverTerm.add(parsedLoanAmount),
+          18,
+        )}{' '}
+        DAI on {end.toLocaleDateString()}.
+      </>
+    );
+  }
+
+  return null;
 }

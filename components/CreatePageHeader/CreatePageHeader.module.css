@@ -22,6 +22,7 @@
   box-shadow: var(--box-shadow-blue);
   padding: var(--padding-loan-card);
   align-self: start;
+  font-family: var(--sans);
 }
 
 .form {

@@ -80,13 +80,17 @@ export function CreatePageHeader() {
   }, [account, current, send]);
 
   const [interestRate, setInterestRate] = useState<number | null>(null);
+  const [loanAmount, setLoanAmount] = useState<number | null>(null);
+  const [duration, setDuration] = useState<number | null>(null);
   const context: ExplainerContext = useMemo(
-    () => ({ interestRate }),
-    [interestRate],
+    () => ({ duration, interestRate, loanAmount }),
+    [duration, interestRate, loanAmount],
   );
 
+  console.log({ strings: current.toStrings() });
+
   const Explainer = useMemo(
-    () => (explainers as any)[current.toStrings()[0]] || null,
+    () => (explainers as any)[current.toStrings()[0]] || (() => null),
     [current],
   );
 
@@ -124,7 +128,9 @@ export function CreatePageHeader() {
             }
             onFocus={onFocus}
             onBlur={onBlur}
+            setDuration={setDuration}
             setInterestRate={setInterestRate}
+            setLoanAmount={setLoanAmount}
           />
         </div>
         <Explainer context={context} />
