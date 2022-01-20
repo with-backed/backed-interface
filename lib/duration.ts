@@ -40,7 +40,7 @@ export const computeInitialRemaining = (
   return lastAccumulatedInterest.add(loanDuration).sub(now);
 };
 
-interface LoanCountdown {
+export interface LoanCountdown {
   days: number;
   hours: number;
   minutes: number;
@@ -50,17 +50,24 @@ interface LoanCountdown {
 export const getDaysHoursMinutesSeconds = (
   durationInSeconds: number,
 ): LoanCountdown => {
-  const duration = dayjs.duration({ seconds: durationInSeconds });
+  let duration = dayjs.duration({ seconds: durationInSeconds });
   const days = Math.floor(duration.asDays());
 
-  const hours = Math.floor(
-    duration.subtract(dayjs.duration(days, 'days')).asHours(),
-  );
-  const minutes = Math.floor(
-    duration.subtract(dayjs.duration(hours, 'hours')).asMinutes(),
-  );
-  const seconds = Math.floor(
-    duration.subtract(dayjs.duration(minutes, 'minutes')).asSeconds(),
-  );
+  duration = duration.subtract(dayjs.duration(days, 'days'));
+  const hours = Math.floor(duration.asHours());
+
+  duration = duration.subtract(dayjs.duration(hours, 'hours'));
+  const minutes = Math.floor(duration.asMinutes());
+
+  duration = duration.subtract(dayjs.duration(minutes, 'minutes'));
+  const seconds = Math.floor(duration.asSeconds());
+
   return { days, hours, minutes, seconds };
 };
+
+export function formatTimeDigit(t: number): string {
+  if (t.toString().length === 1) {
+    return `0${t.toString()}`;
+  }
+  return t.toString();
+}
