@@ -28,6 +28,10 @@
   transition: top 0.5s ease 0s;
 }
 
+.explainer-container {
+  position: relative;
+}
+
 .form {
   display: flex;
   flex-direction: column;

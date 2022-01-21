@@ -152,13 +152,11 @@ export function CreatePageHeader() {
             setLoanAmount={setLoanAmount}
           />
         </div>
-        <div style={{ position: 'relative' }} id="container">
-          <Explainer
-            state={current.toStrings()[0]}
-            top={explainerTop}
-            context={context}
-          />
-        </div>
+        <Explainer
+          state={current.toStrings()[0]}
+          top={explainerTop}
+          context={context}
+        />
       </ThreeColumn>
       <Provider value={eip721Client}>
         <NFTCollateralPicker

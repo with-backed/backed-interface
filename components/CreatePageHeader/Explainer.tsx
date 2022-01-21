@@ -41,8 +41,10 @@ export const explainers: {
 export function Explainer({ context, state, top }: ExplainerProps) {
   const Inner = explainers[state];
   return (
-    <div className={styles.explainer} style={{ top }}>
-      <Inner context={context} />
+    <div className={styles['explainer-container']} id="container">
+      <div className={styles.explainer} style={{ top }}>
+        <Inner context={context} />
+      </div>
     </div>
   );
 }
