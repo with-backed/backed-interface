@@ -141,7 +141,7 @@ function MaximumInterestRate({ context }: InnerProps) {
 
 function EstimatedRepayment({
   context: { denomination, duration, interestRate, loanAmount },
-}: Pick<ExplainerProps, 'context'>) {
+}: InnerProps) {
   const [decimals, setDecimals] = useState<number | null>(null);
   useEffect(() => {
     if (denomination) {
