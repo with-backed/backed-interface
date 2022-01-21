@@ -18,7 +18,7 @@ import { AuthorizeNFTButton } from './AuthorizeNFTButton';
 import { CreatePageForm } from './CreatePageForm';
 import { createPageFormMachine, stateTargets } from './createPageFormMachine';
 import styles from './CreatePageHeader.module.css';
-import { ExplainerContext, explainers } from './explainers';
+import { ExplainerContext, Explainer } from './Explainer';
 import { SelectNFTButton } from './SelectNFTButton';
 
 export function CreatePageHeader() {
@@ -89,10 +89,6 @@ export function CreatePageHeader() {
     [denomination, duration, interestRate, loanAmount],
   );
 
-  const Explainer = useMemo(
-    () => (explainers as any)[current.toStrings()[0]] || (() => null),
-    [current],
-  );
   const [explainerTop, setExplainerTop] = useState(0);
   useEffect(() => {
     const targetID = stateTargets[current.toStrings()[0]];
@@ -157,7 +153,11 @@ export function CreatePageHeader() {
           />
         </div>
         <div style={{ position: 'relative' }} id="container">
-          <Explainer top={explainerTop} context={context} />
+          <Explainer
+            state={current.toStrings()[0]}
+            top={explainerTop}
+            context={context}
+          />
         </div>
       </ThreeColumn>
       <Provider value={eip721Client}>
