@@ -31,10 +31,13 @@ type CreatePageFormProps = {
   collateralAddress: string;
   collateralTokenID: ethers.BigNumber;
   disabled: boolean;
+  onApproved: () => void;
   onBlur: (filled: boolean) => void;
+  onError: () => void;
   onFocus: (
     type: 'DENOMINATION' | 'LOAN_AMOUNT' | 'DURATION' | 'INTEREST_RATE',
   ) => void;
+  onSubmit: () => void;
   setDenomination: (denomination: LoanAsset | null) => void;
   setDuration: (rate: number | null) => void;
   setInterestRate: (rate: number | null) => void;
@@ -45,8 +48,11 @@ export function CreatePageForm({
   collateralAddress,
   collateralTokenID,
   disabled,
+  onApproved,
   onBlur,
+  onError,
   onFocus,
+  onSubmit,
   setDenomination,
   setDuration,
   setInterestRate,
@@ -62,10 +68,11 @@ export function CreatePageForm({
     const contract = jsonRpcLoanFacilitator();
     const filter = contract.filters.CreateLoan(null, account, null, null, null);
     contract.once(filter, (id) => {
+      onApproved();
       setWaitingForTx(false);
       window.location.assign(`/loans/${id.toString()}`);
     });
-  }, [account]);
+  }, [account, onApproved]);
 
   const mint = useCallback(
     async ({
@@ -84,6 +91,7 @@ export function CreatePageForm({
       ).div(SECONDS_IN_A_YEAR);
 
       const contract = web3LoanFacilitator();
+      onSubmit();
       const t = await contract.createLoan(
         collateralTokenID,
         collateralAddress,
@@ -104,10 +112,11 @@ export function CreatePageForm({
         })
         .catch((err) => {
           setWaitingForTx(false);
+          onError();
           console.error(err);
         });
     },
-    [account, collateralAddress, collateralTokenID, wait],
+    [account, collateralAddress, collateralTokenID, onError, onSubmit, wait],
   );
 
   const loadAssets = useCallback(async () => {

@@ -133,8 +133,11 @@ export function CreatePageHeader() {
             collateralAddress={collateralAddress}
             collateralTokenID={collateralTokenID}
             disabled={formIsDisabled}
-            onFocus={onFocus}
+            onApproved={onApproved}
             onBlur={onBlur}
+            onError={onError}
+            onFocus={onFocus}
+            onSubmit={onSubmit}
             setDenomination={setDenomination}
             setDuration={setDuration}
             setInterestRate={setInterestRate}
