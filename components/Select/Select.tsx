@@ -2,14 +2,17 @@ import React, { useMemo } from 'react';
 import ReactSelect, { StylesConfig } from 'react-select';
 
 const customStyles: StylesConfig = {
-  control: (provided) => ({
+  control: (provided, state) => ({
     ...provided,
-    background: 'var(--highlight-active-10)',
+    background: state.isFocused
+      ? 'var(--highlight-active-10)'
+      : 'var(--background-radial-gradient)',
     border: 'none',
     outline: 'none',
     borderRadius: 'var(--border-radius-large)',
     padding: 'var(--padding-button)',
     zIndex: 2,
+    cursor: state.isDisabled ? 'not-allowed' : 'pointer',
   }),
   indicatorSeparator: () => ({
     display: 'none',
