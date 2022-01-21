@@ -6,6 +6,8 @@ import {
 import React from 'react';
 import { DialogStateReturn } from 'reakit/Dialog';
 
+const ID = 'selectNFT';
+
 type SelectNFTButtonProps = {
   disabled: boolean;
   done: boolean;
@@ -19,12 +21,20 @@ export function SelectNFTButton({
   const text = 'Select an NFT';
 
   if (disabled) {
-    return <Button disabled>{text}</Button>;
+    return (
+      <Button id={ID} disabled>
+        {text}
+      </Button>
+    );
   }
 
   if (done) {
-    return <CompletedButton buttonText={text} success />;
+    return <CompletedButton id={ID} buttonText={text} success />;
   }
 
-  return <DialogDisclosureButton {...dialog}>{text}</DialogDisclosureButton>;
+  return (
+    <DialogDisclosureButton id={ID} {...dialog}>
+      {text}
+    </DialogDisclosureButton>
+  );
 }

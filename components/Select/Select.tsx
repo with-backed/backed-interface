@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import ReactSelect, { NonceProvider, StylesConfig } from 'react-select';
+import ReactSelect, { StylesConfig } from 'react-select';
 
 const customStyles: StylesConfig = {
   control: (provided) => ({

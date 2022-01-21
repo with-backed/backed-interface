@@ -7,6 +7,10 @@
   width: 100%;
 }
 
+.input:disabled {
+  cursor: not-allowed;
+}
+
 .input:focus {
   background: var(--highlight-active-10);
 }
