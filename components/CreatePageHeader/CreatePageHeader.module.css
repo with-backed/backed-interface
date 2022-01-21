@@ -18,11 +18,14 @@
 }
 
 .explainer {
+  position: absolute;
   border-radius: var(--border-radius-large);
   box-shadow: var(--box-shadow-blue);
   padding: var(--padding-loan-card);
   align-self: start;
   font-family: var(--sans);
+  background: var(--background-white);
+  transition: top 1s ease 0s;
 }
 
 .form {

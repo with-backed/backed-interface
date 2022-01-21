@@ -16,7 +16,7 @@ import { useDialogState } from 'reakit/Dialog';
 import { Provider } from 'urql';
 import { AuthorizeNFTButton } from './AuthorizeNFTButton';
 import { CreatePageForm } from './CreatePageForm';
-import { createPageFormMachine } from './createPageFormMachine';
+import { createPageFormMachine, stateTargets } from './createPageFormMachine';
 import styles from './CreatePageHeader.module.css';
 import { ExplainerContext, explainers } from './explainers';
 import { SelectNFTButton } from './SelectNFTButton';
@@ -93,6 +93,18 @@ export function CreatePageHeader() {
     () => (explainers as any)[current.toStrings()[0]] || (() => null),
     [current],
   );
+  const [explainerTop, setExplainerTop] = useState(0);
+  useEffect(() => {
+    const targetID = stateTargets[current.toStrings()[0]];
+    const target = document.getElementById(targetID);
+    const container = document.getElementById('container');
+    if (!target || !container) {
+      setExplainerTop(0);
+    }
+    const targetTop = target!.getBoundingClientRect().top;
+    const containerTop = container!.getBoundingClientRect().top;
+    setExplainerTop(targetTop - containerTop);
+  }, [current]);
 
   const formIsDisabled = useMemo(() => {
     return [
@@ -144,7 +156,9 @@ export function CreatePageHeader() {
             setLoanAmount={setLoanAmount}
           />
         </div>
-        <Explainer context={context} />
+        <div style={{ position: 'relative' }} id="container">
+          <Explainer top={explainerTop} context={context} />
+        </div>
       </ThreeColumn>
       <Provider value={eip721Client}>
         <NFTCollateralPicker

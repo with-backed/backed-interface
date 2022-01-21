@@ -15,6 +15,7 @@ export type ExplainerContext = {
 };
 type ExplainerProps = {
   context: ExplainerContext;
+  top?: number;
 };
 
 export const explainers = {
@@ -32,65 +33,69 @@ export const explainers = {
   mintBorrowerTicketSuccess: MintBorrowerTicketSuccess,
 };
 
-function NoWallet({ context }: ExplainerProps) {
+function NoWallet({ context, top }: ExplainerProps) {
   return (
-    <div className={styles.explainer}>
+    <div style={{ top }} className={styles.explainer}>
       First, connect a wallet. Then, follow these steps to create a loan and
       make it available to lenders.
     </div>
   );
 }
 
-function SelectNFT({ context }: ExplainerProps) {
+function SelectNFT({ context, top }: ExplainerProps) {
   return (
-    <div className={styles.explainer}>
+    <div style={{ top }} className={styles.explainer}>
       Follow these steps to create a loan and make it available to lenders.
     </div>
   );
 }
 
-function AuthorizeNFT({ context }: ExplainerProps) {
+function AuthorizeNFT({ context, top }: ExplainerProps) {
   return (
-    <div className={styles.explainer}>
+    <div style={{ top }} className={styles.explainer}>
       This allows the Pawn Shop to move your NFT and to trasnfer it to the
       lender if you do not repay your loan.
     </div>
   );
 }
 
-function PendingAuthorization({ context }: ExplainerProps) {
-  return <div className={styles.explainer}>This can take a few minutes.</div>;
+function PendingAuthorization({ context, top }: ExplainerProps) {
+  return (
+    <div style={{ top }} className={styles.explainer}>
+      This can take a few minutes.
+    </div>
+  );
 }
 
-function LoanFormUnfocused({ context }: ExplainerProps) {
+function LoanFormUnfocused({ context, top }: ExplainerProps) {
   return (
-    <div className={styles.explainer}>
+    <div style={{ top }} className={styles.explainer}>
       Set your loan terms. Any lender who wishes can meet these terms, and you
       will automatically receive the loan amount minus a 1% origination fee.
     </div>
   );
 }
 
-function Denomination({ context }: ExplainerProps) {
+function Denomination({ context, top }: ExplainerProps) {
   return (
-    <div className={styles.explainer}>
+    <div style={{ top }} className={styles.explainer}>
       This is the token used for the loan principal, interest, and repayment.
     </div>
   );
 }
 
-function LoanAmount({ context }: ExplainerProps) {
+function LoanAmount({ context, top }: ExplainerProps) {
   return (
-    <div className={styles.explainer}>
+    <div style={{ top }} className={styles.explainer}>
       Lenders can give you a larger loan, but this is the minimum amount
       you&apos;ll accept.
     </div>
   );
 }
 
-function MinimumDuration({ context }: ExplainerProps) {
+function MinimumDuration({ context, top }: ExplainerProps) {
   return (
-    <div className={styles.explainer}>
+    <div style={{ top }} className={styles.explainer}>
       Lenders can give you a longer loan and reset the duration, but this is the
       minimum length of a loan you&apos;ll accept.
     </div>
@@ -100,13 +105,13 @@ function MinimumDuration({ context }: ExplainerProps) {
 const SECONDS_IN_YEAR = 31_536_000;
 const INTEREST_RATE_PERCENT_DECIMALS = 8;
 
-function MaximumInterestRate({ context }: ExplainerProps) {
+function MaximumInterestRate({ context, top }: ExplainerProps) {
   if (context.interestRate) {
     const interestRatePerSecond = ethers.BigNumber.from(
       Math.floor(context.interestRate * 10 ** INTEREST_RATE_PERCENT_DECIMALS),
     ).div(SECONDS_IN_YEAR);
     return (
-      <div className={styles.explainer}>
+      <div style={{ top }} className={styles.explainer}>
         Because interest is stored and calculated per second instead of
         annually, the loan ticket will show an APR of{' '}
         {formattedAnnualRate(interestRatePerSecond)}%.
@@ -115,7 +120,7 @@ function MaximumInterestRate({ context }: ExplainerProps) {
     );
   }
   return (
-    <div className={styles.explainer}>
+    <div style={{ top }} className={styles.explainer}>
       Lenders can give you a lower interest rate, but this is the maximum
       interest rate you&apos;ll pay.
     </div>
@@ -162,9 +167,9 @@ function EstimatedRepayment({
   return null;
 }
 
-function MintBorrowerTicket({ context }: ExplainerProps) {
+function MintBorrowerTicket({ context, top }: ExplainerProps) {
   return (
-    <div className={styles.explainer}>
+    <div style={{ top }} className={styles.explainer}>
       This is the last step of creating a loan. You will be issued an NFT
       representing your rights and obligations as a borrower. This cannot be
       undone without closing the loan and repaying any loan amount you&apos;ve
@@ -173,15 +178,17 @@ function MintBorrowerTicket({ context }: ExplainerProps) {
   );
 }
 
-function PendingMintBorrowerAuthorization({ context }: ExplainerProps) {
+function PendingMintBorrowerAuthorization({ context, top }: ExplainerProps) {
   return (
-    <div className={styles.explainer}>This can take a few more minutes.</div>
+    <div style={{ top }} className={styles.explainer}>
+      This can take a few more minutes.
+    </div>
   );
 }
 
-function MintBorrowerTicketSuccess({ context }: ExplainerProps) {
+function MintBorrowerTicketSuccess({ context, top }: ExplainerProps) {
   return (
-    <div className={styles.explainer}>
+    <div style={{ top }} className={styles.explainer}>
       Your loan is created and available for lenders to see!
     </div>
   );

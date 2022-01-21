@@ -59,7 +59,7 @@ function guardIsFilled(context: Context) {
  * A mapping from states in the state machine to element ids, used to position
  * explainers in-line with the thing they explain.
  */
-export const stateTargets = {
+export const stateTargets: { [key: string]: string } = {
   noWallet: 'selectNFT',
   selectNFT: 'selectNFT',
   authorizeNFT: 'authorizeNFT',
