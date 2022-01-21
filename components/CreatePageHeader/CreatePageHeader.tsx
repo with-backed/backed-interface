@@ -87,12 +87,22 @@ export function CreatePageHeader() {
     [duration, interestRate, loanAmount],
   );
 
-  console.log({ strings: current.toStrings() });
-
   const Explainer = useMemo(
     () => (explainers as any)[current.toStrings()[0]] || (() => null),
     [current],
   );
+
+  const formIsDisabled = useMemo(() => {
+    return [
+      'noWallet',
+      'selectNFT',
+      'authorizeNFT',
+      'pendingAuthorization',
+      'pendingMintBorrowerTicket',
+      'mintBorrowerTicketSuccess',
+      'mintBorrowerTicketFailure',
+    ].some(current.matches);
+  }, [current]);
 
   return (
     <div className={styles['create-page-header']}>
@@ -120,12 +130,7 @@ export function CreatePageHeader() {
           <CreatePageForm
             collateralAddress={collateralAddress}
             collateralTokenID={collateralTokenID}
-            disabled={
-              current.matches('noWallet') ||
-              current.matches('selectNFT') ||
-              current.matches('authorizeNFT') ||
-              current.matches('pendingAuthorization')
-            }
+            disabled={formIsDisabled}
             onFocus={onFocus}
             onBlur={onBlur}
             setDuration={setDuration}
