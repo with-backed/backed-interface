@@ -35,6 +35,7 @@ type CreatePageFormProps = {
   onFocus: (
     type: 'DENOMINATION' | 'LOAN_AMOUNT' | 'DURATION' | 'INTEREST_RATE',
   ) => void;
+  setDenomination: (denomination: LoanAsset | null) => void;
   setDuration: (rate: number | null) => void;
   setInterestRate: (rate: number | null) => void;
   setLoanAmount: (rate: number | null) => void;
@@ -46,6 +47,7 @@ export function CreatePageForm({
   disabled,
   onBlur,
   onFocus,
+  setDenomination,
   setDuration,
   setInterestRate,
   setLoanAmount,
@@ -181,6 +183,10 @@ export function CreatePageForm({
                 label: symbol,
               }))}
               onChange={(option: { [key: string]: string }) => {
+                setDenomination({
+                  symbol: option.label,
+                  address: option.value,
+                });
                 setLoanAssetContractAddress({
                   value: option.value,
                   label: option.label,

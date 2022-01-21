@@ -9,6 +9,7 @@ import {
   HIDDEN_NFT_ADDRESSES,
   NFTEntity,
 } from 'lib/eip721Subraph';
+import { LoanAsset } from 'lib/loanAssets';
 import { eip721Client } from 'lib/urql';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDialogState } from 'reakit/Dialog';
@@ -82,9 +83,10 @@ export function CreatePageHeader() {
   const [interestRate, setInterestRate] = useState<number | null>(null);
   const [loanAmount, setLoanAmount] = useState<number | null>(null);
   const [duration, setDuration] = useState<number | null>(null);
+  const [denomination, setDenomination] = useState<LoanAsset | null>(null);
   const context: ExplainerContext = useMemo(
-    () => ({ duration, interestRate, loanAmount }),
-    [duration, interestRate, loanAmount],
+    () => ({ denomination, duration, interestRate, loanAmount }),
+    [denomination, duration, interestRate, loanAmount],
   );
 
   const Explainer = useMemo(
@@ -133,6 +135,7 @@ export function CreatePageHeader() {
             disabled={formIsDisabled}
             onFocus={onFocus}
             onBlur={onBlur}
+            setDenomination={setDenomination}
             setDuration={setDuration}
             setInterestRate={setInterestRate}
             setLoanAmount={setLoanAmount}

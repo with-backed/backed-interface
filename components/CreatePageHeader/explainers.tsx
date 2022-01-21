@@ -1,14 +1,17 @@
 import { ethers } from 'ethers';
 import { SCALAR } from 'lib/constants';
+import { jsonRpcERC20Contract } from 'lib/contracts';
 import { daysToSecondsBigNum } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
-import React from 'react';
+import { LoanAsset } from 'lib/loanAssets';
+import React, { useEffect, useState } from 'react';
 import styles from './CreatePageHeader.module.css';
 
 export type ExplainerContext = {
   interestRate: number | null;
   loanAmount: number | null;
   duration: number | null;
+  denomination: LoanAsset | null;
 };
 type ExplainerProps = {
   context: ExplainerContext;
@@ -119,31 +122,39 @@ function MaximumInterestRate({ context }: ExplainerProps) {
   );
 }
 
-function EstimatedRepayment({ context }: ExplainerProps) {
-  if (context.interestRate && context.loanAmount && context.duration) {
-    // TODO: remove hack
-    const loanAssetDecimals = 18;
+function EstimatedRepayment({
+  context: { denomination, duration, interestRate, loanAmount },
+}: ExplainerProps) {
+  const [decimals, setDecimals] = useState<number | null>(null);
+  useEffect(() => {
+    if (denomination) {
+      const loanAssetContract = jsonRpcERC20Contract(denomination.address);
+      loanAssetContract.decimals().then(setDecimals);
+    }
+  }, [denomination, setDecimals]);
+
+  if (interestRate && loanAmount && duration && denomination && decimals) {
     const interestRatePerSecond = ethers.BigNumber.from(
-      Math.floor(context.interestRate * 10 ** INTEREST_RATE_PERCENT_DECIMALS),
+      Math.floor(interestRate * 10 ** INTEREST_RATE_PERCENT_DECIMALS),
     ).div(SECONDS_IN_YEAR);
-    const durationSeconds = daysToSecondsBigNum(context.duration);
+    const durationSeconds = daysToSecondsBigNum(duration);
     const parsedLoanAmount = ethers.utils.parseUnits(
-      context.loanAmount.toString(),
-      loanAssetDecimals,
+      loanAmount.toString(),
+      decimals,
     );
     const interestOverTerm = interestRatePerSecond
       .mul(durationSeconds)
       .mul(parsedLoanAmount)
       .div(SCALAR);
+    const estimatedRepayment = ethers.utils.formatUnits(
+      interestOverTerm.add(parsedLoanAmount),
+      decimals,
+    );
     return (
       <>
         <br />
-        The estimated repayment will be{' '}
-        {ethers.utils.formatUnits(
-          interestOverTerm.add(parsedLoanAmount),
-          18,
-        )}{' '}
-        DAI at maturity.
+        The estimated repayment will be {estimatedRepayment}{' '}
+        {denomination.symbol} at maturity.
       </>
     );
   }
