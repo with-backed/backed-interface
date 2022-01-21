@@ -74,6 +74,12 @@ export function CreatePageForm({
       interestRate,
       duration,
     }) => {
+      console.log({
+        loanAssetContractAddress,
+        loanAmount,
+        interestRate,
+        duration,
+      });
       const assetContract = jsonRpcERC20Contract(
         loanAssetContractAddress.value,
       );
@@ -94,6 +100,7 @@ export function CreatePageForm({
         // If they've gotten this far, they must have an account.
         account!,
       );
+
       setTxHash(t.hash);
       setWaitingForTx(true);
       t.wait()
@@ -219,6 +226,7 @@ export function CreatePageForm({
                 } else {
                   setLoanAmount(parsedValue);
                 }
+                formik.handleChange(event);
               }}
             />
           </label>
@@ -243,6 +251,7 @@ export function CreatePageForm({
                 } else {
                   setDuration(parsedValue);
                 }
+                formik.handleChange(event);
               }}
             />
           </label>
@@ -264,6 +273,7 @@ export function CreatePageForm({
                 } else {
                   setInterestRate(parsedValue);
                 }
+                formik.handleChange(event);
               }}
               onFocus={() => onFocus('INTEREST_RATE')}
               onBlur={handleBlur}
