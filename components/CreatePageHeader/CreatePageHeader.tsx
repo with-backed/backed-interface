@@ -1,33 +1,29 @@
-import {
-  Button,
-  CompletedButton,
-  DialogDisclosureButton,
-  TransactionButton,
-} from 'components/Button';
+import { useMachine } from '@xstate/react';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
+import { NFTMedia } from 'components/Media/NFTMedia';
+import { NFTCollateralPicker } from 'components/NFTCollateralPicker/NFTCollateralPicker';
 import { ethers } from 'ethers';
 import { useWeb3 } from 'hooks/useWeb3';
 import {
   getNftContractAddress,
   HIDDEN_NFT_ADDRESSES,
-  isNFTApprovedForCollateral,
   NFTEntity,
 } from 'lib/eip721Subraph';
-import React, { useCallback, useMemo, useState } from 'react';
-import { useDialogState, DialogStateReturn } from 'reakit/Dialog';
-import styles from './CreatePageHeader.module.css';
-import { Provider } from 'urql';
+import { LoanAsset } from 'lib/loanAssets';
 import { eip721Client } from 'lib/urql';
-import { NFTCollateralPicker } from 'components/NFTCollateralPicker/NFTCollateralPicker';
-import { NFTMedia } from 'components/Media/NFTMedia';
-import { web3Erc721Contract } from 'lib/contracts';
-import { State } from './State';
-import { explainers } from './explainers';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useDialogState } from 'reakit/Dialog';
+import { Provider } from 'urql';
+import { AuthorizeNFTButton } from './AuthorizeNFTButton';
 import { CreatePageForm } from './CreatePageForm';
+import { createPageFormMachine } from './createPageFormMachine';
+import styles from './CreatePageHeader.module.css';
+import { ExplainerContext, explainers } from './explainers';
+import { SelectNFTButton } from './SelectNFTButton';
 
 export function CreatePageHeader() {
   const { account } = useWeb3();
-  const dialog = useDialogState();
+  const [current, send] = useMachine(createPageFormMachine);
 
   const [selectedNFT, setSelectedNFT] = useState<NFTEntity | null>(null);
   const [collateralAddress, collateralTokenID] = useMemo(() => {
@@ -36,32 +32,79 @@ export function CreatePageHeader() {
     }
     return [getNftContractAddress(selectedNFT), selectedNFT.identifier];
   }, [selectedNFT]);
+  const dialog = useDialogState();
 
-  const initialIsCollateralApproved = useMemo(() => {
-    return Boolean(selectedNFT && isNFTApprovedForCollateral(selectedNFT));
-  }, [selectedNFT]);
-  const [isCollateralApproved, setIsCollateralApproved] = useState(
-    initialIsCollateralApproved,
+  const handleSetSelectedNFT = useCallback(
+    (nft: NFTEntity) => {
+      setSelectedNFT(nft);
+      send({ type: 'SELECTED' });
+    },
+    [setSelectedNFT, send],
   );
-  const [submittingApproval, setSubmittingApproval] = useState(false);
 
-  const state = useMemo(() => {
-    if (!account) {
-      return State.NotConnected;
-    }
-    if (!selectedNFT) {
-      return State.NeedsToSelect;
-    }
-    if (!isCollateralApproved && !submittingApproval) {
-      return State.NeedsToAuthorize;
-    }
-    if (submittingApproval) {
-      return State.AuthorizationInProgress;
-    }
-    return State.Form;
-  }, [account, isCollateralApproved, selectedNFT, submittingApproval]);
+  const onAlreadyApproved = useCallback(() => {
+    send({ type: 'ALREADY_APPROVED' });
+  }, [send]);
+  const onApproved = useCallback(() => {
+    send({ type: 'SUCCESS' });
+  }, [send]);
+  const onSubmit = useCallback(() => {
+    send({ type: 'SUBMITTED' });
+  }, [send]);
+  const onError = useCallback(() => {
+    send({ type: 'FAILURE' });
+  }, [send]);
 
-  const Explainer = useMemo(() => explainers[state], [state]);
+  const onFocus = useCallback(
+    (type: 'DENOMINATION' | 'LOAN_AMOUNT' | 'DURATION' | 'INTEREST_RATE') => {
+      send({ type });
+    },
+    [send],
+  );
+  const onBlur = useCallback(
+    (filled: boolean) => {
+      if (filled) {
+        send({ type: 'UNFOCUS_FULL' });
+      } else {
+        send({ type: 'UNFOCUS_EMPTY' });
+      }
+    },
+    [send],
+  );
+
+  useEffect(() => {
+    if (account && current.matches('noWallet')) {
+      send({
+        type: 'CONNECT',
+      });
+    }
+  }, [account, current, send]);
+
+  const [interestRate, setInterestRate] = useState<number | null>(null);
+  const [loanAmount, setLoanAmount] = useState<number | null>(null);
+  const [duration, setDuration] = useState<number | null>(null);
+  const [denomination, setDenomination] = useState<LoanAsset | null>(null);
+  const context: ExplainerContext = useMemo(
+    () => ({ denomination, duration, interestRate, loanAmount }),
+    [denomination, duration, interestRate, loanAmount],
+  );
+
+  const Explainer = useMemo(
+    () => (explainers as any)[current.toStrings()[0]] || (() => null),
+    [current],
+  );
+
+  const formIsDisabled = useMemo(() => {
+    return [
+      'noWallet',
+      'selectNFT',
+      'authorizeNFT',
+      'pendingAuthorization',
+      'pendingMintBorrowerTicket',
+      'mintBorrowerTicketSuccess',
+      'mintBorrowerTicketFailure',
+    ].some(current.matches);
+  }, [current]);
 
   return (
     <div className={styles['create-page-header']}>
@@ -71,110 +114,46 @@ export function CreatePageHeader() {
           collateralTokenID={collateralTokenID}
         />
         <div className={styles['button-container']}>
-          <SelectNFTButton dialog={dialog} state={state} />
+          <SelectNFTButton
+            dialog={dialog}
+            disabled={current.matches('noWallet')}
+            done={!current.matches('selectNFT')}
+          />
           <AuthorizeNFTButton
-            state={state}
             collateralAddress={collateralAddress}
             collateralTokenID={collateralTokenID}
-            setIsCollateralApproved={setIsCollateralApproved}
-            setSubmittingApproval={setSubmittingApproval}
-            submittingApproval={submittingApproval}
+            disabled={!current.matches('authorizeNFT')}
+            nft={selectedNFT}
+            onAlreadyApproved={onAlreadyApproved}
+            onApproved={onApproved}
+            onError={onError}
+            onSubmit={onSubmit}
           />
           <CreatePageForm
             collateralAddress={collateralAddress}
             collateralTokenID={collateralTokenID}
-            state={state}
+            disabled={formIsDisabled}
+            onApproved={onApproved}
+            onBlur={onBlur}
+            onError={onError}
+            onFocus={onFocus}
+            onSubmit={onSubmit}
+            setDenomination={setDenomination}
+            setDuration={setDuration}
+            setInterestRate={setInterestRate}
+            setLoanAmount={setLoanAmount}
           />
         </div>
-        <Explainer />
+        <Explainer context={context} />
       </ThreeColumn>
       <Provider value={eip721Client}>
         <NFTCollateralPicker
           hiddenNFTAddresses={HIDDEN_NFT_ADDRESSES}
           connectedWallet={account || ''}
-          handleSetSelectedNFT={setSelectedNFT}
+          handleSetSelectedNFT={handleSetSelectedNFT}
           dialog={dialog}
         />
       </Provider>
     </div>
-  );
-}
-
-interface ButtonProps {
-  state: State;
-}
-
-interface SelectNFTButtonProps extends ButtonProps {
-  dialog: DialogStateReturn;
-}
-function SelectNFTButton({ state, dialog }: SelectNFTButtonProps) {
-  const text = useMemo(() => 'Select an NFT', []);
-  const isDisabled = state === State.NotConnected;
-  const isDone = state > State.NeedsToSelect;
-
-  if (isDisabled) {
-    return <Button disabled>{text}</Button>;
-  }
-  if (isDone) {
-    return <CompletedButton buttonText={text} success />;
-  }
-
-  return <DialogDisclosureButton {...dialog}>{text}</DialogDisclosureButton>;
-}
-
-interface AuthorizeNFTButtonProps extends ButtonProps {
-  collateralTokenID: ethers.BigNumber;
-  collateralAddress: string;
-  setIsCollateralApproved: (value: boolean) => void;
-  setSubmittingApproval: (value: boolean) => void;
-  submittingApproval: boolean;
-}
-function AuthorizeNFTButton({
-  collateralAddress,
-  collateralTokenID,
-  setIsCollateralApproved,
-  setSubmittingApproval,
-  state,
-  submittingApproval,
-}: AuthorizeNFTButtonProps) {
-  const [transactionHash, setTransactionHash] = useState('');
-
-  const approve = useCallback(async () => {
-    const web3Contract = web3Erc721Contract(collateralAddress);
-    const t = await web3Contract.approve(
-      process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT || '',
-      collateralTokenID,
-    );
-    setTransactionHash(t.hash);
-    setSubmittingApproval(true);
-    t.wait()
-      .then(() => {
-        setSubmittingApproval(false);
-        setIsCollateralApproved(true);
-      })
-      .catch((err) => {
-        setSubmittingApproval(false);
-        console.error(err);
-      });
-  }, [
-    collateralAddress,
-    collateralTokenID,
-    setIsCollateralApproved,
-    setSubmittingApproval,
-  ]);
-  const text = useMemo(() => 'Authorize NFT', []);
-  const isDisabled = state < State.NeedsToAuthorize;
-
-  if (isDisabled) {
-    return <Button disabled>{text}</Button>;
-  }
-
-  return (
-    <TransactionButton
-      text={text}
-      onClick={approve}
-      txHash={transactionHash}
-      isPending={submittingApproval}
-    />
   );
 }

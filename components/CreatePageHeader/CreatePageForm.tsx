@@ -1,4 +1,4 @@
-import { Button, TransactionButton } from 'components/Button';
+import { TransactionButton } from 'components/Button';
 import { FormErrors } from 'components/FormErrors';
 import { Input } from 'components/Input';
 import { Select } from 'components/Select';
@@ -11,10 +11,16 @@ import {
   web3LoanFacilitator,
 } from 'lib/contracts';
 import { getLoanAssets, LoanAsset } from 'lib/loanAssets';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  FocusEvent,
+  ChangeEvent,
+} from 'react';
 import * as Yup from 'yup';
 import styles from './CreatePageHeader.module.css';
-import { State } from './State';
 
 const SECONDS_IN_A_DAY = 60 * 60 * 24;
 const SECONDS_IN_A_YEAR = 31_536_000;
@@ -24,13 +30,33 @@ const MIN_RATE = 1 / 10 ** INTEREST_RATE_PERCENT_DECIMALS;
 type CreatePageFormProps = {
   collateralAddress: string;
   collateralTokenID: ethers.BigNumber;
-  state: State;
+  disabled: boolean;
+  onApproved: () => void;
+  onBlur: (filled: boolean) => void;
+  onError: () => void;
+  onFocus: (
+    type: 'DENOMINATION' | 'LOAN_AMOUNT' | 'DURATION' | 'INTEREST_RATE',
+  ) => void;
+  onSubmit: () => void;
+  setDenomination: (denomination: LoanAsset | null) => void;
+  setDuration: (rate: number | null) => void;
+  setInterestRate: (rate: number | null) => void;
+  setLoanAmount: (rate: number | null) => void;
 };
 
 export function CreatePageForm({
   collateralAddress,
   collateralTokenID,
-  state,
+  disabled,
+  onApproved,
+  onBlur,
+  onError,
+  onFocus,
+  onSubmit,
+  setDenomination,
+  setDuration,
+  setInterestRate,
+  setLoanAmount,
 }: CreatePageFormProps) {
   const { account } = useWeb3();
   const buttonText = useMemo(() => 'Mint Borrower Ticket', []);
@@ -42,10 +68,11 @@ export function CreatePageForm({
     const contract = jsonRpcLoanFacilitator();
     const filter = contract.filters.CreateLoan(null, account, null, null, null);
     contract.once(filter, (id) => {
+      onApproved();
       setWaitingForTx(false);
       window.location.assign(`/loans/${id.toString()}`);
     });
-  }, [account]);
+  }, [account, onApproved]);
 
   const mint = useCallback(
     async ({
@@ -64,6 +91,7 @@ export function CreatePageForm({
       ).div(SECONDS_IN_A_YEAR);
 
       const contract = web3LoanFacilitator();
+      onSubmit();
       const t = await contract.createLoan(
         collateralTokenID,
         collateralAddress,
@@ -74,6 +102,7 @@ export function CreatePageForm({
         // If they've gotten this far, they must have an account.
         account!,
       );
+
       setTxHash(t.hash);
       setWaitingForTx(true);
       t.wait()
@@ -83,10 +112,11 @@ export function CreatePageForm({
         })
         .catch((err) => {
           setWaitingForTx(false);
+          onError();
           console.error(err);
         });
     },
-    [account, collateralAddress, collateralTokenID, wait],
+    [account, collateralAddress, collateralTokenID, onError, onSubmit, wait],
   );
 
   const loadAssets = useCallback(async () => {
@@ -101,22 +131,32 @@ export function CreatePageForm({
     }
     return undefined;
   }, [loanAssetOptions]);
+  const [loanAssetContractAddress, setLoanAssetContractAddress] = useState(
+    initialLoanAssetContractAddress,
+  );
+
+  const handleBlur = useCallback(
+    (event: FocusEvent<HTMLInputElement>) => {
+      onBlur(event.target.value.length > 0);
+    },
+    [onBlur],
+  );
+
+  const handleSelectBlur = useCallback(() => {
+    onBlur(!!loanAssetContractAddress);
+  }, [loanAssetContractAddress, onBlur]);
 
   useEffect(() => {
     loadAssets();
   }, [loadAssets]);
 
-  if (state < State.Form) {
-    return <Button disabled>{buttonText}</Button>;
-  }
-
   return (
     <Formik
       initialValues={{
         loanAssetContractAddress: initialLoanAssetContractAddress,
-        loanAmount: 0,
-        interestRate: 0,
-        duration: 0,
+        loanAmount: undefined,
+        interestRate: undefined,
+        duration: undefined,
       }}
       validateOnBlur={false}
       validateOnChange={false}
@@ -152,9 +192,20 @@ export function CreatePageForm({
                 value: address,
                 label: symbol,
               }))}
-              onChange={(option: { [key: string]: string }) =>
-                formik.setFieldValue('loanAssetContractAddress', option)
-              }
+              onChange={(option: { [key: string]: string }) => {
+                setDenomination({
+                  symbol: option.label,
+                  address: option.value,
+                });
+                setLoanAssetContractAddress({
+                  value: option.value,
+                  label: option.label,
+                });
+                formik.setFieldValue('loanAssetContractAddress', option);
+              }}
+              onFocus={() => onFocus('DENOMINATION')}
+              onBlur={handleSelectBlur}
+              isDisabled={disabled}
             />
           </label>
 
@@ -167,18 +218,19 @@ export function CreatePageForm({
               as={Input}
               color="dark"
               unit={formik.values.loanAssetContractAddress?.label}
-            />
-          </label>
-
-          <label htmlFor="interestRate">
-            <span>Maximum Interest Rate</span>
-            <Field
-              name="interestRate"
-              type="number"
-              placeholder={`0`}
-              as={Input}
-              color="dark"
-              unit="%"
+              onFocus={() => onFocus('LOAN_AMOUNT')}
+              onBlur={handleBlur}
+              disabled={disabled}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                const { value } = event.target;
+                const parsedValue = parseFloat(value);
+                if (isNaN(parsedValue)) {
+                  setLoanAmount(null);
+                } else {
+                  setLoanAmount(parsedValue);
+                }
+                formik.handleChange(event);
+              }}
             />
           </label>
 
@@ -191,6 +243,44 @@ export function CreatePageForm({
               as={Input}
               color="dark"
               unit="Days"
+              onFocus={() => onFocus('DURATION')}
+              onBlur={handleBlur}
+              disabled={disabled}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                const { value } = event.target;
+                const parsedValue = parseFloat(value);
+                if (isNaN(parsedValue)) {
+                  setDuration(null);
+                } else {
+                  setDuration(parsedValue);
+                }
+                formik.handleChange(event);
+              }}
+            />
+          </label>
+
+          <label htmlFor="interestRate">
+            <span>Maximum Interest Rate</span>
+            <Field
+              name="interestRate"
+              type="number"
+              placeholder={`0`}
+              as={Input}
+              color="dark"
+              unit="%"
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                const { value } = event.target;
+                const parsedValue = parseFloat(value);
+                if (isNaN(parsedValue)) {
+                  setInterestRate(null);
+                } else {
+                  setInterestRate(parsedValue);
+                }
+                formik.handleChange(event);
+              }}
+              onFocus={() => onFocus('INTEREST_RATE')}
+              onBlur={handleBlur}
+              disabled={disabled}
             />
           </label>
 
@@ -201,7 +291,7 @@ export function CreatePageForm({
             type="submit"
             txHash={txHash}
             isPending={waitingForTx}
-            disabled={!formik.isValid}
+            disabled={disabled || !formik.isValid}
           />
         </form>
       )}

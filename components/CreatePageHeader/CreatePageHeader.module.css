@@ -3,7 +3,7 @@
   width: 100%;
   background: var(--background-white);
   justify-content: center;
-  padding-bottom: var(--gap);
+  padding-bottom: 90px;
   padding-top: calc(var(--gap) / 2);
 }
 
@@ -22,6 +22,7 @@
   box-shadow: var(--box-shadow-blue);
   padding: var(--padding-loan-card);
   align-self: start;
+  font-family: var(--sans);
 }
 
 .form {
