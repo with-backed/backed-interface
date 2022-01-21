@@ -4,6 +4,8 @@ import { web3Erc721Contract } from 'lib/contracts';
 import { isNFTApprovedForCollateral, NFTEntity } from 'lib/eip721Subraph';
 import React, { useCallback, useEffect, useState } from 'react';
 
+const ID = 'authorizeNFT';
+
 interface AuthorizeNFTButtonProps {
   collateralAddress: string;
   collateralTokenID: ethers.BigNumber;
@@ -57,11 +59,12 @@ export function AuthorizeNFTButton({
   const text = 'Authorize NFT';
 
   if (isCollateralApproved) {
-    return <CompletedButton buttonText={text} success />;
+    return <CompletedButton id={ID} buttonText={text} success />;
   }
 
   return (
     <TransactionButton
+      id={ID}
       disabled={disabled}
       text={text}
       onClick={approve}

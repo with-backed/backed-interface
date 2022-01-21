@@ -1,6 +1,6 @@
 import { Button } from 'components/Button';
 import { EtherscanTransactionLink } from 'components/EtherscanLink';
-import React, { ButtonHTMLAttributes, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { ButtonProps } from './Button';
 import { CompletedButton } from './CompletedButton';
 
@@ -19,6 +19,7 @@ export function TransactionButton({
   isPending,
   disabled = false,
   type,
+  id,
 }: TransactionButtonProps) {
   const handleClick = useCallback(() => {
     if (txHash != '' || disabled || !onClick) {
@@ -36,6 +37,7 @@ export function TransactionButton({
     );
     return (
       <CompletedButton
+        id={id}
         buttonText={text}
         message={
           <span>
@@ -47,7 +49,7 @@ export function TransactionButton({
   }
 
   return (
-    <Button type={type} onClick={handleClick} disabled={disabled}>
+    <Button id={id} type={type} onClick={handleClick} disabled={disabled}>
       {text}
     </Button>
   );

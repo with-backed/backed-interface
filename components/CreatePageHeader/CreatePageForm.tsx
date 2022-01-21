@@ -182,10 +182,11 @@ export function CreatePageForm({
       isInitialValid={false}
       onSubmit={mint}>
       {(formik) => (
-        <form className={styles.form} onSubmit={formik.handleSubmit}>
+        <form className={styles.form} onSubmit={formik.handleSubmit} id="form">
           <label htmlFor="loanAssetContractAddress">
             <span>Loan Denomination</span>
             <Field
+              id="denomination"
               name="loanAssetContractAddress"
               as={Select}
               options={loanAssetOptions.map(({ symbol, address }) => ({
@@ -212,6 +213,7 @@ export function CreatePageForm({
           <label htmlFor="loanAmount">
             <span>Minimum Loan Amount</span>
             <Field
+              id="loanAmount"
               name="loanAmount"
               type="number"
               placeholder="0"
@@ -237,6 +239,7 @@ export function CreatePageForm({
           <label htmlFor="duration">
             <span>Minimum Duration</span>
             <Field
+              id="duration"
               name="duration"
               type="number"
               placeholder="0"
@@ -262,6 +265,7 @@ export function CreatePageForm({
           <label htmlFor="interestRate">
             <span>Maximum Interest Rate</span>
             <Field
+              id="interestRate"
               name="interestRate"
               type="number"
               placeholder={`0`}
@@ -284,15 +288,16 @@ export function CreatePageForm({
             />
           </label>
 
-          <FormErrors errors={Object.values(formik.errors)} />
-
           <TransactionButton
+            id="mintBorrowerTicket"
             text={buttonText}
             type="submit"
             txHash={txHash}
             isPending={waitingForTx}
             disabled={disabled || !formik.isValid}
           />
+
+          <FormErrors errors={Object.values(formik.errors)} />
         </form>
       )}
     </Formik>

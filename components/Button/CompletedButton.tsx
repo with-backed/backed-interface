@@ -6,16 +6,18 @@ interface CompletedButtonProps {
   buttonText: React.ReactNode;
   message?: React.ReactNode;
   success?: boolean;
+  id?: string;
 }
 
 export function CompletedButton({
   buttonText,
   message,
   success = false,
+  id,
 }: CompletedButtonProps) {
   const className = [styles['button-completed'], styles.secondary].join(' ');
   return (
-    <div className={className}>
+    <div id={id} className={className}>
       {buttonText}
       {!!message && (
         <div className={styles['button-completed-message']}>{message}</div>
