@@ -74,12 +74,6 @@ export function CreatePageForm({
       interestRate,
       duration,
     }) => {
-      console.log({
-        loanAssetContractAddress,
-        loanAmount,
-        interestRate,
-        duration,
-      });
       const assetContract = jsonRpcERC20Contract(
         loanAssetContractAddress.value,
       );
