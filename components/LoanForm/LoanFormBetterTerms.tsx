@@ -92,7 +92,10 @@ export function LoanFormBetterTerms({
       }}
       onSubmit={underwrite}>
       {(formik) => (
-        <form className={styles.form} onSubmit={formik.handleSubmit}>
+        <form
+          className={styles.form}
+          onSubmit={formik.handleSubmit}
+          autoComplete="off">
           <CompletedButton buttonText="Offer better terms" />
 
           <label htmlFor="amount">
