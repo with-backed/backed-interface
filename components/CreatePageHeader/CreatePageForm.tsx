@@ -219,7 +219,6 @@ export function CreatePageForm({
             <Field
               id="loanAmount"
               name="loanAmount"
-              type="number"
               placeholder="0"
               as={Input}
               color="dark"
@@ -245,7 +244,7 @@ export function CreatePageForm({
             <Field
               id="duration"
               name="duration"
-              type="number"
+              type="text"
               placeholder="0"
               as={Input}
               color="dark"
@@ -271,7 +270,7 @@ export function CreatePageForm({
             <Field
               id="interestRate"
               name="interestRate"
-              type="number"
+              type="text"
               placeholder={`0`}
               as={Input}
               color="dark"
