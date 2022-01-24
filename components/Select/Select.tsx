@@ -2,6 +2,12 @@ import React, { useMemo } from 'react';
 import ReactSelect, { StylesConfig } from 'react-select';
 
 const customStyles: StylesConfig = {
+  container: (provided, state) => ({
+    ...provided,
+    filter: state.isFocused
+      ? 'drop-shadow(0px 0px 15px rgba(0, 0, 0, 0.1))'
+      : 'none',
+  }),
   control: (provided, state) => ({
     ...provided,
     background: state.isFocused
@@ -13,6 +19,7 @@ const customStyles: StylesConfig = {
     padding: 'var(--padding-button)',
     zIndex: 2,
     cursor: state.isDisabled ? 'not-allowed' : 'pointer',
+    boxShadow: 'none',
   }),
   indicatorSeparator: () => ({
     display: 'none',
@@ -28,6 +35,8 @@ const customStyles: StylesConfig = {
     paddingBottom: '0.5rem',
     marginTop: '-1.5rem',
     borderRadius: 'var(--border-radius-large)',
+    border: 'none',
+    boxShadow: 'none',
   }),
   valueContainer: (provided) => ({
     ...provided,
