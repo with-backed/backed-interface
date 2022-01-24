@@ -90,7 +90,7 @@ export function LoanFormAwaiting({
               name="amount"
               as={Input}
               color="dark"
-              type="number"
+              type="text"
               unit={loan.loanAssetSymbol}
             />
           </label>
@@ -101,7 +101,7 @@ export function LoanFormAwaiting({
               name="duration"
               as={Input}
               color="dark"
-              type="number"
+              type="text"
               unit="Days"
             />
           </label>
@@ -112,7 +112,7 @@ export function LoanFormAwaiting({
               name="interestRate"
               as={Input}
               color="dark"
-              type="number"
+              type="text"
               unit="%"
             />
           </label>

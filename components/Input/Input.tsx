@@ -10,11 +10,9 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 export const Input: FunctionComponent<InputProps> = ({
   color = 'light',
   unit,
-  type,
   ...props
 }) => {
   const className = unit ? styles[`${color}-unit`] : styles[color];
-  const realType = type === 'number' ? 'tel' : type;
 
   if (unit) {
     return (
@@ -24,12 +22,5 @@ export const Input: FunctionComponent<InputProps> = ({
       </div>
     );
   }
-  return (
-    <input
-      className={className}
-      {...props}
-      type={realType}
-      pattern={realType === 'tel' ? '[0-9]*' : undefined}
-    />
-  );
+  return <input className={className} {...props} />;
 };

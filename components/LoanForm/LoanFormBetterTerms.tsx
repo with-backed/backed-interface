@@ -104,7 +104,7 @@ export function LoanFormBetterTerms({
               name="amount"
               as={Input}
               color="dark"
-              type="number"
+              type="text"
               unit={loan.loanAssetSymbol}
             />
           </label>
@@ -115,7 +115,7 @@ export function LoanFormBetterTerms({
               name="duration"
               as={Input}
               color="dark"
-              type="number"
+              type="text"
               unit="Days"
             />
           </label>
@@ -126,7 +126,7 @@ export function LoanFormBetterTerms({
               name="interestRate"
               as={Input}
               color="dark"
-              type="number"
+              type="text"
               unit="%"
             />
           </label>
