@@ -124,9 +124,10 @@ function MaximumInterestRate({ context }: InnerProps) {
     ).div(SECONDS_IN_YEAR);
     return (
       <div>
-        Because interest is stored and calculated per second instead of
-        annually, the loan ticket will show an APR of{' '}
-        {formattedAnnualRate(interestRatePerSecond)}%.
+        Effective rate: <b>{formattedAnnualRate(interestRatePerSecond)}% APR</b>
+        <br />
+        The contract stores and calculates interest on a per-second basis
+        instead of per-year, so actual APR differs slightly from what you input.
         <EstimatedRepayment context={context} />
       </div>
     );
@@ -170,8 +171,10 @@ function EstimatedRepayment({
     return (
       <>
         <br />
-        The estimated repayment will be {estimatedRepayment}{' '}
-        {denomination.symbol} at maturity.
+        The estimated repayment at maturity will be{' '}
+        <b>
+          {estimatedRepayment} {denomination.symbol}.
+        </b>
       </>
     );
   }

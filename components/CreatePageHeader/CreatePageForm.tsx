@@ -182,7 +182,11 @@ export function CreatePageForm({
       isInitialValid={false}
       onSubmit={mint}>
       {(formik) => (
-        <form className={styles.form} onSubmit={formik.handleSubmit} id="form">
+        <form
+          className={styles.form}
+          onSubmit={formik.handleSubmit}
+          id="form"
+          autoComplete="off">
           <label htmlFor="loanAssetContractAddress">
             <span>Loan Denomination</span>
             <Field

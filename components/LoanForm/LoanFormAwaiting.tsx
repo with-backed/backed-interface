@@ -78,7 +78,10 @@ export function LoanFormAwaiting({
       })}
       onSubmit={underwrite}>
       {(formik) => (
-        <form className={styles.form} onSubmit={formik.handleSubmit}>
+        <form
+          className={styles.form}
+          onSubmit={formik.handleSubmit}
+          autoComplete="off">
           <CompletedButton buttonText="Lend" />
 
           <label htmlFor="amount">
