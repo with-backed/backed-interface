@@ -147,7 +147,10 @@ export function CreatePageForm({
             <Select
               id="denomination"
               isDisabled={disabled}
-              options={[]}
+              options={loanAssetOptions.map((asset) => ({
+                ...asset,
+                label: asset.symbol,
+              }))}
               onFocus={() => onFocus('DENOMINATION')}
               onBlur={(event) => {
                 handleBlur(event);
@@ -163,15 +166,13 @@ export function CreatePageForm({
         <span>Minimum Loan Amount</span>
         <Input
           id="loanAmount"
-          name="loanAmount"
           placeholder="0"
           type="number"
           color="dark"
           unit={watchAllFields.loanAsset?.symbol}
           disabled={disabled}
-          onBlur={handleBlur}
           onFocus={() => onFocus('LOAN_AMOUNT')}
-          {...register}
+          {...register('loanAmount', { onBlur: handleBlur })}
         />
       </label>
 
@@ -179,15 +180,13 @@ export function CreatePageForm({
         <span>Minimum Duration</span>
         <Input
           id="duration"
-          name="duration"
           placeholder="0"
           type="number"
           color="dark"
           unit="Days"
           disabled={disabled}
-          onBlur={handleBlur}
           onFocus={() => onFocus('DURATION')}
-          {...register}
+          {...register('duration', { onBlur: handleBlur })}
         />
       </label>
 
@@ -200,9 +199,8 @@ export function CreatePageForm({
           color="dark"
           unit="%"
           onFocus={() => onFocus('INTEREST_RATE')}
-          onBlur={handleBlur}
           disabled={disabled}
-          {...register}
+          {...register('interestRate', { onBlur: handleBlur })}
         />
       </label>
 

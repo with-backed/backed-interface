@@ -23,7 +23,7 @@ import { Explainer } from './Explainer';
 import { SelectNFTButton } from './SelectNFTButton';
 
 export function CreatePageHeader() {
-  const form = useForm<CreateFormData>();
+  const form = useForm<CreateFormData>({ mode: 'all' });
   const { account } = useWeb3();
   const [current, send] = useMachine(createPageFormMachine);
 

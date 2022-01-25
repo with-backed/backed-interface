@@ -23,7 +23,7 @@ export const explainers: {
   authorizeNFT: AuthorizeNFT,
   pendingAuthorization: PendingAuthorization,
   loanFormUnfocused: LoanFormUnfocused,
-  loanAsset: loanAsset,
+  denomination: Denomination,
   loanAmount: LoanAmount,
   minimumDuration: MinimumDuration,
   maximumInterestRate: MaximumInterestRate,
@@ -82,7 +82,7 @@ function LoanFormUnfocused({ context }: InnerProps) {
   );
 }
 
-function loanAsset({ context }: InnerProps) {
+function Denomination({ context }: InnerProps) {
   return (
     <div>
       This is the token used for the loan principal, interest, and repayment.
