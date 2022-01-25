@@ -38,22 +38,26 @@ export async function subgraphLoanHistoryById(id: string): Promise<Event[]> {
 
   const events: Event[] = [];
 
-  if (loan.createEvent && loan.createEvent !== null) {
+  if (!loan) {
+    return events;
+  }
+
+  if (loan.createEvent) {
     const event = loan.createEvent as CreateEvent;
     events.push(createEventToUnified(event));
   }
 
-  if (loan.closeEvent && loan.closeEvent !== null) {
+  if (loan.closeEvent) {
     const event = loan.closeEvent as CloseEvent;
     events.push(closeEventToUnified(event));
   }
 
-  if (loan.collateralSeizureEvent && loan.collateralSeizureEvent !== null) {
+  if (loan.collateralSeizureEvent) {
     const event = loan.collateralSeizureEvent as CollateralSeizureEvent;
     events.push(collateralSeizureEventToUnified(event));
   }
 
-  if (loan.repaymentEvent && loan.repaymentEvent !== null) {
+  if (loan.repaymentEvent) {
     const event = loan.repaymentEvent as RepaymentEvent;
     events.push(repaymentEventToUnified(event));
   }
