@@ -1,3 +1,4 @@
+import { yupResolver } from '@hookform/resolvers/yup';
 import { useMachine } from '@xstate/react';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { NFTMedia } from 'components/Media/NFTMedia';
@@ -16,14 +17,18 @@ import { useDialogState } from 'reakit/Dialog';
 import { Provider } from 'urql';
 import { AuthorizeNFTButton } from './AuthorizeNFTButton';
 import { CreateFormData } from './CreateFormData';
-import { CreatePageForm } from './NewCreatePageForm';
+import { CreatePageForm } from './CreatePageForm';
 import { createPageFormMachine, stateTargets } from './createPageFormMachine';
 import styles from './CreatePageHeader.module.css';
 import { Explainer } from './Explainer';
 import { SelectNFTButton } from './SelectNFTButton';
+import { createPageFormSchema } from './createPageFormSchema';
 
 export function CreatePageHeader() {
-  const form = useForm<CreateFormData>({ mode: 'all' });
+  const form = useForm<CreateFormData>({
+    mode: 'all',
+    resolver: yupResolver(createPageFormSchema),
+  });
   const { account } = useWeb3();
   const [current, send] = useMachine(createPageFormMachine);
 
@@ -81,8 +86,6 @@ export function CreatePageHeader() {
       });
     }
   }, [account, current, send]);
-
-  const context = form.watch();
 
   const [explainerTop, setExplainerTop] = useState(0);
   useEffect(() => {
@@ -147,7 +150,7 @@ export function CreatePageHeader() {
         <Explainer
           state={current.toStrings()[0]}
           top={explainerTop}
-          context={context}
+          form={form}
         />
       </ThreeColumn>
       <Provider value={eip721Client}>

@@ -4,16 +4,17 @@ import { jsonRpcERC20Contract } from 'lib/contracts';
 import { daysToSecondsBigNum } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
 import React, { useEffect, useState } from 'react';
+import { UseFormReturn } from 'react-hook-form';
 import type { CreateFormData } from './CreateFormData';
 import styles from './CreatePageHeader.module.css';
 
 type ExplainerProps = {
-  context: CreateFormData;
+  form: UseFormReturn<CreateFormData, object>;
   state: string;
   top: number;
 };
 
-type InnerProps = Pick<ExplainerProps, 'context'>;
+type InnerProps = { context: CreateFormData };
 
 export const explainers: {
   [key: string]: (props: InnerProps) => JSX.Element;
@@ -32,12 +33,12 @@ export const explainers: {
   mintBorrowerTicketSuccess: MintBorrowerTicketSuccess,
 };
 
-export function Explainer({ context, state, top }: ExplainerProps) {
+export function Explainer({ form, state, top }: ExplainerProps) {
   const Inner = explainers[state];
   return (
     <div className={styles['explainer-container']} id="container">
       <div className={styles.explainer} style={{ top }}>
-        <Inner context={context} />
+        <Inner context={form.watch()} />
       </div>
     </div>
   );
