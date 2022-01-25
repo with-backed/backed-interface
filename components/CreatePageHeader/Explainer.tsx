@@ -3,18 +3,12 @@ import { SCALAR } from 'lib/constants';
 import { jsonRpcERC20Contract } from 'lib/contracts';
 import { daysToSecondsBigNum } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
-import { LoanAsset } from 'lib/loanAssets';
 import React, { useEffect, useState } from 'react';
+import type { CreateFormData } from './CreateFormData';
 import styles from './CreatePageHeader.module.css';
 
-export type ExplainerContext = {
-  interestRate: number | null;
-  loanAmount: number | null;
-  duration: number | null;
-  denomination: LoanAsset | null;
-};
 type ExplainerProps = {
-  context: ExplainerContext;
+  context: CreateFormData;
   state: string;
   top: number;
 };
@@ -29,7 +23,7 @@ export const explainers: {
   authorizeNFT: AuthorizeNFT,
   pendingAuthorization: PendingAuthorization,
   loanFormUnfocused: LoanFormUnfocused,
-  denomination: Denomination,
+  loanAsset: loanAsset,
   loanAmount: LoanAmount,
   minimumDuration: MinimumDuration,
   maximumInterestRate: MaximumInterestRate,
@@ -88,7 +82,7 @@ function LoanFormUnfocused({ context }: InnerProps) {
   );
 }
 
-function Denomination({ context }: InnerProps) {
+function loanAsset({ context }: InnerProps) {
   return (
     <div>
       This is the token used for the loan principal, interest, and repayment.
@@ -120,7 +114,9 @@ const INTEREST_RATE_PERCENT_DECIMALS = 8;
 function MaximumInterestRate({ context }: InnerProps) {
   if (context.interestRate) {
     const interestRatePerSecond = ethers.BigNumber.from(
-      Math.floor(context.interestRate * 10 ** INTEREST_RATE_PERCENT_DECIMALS),
+      Math.floor(
+        parseFloat(context.interestRate) * 10 ** INTEREST_RATE_PERCENT_DECIMALS,
+      ),
     ).div(SECONDS_IN_YEAR);
     return (
       <div>
@@ -141,21 +137,23 @@ function MaximumInterestRate({ context }: InnerProps) {
 }
 
 function EstimatedRepayment({
-  context: { denomination, duration, interestRate, loanAmount },
+  context: { loanAsset, duration, interestRate, loanAmount },
 }: InnerProps) {
   const [decimals, setDecimals] = useState<number | null>(null);
   useEffect(() => {
-    if (denomination) {
-      const loanAssetContract = jsonRpcERC20Contract(denomination.address);
+    if (loanAsset) {
+      const loanAssetContract = jsonRpcERC20Contract(loanAsset.address);
       loanAssetContract.decimals().then(setDecimals);
     }
-  }, [denomination, setDecimals]);
+  }, [loanAsset, setDecimals]);
 
-  if (interestRate && loanAmount && duration && denomination && decimals) {
+  if (interestRate && loanAmount && duration && loanAsset && decimals) {
     const interestRatePerSecond = ethers.BigNumber.from(
-      Math.floor(interestRate * 10 ** INTEREST_RATE_PERCENT_DECIMALS),
+      Math.floor(
+        parseFloat(interestRate) * 10 ** INTEREST_RATE_PERCENT_DECIMALS,
+      ),
     ).div(SECONDS_IN_YEAR);
-    const durationSeconds = daysToSecondsBigNum(duration);
+    const durationSeconds = daysToSecondsBigNum(parseFloat(duration));
     const parsedLoanAmount = ethers.utils.parseUnits(
       loanAmount.toString(),
       decimals,
@@ -173,7 +171,7 @@ function EstimatedRepayment({
         <br />
         The estimated repayment at maturity will be{' '}
         <b>
-          {estimatedRepayment} {denomination.symbol}.
+          {estimatedRepayment} {loanAsset.symbol}.
         </b>
       </>
     );
