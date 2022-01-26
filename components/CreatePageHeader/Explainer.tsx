@@ -4,7 +4,7 @@ import { jsonRpcERC20Contract } from 'lib/contracts';
 import { daysToSecondsBigNum } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
 import React, { useEffect, useState } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import { FieldError, UseFormReturn } from 'react-hook-form';
 import type { CreateFormData } from './CreateFormData';
 import styles from './CreatePageHeader.module.css';
 
@@ -34,12 +34,38 @@ export const explainers: {
 };
 
 export function Explainer({ form, state, top }: ExplainerProps) {
+  const error = Object.values(form.formState.errors)[0];
   const Inner = explainers[state];
+
   return (
     <div className={styles['explainer-container']} id="container">
-      <div className={styles.explainer} style={{ top }}>
-        <Inner context={form.watch()} />
+      <div
+        className={error ? styles['explainer-error'] : styles.explainer}
+        style={{ top }}>
+        {!!error && <Error error={error} />}
+        {!error && <Inner context={form.watch()} />}
       </div>
+    </div>
+  );
+}
+
+function Error({
+  error,
+}: {
+  error:
+    | FieldError
+    | {
+        address?: FieldError | undefined;
+        symbol?: FieldError | undefined;
+      };
+}) {
+  const anyError = error as any;
+
+  return (
+    <div>
+      🚧 {!!anyError.address && anyError.address.message}
+      {!!anyError.symbol && anyError.symbol.message}
+      {!!anyError.message && anyError.message}
     </div>
   );
 }
@@ -138,17 +164,17 @@ function MaximumInterestRate({ context }: InnerProps) {
 }
 
 function EstimatedRepayment({
-  context: { loanAsset, duration, interestRate, loanAmount },
+  context: { denomination, duration, interestRate, loanAmount },
 }: InnerProps) {
   const [decimals, setDecimals] = useState<number | null>(null);
   useEffect(() => {
-    if (loanAsset) {
-      const loanAssetContract = jsonRpcERC20Contract(loanAsset.address);
+    if (denomination) {
+      const loanAssetContract = jsonRpcERC20Contract(denomination.address);
       loanAssetContract.decimals().then(setDecimals);
     }
-  }, [loanAsset, setDecimals]);
+  }, [denomination, setDecimals]);
 
-  if (interestRate && loanAmount && duration && loanAsset && decimals) {
+  if (interestRate && loanAmount && duration && denomination && decimals) {
     const interestRatePerSecond = ethers.BigNumber.from(
       Math.floor(
         parseFloat(interestRate) * 10 ** INTEREST_RATE_PERCENT_DECIMALS,
@@ -172,7 +198,7 @@ function EstimatedRepayment({
         <br />
         The estimated repayment at maturity will be{' '}
         <b>
-          {estimatedRepayment} {loanAsset.symbol}.
+          {estimatedRepayment} {denomination.symbol}.
         </b>
       </>
     );

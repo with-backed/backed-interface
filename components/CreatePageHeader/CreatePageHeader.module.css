@@ -28,6 +28,11 @@
   transition: top 0.5s ease 0s;
 }
 
+.explainer-error {
+  composes: explainer;
+  box-shadow: var(--box-shadow-red);
+}
+
 .explainer-container {
   position: relative;
 }

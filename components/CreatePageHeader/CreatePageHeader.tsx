@@ -87,9 +87,14 @@ export function CreatePageHeader() {
     }
   }, [account, current, send]);
 
+  const errors = form.formState.errors;
+
   const [explainerTop, setExplainerTop] = useState(0);
   useEffect(() => {
-    const targetID = stateTargets[current.toStrings()[0]];
+    // when there's a form error, the explainer should float by the input with an error.
+    const errorTarget = Object.keys(errors)[0];
+    const stateTarget = stateTargets[current.toStrings()[0]];
+    const targetID = errorTarget || stateTarget;
     const target = document.getElementById(targetID);
     const container = document.getElementById('container');
     if (!target || !container) {
@@ -97,8 +102,11 @@ export function CreatePageHeader() {
     }
     const targetTop = target!.getBoundingClientRect().top;
     const containerTop = container!.getBoundingClientRect().top;
-    setExplainerTop(targetTop - containerTop);
-  }, [current]);
+    const result = targetTop - containerTop;
+    if (result !== explainerTop) {
+      setExplainerTop(result);
+    }
+  }, [current, errors, explainerTop]);
 
   const formIsDisabled = useMemo(() => {
     return [
