@@ -62,11 +62,14 @@ function Error({
   const anyError = error as any;
 
   return (
-    <div>
-      🚧 {!!anyError.address && anyError.address.message}
-      {!!anyError.symbol && anyError.symbol.message}
-      {!!anyError.message && anyError.message}
-    </div>
+    <>
+      🚧
+      <div role="alert">
+        {!!anyError.address && anyError.address.message}
+        {!!anyError.symbol && anyError.symbol.message}
+        {!!anyError.message && anyError.message}
+      </div>
+    </>
   );
 }
 

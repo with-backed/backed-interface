@@ -50,7 +50,13 @@ export function CreatePageForm({
   onFocus,
   onSubmit,
 }: CreatePageFormProps) {
-  const { control, handleSubmit, register, watch } = form;
+  const {
+    control,
+    handleSubmit,
+    register,
+    watch,
+    formState: { errors },
+  } = form;
   const { account } = useWeb3();
   const buttonText = useMemo(() => 'Mint Borrower Ticket', []);
   const [txHash, setTxHash] = useState('');
@@ -161,6 +167,7 @@ export function CreatePageForm({
                   ...asset,
                 })) as any
               }
+              aria-invalid={!!errors.denomination}
               value={value}
             />
           )}
@@ -177,6 +184,7 @@ export function CreatePageForm({
           unit={watchAllFields.denomination?.symbol}
           disabled={disabled}
           onFocus={() => onFocus('LOAN_AMOUNT')}
+          aria-invalid={!!errors.loanAmount}
           {...register('loanAmount', { onBlur: handleBlur })}
         />
       </label>
@@ -191,6 +199,7 @@ export function CreatePageForm({
           unit="Days"
           disabled={disabled}
           onFocus={() => onFocus('DURATION')}
+          aria-invalid={!!errors.duration}
           {...register('duration', { onBlur: handleBlur })}
         />
       </label>
@@ -205,6 +214,7 @@ export function CreatePageForm({
           unit="%"
           onFocus={() => onFocus('INTEREST_RATE')}
           disabled={disabled}
+          aria-invalid={!!errors.interestRate}
           {...register('interestRate', { onBlur: handleBlur })}
         />
       </label>
