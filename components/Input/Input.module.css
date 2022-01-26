@@ -74,3 +74,8 @@
   -webkit-appearance: none;
   margin: 0;
 }
+
+.input[aria-invalid='true'],
+.input[aria-invalid='true'] + .unit {
+  background: var(--highlight-alert-10);
+}

@@ -3,6 +3,6 @@ import { LoanAsset } from 'lib/loanAssets';
 export type CreateFormData = {
   duration: string;
   interestRate: string;
-  loanAsset: LoanAsset;
+  denomination: LoanAsset;
   loanAmount: string;
 };

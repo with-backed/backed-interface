@@ -2,7 +2,7 @@ import { MIN_RATE } from 'lib/constants';
 import * as Yup from 'yup';
 
 export const createPageFormSchema = Yup.object({
-  loanAssetContractAddress: Yup.object({
+  denomination: Yup.object({
     value: Yup.string(),
     address: Yup.string(),
   }).required(),

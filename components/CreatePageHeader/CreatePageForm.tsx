@@ -50,7 +50,13 @@ export function CreatePageForm({
   onFocus,
   onSubmit,
 }: CreatePageFormProps) {
-  const { control, handleSubmit, register, watch } = form;
+  const {
+    control,
+    handleSubmit,
+    register,
+    watch,
+    formState: { errors },
+  } = form;
   const { account } = useWeb3();
   const buttonText = useMemo(() => 'Mint Borrower Ticket', []);
   const [txHash, setTxHash] = useState('');
@@ -74,11 +80,11 @@ export function CreatePageForm({
       loanAmount,
       interestRate,
       duration,
-      loanAsset,
+      denomination,
     }: CreateFormData) => {
       const parsedInterestRate = parseFloat(interestRate);
       const parsedDuration = parseFloat(duration);
-      const assetContract = jsonRpcERC20Contract(loanAsset.address);
+      const assetContract = jsonRpcERC20Contract(denomination.address);
       const loanAssetDecimals = await assetContract.decimals();
       const durationInSeconds = Math.ceil(parsedDuration * SECONDS_IN_A_DAY);
       const interestRatePerSecond = ethers.BigNumber.from(
@@ -92,7 +98,7 @@ export function CreatePageForm({
         collateralAddress,
         interestRatePerSecond,
         ethers.utils.parseUnits(loanAmount.toString(), loanAssetDecimals),
-        loanAsset.address,
+        denomination.address,
         durationInSeconds,
         // If they've gotten this far, they must have an account.
         account!,
@@ -145,13 +151,13 @@ export function CreatePageForm({
         <span>Loan Denomination</span>
         <Controller
           control={control}
-          name="loanAsset"
+          name="denomination"
           render={({ field: { onChange, onBlur, value } }) => (
             <Select
               id="denomination"
               onChange={onChange}
               onBlur={() => {
-                handleSelectBlur(!!watchAllFields.loanAsset);
+                handleSelectBlur(!!watchAllFields.denomination);
                 onBlur();
               }}
               onFocus={() => onFocus('DENOMINATION')}
@@ -161,6 +167,7 @@ export function CreatePageForm({
                   ...asset,
                 })) as any
               }
+              aria-invalid={!!errors.denomination}
               value={value}
             />
           )}
@@ -174,9 +181,10 @@ export function CreatePageForm({
           placeholder="0"
           type="number"
           color="dark"
-          unit={watchAllFields.loanAsset?.symbol}
+          unit={watchAllFields.denomination?.symbol}
           disabled={disabled}
           onFocus={() => onFocus('LOAN_AMOUNT')}
+          aria-invalid={!!errors.loanAmount}
           {...register('loanAmount', { onBlur: handleBlur })}
         />
       </label>
@@ -191,6 +199,7 @@ export function CreatePageForm({
           unit="Days"
           disabled={disabled}
           onFocus={() => onFocus('DURATION')}
+          aria-invalid={!!errors.duration}
           {...register('duration', { onBlur: handleBlur })}
         />
       </label>
@@ -205,6 +214,7 @@ export function CreatePageForm({
           unit="%"
           onFocus={() => onFocus('INTEREST_RATE')}
           disabled={disabled}
+          aria-invalid={!!errors.interestRate}
           {...register('interestRate', { onBlur: handleBlur })}
         />
       </label>
@@ -215,7 +225,7 @@ export function CreatePageForm({
         type="submit"
         txHash={txHash}
         isPending={waitingForTx}
-        disabled={disabled}
+        disabled={disabled || Object.keys(errors).length > 0}
       />
     </form>
   );
