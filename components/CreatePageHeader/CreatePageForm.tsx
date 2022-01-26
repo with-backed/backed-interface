@@ -71,10 +71,10 @@ export function CreatePageForm({
 
   const mint = useCallback(
     async ({
-      loanAsset,
       loanAmount,
       interestRate,
       duration,
+      loanAsset,
     }: CreateFormData) => {
       const parsedInterestRate = parseFloat(interestRate);
       const parsedDuration = parseFloat(duration);
@@ -126,6 +126,11 @@ export function CreatePageForm({
     [onBlur],
   );
 
+  const handleSelectBlur = useCallback(
+    (filled: boolean) => onBlur(filled),
+    [onBlur],
+  );
+
   useEffect(() => {
     loadAssets();
   }, [loadAssets]);
@@ -139,22 +144,24 @@ export function CreatePageForm({
       <label htmlFor="loanAsset">
         <span>Loan Denomination</span>
         <Controller
-          name="loanAsset"
           control={control}
-          render={({ field: { onBlur, ...field } }) => (
+          name="loanAsset"
+          render={({ field: { onChange, onBlur, value } }) => (
             <Select
               id="denomination"
-              isDisabled={disabled}
-              options={loanAssetOptions.map((asset) => ({
-                ...asset,
-                label: asset.symbol,
-              }))}
-              onFocus={() => onFocus('DENOMINATION')}
-              onBlur={(event) => {
-                handleBlur(event);
+              onChange={onChange}
+              onBlur={() => {
+                handleSelectBlur(!!watchAllFields.loanAsset);
                 onBlur();
               }}
-              {...field}
+              onFocus={() => onFocus('DENOMINATION')}
+              options={
+                loanAssetOptions.map((asset) => ({
+                  label: asset.symbol,
+                  ...asset,
+                })) as any
+              }
+              value={value}
             />
           )}
         />
