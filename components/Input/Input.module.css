@@ -15,10 +15,6 @@
   background: var(--highlight-active-10);
 }
 
-.input[aria-invalid='true'] {
-  background: var(--highlight-alert-10);
-}
-
 .light {
   composes: input;
 }
@@ -77,4 +73,9 @@
 .input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+.input[aria-invalid='true'],
+.input[aria-invalid='true'] + .unit {
+  background: var(--highlight-alert-10);
 }
