@@ -225,7 +225,7 @@ export function CreatePageForm({
         type="submit"
         txHash={txHash}
         isPending={waitingForTx}
-        disabled={disabled}
+        disabled={disabled || Object.keys(errors).length > 0}
       />
     </form>
   );
