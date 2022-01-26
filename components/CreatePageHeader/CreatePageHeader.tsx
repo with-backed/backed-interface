@@ -1,3 +1,4 @@
+import { yupResolver } from '@hookform/resolvers/yup';
 import { useMachine } from '@xstate/react';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { NFTMedia } from 'components/Media/NFTMedia';
@@ -9,19 +10,25 @@ import {
   HIDDEN_NFT_ADDRESSES,
   NFTEntity,
 } from 'lib/eip721Subraph';
-import { LoanAsset } from 'lib/loanAssets';
 import { eip721Client } from 'lib/urql';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useDialogState } from 'reakit/Dialog';
 import { Provider } from 'urql';
 import { AuthorizeNFTButton } from './AuthorizeNFTButton';
+import { CreateFormData } from './CreateFormData';
 import { CreatePageForm } from './CreatePageForm';
 import { createPageFormMachine, stateTargets } from './createPageFormMachine';
 import styles from './CreatePageHeader.module.css';
-import { ExplainerContext, Explainer } from './Explainer';
+import { Explainer } from './Explainer';
 import { SelectNFTButton } from './SelectNFTButton';
+import { createPageFormSchema } from './createPageFormSchema';
 
 export function CreatePageHeader() {
+  const form = useForm<CreateFormData>({
+    mode: 'all',
+    resolver: yupResolver(createPageFormSchema),
+  });
   const { account } = useWeb3();
   const [current, send] = useMachine(createPageFormMachine);
 
@@ -80,15 +87,6 @@ export function CreatePageHeader() {
     }
   }, [account, current, send]);
 
-  const [interestRate, setInterestRate] = useState<number | null>(null);
-  const [loanAmount, setLoanAmount] = useState<number | null>(null);
-  const [duration, setDuration] = useState<number | null>(null);
-  const [denomination, setDenomination] = useState<LoanAsset | null>(null);
-  const context: ExplainerContext = useMemo(
-    () => ({ denomination, duration, interestRate, loanAmount }),
-    [denomination, duration, interestRate, loanAmount],
-  );
-
   const [explainerTop, setExplainerTop] = useState(0);
   useEffect(() => {
     const targetID = stateTargets[current.toStrings()[0]];
@@ -146,16 +144,13 @@ export function CreatePageHeader() {
             onError={onError}
             onFocus={onFocus}
             onSubmit={onSubmit}
-            setDenomination={setDenomination}
-            setDuration={setDuration}
-            setInterestRate={setInterestRate}
-            setLoanAmount={setLoanAmount}
+            form={form}
           />
         </div>
         <Explainer
           state={current.toStrings()[0]}
           top={explainerTop}
-          context={context}
+          form={form}
         />
       </ThreeColumn>
       <Provider value={eip721Client}>
