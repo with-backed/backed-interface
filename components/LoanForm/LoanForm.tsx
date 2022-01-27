@@ -28,8 +28,8 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
   const [needsAllowance, setNeedsAllowance] = useState(true);
   const toggleForm = useCallback(() => setFormOpen((prev) => !prev), []);
   const viewerIsBorrower = useMemo(
-    () => account?.toUpperCase() === loan.lender?.toUpperCase(),
-    [account, loan.lender],
+    () => account?.toUpperCase() === loan.borrower.toUpperCase(),
+    [account, loan.borrower],
   );
   const buttonText = useMemo(() => {
     if (viewerIsBorrower) {
