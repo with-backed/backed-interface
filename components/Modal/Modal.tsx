@@ -16,6 +16,7 @@ export const Modal: FunctionComponent<ModalProps> = ({
   return (
     <Dialog
       tabIndex={0}
+      aria-label={!!heading ? heading : ''}
       className={`${styles.dialog} ${styles[width]}`}
       {...dialog}
       modal={false}>
