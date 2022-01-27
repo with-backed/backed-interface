@@ -6,7 +6,8 @@ import {
   searchLoans,
 } from 'lib/loans/subgraph/subgraphLoans';
 import { useIsMount } from 'lib/useIsMount';
-import { useEffect, useState } from 'react';
+import { usePrevious } from 'lib/usePrevious';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Loan,
   LoanStatus,
@@ -30,6 +31,8 @@ const areBytesInvalid = (bytes: string[]) =>
 
 export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
   const [showSearch, setShowSearch] = useState<boolean>(false);
+  const previousShowSearch = usePrevious(showSearch);
+
   const [selectedSort, setSelectedSort] = useState<Loan_OrderBy>(
     Loan_OrderBy.CreatedAtTimestamp,
   );
@@ -63,8 +66,6 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
   const [loanDurationMin, setLoanDurationMin] = useState<number>(0);
   const [loanDurationMax, setLoanDurationMax] = useState<number>(0);
 
-  const isMount = useIsMount();
-
   const loanTokenSearchInvalid =
     (!!loanAmountMin.nominal || !!loanAmountMax.nominal) && !loanAsset;
   const bytesSearchInvalid = areBytesInvalid([
@@ -74,6 +75,7 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
   ]);
 
   useEffect(() => {
+    if (!showSearch || showSearch !== previousShowSearch) return;
     async function triggerSearch() {
       if (loanTokenSearchInvalid || bytesSearchInvalid) return;
       const results = await searchLoans(
@@ -96,7 +98,7 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
         results[0]?.loanAssetDecimal || DEFAULT_ASSET_DECIMALS,
       );
     }
-    if (!isMount) triggerSearch();
+    triggerSearch();
   }, [
     statuses,
     collectionAddress,
@@ -112,9 +114,10 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
     loanDurationMin,
     loanDurationMax,
     selectedSort,
-    isMount,
     loanTokenSearchInvalid,
     bytesSearchInvalid,
+    showSearch,
+    previousShowSearch,
   ]);
 
   return (

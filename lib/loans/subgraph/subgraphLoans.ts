@@ -14,8 +14,8 @@ import { daysToSecondsBigNum } from 'lib/duration';
 import { gql } from 'urql';
 
 const homepageQuery = gql`
-    query($where: Loan_filter , $first: Int, $orderBy: String, $orderDirect: String) {
-        loans(where: $where, first: $first, orderBy: $orderBy, orderDirection: $orderDirection) {
+    query($where: Loan_filter , $first: Int, $skip: Int, $orderBy: String, $orderDirection: String) {
+        loans(where: $where, first: $first, skip: $skip, orderBy: $orderBy, orderDirection: $orderDirection) {
             ${ALL_LOAN_PROPERTIES}
         }
     }
@@ -23,11 +23,15 @@ const homepageQuery = gql`
 
 // TODO(Wilson): this is a temp fix just for this query. We should generalize this method to
 // take an arguments and return a cursor to return paginated results
-export default async function subgraphLoans(): Promise<Loan[]> {
+export default async function subgraphLoans(
+  first: number,
+  page: number = 1,
+): Promise<Loan[]> {
   const whereFilter: Loan_Filter = { closed: false };
   const queryArgs: QueryLoansArgs = {
     where: whereFilter,
-    first: 20,
+    first,
+    skip: (page - 1) * first,
     orderBy: Loan_OrderBy.CreatedAtTimestamp,
     orderDirection: OrderDirection.Desc,
   };
