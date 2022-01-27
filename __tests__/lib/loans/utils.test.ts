@@ -95,6 +95,10 @@ describe('parseSubgraphLoan', () => {
       subgraphLoan = { ...subgraphLoan, lastAccumulatedTimestamp };
     });
 
+    it('fails', () => {
+      expect(true).toBe(false);
+    });
+
     it('correctly computes interest owed', () => {
       const bigLoanAmount = ethers.BigNumber.from(loanAmount);
       const now = ethers.BigNumber.from(Date.now()).div(1000);
