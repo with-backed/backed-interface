@@ -60,28 +60,32 @@ describe('parseSubgraphLoan', () => {
   });
 
   it('parses values correctly', () => {
-    expect(result()).toEqual({
-      id: ethers.BigNumber.from(id),
-      loanAmount: ethers.BigNumber.from(loanAmount),
-      collateralTokenId: ethers.BigNumber.from(collateralTokenId),
-      collateralContractAddress,
-      durationSeconds: ethers.BigNumber.from(durationSeconds),
-      endDateTimestamp,
-      loanAssetDecimal,
-      loanAssetDecimals: loanAssetDecimal,
-      closed,
-      loanAssetSymbol,
-      loanAssetContractAddress,
-      accumulatedInterest: ethers.BigNumber.from(accumulatedInterest),
-      borrowTicketHolder,
-      borrower: borrowTicketHolder,
-      lendTicketHolder,
-      lender: lendTicketHolder,
-      perSecondInterestRate: ethers.BigNumber.from(perSecondInterestRate),
-      lastAccumulatedTimestamp: ethers.BigNumber.from(lastAccumulatedTimestamp),
-      interestOwed: ethers.BigNumber.from('0'),
-      collateralTokenURI,
-    });
+    expect(result()).toEqual(
+      expect.objectContaining({
+        id: ethers.BigNumber.from(id),
+        loanAmount: ethers.BigNumber.from(loanAmount),
+        collateralTokenId: ethers.BigNumber.from(collateralTokenId),
+        collateralContractAddress,
+        durationSeconds: ethers.BigNumber.from(durationSeconds),
+        endDateTimestamp,
+        loanAssetDecimal,
+        loanAssetDecimals: loanAssetDecimal,
+        closed,
+        loanAssetSymbol,
+        loanAssetContractAddress,
+        accumulatedInterest: ethers.BigNumber.from(accumulatedInterest),
+        borrowTicketHolder,
+        borrower: borrowTicketHolder,
+        lendTicketHolder,
+        lender: lendTicketHolder,
+        perSecondInterestRate: ethers.BigNumber.from(perSecondInterestRate),
+        lastAccumulatedTimestamp: ethers.BigNumber.from(
+          lastAccumulatedTimestamp,
+        ),
+        interestOwed: ethers.BigNumber.from('0'),
+        collateralTokenURI,
+      }),
+    );
   });
 
   describe('when last accumulated timestamp is not 0', () => {
