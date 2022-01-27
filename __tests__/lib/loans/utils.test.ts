@@ -5,6 +5,7 @@ import {
   LoanStatus,
 } from 'types/generated/graphql/nftLoans';
 import { parseSubgraphLoan } from 'lib/loans/utils';
+import { SCALAR } from 'lib/constants';
 
 describe('parseSubgraphLoan', () => {
   let accumulatedInterest = '186000000000000';
@@ -96,12 +97,15 @@ describe('parseSubgraphLoan', () => {
 
     it('correctly computes interest owed', () => {
       const bigLoanAmount = ethers.BigNumber.from(loanAmount);
-      const now = ethers.BigNumber.from(Date.now());
-      let interestOwed = bigLoanAmount
-        .mul(perSecondInterestRate)
+      const now = ethers.BigNumber.from(Date.now()).div(1000);
+
+      const interestOwed = bigLoanAmount
         .mul(now.sub(lastAccumulatedTimestamp))
+        .mul(perSecondInterestRate)
+        .div(SCALAR)
         .add(accumulatedInterest);
 
+      // NOTE: the mock data is probably not realistic because this comes out as a negative number...
       expect(result().interestOwed).toEqual(interestOwed);
     });
   });
