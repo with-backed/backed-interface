@@ -38,8 +38,16 @@ export function LoanHeader({
   return (
     <div className={styles['loan-header']}>
       <TwelveColumn>
-        <div className={styles.media}>{collateralMedia && <Fallback />}</div>
-        {!collateralMedia && <Fallback />}
+        <div className={styles.media}>
+          {collateralMedia && (
+            <Media
+              media={collateralMedia.mediaUrl}
+              mediaMimeType={collateralMedia.mediaMimeType}
+              autoPlay={true}
+            />
+          )}
+          {!collateralMedia && <Fallback />}
+        </div>
         <div className={styles.form}>
           <List details={details} />
           <LoanForm loan={loan} refresh={refresh} />
