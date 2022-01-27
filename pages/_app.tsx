@@ -6,7 +6,6 @@ import { Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { PawnShopHeader } from 'components/PawnShopHeader';
 import { AppWrapper } from 'components/layouts/AppWrapper';
-import { PageWrapper } from 'components/layouts/PageWrapper';
 import { TimestampProvider } from 'hooks/useTimestamp/useTimestamp';
 
 const getLibrary: React.ComponentProps<typeof Web3ReactProvider>['getLibrary'] =

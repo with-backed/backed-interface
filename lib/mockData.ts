@@ -1,9 +1,6 @@
 import { ethers } from 'ethers';
 import { Loan } from 'types/Loan';
 import type { CreateEvent, Event, LendEvent } from 'types/Event';
-import { CollateralSaleInfo } from './loans/collateralSaleInfo';
-import { generateFakeSaleForNFT } from './nftSalesSubgraph';
-import { getFakeFloor } from './nftPort';
 
 export const now = 1000000000;
 const durationSeconds = 259200;
@@ -84,11 +81,3 @@ const lendEvents: LendEvent[] = [
 export const events: Event[] = [createEvent, ...lendEvents].sort(
   (a, b) => b.blockNumber - a.blockNumber,
 );
-
-export const saleInfo: CollateralSaleInfo = {
-  recentSale: generateFakeSaleForNFT(
-    '0x9ec7ff8964afba6d8c43dc340a2e6c6c3156e966',
-    '10',
-  ),
-  floorPrice: getFakeFloor(),
-};
