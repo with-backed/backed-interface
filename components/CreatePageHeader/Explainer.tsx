@@ -1,3 +1,4 @@
+import { Explainer as ExplainerWrapper } from 'components/Explainer';
 import { ethers } from 'ethers';
 import { SCALAR } from 'lib/constants';
 import { jsonRpcERC20Contract } from 'lib/contracts';
@@ -6,7 +7,6 @@ import { formattedAnnualRate } from 'lib/interest';
 import React, { useEffect, useState } from 'react';
 import { FieldError, UseFormReturn } from 'react-hook-form';
 import type { CreateFormData } from './CreateFormData';
-import styles from './CreatePageHeader.module.css';
 
 type ExplainerProps = {
   form: UseFormReturn<CreateFormData, object>;
@@ -38,14 +38,10 @@ export function Explainer({ form, state, top }: ExplainerProps) {
   const Inner = explainers[state];
 
   return (
-    <div className={styles['explainer-container']} id="container">
-      <div
-        className={error ? styles['explainer-error'] : styles.explainer}
-        style={{ top }}>
-        {!!error && <Error error={error} />}
-        {!error && <Inner context={form.watch()} />}
-      </div>
-    </div>
+    <ExplainerWrapper top={top} display={!!error ? 'error' : 'normal'}>
+      {!!error && <Error error={error} />}
+      {!error && <Inner context={form.watch()} />}
+    </ExplainerWrapper>
   );
 }
 

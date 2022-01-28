@@ -1,4 +1,5 @@
 import { TransactionButton } from 'components/Button';
+import { Form } from 'components/Form';
 import { Input } from 'components/Input';
 import { Select } from 'components/Select';
 import { ethers } from 'ethers';
@@ -23,7 +24,6 @@ import React, {
 } from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
 import { CreateFormData } from './CreateFormData';
-import styles from './CreatePageHeader.module.css';
 
 type CreatePageFormProps = {
   collateralAddress: string;
@@ -142,11 +142,7 @@ export function CreatePageForm({
   }, [loadAssets]);
 
   return (
-    <form
-      className={styles.form}
-      onSubmit={handleSubmit(mint)}
-      id="form"
-      autoComplete="off">
+    <Form onSubmit={handleSubmit(mint)} id="form" autoComplete="off">
       <label htmlFor="loanAsset">
         <span>Loan Denomination</span>
         <Controller
@@ -227,6 +223,6 @@ export function CreatePageForm({
         isPending={waitingForTx}
         disabled={disabled || Object.keys(errors).length > 0}
       />
-    </form>
+    </Form>
   );
 }

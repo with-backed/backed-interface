@@ -1,0 +1,19 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--gap) / 2);
+}
+
+.form > label {
+  display: grid;
+  grid-template-columns: var(--column-width) 1fr;
+  column-gap: var(--gap);
+  align-items: center;
+}
+
+.form > label > span {
+  text-transform: uppercase;
+  font-size: var(--font-small);
+  letter-spacing: 0.12rem;
+  text-align: right;
+}
