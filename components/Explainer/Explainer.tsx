@@ -3,7 +3,7 @@ import styles from './Explainer.module.css';
 
 interface ExplainerProps {
   top: number;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   display?: 'normal' | 'error';
 }
 
