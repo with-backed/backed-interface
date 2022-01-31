@@ -15,8 +15,11 @@ import { LoanFormBetterTerms } from './LoanFormBetterTerms';
 import { LoanFormRepay } from './LoanFormRepay';
 import { LoanFormEarlyClosure } from './LoanFormEarlyClosure';
 import { LoanFormSeizeCollateral } from './LoanFormSeizeCollateral';
+import { UseFormReturn } from 'react-hook-form';
+import { LoanFormData } from './LoanFormData';
 
 type LoanFormProps = {
+  form: UseFormReturn<LoanFormData>;
   loan: Loan;
   refresh: () => void;
 };

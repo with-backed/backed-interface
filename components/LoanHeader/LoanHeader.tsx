@@ -8,6 +8,8 @@ import { Loan } from 'types/Loan';
 import React, { useMemo } from 'react';
 import styles from './LoanHeader.module.css';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
+import { useForm } from 'react-hook-form';
+import { LoanFormData } from 'components/LoanForm/LoanFormData';
 
 type LoanHeaderProps = {
   loan: Loan;
@@ -35,6 +37,7 @@ export function LoanHeader({
     () => listComponentLookup[details.formattedStatus],
     [details.formattedStatus],
   );
+  const form = useForm<LoanFormData>();
   return (
     <div className={styles['loan-header']}>
       <TwelveColumn>
@@ -50,7 +53,7 @@ export function LoanHeader({
         </div>
         <div className={styles.form}>
           <List details={details} />
-          <LoanForm loan={loan} refresh={refresh} />
+          <LoanForm form={form} loan={loan} refresh={refresh} />
         </div>
       </TwelveColumn>
     </div>
