@@ -1,15 +1,15 @@
 import * as Yup from 'yup';
 
-type CreatePageFormSchemaParams = {
+type LoanPageFormSchemaParams = {
   duration: number;
   interestRate: number;
   loanAmount: number;
 };
-export const createPageFormSchema = ({
+export const loanPageFormSchema = ({
   loanAmount,
   interestRate,
   duration,
-}: CreatePageFormSchemaParams) =>
+}: LoanPageFormSchemaParams) =>
   Yup.object({
     loanAmount: Yup.number()
       .min(
