@@ -146,7 +146,7 @@ export function LoanForm({ form, loan, refresh }: LoanFormProps) {
     <div className={styles.form}>
       <LoanFormBetterTerms
         loan={loan}
-        balance={balance}
+        form={form}
         needsAllowance={needsAllowance}
         setNeedsAllowance={setNeedsAllowance}
         refresh={refresh}

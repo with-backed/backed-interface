@@ -3,46 +3,33 @@ import {
   CompletedButton,
   TransactionButton,
 } from 'components/Button';
-import { ethers } from 'ethers';
-import { Field, Formik } from 'formik';
 import { useLoanUnderwriter } from 'hooks/useLoanUnderwriter';
-import { secondsBigNumToDays } from 'lib/duration';
-import { formattedAnnualRate } from 'lib/interest';
 import { Loan } from 'types/Loan';
-import React, { useMemo } from 'react';
-import styles from './LoanForm.module.css';
+import React from 'react';
 import { Input } from 'components/Input';
-import { FormErrors } from 'components/FormErrors';
+import { UseFormReturn } from 'react-hook-form';
+import { LoanFormData } from './LoanFormData';
+import { Form } from 'components/Form';
 
 type LoanFormBetterTermsProps = {
+  form: UseFormReturn<LoanFormData>;
   loan: Loan;
-  balance: number;
   needsAllowance: boolean;
-  setNeedsAllowance: (value: boolean) => void;
   refresh: () => void;
+  setNeedsAllowance: (value: boolean) => void;
 };
 export function LoanFormBetterTerms({
   loan,
-  balance,
+  form,
   needsAllowance,
   setNeedsAllowance,
   refresh,
 }: LoanFormBetterTermsProps) {
-  const initialAmount = useMemo(
-    () =>
-      parseFloat(
-        ethers.utils.formatUnits(loan.loanAmount, loan.loanAssetDecimals),
-      ),
-    [loan.loanAmount, loan.loanAssetDecimals],
-  );
-  const initialInterestRate = useMemo(
-    () => parseFloat(formattedAnnualRate(loan.perSecondInterestRate)),
-    [loan.perSecondInterestRate],
-  );
-  const initialDuration = useMemo(
-    () => secondsBigNumToDays(loan.durationSeconds),
-    [loan.durationSeconds],
-  );
+  const {
+    formState: { errors },
+    handleSubmit,
+    register,
+  } = form;
 
   const { underwrite, transactionPending, txHash } = useLoanUnderwriter(
     loan,
@@ -50,103 +37,64 @@ export function LoanFormBetterTerms({
   );
 
   return (
-    <Formik
-      initialValues={{
-        amount: initialAmount,
-        interestRate: initialInterestRate,
-        duration: initialDuration,
-      }}
-      validateOnBlur={false}
-      validateOnChange={false}
-      validateOnMount={false}
-      validate={({ amount, duration, interestRate }) => {
-        const isValidAmount = amount >= initialAmount;
-        const isValidDuration = duration >= initialDuration;
-        const isValidInterestRate = interestRate <= initialInterestRate;
-        const hasTenPercentImprovement =
-          amount >= initialAmount + initialAmount * 0.1 ||
-          duration >= initialDuration + initialDuration * 0.1 ||
-          interestRate <= initialInterestRate - initialInterestRate * 0.1;
+    <>
+      {/* `underwrite` is any due to some automatic conversion of number values, which contradict the types */}
+      <Form onSubmit={handleSubmit(underwrite as any)} autoComplete="off">
+        <CompletedButton buttonText="Lend" />
 
-        const errors: { [key: string]: string } = {};
-        if (!isValidAmount) {
-          errors.amount = `Amount must be at least ${initialAmount}, and at most your current balance of ${balance}`;
-        }
-        if (!isValidDuration) {
-          errors.duration = `Duration must be at least ${initialDuration}`;
-        }
-        if (!isValidInterestRate) {
-          errors.interestRate = `Interest rate must at most ${initialInterestRate}`;
-        }
-
-        if (
-          isValidAmount &&
-          isValidDuration &&
-          isValidInterestRate &&
-          !hasTenPercentImprovement
-        ) {
-          errors.form = `At least one value must be a 10% improvement over the current terms.`;
-        }
-
-        return errors;
-      }}
-      onSubmit={underwrite}>
-      {(formik) => (
-        <form
-          className={styles.form}
-          onSubmit={formik.handleSubmit}
-          autoComplete="off">
-          <CompletedButton buttonText="Offer better terms" />
-
-          <label htmlFor="amount">
-            <span>Amount</span>
-            <Field
-              name="amount"
-              as={Input}
-              color="dark"
-              type="text"
-              unit={loan.loanAssetSymbol}
-            />
-          </label>
-
-          <label htmlFor="duration">
-            <span>Duration</span>
-            <Field
-              name="duration"
-              as={Input}
-              color="dark"
-              type="text"
-              unit="Days"
-            />
-          </label>
-
-          <label htmlFor="interestRate">
-            <span>Interest Rate</span>
-            <Field
-              name="interestRate"
-              as={Input}
-              color="dark"
-              type="text"
-              unit="%"
-            />
-          </label>
-
-          <FormErrors errors={Object.values(formik.errors)} />
-          <AllowButton
-            contractAddress={loan.loanAssetContractAddress}
-            symbol={loan.loanAssetSymbol}
-            callback={() => setNeedsAllowance(false)}
-            done={!needsAllowance}
+        <label htmlFor="amount">
+          <span>Amount</span>
+          <Input
+            id="loanAmount"
+            placeholder="0"
+            type="text"
+            color="dark"
+            unit={loan.loanAssetSymbol}
+            aria-invalid={!!errors.loanAmount}
+            {...register('loanAmount')}
           />
-          <TransactionButton
-            text="Lend"
-            type="submit"
-            txHash={txHash}
-            isPending={transactionPending}
-            disabled={needsAllowance}
+        </label>
+
+        <label htmlFor="duration">
+          <span>Duration</span>
+          <Input
+            id="duration"
+            placeholder="0"
+            type="text"
+            color="dark"
+            unit="Days"
+            aria-invalid={!!errors.duration}
+            {...register('duration')}
           />
-        </form>
-      )}
-    </Formik>
+        </label>
+
+        <label htmlFor="interestRate">
+          <span>Interest Rate</span>
+          <Input
+            id="interestRate"
+            placeholder="0"
+            type="text"
+            color="dark"
+            unit="%"
+            aria-invalid={!!errors.interestRate}
+            {...register('interestRate')}
+          />
+        </label>
+
+        <AllowButton
+          contractAddress={loan.loanAssetContractAddress}
+          symbol={loan.loanAssetSymbol}
+          callback={() => setNeedsAllowance(false)}
+          done={!needsAllowance}
+        />
+        <TransactionButton
+          text="Lend"
+          type="submit"
+          txHash={txHash}
+          isPending={transactionPending}
+          disabled={needsAllowance}
+        />
+      </Form>
+    </>
   );
 }
