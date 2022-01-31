@@ -1,6 +1,10 @@
 import { Explainer as ExplainerWrapper } from 'components/Explainer';
 import { ethers } from 'ethers';
-import { SCALAR } from 'lib/constants';
+import {
+  INTEREST_RATE_PERCENT_DECIMALS,
+  SCALAR,
+  SECONDS_IN_A_YEAR,
+} from 'lib/constants';
 import { jsonRpcERC20Contract } from 'lib/contracts';
 import { daysToSecondsBigNum } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
@@ -134,16 +138,13 @@ function MinimumDuration({ context }: InnerProps) {
   );
 }
 
-const SECONDS_IN_YEAR = 31_536_000;
-const INTEREST_RATE_PERCENT_DECIMALS = 8;
-
 function MaximumInterestRate({ context }: InnerProps) {
   if (context.interestRate) {
     const interestRatePerSecond = ethers.BigNumber.from(
       Math.floor(
         parseFloat(context.interestRate) * 10 ** INTEREST_RATE_PERCENT_DECIMALS,
       ),
-    ).div(SECONDS_IN_YEAR);
+    ).div(SECONDS_IN_A_YEAR);
     return (
       <div>
         Effective rate: <b>{formattedAnnualRate(interestRatePerSecond)}% APR</b>
@@ -178,7 +179,7 @@ function EstimatedRepayment({
       Math.floor(
         parseFloat(interestRate) * 10 ** INTEREST_RATE_PERCENT_DECIMALS,
       ),
-    ).div(SECONDS_IN_YEAR);
+    ).div(SECONDS_IN_A_YEAR);
     const durationSeconds = daysToSecondsBigNum(parseFloat(duration));
     const parsedLoanAmount = ethers.utils.parseUnits(
       loanAmount.toString(),
