@@ -175,7 +175,7 @@ export function CreatePageForm({
         <Input
           id="loanAmount"
           placeholder="0"
-          type="number"
+          type="text"
           color="dark"
           unit={watchAllFields.denomination?.symbol}
           disabled={disabled}
@@ -190,7 +190,7 @@ export function CreatePageForm({
         <Input
           id="duration"
           placeholder="0"
-          type="number"
+          type="text"
           color="dark"
           unit="Days"
           disabled={disabled}
