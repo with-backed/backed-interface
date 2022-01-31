@@ -14,13 +14,16 @@ import * as Yup from 'yup';
 import styles from './LoanForm.module.css';
 import { Input } from 'components/Input';
 import { FormErrors } from 'components/FormErrors';
+import { UseFormReturn } from 'react-hook-form';
+import { LoanFormData } from './LoanFormData';
 
 type LoanFormAwaitingProps = {
-  loan: Loan;
   balance: number;
+  form: UseFormReturn<LoanFormData>;
+  loan: Loan;
   needsAllowance: boolean;
-  setNeedsAllowance: (value: boolean) => void;
   refresh: () => void;
+  setNeedsAllowance: (value: boolean) => void;
 };
 export function LoanFormAwaiting({
   loan,

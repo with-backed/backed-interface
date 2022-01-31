@@ -37,7 +37,9 @@ export function LoanHeader({
     () => listComponentLookup[details.formattedStatus],
     [details.formattedStatus],
   );
-  const form = useForm<LoanFormData>();
+  const form = useForm<LoanFormData>({
+    mode: 'all',
+  });
   return (
     <div className={styles['loan-header']}>
       <TwelveColumn>

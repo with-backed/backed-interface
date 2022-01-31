@@ -23,7 +23,7 @@ type LoanFormProps = {
   loan: Loan;
   refresh: () => void;
 };
-export function LoanForm({ loan, refresh }: LoanFormProps) {
+export function LoanForm({ form, loan, refresh }: LoanFormProps) {
   const { account } = useWeb3();
   const timestamp = useTimestamp();
   const [formOpen, setFormOpen] = useState(false);
@@ -111,6 +111,7 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
       <LoanFormAwaiting
         loan={loan}
         balance={balance}
+        form={form}
         needsAllowance={needsAllowance}
         setNeedsAllowance={setNeedsAllowance}
         refresh={refresh}
