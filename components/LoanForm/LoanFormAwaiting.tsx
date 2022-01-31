@@ -36,8 +36,6 @@ export function LoanFormAwaiting({
     refresh,
   );
 
-  console.log({ errors });
-
   return (
     <>
       {/* `underwrite` is any due to some automatic conversion of number values, which contradict the types */}
