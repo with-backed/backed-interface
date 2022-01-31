@@ -40,7 +40,8 @@ export function LoanFormAwaiting({
 
   return (
     <>
-      <Form onSubmit={handleSubmit(underwrite)} autoComplete="off">
+      {/* `underwrite` is any due to some automatic conversion of number values, which contradict the types */}
+      <Form onSubmit={handleSubmit(underwrite as any)} autoComplete="off">
         <CompletedButton buttonText="Lend" />
 
         <label htmlFor="amount">
