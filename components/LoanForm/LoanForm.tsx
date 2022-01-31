@@ -85,7 +85,11 @@ export function LoanForm({ form, loan, refresh }: LoanFormProps) {
     account.toLowerCase() === loan.lender?.toLowerCase()
   ) {
     if (account.toUpperCase() === loan.lender?.toUpperCase()) {
-      return <LoanFormSeizeCollateral loan={loan} refresh={refresh} />;
+      return (
+        <div className={styles.form}>
+          <LoanFormSeizeCollateral loan={loan} refresh={refresh} />
+        </div>
+      );
     }
     return null;
   }
@@ -95,7 +99,11 @@ export function LoanForm({ form, loan, refresh }: LoanFormProps) {
     account.toUpperCase() === loan.borrower.toUpperCase()
   ) {
     // This form is just a button, so it doesn't need the form toggling logic below.
-    return <LoanFormEarlyClosure loan={loan} refresh={refresh} />;
+    return (
+      <div className={styles.form}>
+        <LoanFormEarlyClosure loan={loan} refresh={refresh} />
+      </div>
+    );
   }
 
   if (!formOpen) {
@@ -108,36 +116,41 @@ export function LoanForm({ form, loan, refresh }: LoanFormProps) {
 
   if (loan.lastAccumulatedTimestamp.eq(0)) {
     return (
-      <LoanFormAwaiting
-        loan={loan}
-        balance={balance}
-        form={form}
-        needsAllowance={needsAllowance}
-        setNeedsAllowance={setNeedsAllowance}
-        refresh={refresh}
-      />
+      <div className={styles.form}>
+        <LoanFormAwaiting
+          loan={loan}
+          form={form}
+          needsAllowance={needsAllowance}
+          setNeedsAllowance={setNeedsAllowance}
+          refresh={refresh}
+        />
+      </div>
     );
   }
 
   if (viewerIsBorrower) {
     return (
-      <LoanFormRepay
+      <div className={styles.form}>
+        <LoanFormRepay
+          loan={loan}
+          balance={balance}
+          needsAllowance={needsAllowance}
+          setNeedsAllowance={setNeedsAllowance}
+          refresh={refresh}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.form}>
+      <LoanFormBetterTerms
         loan={loan}
         balance={balance}
         needsAllowance={needsAllowance}
         setNeedsAllowance={setNeedsAllowance}
         refresh={refresh}
       />
-    );
-  }
-
-  return (
-    <LoanFormBetterTerms
-      loan={loan}
-      balance={balance}
-      needsAllowance={needsAllowance}
-      setNeedsAllowance={setNeedsAllowance}
-      refresh={refresh}
-    />
+    </div>
   );
 }

@@ -1,18 +1,14 @@
 import { ethers } from 'ethers';
 import { useWeb3 } from 'hooks/useWeb3';
-import { jsonRpcLoanFacilitator, web3LoanFacilitator } from 'lib/contracts';
+import { web3LoanFacilitator } from 'lib/contracts';
 import { daysToSecondsBigNum } from 'lib/duration';
 import { Loan } from 'types/Loan';
 import { useCallback, useState } from 'react';
-
-interface Values {
-  amount: number;
-  duration: number;
-  interestRate: number;
-}
-
-const SECONDS_IN_YEAR = 31_536_000;
-const INTEREST_RATE_PERCENT_DECIMALS = 8;
+import { LoanFormData } from 'components/LoanForm/LoanFormData';
+import {
+  INTEREST_RATE_PERCENT_DECIMALS,
+  SECONDS_IN_A_YEAR,
+} from 'lib/constants';
 
 export function useLoanUnderwriter(
   { id, loanAssetDecimals }: Loan,
@@ -22,20 +18,22 @@ export function useLoanUnderwriter(
   const [transactionPending, setTransactionPending] = useState(false);
   const { account } = useWeb3();
   const underwrite = useCallback(
-    async ({ interestRate, duration, amount }: Values) => {
+    async ({ interestRate, duration, loanAmount }: LoanFormData) => {
       if (!account) {
         throw new Error('Cannot underwrite a loan without a connected account');
       }
       const loanFacilitator = web3LoanFacilitator();
       const interestRatePerSecond = ethers.BigNumber.from(
-        Math.floor(interestRate * 10 ** INTEREST_RATE_PERCENT_DECIMALS),
-      ).div(SECONDS_IN_YEAR);
+        Math.floor(
+          parseFloat(interestRate) * 10 ** INTEREST_RATE_PERCENT_DECIMALS,
+        ),
+      ).div(SECONDS_IN_A_YEAR);
 
       const t = await loanFacilitator.underwriteLoan(
         id,
         interestRatePerSecond,
-        ethers.utils.parseUnits(amount.toString(), loanAssetDecimals),
-        daysToSecondsBigNum(duration),
+        ethers.utils.parseUnits(loanAmount, loanAssetDecimals),
+        daysToSecondsBigNum(parseFloat(duration)),
         account,
       );
 
