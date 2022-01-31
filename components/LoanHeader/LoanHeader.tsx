@@ -8,6 +8,13 @@ import { Loan } from 'types/Loan';
 import React, { useMemo } from 'react';
 import styles from './LoanHeader.module.css';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
+import { useForm } from 'react-hook-form';
+import { LoanFormData } from 'components/LoanForm/LoanFormData';
+import { ethers } from 'ethers';
+import { formattedAnnualRate } from 'lib/interest';
+import { secondsBigNumToDays } from 'lib/duration';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { loanPageFormSchema } from 'components/LoanForm/loanPageFormSchema';
 
 type LoanHeaderProps = {
   loan: Loan;
@@ -30,11 +37,39 @@ export function LoanHeader({
   loan,
   refresh,
 }: LoanHeaderProps) {
+  const initialAmount = useMemo(
+    () => ethers.utils.formatUnits(loan.loanAmount, loan.loanAssetDecimals),
+
+    [loan.loanAmount, loan.loanAssetDecimals],
+  );
+  const initialInterestRate = useMemo(
+    () => formattedAnnualRate(loan.perSecondInterestRate),
+    [loan.perSecondInterestRate],
+  );
+  const initialDuration = useMemo(
+    () => secondsBigNumToDays(loan.durationSeconds).toString(),
+    [loan.durationSeconds],
+  );
   const details = useLoanDetails(loan);
   const List = useMemo(
     () => listComponentLookup[details.formattedStatus],
     [details.formattedStatus],
   );
+  const form = useForm<LoanFormData>({
+    defaultValues: {
+      duration: initialDuration,
+      interestRate: initialInterestRate,
+      loanAmount: initialAmount,
+    },
+    mode: 'all',
+    resolver: yupResolver(
+      loanPageFormSchema({
+        duration: parseFloat(initialDuration),
+        loanAmount: parseFloat(initialAmount),
+        interestRate: parseFloat(initialInterestRate),
+      }),
+    ),
+  });
   return (
     <div className={styles['loan-header']}>
       <TwelveColumn>
@@ -50,7 +85,7 @@ export function LoanHeader({
         </div>
         <div className={styles.form}>
           <List details={details} />
-          <LoanForm loan={loan} refresh={refresh} />
+          <LoanForm form={form} loan={loan} refresh={refresh} />
         </div>
       </TwelveColumn>
     </div>
