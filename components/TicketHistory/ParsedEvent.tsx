@@ -194,7 +194,7 @@ function RepaymentEvent({
 
   return (
     <EventDetailList event={event}>
-      <dt>RepaymentEventer</dt>
+      <dt>repayer</dt>
       <dd>{repayer.slice(0, 10)}...</dd>
       <dt>paid to</dt>
       <dd>{loanOwner.slice(0, 10)}...</dd>
