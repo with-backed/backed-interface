@@ -8,8 +8,8 @@ import { Loan } from 'types/Loan';
 import React from 'react';
 import { Input } from 'components/Input';
 import { UseFormReturn } from 'react-hook-form';
-import { LoanFormData } from './LoanFormData';
 import { Form } from 'components/Form';
+import { LoanFormData } from 'components/LoanForm/LoanFormData';
 
 type LoanFormAwaitingProps = {
   form: UseFormReturn<LoanFormData>;
