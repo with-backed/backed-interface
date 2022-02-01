@@ -7,6 +7,7 @@
   font-family: var(--sans);
   background: var(--background-white);
   transition: top 0.5s ease 0s;
+  z-index: 2;
 }
 
 .explainer-error {

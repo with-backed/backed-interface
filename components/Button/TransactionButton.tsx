@@ -20,6 +20,7 @@ export function TransactionButton({
   disabled = false,
   type,
   id,
+  ...props
 }: TransactionButtonProps) {
   const handleClick = useCallback(() => {
     if (txHash != '' || disabled || !onClick) {
@@ -49,7 +50,12 @@ export function TransactionButton({
   }
 
   return (
-    <Button id={id} type={type} onClick={handleClick} disabled={disabled}>
+    <Button
+      id={id}
+      type={type}
+      onClick={handleClick}
+      disabled={disabled}
+      {...props}>
       {text}
     </Button>
   );

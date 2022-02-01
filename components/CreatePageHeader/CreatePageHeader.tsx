@@ -99,6 +99,7 @@ export function CreatePageHeader() {
     const container = document.getElementById('container');
     if (!target || !container) {
       setExplainerTop(0);
+      return;
     }
     const targetTop = target!.getBoundingClientRect().top;
     const containerTop = container!.getBoundingClientRect().top;
