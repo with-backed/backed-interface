@@ -45,7 +45,6 @@ export function usePaginatedLoans(
 
   useEffect(() => {
     if (isVisible && !isLoadingMore && !isReachingEnd && !isValidating) {
-      console.log('incrementing size');
       setSize(size + 1);
     }
   }, [isVisible, isLoadingMore, isReachingEnd, isValidating, size, setSize]);

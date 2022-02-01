@@ -4,7 +4,6 @@ import {
   LoanAmountInputType,
   searchLoans,
 } from 'lib/loans/subgraph/subgraphLoans';
-import { usePrevious } from 'lib/usePrevious';
 import { isEqual } from 'lodash';
 import { useEffect, useState } from 'react';
 import {
@@ -43,7 +42,6 @@ export function AdvancedSearch({
   showSearch,
   selectedSort = Loan_OrderBy.CreatedAtTimestamp,
 }: AdvancedSearchProps) {
-  const previousShowSearch = usePrevious(showSearch);
   const [statuses, setStatuses] = useState<LoanStatus[]>(INITIAL_STATUSES);
 
   const [collectionAddress, setCollectionAddress] = useState<string>('');
