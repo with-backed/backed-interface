@@ -5,9 +5,9 @@ import {
 } from 'components/Button';
 import { Loan } from 'types/Loan';
 import React, { useCallback, useState } from 'react';
-import styles from './LoanForm.module.css';
 import { useLoanDetails } from 'hooks/useLoanDetails';
 import { web3LoanFacilitator } from 'lib/contracts';
+import { Form } from 'components/Form';
 
 type LoanFormRepayProps = {
   loan: Loan;
@@ -46,7 +46,7 @@ export function LoanFormRepay({
   }, [loan.id, refresh]);
 
   return (
-    <div className={styles.form}>
+    <Form>
       <CompletedButton buttonText="Repay loan & claim NFT" />
       <p>
         The current Payback amount is:
@@ -71,6 +71,6 @@ export function LoanFormRepay({
         isPending={waitingForTx}
         disabled={needsAllowance}
       />
-    </div>
+    </Form>
   );
 }
