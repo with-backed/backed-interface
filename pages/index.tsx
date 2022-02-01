@@ -39,8 +39,6 @@ export default function Home({ loans }: HomeProps) {
     SubgraphLoan[] | undefined
   >(undefined);
 
-  console.log({ searchedLoans });
-
   const { paginatedLoans } = usePaginatedLoans(
     '/api/loans/all',
     ref,
