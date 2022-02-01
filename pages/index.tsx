@@ -1,16 +1,20 @@
 import { FiveColumn } from 'components/layouts/FiveColumn';
 import { LoanCard } from 'components/LoanCard';
-import subgraphLoans, { searchLoans } from 'lib/loans/subgraph/subgraphLoans';
+import subgraphLoans from 'lib/loans/subgraph/subgraphLoans';
 import { parseSubgraphLoan } from 'lib/loans/utils';
-import { Loan as SubgraphLoan } from 'types/generated/graphql/nftLoans';
+import {
+  Loan as SubgraphLoan,
+  Loan_OrderBy,
+} from 'types/generated/graphql/nftLoans';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { AdvancedSearch } from 'components/AdvancedSearch/AdvancedSearch';
-import useSWRInfinite from 'swr/infinite';
-import { useOnScreen } from 'lib/useOnScreenRef';
+import { SearchHeader } from 'components/AdvancedSearch/Header';
+import { usePaginatedLoans } from 'lib/usePaginatedLoans';
+import searchStyles from '../components/AdvancedSearch/AdvancedSearch.module.css';
 
-const PAGE_LIMIT = 10;
+const PAGE_LIMIT = 20;
 
 export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
   return {
@@ -20,57 +24,48 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
   };
 };
 
-const getKey = (pageIndex: any, previousPageData: any, pageSize: any) => {
-  if (previousPageData && !previousPageData.length) return null; // reached the end
-
-  return `/api/loans/all?limit=${pageSize}&page=${pageIndex + 2}`;
-};
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
-
 type HomeProps = {
   loans: SubgraphLoan[];
 };
 export default function Home({ loans }: HomeProps) {
-  const ref = useRef();
-  const isVisible = useOnScreen(ref);
+  const ref = useRef() as React.MutableRefObject<HTMLInputElement>;
+
+  const [showSearch, setShowSearch] = useState<boolean>(false);
+  const [selectedSort, setSelectedSort] = useState<Loan_OrderBy | undefined>(
+    undefined,
+  );
 
   const [searchedLoans, setSearchedLoans] = useState<
     SubgraphLoan[] | undefined
   >(undefined);
 
-  const [renderedLoans, setRenderedLoans] = useState<SubgraphLoan[]>(loans);
+  console.log({ searchedLoans });
 
-  const { data, setSize, isValidating } = useSWRInfinite(
-    (...args) => getKey(...args, PAGE_LIMIT),
-    fetcher,
-    {
-      initialSize: 0,
-    },
+  const { paginatedLoans } = usePaginatedLoans(
+    '/api/loans/all',
+    ref,
+    PAGE_LIMIT,
+    selectedSort,
+    loans,
   );
-
-  useEffect(() => {
-    if (data?.length === 0 || !data) return;
-    setRenderedLoans((prevLoans) => [...prevLoans, ...data[data.length - 1]]);
-  }, [data]);
-
-  const isEmpty = data?.[0]?.length === 0;
-  const isReachingEnd =
-    isEmpty || (data && data[data.length - 1]?.length < PAGE_LIMIT);
-
-  useEffect(() => {
-    if (isVisible && !isReachingEnd && !isValidating) {
-      setSize((prevSize) => prevSize + 1);
-    }
-  }, [isVisible, isReachingEnd, isValidating, setSize]);
 
   return (
     <>
-      <AdvancedSearch
-        handleSearchFinished={(loans) => setSearchedLoans(loans)}
-      />
+      <div className={searchStyles.wrapper}>
+        <SearchHeader
+          setSelectedSort={setSelectedSort}
+          showSearch={showSearch}
+          setShowSearch={setShowSearch}
+        />
+        <AdvancedSearch
+          handleSearchFinished={(loans) => setSearchedLoans(loans)}
+          showSearch={showSearch}
+          selectedSort={selectedSort}
+        />
+      </div>
+
       <FiveColumn>
-        {(searchedLoans || renderedLoans).map((loan) => (
+        {(searchedLoans || paginatedLoans).map((loan) => (
           <LoanCard key={loan.id.toString()} loan={parseSubgraphLoan(loan)} />
         ))}
       </FiveColumn>

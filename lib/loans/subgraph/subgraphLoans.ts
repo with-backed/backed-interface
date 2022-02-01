@@ -26,13 +26,14 @@ const homepageQuery = gql`
 export default async function subgraphLoans(
   first: number,
   page: number = 1,
+  sort: Loan_OrderBy = Loan_OrderBy.CreatedAtTimestamp,
 ): Promise<Loan[]> {
   const whereFilter: Loan_Filter = { closed: false };
   const queryArgs: QueryLoansArgs = {
     where: whereFilter,
     first,
     skip: (page - 1) * first,
-    orderBy: Loan_OrderBy.CreatedAtTimestamp,
+    orderBy: sort,
     orderDirection: OrderDirection.Desc,
   };
 

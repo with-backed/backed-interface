@@ -1,13 +1,12 @@
-import { Button } from 'components/Button';
 import { FormWrapper } from 'components/layouts/FormWrapper';
 import { DEFAULT_ASSET_DECIMALS } from 'lib/loanAssets';
 import {
   LoanAmountInputType,
   searchLoans,
 } from 'lib/loans/subgraph/subgraphLoans';
-import { useIsMount } from 'lib/useIsMount';
 import { usePrevious } from 'lib/usePrevious';
-import { useEffect, useMemo, useState } from 'react';
+import { isEqual } from 'lodash';
+import { useEffect, useState } from 'react';
 import {
   Loan,
   LoanStatus,
@@ -19,27 +18,33 @@ import LoanAssetDropdown from './LoanAssetDropdown';
 import LoanNumericInput from './LoanNumericInput';
 import LoanStatusButtons from './LoanStatusButtons';
 import SearchTextInput from './SearchTextInput';
-import SortDropdown from './SortDropdown';
 
 type AdvancedSearchProps = {
-  handleSearchFinished: (loans: Loan[]) => void;
+  handleSearchFinished: (loans?: Loan[]) => void;
+  showSearch: boolean;
+  selectedSort?: Loan_OrderBy;
 };
 
 const BYTES_INVALID_ERROR = 'Invalid address inputted';
 const areBytesInvalid = (bytes: string[]) =>
   bytes.filter((b) => b.length % 2 !== 0).length > 0;
 
-export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
-  const [showSearch, setShowSearch] = useState<boolean>(false);
-  const previousShowSearch = usePrevious(showSearch);
-
-  const [selectedSort, setSelectedSort] = useState<Loan_OrderBy>(
-    Loan_OrderBy.CreatedAtTimestamp,
+const isSearchActive = (statuses: LoanStatus[], ...args: any[]) => {
+  return (
+    args.filter((arg) => !!arg).length > 0 ||
+    !isEqual(statuses.sort(), INITIAL_STATUSES.sort())
   );
-  const [statuses, setStatuses] = useState<LoanStatus[]>([
-    LoanStatus.AwaitingLender,
-    LoanStatus.Active,
-  ]);
+};
+
+const INITIAL_STATUSES = [LoanStatus.AwaitingLender, LoanStatus.Active];
+
+export function AdvancedSearch({
+  handleSearchFinished,
+  showSearch,
+  selectedSort = Loan_OrderBy.CreatedAtTimestamp,
+}: AdvancedSearchProps) {
+  const previousShowSearch = usePrevious(showSearch);
+  const [statuses, setStatuses] = useState<LoanStatus[]>(INITIAL_STATUSES);
 
   const [collectionAddress, setCollectionAddress] = useState<string>('');
   const [collectionName, setCollectionName] = useState<string>('');
@@ -75,8 +80,26 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
   ]);
 
   useEffect(() => {
-    if (!showSearch || showSearch !== previousShowSearch) return;
     async function triggerSearch() {
+      if (
+        !isSearchActive(
+          statuses,
+          collectionAddress,
+          collectionName,
+          loanAsset,
+          borrowerAddress,
+          lenderAddress,
+          loanAmountMin.nominal,
+          loanAmountMax.nominal,
+          loanInterestMin,
+          loanInterestMax,
+          loanDurationMin,
+          loanDurationMax,
+        )
+      ) {
+        handleSearchFinished(undefined);
+        return;
+      }
       if (loanTokenSearchInvalid || bytesSearchInvalid) return;
       const results = await searchLoans(
         statuses,
@@ -116,148 +139,130 @@ export function AdvancedSearch({ handleSearchFinished }: AdvancedSearchProps) {
     selectedSort,
     loanTokenSearchInvalid,
     bytesSearchInvalid,
-    showSearch,
-    previousShowSearch,
   ]);
 
   return (
-    <div className={styles.searchWrapper}>
-      <div className={styles.header}>
-        <div className={styles.searchButton}>
-          <Button
-            kind={`${showSearch ? 'secondary' : 'primary'}`}
-            onClick={() => setShowSearch(!showSearch)}>
-            &#x1F50D; Search
-          </Button>
+    <div
+      className={`${showSearch ? styles.searchOpen : styles.searchClosed} ${
+        styles.searchForm
+      }`}>
+      <FormWrapper>
+        <div
+          className={`${
+            showSearch
+              ? styles.inputGroupWrapperOpen
+              : styles.inputGroupWrapperClosed
+          }`}>
+          <LoanStatusButtons
+            label="Loan Status"
+            statuses={statuses}
+            setStatuses={setStatuses}
+          />
         </div>
-
-        <SortDropdown setSelectedSort={setSelectedSort} />
-      </div>
-
-      <div
-        className={`${showSearch ? styles.searchOpen : styles.searchClosed} ${
-          styles.searchForm
-        }`}>
-        <FormWrapper>
-          <div
-            className={`${
-              showSearch
-                ? styles.inputGroupWrapperOpen
-                : styles.inputGroupWrapperClosed
-            }`}>
-            <LoanStatusButtons
-              label="Loan Status"
-              statuses={statuses}
-              setStatuses={setStatuses}
-            />
-          </div>
-          <div
-            className={`${
-              showSearch
-                ? styles.inputGroupWrapperOpen
-                : styles.inputGroupWrapperClosed
-            }`}>
-            <CollateralSearchInput
-              collectionAddress={collectionAddress}
-              collectionName={collectionName}
-              setCollectionAddress={setCollectionAddress}
-              setCollectionName={setCollectionName}
-              error={
-                areBytesInvalid([collectionAddress])
-                  ? BYTES_INVALID_ERROR
-                  : undefined
-              }
-            />
-          </div>
-          <div
-            className={`${
-              showSearch
-                ? styles.inputGroupWrapperOpen
-                : styles.inputGroupWrapperClosed
-            } ${showSearch ? styles.loanAssetDropdownOpen : ''}`}>
-            <LoanAssetDropdown setSelectedAsset={setLoanAsset} />
-          </div>
-          <div
-            className={`${
-              showSearch
-                ? styles.inputGroupWrapperOpen
-                : styles.inputGroupWrapperClosed
-            }`}>
-            <SearchTextInput
-              label="Borrower"
-              placeholder="Enter 0x..."
-              setTextValue={setBorrowerAddress}
-              error={
-                areBytesInvalid([borrowerAddress])
-                  ? BYTES_INVALID_ERROR
-                  : undefined
-              }
-            />
-          </div>
-          <div
-            className={`${
-              showSearch
-                ? styles.inputGroupWrapperOpen
-                : styles.inputGroupWrapperClosed
-            }`}>
-            <SearchTextInput
-              label="Lender"
-              placeholder="Enter 0x..."
-              setTextValue={setLenderAddress}
-              error={
-                areBytesInvalid([lenderAddress])
-                  ? BYTES_INVALID_ERROR
-                  : undefined
-              }
-            />
-          </div>
-          <div
-            className={`${
-              showSearch
-                ? styles.inputGroupWrapperOpen
-                : styles.inputGroupWrapperClosed
-            }`}>
-            <LoanNumericInput
-              label="Loan Amount"
-              setMin={(nominal: number) =>
-                setLoanAmountMin({ loanAssetDecimal, nominal })
-              }
-              setMax={(nominal: number) =>
-                setLoanAmountMax({ loanAssetDecimal, nominal })
-              }
-              error={
-                loanTokenSearchInvalid
-                  ? 'First, enter a symbol for the loan token'
-                  : undefined
-              }
-            />
-          </div>
-          <div
-            className={`${
-              showSearch
-                ? styles.inputGroupWrapperOpen
-                : styles.inputGroupWrapperClosed
-            }`}>
-            <LoanNumericInput
-              label="Interest Rate"
-              setMin={setLoanInterestMin}
-              setMax={setLoanInterestMax}
-            />
-          </div>
-          <div
-            className={`${
-              showSearch
-                ? styles.inputGroupWrapperOpen
-                : styles.inputGroupWrapperClosed
-            }`}>
-            <LoanNumericInput
-              label="Duration"
-              setMin={setLoanDurationMin}
-              setMax={setLoanDurationMax}
-            />
-          </div>
-        </FormWrapper>
-      </div>
+        <div
+          className={`${
+            showSearch
+              ? styles.inputGroupWrapperOpen
+              : styles.inputGroupWrapperClosed
+          }`}>
+          <CollateralSearchInput
+            collectionAddress={collectionAddress}
+            collectionName={collectionName}
+            setCollectionAddress={setCollectionAddress}
+            setCollectionName={setCollectionName}
+            error={
+              areBytesInvalid([collectionAddress])
+                ? BYTES_INVALID_ERROR
+                : undefined
+            }
+          />
+        </div>
+        <div
+          className={`${
+            showSearch
+              ? styles.inputGroupWrapperOpen
+              : styles.inputGroupWrapperClosed
+          } ${showSearch ? styles.loanAssetDropdownOpen : ''}`}>
+          <LoanAssetDropdown setSelectedAsset={setLoanAsset} />
+        </div>
+        <div
+          className={`${
+            showSearch
+              ? styles.inputGroupWrapperOpen
+              : styles.inputGroupWrapperClosed
+          }`}>
+          <SearchTextInput
+            label="Borrower"
+            placeholder="Enter 0x..."
+            setTextValue={setBorrowerAddress}
+            error={
+              areBytesInvalid([borrowerAddress])
+                ? BYTES_INVALID_ERROR
+                : undefined
+            }
+          />
+        </div>
+        <div
+          className={`${
+            showSearch
+              ? styles.inputGroupWrapperOpen
+              : styles.inputGroupWrapperClosed
+          }`}>
+          <SearchTextInput
+            label="Lender"
+            placeholder="Enter 0x..."
+            setTextValue={setLenderAddress}
+            error={
+              areBytesInvalid([lenderAddress]) ? BYTES_INVALID_ERROR : undefined
+            }
+          />
+        </div>
+        <div
+          className={`${
+            showSearch
+              ? styles.inputGroupWrapperOpen
+              : styles.inputGroupWrapperClosed
+          }`}>
+          <LoanNumericInput
+            label="Loan Amount"
+            setMin={(nominal: number) =>
+              setLoanAmountMin({ loanAssetDecimal, nominal })
+            }
+            setMax={(nominal: number) =>
+              setLoanAmountMax({ loanAssetDecimal, nominal })
+            }
+            error={
+              loanTokenSearchInvalid
+                ? 'First, enter a symbol for the loan token'
+                : undefined
+            }
+          />
+        </div>
+        <div
+          className={`${
+            showSearch
+              ? styles.inputGroupWrapperOpen
+              : styles.inputGroupWrapperClosed
+          }`}>
+          <LoanNumericInput
+            label="Interest Rate"
+            setMin={setLoanInterestMin}
+            setMax={setLoanInterestMax}
+          />
+        </div>
+        <div
+          className={`${
+            showSearch
+              ? styles.inputGroupWrapperOpen
+              : styles.inputGroupWrapperClosed
+          }`}>
+          <LoanNumericInput
+            label="Duration"
+            setMin={setLoanDurationMin}
+            setMax={setLoanDurationMax}
+          />
+        </div>
+      </FormWrapper>
     </div>
   );
 }
