@@ -6,24 +6,22 @@ import { ERC721 } from 'types/generated/abis';
 import { jsonRpcERC721Contract } from 'lib/contracts';
 import { Fallback } from 'components/Media/Fallback';
 
-const pawnTicketsContract = jsonRpcERC721Contract(
-  process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT || '',
-);
-
-const pawnLoansContract = jsonRpcERC721Contract(
-  process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT || '',
-);
-
 interface PawnArtProps {
   contract: ERC721;
   tokenId: ethers.BigNumber;
 }
 
 export function PawnLoanArt({ tokenId }: Pick<PawnArtProps, 'tokenId'>) {
+  const pawnLoansContract = jsonRpcERC721Contract(
+    process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT || '',
+  );
   return <PawnArt contract={pawnLoansContract} tokenId={tokenId} />;
 }
 
 export function PawnTicketArt({ tokenId }: Pick<PawnArtProps, 'tokenId'>) {
+  const pawnTicketsContract = jsonRpcERC721Contract(
+    process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT || '',
+  );
   return <PawnArt contract={pawnTicketsContract} tokenId={tokenId} />;
 }
 
