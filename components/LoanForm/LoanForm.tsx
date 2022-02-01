@@ -15,7 +15,7 @@ import { LoanFormEarlyClosure } from './LoanFormEarlyClosure';
 import { LoanFormSeizeCollateral } from './LoanFormSeizeCollateral';
 import { UseFormReturn } from 'react-hook-form';
 import { LoanFormData } from './LoanFormData';
-import { Form } from 'components/Form';
+import styles from './LoanForm.module.css';
 
 type LoanFormProps = {
   form: UseFormReturn<LoanFormData>;
@@ -58,7 +58,11 @@ export function LoanForm({ form, loan, refresh }: LoanFormProps) {
   }
 
   if (!account) {
-    return <ConnectWallet />;
+    return (
+      <div className={styles.wrapper}>
+        <ConnectWallet />
+      </div>
+    );
   }
 
   if (
@@ -69,7 +73,11 @@ export function LoanForm({ form, loan, refresh }: LoanFormProps) {
     account.toLowerCase() === loan.lender?.toLowerCase()
   ) {
     if (account.toUpperCase() === loan.lender?.toUpperCase()) {
-      return <LoanFormSeizeCollateral loan={loan} refresh={refresh} />;
+      return (
+        <div className={styles.wrapper}>
+          <LoanFormSeizeCollateral loan={loan} refresh={refresh} />
+        </div>
+      );
     }
     return null;
   }
@@ -78,40 +86,50 @@ export function LoanForm({ form, loan, refresh }: LoanFormProps) {
     loan.lastAccumulatedTimestamp.eq(0) &&
     account.toUpperCase() === loan.borrower.toUpperCase()
   ) {
-    return <LoanFormEarlyClosure loan={loan} refresh={refresh} />;
+    return (
+      <div className={styles.wrapper}>
+        <LoanFormEarlyClosure loan={loan} refresh={refresh} />
+      </div>
+    );
   }
 
   if (loan.lastAccumulatedTimestamp.eq(0)) {
     return (
-      <LoanFormAwaiting
+      <div className={styles.wrapper}>
+        <LoanFormAwaiting
+          loan={loan}
+          form={form}
+          needsAllowance={needsAllowance}
+          setNeedsAllowance={setNeedsAllowance}
+          refresh={refresh}
+        />
+      </div>
+    );
+  }
+
+  if (viewerIsBorrower) {
+    return (
+      <div className={styles.wrapper}>
+        <LoanFormRepay
+          loan={loan}
+          balance={balance}
+          needsAllowance={needsAllowance}
+          setNeedsAllowance={setNeedsAllowance}
+          refresh={refresh}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.wrapper}>
+      <LoanFormBetterTerms
         loan={loan}
         form={form}
         needsAllowance={needsAllowance}
         setNeedsAllowance={setNeedsAllowance}
         refresh={refresh}
       />
-    );
-  }
-
-  if (viewerIsBorrower) {
-    return (
-      <LoanFormRepay
-        loan={loan}
-        balance={balance}
-        needsAllowance={needsAllowance}
-        setNeedsAllowance={setNeedsAllowance}
-        refresh={refresh}
-      />
-    );
-  }
-
-  return (
-    <LoanFormBetterTerms
-      loan={loan}
-      form={form}
-      needsAllowance={needsAllowance}
-      setNeedsAllowance={setNeedsAllowance}
-      refresh={refresh}
-    />
+    </div>
   );
 }

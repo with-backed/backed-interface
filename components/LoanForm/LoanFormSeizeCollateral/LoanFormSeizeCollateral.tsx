@@ -35,7 +35,8 @@ export function LoanFormSeizeCollateral({
   return (
     <Form>
       <TransactionButton
-        text="Seize collateral"
+        id="seizeNFT"
+        text="Seize NFT"
         txHash={txHash}
         isPending={isPending}
         onClick={seize}
