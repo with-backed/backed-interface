@@ -1,5 +1,4 @@
 import { DescriptionList } from 'components/DescriptionList';
-import { EtherscanAddressLink } from 'components/EtherscanLink';
 import { Fieldset } from 'components/Fieldset';
 import { Fallback } from 'components/Media/Fallback';
 import { OpenSeaAddressLink } from 'components/OpenSeaLink';
@@ -10,14 +9,6 @@ import { Loan } from 'types/Loan';
 import React from 'react';
 import styles from './LoanTickets.module.css';
 
-const BORROW_CONTRACT = jsonRpcERC721Contract(
-  process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT || '',
-);
-
-const LEND_CONTRACT = jsonRpcERC721Contract(
-  process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT || '',
-);
-
 type LoanTicketsProps = {
   loan: Loan;
 };
@@ -26,6 +17,10 @@ type BorrowerColumnProps = LoanTicketsProps;
 
 function BorrowerColumn({ loan }: BorrowerColumnProps) {
   const { formattedTotalPayback } = useLoanDetails(loan);
+  const BORROW_CONTRACT = jsonRpcERC721Contract(
+    process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT || '',
+  );
+
   return (
     <div className={styles.column}>
       <PawnTicketArt tokenId={loan.id} />
@@ -48,6 +43,9 @@ type LenderColumnProps = LoanTicketsProps;
 
 function LenderColumn({ loan }: LenderColumnProps) {
   const { formattedInterestAccrued } = useLoanDetails(loan);
+  const LEND_CONTRACT = jsonRpcERC721Contract(
+    process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT || '',
+  );
 
   if (!loan.lender) {
     return (
