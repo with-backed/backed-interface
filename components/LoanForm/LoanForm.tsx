@@ -58,11 +58,7 @@ export function LoanForm({ form, loan, refresh }: LoanFormProps) {
   }
 
   if (!account) {
-    return (
-      <Form>
-        <ConnectWallet />
-      </Form>
-    );
+    return <ConnectWallet />;
   }
 
   if (
