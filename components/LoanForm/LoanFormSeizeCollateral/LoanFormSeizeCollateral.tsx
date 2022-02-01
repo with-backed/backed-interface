@@ -1,8 +1,8 @@
 import { TransactionButton } from 'components/Button';
-import { Form } from 'components/Form';
 import { web3LoanFacilitator } from 'lib/contracts';
 import React, { useCallback, useState } from 'react';
 import { Loan } from 'types/Loan';
+import { Explainer } from './Explainer';
 
 type LoanFormSeizeCollateralProps = {
   loan: Loan;
@@ -33,7 +33,7 @@ export function LoanFormSeizeCollateral({
   }, [loan.id, loan.lender, refresh]);
 
   return (
-    <Form>
+    <>
       <TransactionButton
         id="seizeNFT"
         text="Seize NFT"
@@ -41,6 +41,7 @@ export function LoanFormSeizeCollateral({
         isPending={isPending}
         onClick={seize}
       />
-    </Form>
+      <Explainer top={0} />
+    </>
   );
 }
