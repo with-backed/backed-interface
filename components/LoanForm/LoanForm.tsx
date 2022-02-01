@@ -1,8 +1,6 @@
-import { Button } from 'components/Button';
 import { ethers } from 'ethers';
 import { Loan } from 'types/Loan';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import styles from './LoanForm.module.css';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useWeb3 } from 'hooks/useWeb3';
 import { ConnectWallet } from 'components/ConnectWallet';
 import {
@@ -17,6 +15,7 @@ import { LoanFormEarlyClosure } from './LoanFormEarlyClosure';
 import { LoanFormSeizeCollateral } from './LoanFormSeizeCollateral';
 import { UseFormReturn } from 'react-hook-form';
 import { LoanFormData } from './LoanFormData';
+import { Form } from 'components/Form';
 
 type LoanFormProps = {
   form: UseFormReturn<LoanFormData>;
@@ -26,23 +25,12 @@ type LoanFormProps = {
 export function LoanForm({ form, loan, refresh }: LoanFormProps) {
   const { account } = useWeb3();
   const timestamp = useTimestamp();
-  const [formOpen, setFormOpen] = useState(false);
   const [balance, setBalance] = useState(0);
   const [needsAllowance, setNeedsAllowance] = useState(true);
-  const toggleForm = useCallback(() => setFormOpen((prev) => !prev), []);
   const viewerIsBorrower = useMemo(
     () => account?.toUpperCase() === loan.borrower.toUpperCase(),
     [account, loan.borrower],
   );
-  const buttonText = useMemo(() => {
-    if (viewerIsBorrower) {
-      return 'Repay loan & claim NFT';
-    }
-    if (loan.lastAccumulatedTimestamp.eq(0)) {
-      return 'Lend';
-    }
-    return 'Offer better terms';
-  }, [loan.lastAccumulatedTimestamp, viewerIsBorrower]);
 
   useEffect(() => {
     if (account) {
@@ -71,9 +59,9 @@ export function LoanForm({ form, loan, refresh }: LoanFormProps) {
 
   if (!account) {
     return (
-      <div className={styles.form}>
+      <Form>
         <ConnectWallet />
-      </div>
+      </Form>
     );
   }
 
@@ -85,11 +73,7 @@ export function LoanForm({ form, loan, refresh }: LoanFormProps) {
     account.toLowerCase() === loan.lender?.toLowerCase()
   ) {
     if (account.toUpperCase() === loan.lender?.toUpperCase()) {
-      return (
-        <div className={styles.form}>
-          <LoanFormSeizeCollateral loan={loan} refresh={refresh} />
-        </div>
-      );
+      return <LoanFormSeizeCollateral loan={loan} refresh={refresh} />;
     }
     return null;
   }
@@ -98,59 +82,40 @@ export function LoanForm({ form, loan, refresh }: LoanFormProps) {
     loan.lastAccumulatedTimestamp.eq(0) &&
     account.toUpperCase() === loan.borrower.toUpperCase()
   ) {
-    // This form is just a button, so it doesn't need the form toggling logic below.
-    return (
-      <div className={styles.form}>
-        <LoanFormEarlyClosure loan={loan} refresh={refresh} />
-      </div>
-    );
-  }
-
-  if (!formOpen) {
-    return (
-      <div className={styles.form}>
-        <Button onClick={toggleForm}>{buttonText}</Button>
-      </div>
-    );
+    return <LoanFormEarlyClosure loan={loan} refresh={refresh} />;
   }
 
   if (loan.lastAccumulatedTimestamp.eq(0)) {
     return (
-      <div className={styles.form}>
-        <LoanFormAwaiting
-          loan={loan}
-          form={form}
-          needsAllowance={needsAllowance}
-          setNeedsAllowance={setNeedsAllowance}
-          refresh={refresh}
-        />
-      </div>
-    );
-  }
-
-  if (viewerIsBorrower) {
-    return (
-      <div className={styles.form}>
-        <LoanFormRepay
-          loan={loan}
-          balance={balance}
-          needsAllowance={needsAllowance}
-          setNeedsAllowance={setNeedsAllowance}
-          refresh={refresh}
-        />
-      </div>
-    );
-  }
-
-  return (
-    <div className={styles.form}>
-      <LoanFormBetterTerms
+      <LoanFormAwaiting
         loan={loan}
         form={form}
         needsAllowance={needsAllowance}
         setNeedsAllowance={setNeedsAllowance}
         refresh={refresh}
       />
-    </div>
+    );
+  }
+
+  if (viewerIsBorrower) {
+    return (
+      <LoanFormRepay
+        loan={loan}
+        balance={balance}
+        needsAllowance={needsAllowance}
+        setNeedsAllowance={setNeedsAllowance}
+        refresh={refresh}
+      />
+    );
+  }
+
+  return (
+    <LoanFormBetterTerms
+      loan={loan}
+      form={form}
+      needsAllowance={needsAllowance}
+      setNeedsAllowance={setNeedsAllowance}
+      refresh={refresh}
+    />
   );
 }
