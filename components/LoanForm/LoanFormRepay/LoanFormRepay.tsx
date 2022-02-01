@@ -5,9 +5,10 @@ import {
 } from 'components/Button';
 import { Loan } from 'types/Loan';
 import React, { useCallback, useState } from 'react';
-import styles from './LoanForm.module.css';
 import { useLoanDetails } from 'hooks/useLoanDetails';
 import { web3LoanFacilitator } from 'lib/contracts';
+import { Explainer } from './Explainer';
+import { Form } from 'components/Form';
 
 type LoanFormRepayProps = {
   loan: Loan;
@@ -46,31 +47,34 @@ export function LoanFormRepay({
   }, [loan.id, refresh]);
 
   return (
-    <div className={styles.form}>
-      <CompletedButton buttonText="Repay loan & claim NFT" />
-      <p>
-        The current Payback amount is:
-        <br />
-        {formattedPrincipal} (principal)
-        <br />+ {formattedInterestAccrued} (interest accrued so far)
-        <br />= {formattedTotalPayback} Total
-        <br />
-        “Repay & Claim” will pay this amount, close the loan, and transfer the
-        collateral to your wallet.
-      </p>
-      <AllowButton
-        contractAddress={loan.loanAssetContractAddress}
-        symbol={loan.loanAssetSymbol}
-        callback={() => setNeedsAllowance(false)}
-        done={!needsAllowance}
-      />
-      <TransactionButton
-        text="Repay & claim"
-        onClick={repay}
-        txHash={txHash}
-        isPending={waitingForTx}
-        disabled={needsAllowance}
-      />
-    </div>
+    <>
+      <Form onSubmit={(e) => e.preventDefault()}>
+        <CompletedButton buttonText="Repay loan & claim NFT" />
+        <p>
+          The current Payback amount is:
+          <br />
+          {formattedPrincipal} (principal)
+          <br />+ {formattedInterestAccrued} (interest accrued so far)
+          <br />= {formattedTotalPayback} Total
+          <br />
+          “Repay & Claim” will pay this amount, close the loan, and transfer the
+          collateral to your wallet.
+        </p>
+        <AllowButton
+          contractAddress={loan.loanAssetContractAddress}
+          symbol={loan.loanAssetSymbol}
+          callback={() => setNeedsAllowance(false)}
+          done={!needsAllowance}
+        />
+        <TransactionButton
+          text="Repay & claim"
+          onClick={repay}
+          txHash={txHash}
+          isPending={waitingForTx}
+          disabled={needsAllowance}
+        />
+      </Form>
+      <Explainer top={0} />
+    </>
   );
 }

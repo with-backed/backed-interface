@@ -1,21 +1,6 @@
-.form {
-  padding-top: var(--gap);
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--gap) / 2);
-}
-
-.form > label {
+.wrapper {
   display: grid;
-  grid-template-columns: var(--column-width) 1fr;
-  column-gap: var(--gap);
-  align-items: center;
-}
-
-.form > label > span {
-  text-transform: uppercase;
-  font-size: var(--font-small);
-  letter-spacing: 0.12rem;
-  line-height: 32px;
-  text-align: right;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap);
+  margin-top: var(--gap);
 }

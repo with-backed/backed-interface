@@ -1,0 +1,1 @@
+export { LoanFormRepay } from './LoanFormRepay';

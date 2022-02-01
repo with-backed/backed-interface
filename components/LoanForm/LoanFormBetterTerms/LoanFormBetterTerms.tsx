@@ -8,23 +8,23 @@ import { Loan } from 'types/Loan';
 import React from 'react';
 import { Input } from 'components/Input';
 import { UseFormReturn } from 'react-hook-form';
-import { LoanFormData } from './LoanFormData';
+import { LoanFormData } from 'components/LoanForm/LoanFormData';
 import { Form } from 'components/Form';
 
-type LoanFormAwaitingProps = {
+type LoanFormBetterTermsProps = {
   form: UseFormReturn<LoanFormData>;
   loan: Loan;
   needsAllowance: boolean;
   refresh: () => void;
   setNeedsAllowance: (value: boolean) => void;
 };
-export function LoanFormAwaiting({
+export function LoanFormBetterTerms({
   loan,
   form,
   needsAllowance,
   setNeedsAllowance,
   refresh,
-}: LoanFormAwaitingProps) {
+}: LoanFormBetterTermsProps) {
   const {
     formState: { errors },
     handleSubmit,

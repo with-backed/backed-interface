@@ -1,0 +1,1 @@
+export { LoanFormSeizeCollateral } from './LoanFormSeizeCollateral';

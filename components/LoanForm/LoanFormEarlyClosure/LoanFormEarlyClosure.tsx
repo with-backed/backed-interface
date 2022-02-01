@@ -1,8 +1,7 @@
 import { TransactionButton } from 'components/Button';
-import { jsonRpcLoanFacilitator, web3LoanFacilitator } from 'lib/contracts';
+import { web3LoanFacilitator } from 'lib/contracts';
 import React, { useCallback, useState } from 'react';
 import { Loan } from 'types/Loan';
-import styles from './LoanForm.module.css';
 
 type LoanFormEarlyClosureProps = {
   loan: Loan;
@@ -33,13 +32,13 @@ export function LoanFormEarlyClosure({
   }, [loan.id, loan.borrower, refresh]);
 
   return (
-    <div className={styles.form}>
+    <>
       <TransactionButton
         text="Close this loan"
         txHash={txHash}
         isPending={isPending}
         onClick={close}
       />
-    </div>
+    </>
   );
 }

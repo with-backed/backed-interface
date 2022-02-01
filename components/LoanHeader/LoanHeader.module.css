@@ -20,5 +20,5 @@
 }
 
 .form {
-  grid-column: col-start 5 / 9;
+  grid-column: col-start 5 / -1;
 }
