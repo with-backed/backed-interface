@@ -5,7 +5,7 @@ import { NFTMedia } from 'components/Media/NFTMedia';
 import { Modal } from 'components/Modal';
 import { DialogStateReturn } from 'reakit/Dialog';
 import { Button } from 'reakit/Button';
-import { useNFTs } from 'hooks/useNFTs/useNFTs';
+import { useNFTs } from 'hooks/useNFTs';
 import { NFTEntity } from 'types/NFT';
 
 interface NFTCollateralPickerProps {
