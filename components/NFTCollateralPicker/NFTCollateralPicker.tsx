@@ -1,14 +1,11 @@
 import { useCallback, useMemo, useState } from 'react';
 import styles from './NFTCollateralPicker.module.css';
-import { getNftContractAddress, NFTEntity, useNFTs } from 'lib/eip721Subraph';
+import { getNftContractAddress, NFTEntity } from 'lib/eip721Subraph';
 import { NFTMedia } from 'components/Media/NFTMedia';
 import { Modal } from 'components/Modal';
 import { DialogStateReturn } from 'reakit/Dialog';
 import { Button } from 'reakit/Button';
-import { useTokenMetadata } from 'hooks/useTokenMetadata';
-import { ethers } from 'ethers';
-import { Fallback } from 'components/Media/Fallback';
-import { Media } from 'components/Media';
+import { useNFTs } from 'hooks/useNFTs/useNFTs';
 
 interface NFTCollateralPickerProps {
   connectedWallet: string;
@@ -19,10 +16,6 @@ interface NFTCollateralPickerProps {
 
 interface GroupedNFTCollections {
   [key: string]: NFTEntity[];
-}
-
-interface ShowNFTStateType {
-  [key: string]: boolean;
 }
 
 export function NFTCollateralPicker({
