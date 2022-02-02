@@ -1,5 +1,18 @@
 import { ethers } from 'ethers';
+import { NFTEntity } from 'types/NFT';
 import { useQuery } from 'urql';
+
+type RawNFT = Omit<NFTEntity, 'id'> & { id: string };
+
+type Data =
+  | {
+      account: {
+        id: string;
+        tokens: RawNFT[];
+      };
+    }
+  | undefined
+  | null;
 
 const NFTsQuery = `
 query NFTs($address: String!) {
@@ -25,7 +38,7 @@ query NFTs($address: String!) {
 `;
 
 export const useNFTs = (address: string) => {
-  const [result] = useQuery({
+  const [result] = useQuery<Data>({
     query: NFTsQuery,
     variables: {
       address: address.toLowerCase(),
@@ -36,7 +49,7 @@ export const useNFTs = (address: string) => {
 
   const rawNfts = data?.account?.tokens || [];
 
-  const nfts = rawNfts.map((nft: any) => ({
+  const nfts: NFTEntity[] = rawNfts.map((nft) => ({
     ...nft,
     identifier: ethers.BigNumber.from(nft.identifier),
   }));
