@@ -18,8 +18,9 @@ import SearchTextInput from './SearchTextInput';
 type AdvancedSearchProps = {
   showSearch: boolean;
   searchActive: boolean;
-  setSearchActive: any;
-  setSearchUrl: any;
+  setSearchActive: (active: boolean) => void;
+  setSearchUrl: (url: string) => void;
+  loanAssetDecimalsForSearch?: number; // based on results of search, set loanAssetDecimal so we know how to parse loanAmountMin and loanAmountMax
 };
 
 const BYTES_INVALID_ERROR = 'Invalid address inputted';
@@ -40,6 +41,7 @@ export function AdvancedSearch({
   searchActive,
   setSearchActive,
   setSearchUrl,
+  loanAssetDecimalsForSearch = DEFAULT_ASSET_DECIMALS,
 }: AdvancedSearchProps) {
   const [statuses, setStatuses] = useState<LoanStatus[]>(INITIAL_STATUSES);
 
@@ -48,11 +50,6 @@ export function AdvancedSearch({
   const [loanAsset, setLoanAsset] = useState<string>('');
   const [borrowerAddress, setBorrowerAddress] = useState<string>('');
   const [lenderAddress, setLenderAddress] = useState<string>('');
-
-  // based on results of search, set loanAssetDecimal so we know how to parse loanAmountMin and loanAmountMax
-  const [loanAssetDecimal, setLoanAssetDecimal] = useState<number>(
-    DEFAULT_ASSET_DECIMALS,
-  );
 
   // couple loanAssetDecimal and nominal amount user wants to filter by, and only set them together in lock-step to avoid unnecessary re-renders
   const [loanAmountMin, setLoanAmountMin] = useState<LoanAmountInputType>({
@@ -77,7 +74,6 @@ export function AdvancedSearch({
   ]);
 
   useEffect(() => {
-    setLoanAssetDecimal(DEFAULT_ASSET_DECIMALS);
     setSearchActive(
       isSearchActive(
         statuses,
@@ -204,10 +200,16 @@ export function AdvancedSearch({
           <LoanNumericInput
             label="Loan Amount"
             setMin={(nominal: number) =>
-              setLoanAmountMin({ loanAssetDecimal, nominal })
+              setLoanAmountMin({
+                loanAssetDecimal: loanAssetDecimalsForSearch,
+                nominal,
+              })
             }
             setMax={(nominal: number) =>
-              setLoanAmountMax({ loanAssetDecimal, nominal })
+              setLoanAmountMax({
+                loanAssetDecimal: loanAssetDecimalsForSearch,
+                nominal,
+              })
             }
             error={
               loanTokenSearchInvalid

@@ -30,7 +30,6 @@ export function usePaginatedLoans(
 
   useEffect(() => {
     if (!selectedSort) return;
-    console.log('resetting size');
     setSize(1);
   }, [selectedSort, url, setSize]);
 

@@ -58,6 +58,7 @@ export default function Home({ loans }: HomeProps) {
           searchActive={searchActive}
           setSearchActive={setSearchActive}
           setSearchUrl={setSearchUrl}
+          loanAssetDecimalsForSearch={paginatedLoans[0]?.loanAssetDecimal}
         />
       </div>
 
