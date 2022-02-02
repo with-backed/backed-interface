@@ -37,9 +37,6 @@ export default function Home({ loans }: HomeProps) {
     undefined,
   );
 
-  console.log({ searchActive });
-  console.log({ searchUrl });
-
   const { paginatedLoans } = usePaginatedLoans(
     searchActive ? searchUrl : '/api/loans/all?',
     ref,

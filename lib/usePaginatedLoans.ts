@@ -28,8 +28,6 @@ export function usePaginatedLoans(
 
   const paginatedLoans = data ? [].concat(...data) : initialLoans;
 
-  console.log({ data, error });
-
   useEffect(() => {
     if (!selectedSort) return;
     console.log('resetting size');
@@ -45,7 +43,6 @@ export function usePaginatedLoans(
     isEmpty || (data && data[data.length - 1]?.length < pageSize);
 
   useEffect(() => {
-    console.log({ isVisible, isLoadingMore, isReachingEnd });
     if (isVisible && !isLoadingMore && !isReachingEnd) {
       setSize(size + 1);
     }
