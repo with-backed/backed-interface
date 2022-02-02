@@ -31,16 +31,17 @@ export default function Home({ loans }: HomeProps) {
   const ref = useRef() as React.MutableRefObject<HTMLInputElement>;
 
   const [showSearch, setShowSearch] = useState<boolean>(false);
+  const [searchActive, setSearchActive] = useState<boolean>(false);
+  const [searchUrl, setSearchUrl] = useState<string>('');
   const [selectedSort, setSelectedSort] = useState<Loan_OrderBy | undefined>(
     undefined,
   );
 
-  const [searchedLoans, setSearchedLoans] = useState<
-    SubgraphLoan[] | undefined
-  >(undefined);
+  console.log({ searchActive });
+  console.log({ searchUrl });
 
   const { paginatedLoans } = usePaginatedLoans(
-    '/api/loans/all',
+    searchActive ? searchUrl : '/api/loans/all?',
     ref,
     PAGE_LIMIT,
     selectedSort,
@@ -56,14 +57,16 @@ export default function Home({ loans }: HomeProps) {
           setShowSearch={setShowSearch}
         />
         <AdvancedSearch
-          handleSearchFinished={(loans) => setSearchedLoans(loans)}
           showSearch={showSearch}
           selectedSort={selectedSort}
+          searchActive={searchActive}
+          setSearchActive={setSearchActive}
+          setSearchUrl={setSearchUrl}
         />
       </div>
 
       <FiveColumn>
-        {(searchedLoans || paginatedLoans).map((loan) => (
+        {paginatedLoans.map((loan) => (
           <LoanCard key={loan.id.toString()} loan={parseSubgraphLoan(loan)} />
         ))}
       </FiveColumn>

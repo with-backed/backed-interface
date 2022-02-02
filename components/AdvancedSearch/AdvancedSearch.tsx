@@ -1,9 +1,6 @@
 import { FormWrapper } from 'components/layouts/FormWrapper';
 import { DEFAULT_ASSET_DECIMALS } from 'lib/loanAssets';
-import {
-  LoanAmountInputType,
-  searchLoans,
-} from 'lib/loans/subgraph/subgraphLoans';
+import { LoanAmountInputType } from 'lib/loans/subgraph/subgraphLoans';
 import { isEqual } from 'lodash';
 import { useEffect, useState } from 'react';
 import {
@@ -19,9 +16,10 @@ import LoanStatusButtons from './LoanStatusButtons';
 import SearchTextInput from './SearchTextInput';
 
 type AdvancedSearchProps = {
-  handleSearchFinished: (loans?: Loan[]) => void;
   showSearch: boolean;
-  selectedSort?: Loan_OrderBy;
+  searchActive: boolean;
+  setSearchActive: any;
+  setSearchUrl: any;
 };
 
 const BYTES_INVALID_ERROR = 'Invalid address inputted';
@@ -38,9 +36,10 @@ const isSearchActive = (statuses: LoanStatus[], ...args: any[]) => {
 const INITIAL_STATUSES = [LoanStatus.AwaitingLender, LoanStatus.Active];
 
 export function AdvancedSearch({
-  handleSearchFinished,
   showSearch,
-  selectedSort = Loan_OrderBy.CreatedAtTimestamp,
+  searchActive,
+  setSearchActive,
+  setSearchUrl,
 }: AdvancedSearchProps) {
   const [statuses, setStatuses] = useState<LoanStatus[]>(INITIAL_STATUSES);
 
@@ -78,53 +77,32 @@ export function AdvancedSearch({
   ]);
 
   useEffect(() => {
-    async function triggerSearch() {
-      if (
-        !isSearchActive(
-          statuses,
-          collectionAddress,
-          collectionName,
-          loanAsset,
-          borrowerAddress,
-          lenderAddress,
-          loanAmountMin.nominal,
-          loanAmountMax.nominal,
-          loanInterestMin,
-          loanInterestMax,
-          loanDurationMin,
-          loanDurationMax,
-        )
-      ) {
-        handleSearchFinished(undefined);
-        return;
-      }
-      if (loanTokenSearchInvalid || bytesSearchInvalid) return;
-      const results = await searchLoans(
+    setLoanAssetDecimal(DEFAULT_ASSET_DECIMALS);
+    setSearchActive(
+      isSearchActive(
         statuses,
         collectionAddress,
         collectionName,
         loanAsset,
         borrowerAddress,
         lenderAddress,
-        loanAmountMin,
-        loanAmountMax,
+        loanAmountMin.nominal,
+        loanAmountMax.nominal,
         loanInterestMin,
         loanInterestMax,
         loanDurationMin,
         loanDurationMax,
-        selectedSort,
-      );
-      handleSearchFinished(results);
-      setLoanAssetDecimal(
-        results[0]?.loanAssetDecimal || DEFAULT_ASSET_DECIMALS,
-      );
-    }
-    triggerSearch();
+      ) &&
+        !bytesSearchInvalid &&
+        !loanTokenSearchInvalid,
+    );
+    setSearchUrl(
+      `/api/loans/search?statuses=${statuses}&collectionAddress=${collectionAddress}&collectionName=${collectionName}&loanAsset=${loanAsset}&borrowerAddress=${borrowerAddress}&lenderAddress=${lenderAddress}&loanAmountMin=${loanAmountMin.nominal}&loanAmountMinDecimals=${loanAmountMin.loanAssetDecimal}&loanAmountMax=${loanAmountMax.nominal}&loanAmountMaxDecimals=${loanAmountMax.loanAssetDecimal}&loanInterestMin=${loanInterestMin}&loanInterestMax=${loanInterestMax}&loanDurationMin=${loanDurationMin}&loanDurationMax=${loanDurationMax}&`,
+    );
   }, [
     statuses,
     collectionAddress,
     collectionName,
-    handleSearchFinished,
     loanAsset,
     borrowerAddress,
     lenderAddress,
@@ -134,9 +112,11 @@ export function AdvancedSearch({
     loanInterestMax,
     loanDurationMin,
     loanDurationMax,
-    selectedSort,
-    loanTokenSearchInvalid,
+    setSearchActive,
+    searchActive,
+    setSearchUrl,
     bytesSearchInvalid,
+    loanTokenSearchInvalid,
   ]);
 
   return (

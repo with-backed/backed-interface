@@ -64,6 +64,8 @@ const searchQuery = (
     $durationSecondsMin: BigInt,
     $durationSecondsMax: BigInt,
     $selectedSort: String,
+    $first: Int, 
+    $skip: Int,
   ) {
     loans(where: 
       {
@@ -74,15 +76,19 @@ const searchQuery = (
         borrowTicketHolder_contains: $borrowTicketHolder,
         ${
           lendTicketHolder != ''
-            ? 'lendTicketHolder_contains: $lendTicketHolder'
+            ? 'lendTicketHolder_contains: $lendTicketHolder,'
             : ''
         }
+        loanAmount_gt: $loanAmountMin,
         ${loanAmountMax != 0 ? 'loanAmount_lt: $loanAmountMax' : ''}
+        
+        perSecondInterestRate_gt: $perSecondInterestRateMin,
         ${
           perSecondInterestRateMax != 0
             ? 'perSecondInterestRate_lt: $perSecondInterestRateMax'
             : ''
         }
+        durationSeconds_gt: $durationSecondsMin,
         ${
           durationSecondsMax != 0
             ? 'durationSeconds_lt: $durationSecondsMax'
@@ -91,6 +97,8 @@ const searchQuery = (
       },
       orderBy: $selectedSort,
       orderDirection: desc,
+      first: $first, 
+      skip: $skip,
     ) {
       ${ALL_LOAN_PROPERTIES}
     }
@@ -116,6 +124,8 @@ export async function searchLoans(
   loanDurationMin: number,
   loanDurationMax: number,
   selectedSort: Loan_OrderBy,
+  first: number,
+  page: number = 1,
 ): Promise<Loan[]> {
   const {
     data: { loans },
@@ -141,6 +151,8 @@ export async function searchLoans(
         durationSecondsMin: daysToSecondsBigNum(loanDurationMin).toString(),
         durationSecondsMax: daysToSecondsBigNum(loanDurationMax).toString(),
         selectedSort,
+        first,
+        skip: (page - 1) * first,
       },
     )
     .toPromise();
