@@ -70,19 +70,19 @@ export function LoanFormBetterTerms({
 
   const { duration, interestRate, loanAmount } = watch();
 
-  daysToSecondsBigNum(parseFloat(duration));
+  const hasTenPercentImprovement = useMemo(() => {
+    const durationImproved = daysToSecondsBigNum(parseFloat(duration)).gte(
+      loan.durationSeconds.div(10).add(loan.durationSeconds),
+    );
+    const interestRateImproved = ethers.BigNumber.from(
+      annualRateToPerSecond(parseFloat(interestRate)),
+    ).lte(loan.perSecondInterestRate.sub(loan.perSecondInterestRate.div(10)));
+    const amountImproved = ethers.utils
+      .parseUnits(loanAmount, loan.loanAssetDecimals)
+      .gte(loan.loanAmount.div(10).add(loan.loanAmount));
 
-  const durationImproved = daysToSecondsBigNum(parseFloat(duration)).gte(
-    loan.durationSeconds.div(10).add(loan.durationSeconds),
-  );
-  const interestRateImproved = ethers.BigNumber.from(
-    annualRateToPerSecond(parseFloat(interestRate)),
-  ).lte(loan.perSecondInterestRate.sub(loan.perSecondInterestRate.div(10)));
-  const amountImproved = ethers.utils
-    .parseUnits(loanAmount, loan.loanAssetDecimals)
-    .gte(loan.loanAmount.div(10).add(loan.loanAmount));
-  const hasTenPercentImprovement =
-    durationImproved || interestRateImproved || amountImproved;
+    return durationImproved || interestRateImproved || amountImproved;
+  }, [duration, interestRate, loanAmount, loan]);
 
   const [current, send] = useMachine(loanFormBetterTermsMachine);
 
