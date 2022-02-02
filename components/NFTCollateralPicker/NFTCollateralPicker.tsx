@@ -1,11 +1,12 @@
 import { useCallback, useMemo, useState } from 'react';
 import styles from './NFTCollateralPicker.module.css';
-import { getNftContractAddress, NFTEntity } from 'lib/eip721Subraph';
+import { getNftContractAddress } from 'lib/eip721Subraph';
 import { NFTMedia } from 'components/Media/NFTMedia';
 import { Modal } from 'components/Modal';
 import { DialogStateReturn } from 'reakit/Dialog';
 import { Button } from 'reakit/Button';
 import { useNFTs } from 'hooks/useNFTs/useNFTs';
+import { NFTEntity } from 'types/NFT';
 
 interface NFTCollateralPickerProps {
   connectedWallet: string;

@@ -5,11 +5,7 @@ import { NFTMedia } from 'components/Media/NFTMedia';
 import { NFTCollateralPicker } from 'components/NFTCollateralPicker/NFTCollateralPicker';
 import { ethers } from 'ethers';
 import { useWeb3 } from 'hooks/useWeb3';
-import {
-  getNftContractAddress,
-  HIDDEN_NFT_ADDRESSES,
-  NFTEntity,
-} from 'lib/eip721Subraph';
+import { getNftContractAddress, HIDDEN_NFT_ADDRESSES } from 'lib/eip721Subraph';
 import { eip721Client } from 'lib/urql';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -23,6 +19,7 @@ import styles from './CreatePageHeader.module.css';
 import { Explainer } from './Explainer';
 import { SelectNFTButton } from './SelectNFTButton';
 import { createPageFormSchema } from './createPageFormSchema';
+import { NFTEntity } from 'types/NFT';
 
 export function CreatePageHeader() {
   const form = useForm<CreateFormData>({

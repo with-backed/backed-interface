@@ -1,22 +1,4 @@
-import { ethers } from 'ethers';
-
-export interface NFTEntity {
-  id: string;
-  identifier: ethers.BigNumber;
-  uri: string;
-  registry: {
-    symbol: string;
-    name: string;
-  };
-  approvals: Approval[];
-}
-
-interface Approval {
-  id: string;
-  approved: {
-    id: string;
-  };
-}
+import { NFTEntity } from 'types/NFT';
 
 export const HIDDEN_NFT_ADDRESSES = [
   !!process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT

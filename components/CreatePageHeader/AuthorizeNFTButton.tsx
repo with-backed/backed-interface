@@ -1,8 +1,9 @@
 import { CompletedButton, TransactionButton } from 'components/Button';
 import { ethers } from 'ethers';
 import { web3Erc721Contract } from 'lib/contracts';
-import { isNFTApprovedForCollateral, NFTEntity } from 'lib/eip721Subraph';
+import { isNFTApprovedForCollateral } from 'lib/eip721Subraph';
 import React, { useCallback, useEffect, useState } from 'react';
+import { NFTEntity } from 'types/NFT';
 
 const ID = 'authorizeNFT';
 
