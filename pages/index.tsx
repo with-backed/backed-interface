@@ -58,7 +58,6 @@ export default function Home({ loans }: HomeProps) {
         />
         <AdvancedSearch
           showSearch={showSearch}
-          selectedSort={selectedSort}
           searchActive={searchActive}
           setSearchActive={setSearchActive}
           setSearchUrl={setSearchUrl}
