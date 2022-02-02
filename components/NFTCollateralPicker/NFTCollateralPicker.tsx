@@ -28,23 +28,20 @@ export function NFTCollateralPicker({
   const { fetching, error, nfts } = useNFTs(connectedWallet);
 
   const groupedNFTs: GroupedNFTCollections = useMemo(() => {
-    return nfts.reduce(
-      (groupedNFTs: GroupedNFTCollections, nextNFT: NFTEntity) => {
-        const nftContractAddress: string = nextNFT.id.substring(0, 42);
+    return nfts.reduce((groupedNFTs: GroupedNFTCollections, nextNFT) => {
+      const nftContractAddress: string = nextNFT.id.substring(0, 42);
 
-        if (hiddenNFTAddresses.includes(nftContractAddress)) return groupedNFTs; // skip if hidden collection
-        if (!!groupedNFTs[nftContractAddress]) {
-          groupedNFTs[nftContractAddress] = [
-            ...groupedNFTs[nftContractAddress],
-            nextNFT,
-          ];
-        } else {
-          groupedNFTs[nftContractAddress] = [nextNFT];
-        }
-        return groupedNFTs;
-      },
-      {},
-    );
+      if (hiddenNFTAddresses.includes(nftContractAddress)) return groupedNFTs; // skip if hidden collection
+      if (!!groupedNFTs[nftContractAddress]) {
+        groupedNFTs[nftContractAddress] = [
+          ...groupedNFTs[nftContractAddress],
+          nextNFT,
+        ];
+      } else {
+        groupedNFTs[nftContractAddress] = [nextNFT];
+      }
+      return groupedNFTs;
+    }, {});
   }, [nfts, hiddenNFTAddresses]);
 
   const handleNFTClick = useCallback(
