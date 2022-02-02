@@ -29,6 +29,6 @@ export const Wrapper = () => {
 };
 
 export default {
-  title: 'createPage/NFTCollateralPicker',
+  title: 'Components/NFTCollateralPicker',
   component: Wrapper,
 };
