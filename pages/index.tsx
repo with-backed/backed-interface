@@ -11,7 +11,7 @@ import Link from 'next/link';
 import React, { useRef, useState } from 'react';
 import { AdvancedSearch } from 'components/AdvancedSearch/AdvancedSearch';
 import { SearchHeader } from 'components/AdvancedSearch/Header';
-import { usePaginatedLoans } from 'lib/usePaginatedLoans';
+import { usePaginatedLoans } from 'hooks/usePaginatedLoans';
 import searchStyles from '../components/AdvancedSearch/AdvancedSearch.module.css';
 
 const PAGE_LIMIT = 20;
