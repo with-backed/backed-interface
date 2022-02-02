@@ -13,16 +13,13 @@ import { LoanFormBetterTerms } from './LoanFormBetterTerms';
 import { LoanFormRepay } from './LoanFormRepay';
 import { LoanFormEarlyClosure } from './LoanFormEarlyClosure';
 import { LoanFormSeizeCollateral } from './LoanFormSeizeCollateral';
-import { UseFormReturn } from 'react-hook-form';
-import { LoanFormData } from './LoanFormData';
 import styles from './LoanForm.module.css';
 
 type LoanFormProps = {
-  form: UseFormReturn<LoanFormData>;
   loan: Loan;
   refresh: () => void;
 };
-export function LoanForm({ form, loan, refresh }: LoanFormProps) {
+export function LoanForm({ loan, refresh }: LoanFormProps) {
   const { account } = useWeb3();
   const timestamp = useTimestamp();
   const [balance, setBalance] = useState(0);
@@ -124,7 +121,6 @@ export function LoanForm({ form, loan, refresh }: LoanFormProps) {
     <div className={styles.wrapper}>
       <LoanFormBetterTerms
         loan={loan}
-        form={form}
         needsAllowance={needsAllowance}
         setNeedsAllowance={setNeedsAllowance}
         refresh={refresh}
