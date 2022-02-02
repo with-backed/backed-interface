@@ -18,7 +18,7 @@ export function usePaginatedLoans(
 ) {
   const isVisible = useOnScreen(ref);
 
-  const { data, error, size, setSize, isValidating } = useSWRInfinite(
+  const { data, error, size, setSize } = useSWRInfinite(
     (index) =>
       `${url}limit=${pageSize}&page=${index + 1}&sort=${
         selectedSort || Loan_OrderBy.CreatedAtTimestamp
@@ -45,7 +45,7 @@ export function usePaginatedLoans(
     if (isVisible && !isLoadingMore && !isReachingEnd) {
       setSize(size + 1);
     }
-  }, [isVisible, isLoadingMore, isReachingEnd, isValidating, size, setSize]);
+  }, [isVisible, isLoadingMore, isReachingEnd, size, setSize]);
 
   return { paginatedLoans, error };
 }
