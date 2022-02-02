@@ -5,17 +5,21 @@ import {
 } from 'components/Button';
 import { useLoanUnderwriter } from 'hooks/useLoanUnderwriter';
 import { Loan } from 'types/Loan';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Input } from 'components/Input';
-import { UseFormReturn } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { Form } from 'components/Form';
 import { LoanFormData } from 'components/LoanForm/LoanFormData';
+import { loanPageFormSchema } from 'components/LoanForm/loanPageFormSchema';
 import { useMachine } from '@xstate/react';
 import { loanFormAwaitingMachine } from './loanFormAwaitingMachine';
 import { Explainer } from './Explainer';
+import { ethers } from 'ethers';
+import { formattedAnnualRate } from 'lib/interest';
+import { secondsBigNumToDays } from 'lib/duration';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 type LoanFormAwaitingProps = {
-  form: UseFormReturn<LoanFormData>;
   loan: Loan;
   needsAllowance: boolean;
   refresh: () => void;
@@ -23,11 +27,40 @@ type LoanFormAwaitingProps = {
 };
 export function LoanFormAwaiting({
   loan,
-  form,
   needsAllowance,
   setNeedsAllowance,
   refresh,
 }: LoanFormAwaitingProps) {
+  const initialAmount = useMemo(
+    () => ethers.utils.formatUnits(loan.loanAmount, loan.loanAssetDecimals),
+
+    [loan.loanAmount, loan.loanAssetDecimals],
+  );
+  const initialInterestRate = useMemo(
+    () => formattedAnnualRate(loan.perSecondInterestRate),
+    [loan.perSecondInterestRate],
+  );
+  const initialDuration = useMemo(
+    () => secondsBigNumToDays(loan.durationSeconds).toString(),
+    [loan.durationSeconds],
+  );
+
+  const form = useForm<LoanFormData>({
+    defaultValues: {
+      duration: initialDuration,
+      interestRate: initialInterestRate,
+      loanAmount: initialAmount,
+    },
+    mode: 'all',
+    resolver: yupResolver(
+      loanPageFormSchema({
+        duration: parseFloat(initialDuration),
+        loanAmount: parseFloat(initialAmount),
+        interestRate: parseFloat(initialInterestRate),
+      }),
+    ),
+  });
+
   const {
     formState: { errors },
     handleSubmit,

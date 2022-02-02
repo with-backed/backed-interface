@@ -98,7 +98,6 @@ export function LoanForm({ form, loan, refresh }: LoanFormProps) {
       <div className={styles.wrapper}>
         <LoanFormAwaiting
           loan={loan}
-          form={form}
           needsAllowance={needsAllowance}
           setNeedsAllowance={setNeedsAllowance}
           refresh={refresh}
