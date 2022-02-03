@@ -1,14 +1,12 @@
 import { useCallback, useMemo, useState } from 'react';
 import styles from './NFTCollateralPicker.module.css';
-import { getNftContractAddress, NFTEntity, useNFTs } from 'lib/eip721Subraph';
+import { getNftContractAddress } from 'lib/eip721Subraph';
 import { NFTMedia } from 'components/Media/NFTMedia';
 import { Modal } from 'components/Modal';
 import { DialogStateReturn } from 'reakit/Dialog';
 import { Button } from 'reakit/Button';
-import { useTokenMetadata } from 'hooks/useTokenMetadata';
-import { ethers } from 'ethers';
-import { Fallback } from 'components/Media/Fallback';
-import { Media } from 'components/Media';
+import { useNFTs } from 'hooks/useNFTs';
+import { NFTEntity } from 'types/NFT';
 
 interface NFTCollateralPickerProps {
   connectedWallet: string;
@@ -21,10 +19,6 @@ interface GroupedNFTCollections {
   [key: string]: NFTEntity[];
 }
 
-interface ShowNFTStateType {
-  [key: string]: boolean;
-}
-
 export function NFTCollateralPicker({
   connectedWallet,
   handleSetSelectedNFT,
@@ -34,23 +28,20 @@ export function NFTCollateralPicker({
   const { fetching, error, nfts } = useNFTs(connectedWallet);
 
   const groupedNFTs: GroupedNFTCollections = useMemo(() => {
-    return nfts.reduce(
-      (groupedNFTs: GroupedNFTCollections, nextNFT: NFTEntity) => {
-        const nftContractAddress: string = nextNFT.id.substring(0, 42);
+    return nfts.reduce((groupedNFTs: GroupedNFTCollections, nextNFT) => {
+      const nftContractAddress: string = nextNFT.id.substring(0, 42);
 
-        if (hiddenNFTAddresses.includes(nftContractAddress)) return groupedNFTs; // skip if hidden collection
-        if (!!groupedNFTs[nftContractAddress]) {
-          groupedNFTs[nftContractAddress] = [
-            ...groupedNFTs[nftContractAddress],
-            nextNFT,
-          ];
-        } else {
-          groupedNFTs[nftContractAddress] = [nextNFT];
-        }
-        return groupedNFTs;
-      },
-      {},
-    );
+      if (hiddenNFTAddresses.includes(nftContractAddress)) return groupedNFTs; // skip if hidden collection
+      if (!!groupedNFTs[nftContractAddress]) {
+        groupedNFTs[nftContractAddress] = [
+          ...groupedNFTs[nftContractAddress],
+          nextNFT,
+        ];
+      } else {
+        groupedNFTs[nftContractAddress] = [nextNFT];
+      }
+      return groupedNFTs;
+    }, {});
   }, [nfts, hiddenNFTAddresses]);
 
   const handleNFTClick = useCallback(
@@ -63,7 +54,7 @@ export function NFTCollateralPicker({
 
   if (fetching) {
     return (
-      <Modal dialog={dialog}>
+      <Modal dialog={dialog} heading="✨ 🔍 Select an NFT 🖼 ✨">
         <div className={styles.nftPicker}>loading your NFTs...</div>
       </Modal>
     );
@@ -71,9 +62,19 @@ export function NFTCollateralPicker({
 
   if (error) {
     return (
-      <Modal dialog={dialog}>
+      <Modal dialog={dialog} heading="✨ 🔍 Select an NFT 🖼 ✨">
         <div className={styles.nftPicker}>
           oops, we could not load your NFTs
+        </div>
+      </Modal>
+    );
+  }
+
+  if (Object.keys(groupedNFTs).length === 0) {
+    return (
+      <Modal dialog={dialog} heading="✨ 🔍 Select an NFT 🖼 ✨">
+        <div className={styles.nftPicker}>
+          🤔 Uh-oh, looks like this address doesn&apos;t have any NFTs.
         </div>
       </Modal>
     );
