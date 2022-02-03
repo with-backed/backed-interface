@@ -8,10 +8,11 @@
 
 .top-row {
   display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-columns: 1fr 298px 1fr;
   max-width: var(--max-width-header);
   width: 100%;
   align-items: center;
+  padding: 0.5rem 0;
 }
 
 .link {
