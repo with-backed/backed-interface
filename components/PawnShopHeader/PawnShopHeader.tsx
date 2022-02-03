@@ -5,7 +5,7 @@ import styles from './PawnShopHeader.module.css';
 import { ButtonLink } from 'components/Button';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
-import logo from './rinkeby_logo.png';
+import logo from './rinkebeeee.png';
 
 type PawnShopHeaderProps = {};
 
