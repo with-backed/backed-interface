@@ -101,6 +101,18 @@ describe('NFTCollateralPicker', () => {
     getByText('oops, we could not load your NFTs');
   });
 
+  it('handles when a user has no NFTs', () => {
+    mockUseNFTs.mockReturnValue({
+      fetching: false,
+      nfts: [],
+      error: undefined,
+    });
+    const { getByText } = render(<Picker />);
+
+    // we have 2 groups of NFTs
+    getByText("🤔 Uh-oh, looks like this address doesn't have any NFTs.");
+  });
+
   it('renders a list of grouped NFTs for selection', () => {
     mockUseNFTs.mockReturnValue({ fetching: false, nfts, error: undefined });
     const { getByText } = render(<Picker />);

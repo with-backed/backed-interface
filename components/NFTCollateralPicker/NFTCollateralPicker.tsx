@@ -70,6 +70,16 @@ export function NFTCollateralPicker({
     );
   }
 
+  if (Object.keys(groupedNFTs).length === 0) {
+    return (
+      <Modal dialog={dialog} heading="✨ 🔍 Select an NFT 🖼 ✨">
+        <div className={styles.nftPicker}>
+          🤔 Uh-oh, looks like this address doesn&apos;t have any NFTs.
+        </div>
+      </Modal>
+    );
+  }
+
   return (
     <Modal dialog={dialog} heading="✨ 🔍 Select an NFT 🖼 ✨">
       <div className={styles.wrapper}>
