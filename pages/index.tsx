@@ -11,7 +11,7 @@ import Link from 'next/link';
 import React, { useRef, useState } from 'react';
 import { AdvancedSearch } from 'components/AdvancedSearch/AdvancedSearch';
 import { SearchHeader } from 'components/AdvancedSearch/Header';
-import { usePaginatedLoans } from 'lib/usePaginatedLoans';
+import { usePaginatedLoans } from 'hooks/usePaginatedLoans';
 import searchStyles from '../components/AdvancedSearch/AdvancedSearch.module.css';
 
 const PAGE_LIMIT = 20;
@@ -31,16 +31,14 @@ export default function Home({ loans }: HomeProps) {
   const ref = useRef() as React.MutableRefObject<HTMLInputElement>;
 
   const [showSearch, setShowSearch] = useState<boolean>(false);
+  const [searchActive, setSearchActive] = useState<boolean>(false);
+  const [searchUrl, setSearchUrl] = useState<string>('');
   const [selectedSort, setSelectedSort] = useState<Loan_OrderBy | undefined>(
     undefined,
   );
 
-  const [searchedLoans, setSearchedLoans] = useState<
-    SubgraphLoan[] | undefined
-  >(undefined);
-
   const { paginatedLoans } = usePaginatedLoans(
-    '/api/loans/all',
+    searchActive ? searchUrl : '/api/loans/all?',
     ref,
     PAGE_LIMIT,
     selectedSort,
@@ -56,14 +54,16 @@ export default function Home({ loans }: HomeProps) {
           setShowSearch={setShowSearch}
         />
         <AdvancedSearch
-          handleSearchFinished={(loans) => setSearchedLoans(loans)}
           showSearch={showSearch}
-          selectedSort={selectedSort}
+          searchActive={searchActive}
+          setSearchActive={setSearchActive}
+          setSearchUrl={setSearchUrl}
+          loanAssetDecimalsForSearch={paginatedLoans[0]?.loanAssetDecimal}
         />
       </div>
 
       <FiveColumn>
-        {(searchedLoans || paginatedLoans).map((loan) => (
+        {paginatedLoans.map((loan) => (
           <LoanCard key={loan.id.toString()} loan={parseSubgraphLoan(loan)} />
         ))}
       </FiveColumn>

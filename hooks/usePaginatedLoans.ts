@@ -18,13 +18,11 @@ export function usePaginatedLoans(
 ) {
   const isVisible = useOnScreen(ref);
 
-  const { data, error, size, setSize, isValidating } = useSWRInfinite(
+  const { data, error, size, setSize } = useSWRInfinite(
     (index) =>
-      skipQuery
-        ? null
-        : `${url}?limit=${pageSize}&page=${index + 1}&sort=${
-            selectedSort || Loan_OrderBy.CreatedAtTimestamp
-          }`,
+      `${url}limit=${pageSize}&page=${index + 1}&sort=${
+        selectedSort || Loan_OrderBy.CreatedAtTimestamp
+      }`,
     fetcher,
   );
 
@@ -33,7 +31,7 @@ export function usePaginatedLoans(
   useEffect(() => {
     if (!selectedSort) return;
     setSize(1);
-  }, [selectedSort, setSize]);
+  }, [selectedSort, url, setSize]);
 
   const isEmpty = data?.[0]?.length === 0;
   const isLoadingInitialData = !data && !error;
@@ -44,10 +42,10 @@ export function usePaginatedLoans(
     isEmpty || (data && data[data.length - 1]?.length < pageSize);
 
   useEffect(() => {
-    if (isVisible && !isLoadingMore && !isReachingEnd && !isValidating) {
+    if (isVisible && !isLoadingMore && !isReachingEnd) {
       setSize(size + 1);
     }
-  }, [isVisible, isLoadingMore, isReachingEnd, isValidating, size, setSize]);
+  }, [isVisible, isLoadingMore, isReachingEnd, size, setSize]);
 
   return { paginatedLoans, error };
 }
