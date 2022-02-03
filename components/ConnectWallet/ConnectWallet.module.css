@@ -21,3 +21,7 @@
   box-shadow: var(--box-shadow);
   z-index: 9;
 }
+
+.menu > a:visited {
+  color: var(--neutral-100);
+}
