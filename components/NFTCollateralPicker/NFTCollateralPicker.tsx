@@ -54,7 +54,7 @@ export function NFTCollateralPicker({
 
   if (fetching) {
     return (
-      <Modal dialog={dialog}>
+      <Modal dialog={dialog} heading="✨ 🔍 Select an NFT 🖼 ✨">
         <div className={styles.nftPicker}>loading your NFTs...</div>
       </Modal>
     );
@@ -62,7 +62,7 @@ export function NFTCollateralPicker({
 
   if (error) {
     return (
-      <Modal dialog={dialog}>
+      <Modal dialog={dialog} heading="✨ 🔍 Select an NFT 🖼 ✨">
         <div className={styles.nftPicker}>
           oops, we could not load your NFTs
         </div>
