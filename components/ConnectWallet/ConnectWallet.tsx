@@ -2,15 +2,12 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
 import { WalletLinkConnector } from '@web3-react/walletlink-connector';
-import {
-  CompletedButton,
-  DialogDisclosureButton,
-  WalletButton,
-} from 'components/Button';
+import { DialogDisclosureButton, WalletButton } from 'components/Button';
 import { Modal } from 'components/Modal';
 import { useWeb3 } from 'hooks/useWeb3';
 import { useDialogState } from 'reakit/Dialog';
 import { FormWrapper } from 'components/layouts/FormWrapper';
+import { ConnectedWalletMenu } from './ConnectedWalletMenu';
 
 declare global {
   interface Window {
@@ -68,9 +65,7 @@ export const ConnectWallet = () => {
       {!account && (
         <DialogDisclosureButton {...dialog}>Connect</DialogDisclosureButton>
       )}
-      {!!account && (
-        <CompletedButton buttonText={`🔓 ${account.slice(0, 7)}`} />
-      )}
+      {!!account && <ConnectedWalletMenu />}
       <Modal
         dialog={dialog}
         width="narrow"

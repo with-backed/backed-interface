@@ -1,0 +1,23 @@
+.wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.wrapper > button {
+  z-index: 10;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  padding: 52px 1ch 12px;
+
+  gap: 12px;
+  position: absolute;
+  width: 100%;
+  border-radius: var(--border-radius-large);
+  background: var(--background-white);
+  box-shadow: var(--box-shadow);
+  z-index: 9;
+}
