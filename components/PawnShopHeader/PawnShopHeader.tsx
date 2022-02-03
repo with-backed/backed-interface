@@ -4,6 +4,8 @@ import { ConnectWallet } from 'components/ConnectWallet';
 import styles from './PawnShopHeader.module.css';
 import { ButtonLink } from 'components/Button';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
+import logo from './rinkeby_logo.png';
 
 type PawnShopHeaderProps = {};
 
@@ -20,9 +22,13 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = () => {
             Pawn Your NFT
           </ButtonLink>
         </div>
-        <h1 className={styles.link}>
-          <Link href="/">💸✨🎸 NFT Pawn Shop 💍✨💸</Link>
-        </h1>
+
+        <Link href="/" passHref>
+          <a className={styles.link}>
+            <Image src={logo} alt="NFT Pawn Shop" priority={true} />
+          </a>
+        </Link>
+
         <div className={styles['connect-wallet']}>
           <ConnectWallet />
         </div>
