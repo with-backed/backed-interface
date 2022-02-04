@@ -32,35 +32,33 @@ export const CollateralInfo = ({
           </OpenSeaAddressLink>
         </dd>
 
-        <dt>Item&apos;s Last Sale</dt>
+        <dt>ITEM&apos;S LAST SALE</dt>
         <dd>
           {collateralSaleInfo.recentSale.price}{' '}
           {collateralSaleInfo.recentSale.paymentToken}
         </dd>
 
-        <dt>Collection</dt>
+        <dt>COLLECTION</dt>
         <dd>{loan.collateralName}</dd>
 
-        <div className={styles.collectionInfoGrid}>
-          <div>
-            <dt>Items</dt>
-            <dd>{collateralSaleInfo.collectionStats.items}</dd>
-          </div>
+        <div className={styles.collectionInfoElement}>
+          <dt>ITEMS</dt>
+          <dd>{collateralSaleInfo.collectionStats.items}</dd>
+        </div>
 
-          <div>
-            <dt>Floor Price</dt>
-            <dd>{collateralSaleInfo.collectionStats.floor} ETH</dd>
-          </div>
+        <div className={styles.collectionInfoElement}>
+          <dt>FLOOR PRICE</dt>
+          <dd>{collateralSaleInfo.collectionStats.floor} ETH</dd>
+        </div>
 
-          <div>
-            <dt>Owners</dt>
-            <dd>{collateralSaleInfo.collectionStats.owners}</dd>
-          </div>
+        <div className={styles.collectionInfoElement}>
+          <dt>OWNERS</dt>
+          <dd>{collateralSaleInfo.collectionStats.owners}</dd>
+        </div>
 
-          <div>
-            <dt>Volume</dt>
-            <dd>{collateralSaleInfo.collectionStats.volume} ETH</dd>
-          </div>
+        <div className={styles.collectionInfoElement}>
+          <dt>VOLUME</dt>
+          <dd>{collateralSaleInfo.collectionStats.volume} ETH</dd>
         </div>
       </DescriptionList>
     </Fieldset>

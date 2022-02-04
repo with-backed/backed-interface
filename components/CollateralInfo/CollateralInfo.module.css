@@ -1,5 +1,4 @@
-.collectionInfoGrid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: var(--gap);
+.collectionInfoElement {
+    display: inline-block;
+    width: 50%;
 }
