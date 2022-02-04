@@ -15,14 +15,14 @@
   margin: 0;
 }
 
-.horizontal > dd,
-.vertical > dd {
+.horizontal dd,
+.vertical dd {
   margin: 0;
   line-height: 32px;
 }
 
-.horizontal > dt,
-.vertical > dt {
+.horizontal dt,
+.vertical dt {
   margin: 0;
   text-transform: uppercase;
   font-size: var(--font-small);
@@ -31,10 +31,10 @@
   line-height: 32px;
 }
 
-.horizontal > dt {
+.horizontal dt {
   text-align: right;
 }
 
-.vertical > dt {
+.vertical dt {
   margin-bottom: -0.75rem;
 }

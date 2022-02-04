@@ -1,7 +1,13 @@
 import { ethers } from 'ethers';
 import { mainnet } from 'lib/chainEnv';
 import { jsonRpcERC20Contract } from 'lib/contracts';
-import { getFakeFloor, getNFTFloor } from 'lib/nftPort';
+import {
+  CollectionStatistics,
+  collectionStats,
+  getFakeFloor,
+  getFakeItemsAndOwners,
+  getFakeVolume,
+} from 'lib/nftPort';
 import {
   generateFakeSaleForNFT,
   queryMostRecentSaleForNFT,
@@ -13,7 +19,7 @@ export type CollateralSaleInfo = {
     paymentToken: string;
     price: number;
   };
-  floorPrice: number;
+  collectionStats: CollectionStatistics;
 };
 
 export async function getCollateralSaleInfo(
@@ -30,8 +36,10 @@ export async function getCollateralSaleInfo(
     .parseUnits(recentSale.price, recentSaleTokenDecimals)
     .toNumber();
 
+  const collectionStats = await getCollectionStats(nftContractAddress);
+
   return {
-    floorPrice: await getFloorPrice(nftContractAddress),
+    collectionStats,
     recentSale: {
       paymentToken: recentSaleToken,
       price: recentSalePrice,
@@ -47,7 +55,17 @@ async function getMostRecentSale(
   return await queryMostRecentSaleForNFT(nftContractAddress, tokenId);
 }
 
-async function getFloorPrice(nftContractAddress: string): Promise<number> {
-  if (!mainnet()) return getFakeFloor();
-  return await getNFTFloor(nftContractAddress);
+async function getCollectionStats(
+  nftContractAddress: string,
+): Promise<CollectionStatistics> {
+  if (!mainnet()) {
+    const [items, owners] = getFakeItemsAndOwners();
+    return {
+      floor: getFakeFloor(),
+      items,
+      owners,
+      volume: getFakeVolume(),
+    };
+  }
+  return await collectionStats(nftContractAddress);
 }
