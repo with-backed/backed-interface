@@ -3,10 +3,10 @@ import { ethers } from 'ethers';
 import { secondsToDays } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
 import React, { FunctionComponent, useMemo } from 'react';
-import styles from './TicketHistory.module.css';
 import { Loan } from 'types/Loan';
 import { DescriptionList } from 'components/DescriptionList';
 import type * as Event from 'types/Event';
+import { Disclosure } from 'components/Disclosure';
 
 const eventDetailComponents = {
   BuyoutEvent,
@@ -43,29 +43,26 @@ type EventHeaderProps = {
   event: Event.Event;
 };
 
-function EventHeader({ event }: EventHeaderProps) {
-  return (
-    <h3 className={styles['event-header']}>
-      <EtherscanTransactionLink transactionHash={event.id.toString()}>
-        {camelToSentenceCase(event.typename as string)}
-      </EtherscanTransactionLink>
-    </h3>
-  );
-}
-
 const EventDetailList: FunctionComponent<EventHeaderProps> = ({
   children,
   event,
   ...props
 }) => {
+  const date = toLocaleDateTime(event.timestamp);
   return (
     <section>
-      <EventHeader event={event} />
-      <DescriptionList {...props}>
-        <dt>date</dt>
-        <dd>{toLocaleDateTime(event.timestamp)}</dd>
-        {children}
-      </DescriptionList>
+      <Disclosure
+        title={camelToSentenceCase(event.typename as string)}
+        subtitle={date}>
+        <EtherscanTransactionLink transactionHash={event.id.toString()}>
+          View on Etherscan 🔗
+        </EtherscanTransactionLink>
+        <DescriptionList {...props}>
+          <dt>date</dt>
+          <dd>{date}</dd>
+          {children}
+        </DescriptionList>
+      </Disclosure>
     </section>
   );
 };
