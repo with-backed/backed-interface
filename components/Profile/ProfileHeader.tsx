@@ -71,11 +71,13 @@ const headerInfo: HeaderInformation[] = [
 
 export function ProfileHeader({ address, loans }: ProfileHeaderProps) {
   const loansAsBorrower = useMemo(
-    () => loans.filter((l) => l.borrower === address),
+    () =>
+      loans.filter((l) => l.borrower.toLowerCase() === address.toLowerCase()),
     [loans, address],
   );
   const loansAsLender = useMemo(
-    () => loans.filter((l) => l.lender === address),
+    () =>
+      loans.filter((l) => l.lender?.toLowerCase() === address.toLowerCase()),
     [loans, address],
   );
 
