@@ -8,6 +8,7 @@ import { jsonRpcERC721Contract } from 'lib/contracts';
 import { Loan } from 'types/Loan';
 import React from 'react';
 import styles from './LoanTickets.module.css';
+import Link from 'next/link';
 
 type LoanTicketsProps = {
   loan: Loan;
@@ -31,7 +32,11 @@ function BorrowerColumn({ loan }: BorrowerColumnProps) {
       </OpenSeaAddressLink>
       <DescriptionList>
         <dt>Borrower</dt>
-        <dd title={loan.borrower}>{loan.borrower.slice(0, 9)}...</dd>
+        <dd title={loan.borrower}>
+          <Link href={`/profile/${loan.borrower}`}>
+            <a>{loan.borrower.slice(0, 9)}...</a>
+          </Link>
+        </dd>
         <dt>Current cost to repay</dt>
         <dd>{formattedTotalPayback}</dd>
       </DescriptionList>
@@ -71,7 +76,11 @@ function LenderColumn({ loan }: LenderColumnProps) {
       </OpenSeaAddressLink>
       <DescriptionList>
         <dt>Lender</dt>
-        <dd>{loan.lender.slice(0, 9)}...</dd>
+        <dd>
+          <Link href={`/profile/${loan.lender}`}>
+            <a>{loan.lender.slice(0, 9)}...</a>
+          </Link>
+        </dd>
         <dt>Interest Accrued to Date</dt>
         <dd>{formattedInterestAccrued}</dd>
       </DescriptionList>
