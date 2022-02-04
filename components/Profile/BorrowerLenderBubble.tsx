@@ -15,10 +15,7 @@ export function BorrowerLenderBubble({ address, borrower }: BubblesProps) {
   );
 
   return (
-    <div
-      className={`${styles.bubble} ${
-        borrower ? styles.borrowerBubble : styles.lenderBubble
-      }`}>
+    <span className={borrower ? styles.borrowerBubble : styles.lenderBubble}>
       {isConnectedUser && `You are the ${borrower ? 'borrower' : 'lender'}`}
       {!isConnectedUser && (
         <>
@@ -26,6 +23,6 @@ export function BorrowerLenderBubble({ address, borrower }: BubblesProps) {
           <span>{address.substring(0, 7)}</span>
         </>
       )}
-    </div>
+    </span>
   );
 }
