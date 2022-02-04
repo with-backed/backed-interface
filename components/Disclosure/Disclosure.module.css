@@ -1,0 +1,29 @@
+.disclosure {
+  color: var(--highlight-clickable-100);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.disclosure > svg {
+  stroke: var(--highlight-clickable-100);
+  transform: rotate(-90deg);
+}
+
+.opened {
+  composes: disclosure;
+  color: var(--highlight-visited-100);
+}
+
+.opened > svg {
+  stroke: var(--highlight-visited-100);
+}
+
+.currently-open {
+  composes: opened;
+}
+
+.currently-open > svg {
+  transform: rotate(0deg);
+}
