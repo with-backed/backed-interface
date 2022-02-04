@@ -32,32 +32,32 @@ export const CollateralInfo = ({
           </OpenSeaAddressLink>
         </dd>
 
-        <dt>ITEM&apos;S LAST SALE</dt>
+        <dt className={styles.label}>item&apos;s last sale</dt>
         <dd>
           {collateralSaleInfo.recentSale.price}{' '}
           {collateralSaleInfo.recentSale.paymentToken}
         </dd>
 
-        <dt>COLLECTION</dt>
+        <dt className={styles.label}>collection</dt>
         <dd>{loan.collateralName}</dd>
 
         <div className={styles.collectionInfoElement}>
-          <dt>ITEMS</dt>
+          <dt className={styles.label}>items</dt>
           <dd>{collateralSaleInfo.collectionStats.items}</dd>
         </div>
 
         <div className={styles.collectionInfoElement}>
-          <dt>FLOOR PRICE</dt>
+          <dt className={styles.label}>floor price</dt>
           <dd>{collateralSaleInfo.collectionStats.floor} ETH</dd>
         </div>
 
         <div className={styles.collectionInfoElement}>
-          <dt>OWNERS</dt>
+          <dt className={styles.label}>owners</dt>
           <dd>{collateralSaleInfo.collectionStats.owners}</dd>
         </div>
 
         <div className={styles.collectionInfoElement}>
-          <dt>VOLUME</dt>
+          <dt className={styles.label}>volume</dt>
           <dd>{collateralSaleInfo.collectionStats.volume} ETH</dd>
         </div>
       </DescriptionList>

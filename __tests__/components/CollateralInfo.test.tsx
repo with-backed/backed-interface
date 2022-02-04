@@ -32,18 +32,22 @@ const saleInfo: CollateralSaleInfo = {
 
 describe('CollateralInfo', () => {
   it('renders a Fieldset with a vertical description list with the right labels', () => {
-    const { getByText, container } = render(
+    const { getByText } = render(
       <CollateralInfo loan={loan} collateralSaleInfo={saleInfo} />,
     );
 
-    expect(container.querySelector('fieldset')).not.toBeNull();
-    expect(container.querySelector('.vertical')).not.toBeNull();
     getByText('View on OpenSea');
-    getByText("ITEM'S LAST SALE");
-    getByText('COLLECTION');
-    getByText('ITEMS');
-    getByText('FLOOR PRICE');
-    getByText('OWNERS');
-    getByText('VOLUME');
+    getByText("item's last sale");
+    getByText(`${recentSale.price} ${recentSale.paymentToken}`);
+    getByText('collection');
+    getByText(loan.collateralName);
+    getByText('items');
+    getByText(collectionStats.items);
+    getByText('floor price');
+    getByText(`${collectionStats.floor} ETH`);
+    getByText('owners');
+    getByText(collectionStats.owners);
+    getByText('volume');
+    getByText(`${collectionStats.volume} ETH`);
   });
 });
