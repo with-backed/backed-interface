@@ -4,6 +4,7 @@ import { OpenSeaAddressLink } from 'components/OpenSeaLink';
 import { Loan } from 'types/Loan';
 import React, { useMemo } from 'react';
 import { CollateralSaleInfo } from 'lib/loans/collateralSaleInfo';
+import styles from './CollateralInfo.module.css';
 
 type CollateralInfoProps = {
   loan: Loan;
@@ -31,17 +32,34 @@ export const CollateralInfo = ({
           </OpenSeaAddressLink>
         </dd>
 
-        <dt>Item&apos;s Last Sale</dt>
+        <dt className={styles.label}>item&apos;s last sale</dt>
         <dd>
           {collateralSaleInfo.recentSale.price}{' '}
           {collateralSaleInfo.recentSale.paymentToken}
         </dd>
 
-        <dt>Collection</dt>
+        <dt className={styles.label}>collection</dt>
         <dd>{loan.collateralName}</dd>
 
-        <dt>Collection Floor Price</dt>
-        <dd>{collateralSaleInfo.floorPrice} ETH</dd>
+        <div className={styles.collectionInfoElement}>
+          <dt className={styles.label}>items</dt>
+          <dd>{collateralSaleInfo.collectionStats.items}</dd>
+        </div>
+
+        <div className={styles.collectionInfoElement}>
+          <dt className={styles.label}>floor price</dt>
+          <dd>{collateralSaleInfo.collectionStats.floor} ETH</dd>
+        </div>
+
+        <div className={styles.collectionInfoElement}>
+          <dt className={styles.label}>owners</dt>
+          <dd>{collateralSaleInfo.collectionStats.owners}</dd>
+        </div>
+
+        <div className={styles.collectionInfoElement}>
+          <dt className={styles.label}>volume</dt>
+          <dd>{collateralSaleInfo.collectionStats.volume} ETH</dd>
+        </div>
       </DescriptionList>
     </Fieldset>
   );

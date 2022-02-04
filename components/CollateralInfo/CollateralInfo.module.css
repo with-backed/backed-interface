@@ -1,0 +1,8 @@
+.collectionInfoElement {
+    display: inline-block;
+    width: 50%;
+}
+
+.label {
+    text-transform: capitalize;
+}
