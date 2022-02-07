@@ -34,5 +34,5 @@ export function DisplayAddress({ address, useEns }: Address) {
     if (useEns) getEnsName();
   }, [address, useEns]);
 
-  return <a>{addr}</a>;
+  return <span>{addr}</span>;
 }
