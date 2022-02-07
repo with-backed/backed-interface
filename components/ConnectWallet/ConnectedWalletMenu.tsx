@@ -1,5 +1,6 @@
 import { Button, ButtonLink } from 'components/Button';
 import { useWeb3 } from 'hooks/useWeb3';
+import { lookupAddress } from 'lib/account';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styles from './ConnectWallet.module.css';
 
@@ -7,6 +8,7 @@ type ConnectedWalletMenuProps = {};
 
 export function ConnectedWalletMenu({}: ConnectedWalletMenuProps) {
   const { account, deactivate } = useWeb3();
+  const [ens, setEns] = useState<string | null>('');
   const [open, setOpen] = useState(false);
   const container = useRef<HTMLDivElement>(null);
 
@@ -31,6 +33,17 @@ export function ConnectedWalletMenu({}: ConnectedWalletMenuProps) {
     };
   }, [handleClick]);
 
+  useEffect(() => {
+    async function getEns() {
+      if (!account) return;
+
+      let ens = await lookupAddress(account);
+      setEns(ens);
+    }
+
+    getEns();
+  }, [account]);
+
   if (!account) {
     return null;
   }
@@ -41,7 +54,7 @@ export function ConnectedWalletMenu({}: ConnectedWalletMenuProps) {
         onClick={toggleOpen}
         kind="secondary"
         style={{ background: open ? 'var(--highlight-visited-10)' : '' }}>
-        🔓 {account.slice(0, 10)}
+        🔓 {ens ? ens : account.slice(0, 10)}
       </Button>
       <div className={styles.menu} style={{ display: open ? '' : 'none' }}>
         <ButtonLink href={`/profile/${account}`} kind="tertiary">
