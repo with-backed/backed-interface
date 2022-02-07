@@ -47,8 +47,3 @@ export function waitForApproval(account: string, contractAddress: string) {
     });
   });
 }
-
-export function lookupAddress(account: string) {
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  return provider.lookupAddress(account);
-}
