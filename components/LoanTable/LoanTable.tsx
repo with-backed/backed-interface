@@ -5,11 +5,11 @@ import { jsonRpcERC721Contract } from 'lib/contracts';
 import { secondsBigNumToDays } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
 import React, { useMemo } from 'react';
-import { Loan } from 'types/Loan';
+import { Loan as LoanType } from 'types/Loan';
 import styles from './LoanTable.module.css';
 
 type LoanTableProps = {
-  loans: Loan[];
+  loans: LoanType[];
 };
 
 export function LoanTable({ loans }: LoanTableProps) {
@@ -37,7 +37,7 @@ function Header() {
 }
 
 type LoanProps = {
-  loan: Loan;
+  loan: LoanType;
 };
 function Loan({ loan }: LoanProps) {
   const tokenSpec = useMemo(
