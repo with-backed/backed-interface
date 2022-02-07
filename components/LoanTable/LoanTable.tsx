@@ -25,12 +25,14 @@ export function LoanTable({ loans }: LoanTableProps) {
 
 function Header() {
   return (
-    <tr className={styles.header}>
-      <th>Open to Lend</th>
-      <th>Loan Amount</th>
-      <th>Duration</th>
-      <th>Rate/Return</th>
-    </tr>
+    <thead className={styles.header}>
+      <tr>
+        <th>Open to Lend</th>
+        <th>Loan Amount</th>
+        <th>Duration</th>
+        <th>Rate/Return</th>
+      </tr>
+    </thead>
   );
 }
 

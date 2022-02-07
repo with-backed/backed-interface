@@ -4,7 +4,7 @@
   border-collapse: collapse;
 }
 
-.header > th {
+.header th {
   text-align: left;
   font-weight: normal;
   text-transform: uppercase;
@@ -12,11 +12,11 @@
   padding: 1rem 0;
 }
 
-.header > th:first-child {
+.header th:first-child {
   padding-left: 1rem;
 }
 
-.header > th:last-child {
+.header th:last-child {
   padding-right: 1rem;
 }
 
