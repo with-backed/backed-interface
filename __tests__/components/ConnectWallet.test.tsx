@@ -92,7 +92,7 @@ describe('ConnectWallet', () => {
     });
     const { getByText } = render(<ConnectWallet />);
 
-    const menuButton = getByText('🔓 0xaddress');
+    const menuButton = getByText('0xaddr...ress');
 
     userEvent.click(menuButton);
 
