@@ -21,6 +21,10 @@ function shortenAddress(address: string) {
 export function DisplayAddress({ address, useEns }: Address) {
   const [addr, setAddr] = useState<string>(shortenAddress(address));
 
+  if (useEns === undefined) {
+    useEns = true;
+  }
+
   useEffect(() => {
     async function getEnsName() {
       let name = await addressToENS(address);
