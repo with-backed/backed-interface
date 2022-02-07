@@ -5,6 +5,7 @@ import { Loan as RawSubgraphLoan } from 'types/generated/graphql/nftLoans';
 import { ProfileHeader } from 'components/Profile/ProfileHeader';
 import { parseSubgraphLoan } from 'lib/loans/utils';
 import { ProfileLoans } from 'components/Profile/ProfileLoans';
+import { resolveEns } from 'lib/account';
 
 export type ProfilePageProps = {
   address: string;
@@ -14,7 +15,9 @@ export type ProfilePageProps = {
 export const getServerSideProps: GetServerSideProps<ProfilePageProps> = async (
   context,
 ) => {
-  const address = context.params?.address as string;
+  const _address = context.params?.address as string;
+
+  const address = (await resolveEns(_address)) || _address;
 
   const allLoansForAddress = await getAllActiveLoansForAddress(address);
 
