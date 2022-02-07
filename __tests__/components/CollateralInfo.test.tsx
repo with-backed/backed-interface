@@ -49,8 +49,6 @@ describe('CollateralInfo', () => {
       <CollateralInfo loan={loan} collateralSaleInfo={collateralSaleInfo} />,
     );
 
-    console.log({ collateralSaleInfo });
-
     getByText('View on OpenSea');
     getByText("item's last sale");
     getByText(
