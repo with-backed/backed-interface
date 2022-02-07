@@ -23,8 +23,13 @@ export function DisplayAddress({ address, useEns = true }: Address) {
 
   useEffect(() => {
     async function getEnsName() {
-      let name = await addressToENS(address);
-      if (name) setAddr(name);
+      try {
+        let name = await addressToENS(address);
+
+        if (name) setAddr(name);
+      } catch (error) {
+        console.log(error);
+      }
     }
 
     if (useEns) getEnsName();
