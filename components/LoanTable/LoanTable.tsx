@@ -5,7 +5,7 @@ import { jsonRpcERC721Contract } from 'lib/contracts';
 import { secondsBigNumToDays } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
 import React, { useMemo } from 'react';
-import { Loan } from 'types/generated/graphql/nftLoans';
+import { Loan } from 'types/Loan';
 import styles from './LoanTable.module.css';
 
 type LoanTableProps = {
@@ -17,7 +17,7 @@ export function LoanTable({ loans }: LoanTableProps) {
     <table className={styles.table}>
       <Header />
       {loans.map((loan) => {
-        return <Loan loan={loan} key={loan.id} />;
+        return <Loan loan={loan} key={loan.id.toString()} />;
       })}
     </table>
   );
@@ -48,8 +48,8 @@ function Loan({ loan }: LoanProps) {
   const { metadata, isLoading } = useTokenMetadata(tokenSpec);
 
   const loanAmount = useMemo(
-    () => ethers.utils.formatUnits(loan.loanAmount, loan.loanAssetDecimal),
-    [loan.loanAmount, loan.loanAssetDecimal],
+    () => ethers.utils.formatUnits(loan.loanAmount, loan.loanAssetDecimals),
+    [loan.loanAmount, loan.loanAssetDecimals],
   );
 
   const duration = useMemo(
