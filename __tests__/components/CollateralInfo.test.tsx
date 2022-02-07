@@ -2,6 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { CollateralInfo } from 'components/CollateralInfo';
 import {
+  CollectionStatistics,
   getFakeFloor,
   getFakeItemsAndOwners,
   getFakeVolume,
@@ -12,42 +13,58 @@ import { baseLoan } from 'lib/mockData';
 
 const loan = baseLoan;
 
-const [items, owners] = getFakeItemsAndOwners();
-const collectionStats = {
-  floor: getFakeFloor(),
-  items,
-  owners,
-  volume: getFakeVolume(),
-};
-
-const recentSale = generateFakeSaleForNFT(
-  baseLoan.collateralContractAddress,
-  baseLoan.collateralTokenId.toString(),
-);
-
-const saleInfo: CollateralSaleInfo = {
-  recentSale,
-  collectionStats,
-};
-
 describe('CollateralInfo', () => {
-  it('renders a Fieldset with a vertical description list with the right labels', () => {
-    const { getByText } = render(
-      <CollateralInfo loan={loan} collateralSaleInfo={saleInfo} />,
+  const getCollateralSaleInfo = (): CollateralSaleInfo => {
+    const [items, owners] = getFakeItemsAndOwners();
+    const floor = getFakeFloor();
+
+    // make sure randomly generated floor and volume are not equal, since this would cause
+    // getByText to fail, since this assertion expects exactly one node to have this text
+    let volume = getFakeVolume();
+    while (volume == floor) {
+      volume = getFakeVolume();
+    }
+
+    const collectionStats = {
+      floor,
+      items,
+      owners,
+      volume,
+    };
+
+    const recentSale = generateFakeSaleForNFT(
+      baseLoan.collateralContractAddress,
+      baseLoan.collateralTokenId.toString(),
     );
+
+    return {
+      recentSale,
+      collectionStats,
+    };
+  };
+
+  it('renders a Fieldset with a vertical description list with the right labels', () => {
+    const collateralSaleInfo = getCollateralSaleInfo();
+    const { getByText } = render(
+      <CollateralInfo loan={loan} collateralSaleInfo={collateralSaleInfo} />,
+    );
+
+    console.log({ collateralSaleInfo });
 
     getByText('View on OpenSea');
     getByText("item's last sale");
-    getByText(`${recentSale.price} ${recentSale.paymentToken}`);
+    getByText(
+      `${collateralSaleInfo.recentSale.price} ${collateralSaleInfo.recentSale.paymentToken}`,
+    );
     getByText('collection');
     getByText(loan.collateralName);
     getByText('items');
-    getByText(collectionStats.items);
+    getByText(collateralSaleInfo.collectionStats.items);
     getByText('floor price');
-    getByText(`${collectionStats.floor} ETH`);
+    getByText(`${collateralSaleInfo.collectionStats.floor} ETH`);
     getByText('owners');
-    getByText(collectionStats.owners);
+    getByText(collateralSaleInfo.collectionStats.owners);
     getByText('volume');
-    getByText(`${collectionStats.volume} ETH`);
+    getByText(`${collateralSaleInfo.collectionStats.volume} ETH`);
   });
 });
