@@ -13,6 +13,11 @@
   background: var(--neutral-5);
 }
 
+.smallback {
+  composes: fallback;
+  font-size: calc(var(--max-width) / 40);
+}
+
 .fallback > span {
   opacity: 20%;
 }

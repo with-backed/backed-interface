@@ -9,12 +9,14 @@ interface NFTMediaProps {
   collateralAddress: string;
   collateralTokenID: ethers.BigNumber;
   forceImage?: boolean;
+  small?: boolean;
 }
 
 export function NFTMedia({
   collateralAddress,
   collateralTokenID,
   forceImage = false,
+  small = false,
 }: NFTMediaProps) {
   const [nftInfo, setNFTInfo] = useState<GetNFTInfoResponse | null>(null);
 
@@ -34,7 +36,7 @@ export function NFTMedia({
   }, [load]);
 
   if (!nftInfo) {
-    return <Fallback />;
+    return <Fallback small={small} />;
   }
 
   return (
