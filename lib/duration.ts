@@ -2,11 +2,10 @@ import { ethers } from 'ethers';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { SECONDS_IN_A_DAY } from './constants';
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
-
-const SECONDS_IN_DAY = 60 * 60 * 24;
 
 export function humanizedDuration(
   duration: number,
@@ -16,15 +15,15 @@ export function humanizedDuration(
 }
 
 export function secondsToDays(seconds: number) {
-  return seconds / SECONDS_IN_DAY;
+  return seconds / SECONDS_IN_A_DAY;
 }
 
 export function secondsBigNumToDays(seconds: ethers.BigNumber) {
-  return seconds.toNumber() / SECONDS_IN_DAY;
+  return seconds.toNumber() / SECONDS_IN_A_DAY;
 }
 
 export function daysToSecondsBigNum(days: number) {
-  return ethers.BigNumber.from(days * SECONDS_IN_DAY);
+  return ethers.BigNumber.from(days * SECONDS_IN_A_DAY);
 }
 
 export const getCurrentUnixTime = (): ethers.BigNumber =>
