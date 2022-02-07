@@ -18,12 +18,8 @@ function shortenAddress(address: string) {
   );
 }
 
-export function DisplayAddress({ address, useEns }: Address) {
+export function DisplayAddress({ address, useEns = true }: Address) {
   const [addr, setAddr] = useState<string>(shortenAddress(address));
-
-  if (useEns === undefined) {
-    useEns = true;
-  }
 
   useEffect(() => {
     async function getEnsName() {
