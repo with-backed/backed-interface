@@ -4,7 +4,6 @@ import { groupBy } from 'lodash';
 import { Loan } from 'types/Loan';
 
 export function getActiveLoanCount(loans: Loan[]): number {
-  console.log({ loans });
   return loans.filter((l) => !l.closed).length;
 }
 

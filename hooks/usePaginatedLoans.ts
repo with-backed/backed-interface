@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import {
   Loan as SubgraphLoan,
   Loan_OrderBy,
