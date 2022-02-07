@@ -4,6 +4,7 @@ import styles from './Button.module.css';
 
 export type ButtonKind =
   | 'primary'
+  | 'primary-dark-bg'
   | 'secondary'
   | 'tertiary'
   | 'highlight'

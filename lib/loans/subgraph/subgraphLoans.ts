@@ -27,6 +27,7 @@ export default async function subgraphLoans(
   first: number,
   page: number = 1,
   sort: Loan_OrderBy = Loan_OrderBy.CreatedAtTimestamp,
+  sortDirection: OrderDirection = OrderDirection.Desc,
 ): Promise<Loan[]> {
   const whereFilter: Loan_Filter = { closed: false };
   const queryArgs: QueryLoansArgs = {
@@ -34,7 +35,7 @@ export default async function subgraphLoans(
     first,
     skip: (page - 1) * first,
     orderBy: sort,
-    orderDirection: OrderDirection.Desc,
+    orderDirection: sortDirection,
   };
 
   const {
@@ -64,6 +65,7 @@ const searchQuery = (
     $durationSecondsMin: BigInt,
     $durationSecondsMax: BigInt,
     $selectedSort: String,
+    $sortDirection: String,
     $first: Int, 
     $skip: Int,
   ) {
@@ -96,7 +98,7 @@ const searchQuery = (
         }
       },
       orderBy: $selectedSort,
-      orderDirection: desc,
+      orderDirection: $sortDirection,
       first: $first, 
       skip: $skip,
     ) {
@@ -124,6 +126,7 @@ export async function searchLoans(
   loanDurationMin: number,
   loanDurationMax: number,
   selectedSort: Loan_OrderBy,
+  sortDirection: 'desc' | 'asc',
   first: number,
   page: number = 1,
 ): Promise<Loan[]> {
@@ -151,6 +154,7 @@ export async function searchLoans(
         durationSecondsMin: daysToSecondsBigNum(loanDurationMin).toString(),
         durationSecondsMax: daysToSecondsBigNum(loanDurationMax).toString(),
         selectedSort,
+        sortDirection,
         first,
         skip: (page - 1) * first,
       },

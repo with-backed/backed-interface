@@ -5,6 +5,7 @@ import {
 } from 'types/generated/graphql/nftLoans';
 import useSWRInfinite from 'swr/infinite';
 import { useOnScreen } from './useOnScreenRef';
+import { SortOptionValue } from 'components/AdvancedSearch/SortDropdown';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -12,7 +13,7 @@ export function usePaginatedLoans(
   url: string,
   ref: any,
   pageSize: number,
-  selectedSort: Loan_OrderBy | undefined,
+  selectedSort: SortOptionValue | undefined,
   initialLoans: SubgraphLoan[] = [],
   skipQuery: boolean = false,
 ) {
@@ -21,8 +22,8 @@ export function usePaginatedLoans(
   const { data, error, size, setSize } = useSWRInfinite(
     (index) =>
       `${url}limit=${pageSize}&page=${index + 1}&sort=${
-        selectedSort || Loan_OrderBy.CreatedAtTimestamp
-      }`,
+        selectedSort?.field || Loan_OrderBy.CreatedAtTimestamp
+      }&sortDirection=${selectedSort?.direction || 'desc'}`,
     fetcher,
   );
 
