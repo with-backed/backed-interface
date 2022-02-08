@@ -18,9 +18,11 @@ export function LoanTable({ loans }: LoanTableProps) {
   return (
     <table className={styles.table}>
       <Header />
-      {loans.map((loan) => {
-        return <Loan loan={loan} key={loan.id.toString()} />;
-      })}
+      <tbody>
+        {loans.map((loan) => {
+          return <Loan loan={loan} key={loan.id.toString()} />;
+        })}
+      </tbody>
     </table>
   );
 }

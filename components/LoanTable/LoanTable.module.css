@@ -21,7 +21,7 @@
   padding-right: 1rem;
 }
 
-.table tr:hover:not(:first-child) {
+.table > tbody > tr:hover {
   background-color: var(--highlight-clickable-5);
 }
 
