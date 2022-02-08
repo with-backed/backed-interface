@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import React, { useEffect, useState } from 'react';
 
-interface Address {
+interface DisplayAddressProps {
   address: string;
   useEns?: boolean;
 }
@@ -18,7 +18,10 @@ function shortenAddress(address: string) {
   );
 }
 
-export function DisplayAddress({ address, useEns = true }: Address) {
+export function DisplayAddress({
+  address,
+  useEns = true,
+}: DisplayAddressProps) {
   const [addr, setAddr] = useState<string>(shortenAddress(address));
 
   useEffect(() => {
@@ -28,7 +31,7 @@ export function DisplayAddress({ address, useEns = true }: Address) {
 
         if (name) setAddr(name);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }
 

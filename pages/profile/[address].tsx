@@ -15,9 +15,9 @@ export type ProfilePageProps = {
 export const getServerSideProps: GetServerSideProps<ProfilePageProps> = async (
   context,
 ) => {
-  const _address = context.params?.address as string;
+  const rawAddress = context.params?.address as string;
 
-  const address = (await resolveEns(_address)) || _address;
+  const address = (await resolveEns(rawAddress)) || rawAddress;
 
   const allLoansForAddress = await getAllActiveLoansForAddress(address);
 
