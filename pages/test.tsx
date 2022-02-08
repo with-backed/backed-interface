@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { ethers } from 'ethers';
 import { MockDAI__factory, MockPUNK__factory } from 'types/generated/abis';
-import { TransactionButton } from 'components/ticketPage/TransactionButton';
 import { Fieldset } from 'components/Fieldset';
 import { ConnectWallet } from 'components/ConnectWallet';
 import { useWeb3 } from 'hooks/useWeb3';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
+import { TransactionButton } from 'components/Button';
 
 export default function Test() {
   const { account } = useWeb3();
