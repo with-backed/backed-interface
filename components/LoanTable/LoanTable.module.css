@@ -2,6 +2,7 @@
   width: 100%;
   background: var(--background-white);
   border-collapse: collapse;
+  grid-column: 1 / -1;
 }
 
 .header th {
@@ -21,11 +22,11 @@
 }
 
 .table tr:nth-child(even) {
-  background-color: var(--highlight-clickable-5);
+  background-color: var(--neutral-5);
 }
 
 .table tr:hover:not(:first-child) {
-  background-color: var(--highlight-clickable-20);
+  background-color: var(--highlight-clickable-5);
 }
 
 .table td {
