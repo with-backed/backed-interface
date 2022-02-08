@@ -67,10 +67,7 @@ function LoanStats({ address, loans, kind }: LoanStatsProps) {
   }, [loans]);
 
   useEffect(() => {
-    const timeOutId: NodeJS.Timeout = setInterval(
-      () => refreshInterest(),
-      1000,
-    );
+    const timeOutId = setInterval(() => refreshInterest(), 1000);
     return () => clearInterval(timeOutId);
   }, [refreshInterest]);
 
