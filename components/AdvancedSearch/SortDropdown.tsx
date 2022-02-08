@@ -20,6 +20,7 @@ export default function SortDropdown({ setSelectedSort }: SortDropdownProps) {
         <Select
           onChange={(option: any) => setSelectedSort(option.value)}
           options={sortOptions}
+          color="light"
         />
       </div>
     </div>

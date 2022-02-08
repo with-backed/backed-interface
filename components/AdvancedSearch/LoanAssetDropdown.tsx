@@ -31,6 +31,7 @@ export default function LoanAssetDropdown({
             value: address,
             label: symbol,
           }))}
+          color="light"
         />
       </div>
     </div>
