@@ -126,7 +126,7 @@ export async function searchLoans(
   loanDurationMin: number,
   loanDurationMax: number,
   selectedSort: Loan_OrderBy,
-  sortDirection: 'desc' | 'asc',
+  sortDirection: OrderDirection,
   first: number,
   page: number = 1,
 ): Promise<Loan[]> {

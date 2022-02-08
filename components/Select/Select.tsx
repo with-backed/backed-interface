@@ -27,17 +27,11 @@ export function Select<
   const controlBackground =
     color === 'light'
       ? 'var(--background-white)'
-      : 'var(--background-radial-gradient)';
+      : 'var(--highlight-active-10)';
   return (
     <ReactSelect
       openMenuOnFocus
       styles={{
-        container: (provided, state) => ({
-          ...provided,
-          filter: state.isFocused
-            ? 'drop-shadow(0px 0px 15px rgba(0, 0, 0, 0.1))'
-            : 'none',
-        }),
         control: (provided, state) => ({
           ...provided,
           background: state.isFocused
