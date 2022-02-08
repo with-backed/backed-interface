@@ -1,125 +1,125 @@
 .wrapper {
-    width: 100%;
-    padding: 35px 50px;
-    box-sizing: border-box;
+  grid-column: span 12;
+  padding-top: var(--gap);
+  box-sizing: border-box;
 }
 
 .header {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    margin-bottom: var(--gap);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: var(--gap);
 }
 
 .searchButton {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .sortDropdown {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .sortDropdown > div {
-    margin-right: 8px;
+  margin-right: 8px;
 }
 
 .sortSelectWrapper > div {
-    min-width: 220px;
+  min-width: 220px;
 }
 
 .searchOpen {
-    transition-timing-function: cubic-bezier(0.895, 0.03, 0.685, 0.22);
-    transition-duration: 0.5s;
-    transition-property: max-height;
-    max-height: 2000px;
+  transition-timing-function: cubic-bezier(0.895, 0.03, 0.685, 0.22);
+  transition-duration: 0.5s;
+  transition-property: max-height;
+  max-height: 2000px;
 }
-  
+
 .searchClosed {
-    max-height: 0;
-    overflow: hidden;
-    text-transform: cubic-bezier(0.95, 0.05, 0.795, 0.035);
-    transition-duration: 0.5s;
-    transition-property: max-height;
+  max-height: 0;
+  overflow: hidden;
+  text-transform: cubic-bezier(0.95, 0.05, 0.795, 0.035);
+  transition-duration: 0.5s;
+  transition-property: max-height;
 }
 
 .inputGroupWrapperOpen {
-    opacity: 1;
-    transform: translateY(0);
-    transition-delay: 0.2s;
-    transition-timing-function: ease-in-out;
-    transition-duration: 0.2s;
-    transition-property: opacity, transform;
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.2s;
+  transition-timing-function: ease-in-out;
+  transition-duration: 0.2s;
+  transition-property: opacity, transform;
 }
 
 .loanAssetDropdownOpen {
-    z-index: 1;
+  z-index: 1;
 }
-  
+
 .inputGroupWrapperClosed {
-    opacity: 0;
-    transform: translateY(-1rem);
-    transition-timing-function: linear, ease;
-    transition-duration: 0.1s;
-    transition-property: opacity, transform;
-    transition-delay: 0.5s;
+  opacity: 0;
+  transform: translateY(-1rem);
+  transition-timing-function: linear, ease;
+  transition-duration: 0.1s;
+  transition-property: opacity, transform;
+  transition-delay: 0.5s;
 }
 
 .inputWrapper {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .inputWrapper > span {
-    width: 160px;
+  width: 160px;
 }
 
 .inputGroup {
-    width: 60%;
+  width: 60%;
 }
 
 .numericInputGroup {
-    width: auto;
+  width: auto;
 }
 
 .loanAssetDropdown > div {
-    width: 300px;
+  width: 300px;
 }
 
 .numericInputGroup input {
-    width: 100px;
+  width: 100px;
 }
 
 .errors {
-    margin-left: 10px;
-    text-align: center;
-    font-family: var(--sans);
-    border-radius: var(--border-radius-large);
-    box-shadow: var(--box-shadow-red);
-    padding: 0.9rem;
+  margin-left: 10px;
+  text-align: center;
+  font-family: var(--sans);
+  border-radius: var(--border-radius-large);
+  box-shadow: var(--box-shadow-red);
+  padding: 0.9rem;
 }
 
 .loanStatusButtons {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .buttonWrapper {
-    margin: 0px 10px;
-    font-size: var(--font-medium);
+  margin: 0px 10px;
+  font-size: var(--font-medium);
 }
 
 .buttonWrapper:first-child {
-    margin-left: 0px;
+  margin-left: 0px;
 }
 
 .to {
-    margin: 0 6px;
+  margin: 0 6px;
 }
