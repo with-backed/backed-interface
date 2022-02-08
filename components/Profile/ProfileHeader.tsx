@@ -1,7 +1,7 @@
+import { DescriptionList } from 'components/DescriptionList';
 import {
   getActiveLoanCount,
   getClosedLoanCount,
-  getNextLoanDue,
   getAllInterestAmounts,
   getAllPrincipalAmounts,
 } from 'lib/loans/profileHeaderMethods';
@@ -16,86 +16,79 @@ type ProfileHeaderProps = {
   loans: Loan[];
 };
 
-type HeaderInformation = {
-  Label: ({ borrower }: { address?: string; borrower: boolean }) => JSX.Element;
-  Data: ({ loans }: { loans: Loan[] }) => JSX.Element;
+type LoanStatsProps = {
+  address: string;
+  loans: Loan[];
+  kind: 'borrower' | 'lender';
 };
-
-const headerInfo: HeaderInformation[] = [
-  {
-    Label: ({ borrower, address }) => (
-      <BorrowerLenderBubble address={address || ''} borrower={borrower} />
-    ),
-    Data: ({ loans }): JSX.Element => (
-      <div>
-        {getActiveLoanCount(loans)} Active; {getClosedLoanCount(loans)} Closed
+function LoanStats({ address, loans, kind }: LoanStatsProps) {
+  const numActiveLoans = useMemo(() => getActiveLoanCount(loans), [loans]);
+  const numClosedLoans = useMemo(() => getClosedLoanCount(loans), [loans]);
+  const principalLabel = useMemo(
+    () =>
+      kind === 'borrower' ? 'Total Owed Principal' : 'Outstanding Principal',
+    [kind],
+  );
+  const principalAmounts = useMemo(() => {
+    return getAllPrincipalAmounts(loans).map((amount, i, arr) => (
+      <div key={amount.symbol} className={styles.amount}>
+        {amount.nominal} {amount.symbol}
+        {i !== arr.length - 1 && ';'}
       </div>
-    ),
-  },
-  {
-    Label: () => <div>Next Loan Due</div>,
-    Data: ({ loans }): JSX.Element => <NextLoanDueCountdown loans={loans} />,
-  },
-  {
-    Label: ({ borrower }) => (
-      <div>{borrower ? 'Total Owed Principal' : 'Outstanding Principal'}</div>
-    ),
-    Data: ({ loans }): JSX.Element => (
-      <div className={styles.amountsWrapper}>
-        {getAllPrincipalAmounts(loans).map((amount, i, arr) => (
-          <div key={i} className={styles.amount}>
-            {amount.nominal} {amount.symbol}
-            {i !== arr.length - 1 && ';'}
-          </div>
-        ))}
+    ));
+  }, [loans]);
+  const interestLabel = useMemo(
+    () =>
+      kind === 'borrower' ? 'Total Owed Interest' : 'Total Accrued Interest',
+    [kind],
+  );
+  const interestAmounts = useMemo(() => {
+    return getAllInterestAmounts(loans).map((amount, i, arr) => (
+      <div key={amount.symbol} className={styles.amount}>
+        {amount.nominal} {amount.symbol}
+        {i !== arr.length - 1 && ';'}
       </div>
-    ),
-  },
-  {
-    Label: ({ borrower }) => (
-      <div>{borrower ? 'Total Owed Interest' : 'Total Accrued Interest'}</div>
-    ),
-    Data: ({ loans }): JSX.Element => (
-      <div className={styles.amountsWrapper}>
-        {getAllInterestAmounts(loans).map((amount, i, arr) => (
-          <div key={i} className={styles.amount}>
-            {' '}
-            {amount.nominal} {amount.symbol}
-            {i !== arr.length - 1 && ';'}
-          </div>
-        ))}
-      </div>
-    ),
-  },
-];
+    ));
+  }, [loans]);
+  return (
+    <DescriptionList orientation="horizontal">
+      <dt>
+        <BorrowerLenderBubble
+          address={address || ''}
+          borrower={kind === 'borrower'}
+        />
+      </dt>
+      <dd>
+        {numActiveLoans} Active; {numClosedLoans} Closed
+      </dd>
+      <dt>Next Loan Due</dt>
+      <dd>
+        <NextLoanDueCountdown loans={loans} />
+      </dd>
+      <dt>{principalLabel}</dt>
+      <dd>{principalAmounts}</dd>
+      <dt>{interestLabel}</dt>
+      <dd>{interestAmounts}</dd>
+    </DescriptionList>
+  );
+}
 
 export function ProfileHeader({ address, loans }: ProfileHeaderProps) {
   const loansAsBorrower = useMemo(
-    () => loans.filter((l) => l.borrower === address),
+    () =>
+      loans.filter((l) => l.borrower.toLowerCase() === address.toLowerCase()),
     [loans, address],
   );
   const loansAsLender = useMemo(
-    () => loans.filter((l) => l.lender === address),
+    () =>
+      loans.filter((l) => l.lender?.toLowerCase() === address.toLowerCase()),
     [loans, address],
   );
 
   return (
-    <div className={styles.profileHeaderWrapper}>
-      {[loansAsBorrower, loansAsLender].map((loans, index) => (
-        <div className={styles.profileHeaderRows} key={index}>
-          {headerInfo.map(({ Label, Data }, inner) => (
-            <div className={styles.headerRow} key={inner}>
-              <div className={styles.leftSide}>
-                <Label address={address} borrower={index === 0} />
-              </div>
-              <div className={styles.gutter} />
-              <div className={styles.rightSide}>
-                <Data loans={loans} />
-              </div>
-            </div>
-          ))}
-        </div>
-      ))}
+    <div className={styles['profile-header-wrapper']}>
+      <LoanStats address={address} loans={loansAsBorrower} kind="borrower" />
+      <LoanStats address={address} loans={loansAsLender} kind="lender" />
     </div>
   );
 }

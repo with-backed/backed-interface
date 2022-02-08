@@ -1,5 +1,5 @@
 import { GetServerSideProps } from 'next';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { getAllActiveLoansForAddress } from 'lib/loans/subgraph/getAllLoansEventsForAddress';
 import { Loan as RawSubgraphLoan } from 'types/generated/graphql/nftLoans';
 import { ProfileHeader } from 'components/Profile/ProfileHeader';
@@ -27,16 +27,11 @@ export const getServerSideProps: GetServerSideProps<ProfilePageProps> = async (
 };
 
 export default function Profile({ address, loans }: ProfilePageProps) {
+  const parsedLoans = useMemo(() => loans.map(parseSubgraphLoan), [loans]);
   return (
     <>
-      <ProfileHeader
-        address={address}
-        loans={loans.map((l) => parseSubgraphLoan(l))}
-      />
-      <ProfileLoans
-        address={address}
-        loans={loans.map((l) => parseSubgraphLoan(l))}
-      />
+      <ProfileHeader address={address} loans={parsedLoans} />
+      <ProfileLoans address={address} loans={parsedLoans} />
     </>
   );
 }

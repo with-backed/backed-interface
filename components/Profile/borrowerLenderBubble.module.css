@@ -1,19 +1,21 @@
 .bubble {
-    text-transform: uppercase;
-    color: black;
-    font-size: var(--font-small);
-    padding: 4px 10px;
-    border-radius: var(--border-radius-small);
+  text-transform: uppercase;
+  color: black;
+  font-size: var(--font-small);
+  padding: 4px 10px;
+  border-radius: var(--border-radius-small);
 }
 
 .bubble > span {
-    text-transform: lowercase;
+  text-transform: lowercase;
 }
 
 .borrowerBubble {
-    background: var(--highlight-active-10);
+  composes: bubble;
+  background: var(--highlight-active-10);
 }
 
 .lenderBubble {
-    background: var(--neutral-30);
+  composes: bubble;
+  background: var(--neutral-30);
 }

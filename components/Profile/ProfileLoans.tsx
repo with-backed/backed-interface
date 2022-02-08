@@ -10,16 +10,14 @@ type ProfileLoansProps = {
 
 export function ProfileLoans({ address, loans }: ProfileLoansProps) {
   return (
-    <div className={styles.threeColumnWrapper}>
-      <ThreeColumn>
-        {loans.map((loan) => (
-          <LoanCard
-            key={loan.id.toString()}
-            loan={loan}
-            selectedAddress={address}
-          />
-        ))}
-      </ThreeColumn>
+    <div className={styles['three-column-wrapper']}>
+      {loans.map((loan) => (
+        <LoanCard
+          key={loan.id.toString()}
+          loan={loan}
+          selectedAddress={address}
+        />
+      ))}
     </div>
   );
 }
