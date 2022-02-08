@@ -47,3 +47,11 @@ export function waitForApproval(account: string, contractAddress: string) {
     });
   });
 }
+
+export async function resolveEns(address: string) {
+  const provider = new ethers.providers.JsonRpcProvider(
+    process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
+  );
+
+  return provider.resolveName(address);
+}

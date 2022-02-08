@@ -1,4 +1,5 @@
 import { Button, ButtonLink } from 'components/Button';
+import { DisplayAddress } from 'components/DisplayAddress';
 import { useWeb3 } from 'hooks/useWeb3';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styles from './ConnectWallet.module.css';
@@ -41,7 +42,7 @@ export function ConnectedWalletMenu({}: ConnectedWalletMenuProps) {
         onClick={toggleOpen}
         kind="secondary"
         style={{ background: open ? 'var(--highlight-visited-10)' : '' }}>
-        🔓 {account.slice(0, 10)}
+        🔓 <DisplayAddress address={account} />
       </Button>
       <div className={styles.menu} style={{ display: open ? '' : 'none' }}>
         <ButtonLink href={`/profile/${account}`} kind="tertiary">

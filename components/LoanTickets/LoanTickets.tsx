@@ -3,6 +3,7 @@ import { Fieldset } from 'components/Fieldset';
 import { Fallback } from 'components/Media/Fallback';
 import { OpenSeaAddressLink } from 'components/OpenSeaLink';
 import { PawnLoanArt, PawnTicketArt } from 'components/ticketPage/PawnArt';
+import { DisplayAddress } from 'components/DisplayAddress';
 import { useLoanDetails } from 'hooks/useLoanDetails';
 import { jsonRpcERC721Contract } from 'lib/contracts';
 import { Loan } from 'types/Loan';
@@ -34,7 +35,9 @@ function BorrowerColumn({ loan }: BorrowerColumnProps) {
         <dt>Borrower</dt>
         <dd title={loan.borrower}>
           <Link href={`/profile/${loan.borrower}`}>
-            <a>{loan.borrower.slice(0, 9)}...</a>
+            <a>
+              <DisplayAddress address={loan.borrower} />
+            </a>
           </Link>
         </dd>
         <dt>Current cost to repay</dt>
@@ -78,7 +81,9 @@ function LenderColumn({ loan }: LenderColumnProps) {
         <dt>Lender</dt>
         <dd>
           <Link href={`/profile/${loan.lender}`}>
-            <a>{loan.lender.slice(0, 9)}...</a>
+            <a>
+              <DisplayAddress address={loan.lender} />
+            </a>
           </Link>
         </dd>
         <dt>Interest Accrued to Date</dt>

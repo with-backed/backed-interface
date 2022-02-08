@@ -7,6 +7,7 @@ import { Loan } from 'types/Loan';
 import { DescriptionList } from 'components/DescriptionList';
 import type * as Event from 'types/Event';
 import { Disclosure } from 'components/Disclosure';
+import { DisplayAddress } from 'components/DisplayAddress';
 
 const eventDetailComponents = {
   BuyoutEvent,
@@ -90,7 +91,9 @@ function CreateEvent({
   return (
     <EventDetailList event={event}>
       <dt>minter</dt>
-      <dd>{minter.slice(0, 10)}...</dd>
+      <dd>
+        <DisplayAddress address={minter} />
+      </dd>
       <dt>max interest rate</dt>
       <dd>{formattedMaxInterestRate}%</dd>
       <dt>minimum loan amount</dt>
@@ -125,7 +128,9 @@ function LendEvent({
   return (
     <EventDetailList event={event}>
       <dt>underwriter</dt>
-      <dd> {underwriter?.slice(0, 10)}...</dd>
+      <dd>
+        <DisplayAddress address={underwriter} />
+      </dd>
       <dt>interest rate</dt>
       <dd>{formattedInterestRate}%</dd>
       <dt>loan amount</dt>
@@ -158,9 +163,13 @@ function BuyoutEvent({
   return (
     <EventDetailList event={event}>
       <dt>new underwriter</dt>
-      <dd>{underwriter.slice(0, 10)}...</dd>
+      <dd>
+        <DisplayAddress address={underwriter} />
+      </dd>
       <dt>bought-out underwriter</dt>
-      <dd>{replacedLoanOwner.slice(0, 10)}...</dd>
+      <dd>
+        <DisplayAddress address={replacedLoanOwner} />
+      </dd>
       <dt>interest paid</dt>
       <dd>
         {formattedInterestPaid} {loanAssetSymbol}
@@ -192,9 +201,13 @@ function RepaymentEvent({
   return (
     <EventDetailList event={event}>
       <dt>repayer</dt>
-      <dd>{repayer.slice(0, 10)}...</dd>
+      <dd>
+        <DisplayAddress address={repayer} />
+      </dd>
       <dt>paid to</dt>
-      <dd>{loanOwner.slice(0, 10)}...</dd>
+      <dd>
+        <DisplayAddress address={loanOwner} />
+      </dd>
       <dt>interest earned</dt>
       <dd>
         {formattedInterestEarned} {loanAssetSymbol}
