@@ -25,16 +25,6 @@ type ERC20Amount = {
   symbol: string;
 };
 
-type ERC20InterestComponent = {
-  symbol: string;
-  loanAmount: ethers.BigNumber;
-  lastAccumulatedTimestamp: ethers.BigNumber;
-  perSecondInterestRate: ethers.BigNumber;
-  accumulatedInterest: ethers.BigNumber;
-};
-
-function getInterestComponents(loans: Loan[]): ERC20InterestComponent[] {}
-
 function getSummedFieldByERC20(
   loans: Loan[],
   selector: (loan: Loan) => ethers.BigNumber,
