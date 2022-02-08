@@ -50,7 +50,8 @@ function Loan({ loan }: LoanProps) {
   );
   const { metadata, isLoading } = useTokenMetadata(tokenSpec);
 
-  const { formattedEstimatedPaybackAtMaturity } = useLoanDetails(loan);
+  const { formattedEstimatedPaybackAtMaturity, formattedTimeRemaining } =
+    useLoanDetails(loan);
 
   const loanAmount = useMemo(
     () =>
@@ -81,7 +82,7 @@ function Loan({ loan }: LoanProps) {
           forceImage
           small
         />
-        <div className={styles['name-and-collection']}>
+        <div className={styles['field-and-subfield']}>
           <span>{isLoading ? '---' : metadata?.name}</span>
           <span>{loan.collateralName}</span>
         </div>
@@ -89,9 +90,18 @@ function Loan({ loan }: LoanProps) {
       <td className={styles.right}>
         {loanAmount} {loan.loanAssetSymbol}
       </td>
-      <td className={styles.right}>{duration} Days</td>
-      <td>
-        <div className={styles.rate}>
+      <td className={styles.right}>
+        <div className={styles['field-and-subfield']}>
+          <span>{duration} Days</span>
+          <span>
+            {formattedTimeRemaining === '--'
+              ? 'not begun'
+              : `${formattedTimeRemaining} left`}
+          </span>
+        </div>
+      </td>
+      <td className={styles.right}>
+        <div className={styles['field-and-subfield']}>
           <span>{rate} %</span>
           <span>{formattedEstimatedPaybackAtMaturity}</span>
         </div>

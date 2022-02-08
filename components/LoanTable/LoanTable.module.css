@@ -44,13 +44,13 @@
   gap: 1rem;
 }
 
-.name-and-collection {
+.field-and-subfield {
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-.name-and-collection > span:last-child {
+.field-and-subfield > span:last-child {
   text-transform: uppercase;
   font-size: var(--font-small);
 }
