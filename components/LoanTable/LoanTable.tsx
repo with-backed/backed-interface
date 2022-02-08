@@ -3,8 +3,9 @@ import { ethers } from 'ethers';
 import { useLoanDetails } from 'hooks/useLoanDetails';
 import { useTokenMetadata } from 'hooks/useTokenMetadata';
 import { jsonRpcERC721Contract } from 'lib/contracts';
-import { secondsBigNumToDays } from 'lib/duration';
+import { humanizedDuration, secondsBigNumToDays } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
+import Link from 'next/link';
 import React, { useMemo } from 'react';
 import { Loan as LoanType } from 'types/Loan';
 import styles from './LoanTable.module.css';
@@ -75,24 +76,30 @@ function Loan({ loan }: LoanProps) {
   );
   return (
     <tr>
-      <td className={styles['name-container']}>
-        <NFTMedia
-          collateralAddress={loan.collateralContractAddress}
-          collateralTokenID={loan.collateralTokenId}
-          forceImage
-          small
-        />
-        <div className={styles['field-and-subfield']}>
-          <span>{isLoading ? '---' : metadata?.name}</span>
-          <span>{loan.collateralName}</span>
-        </div>
+      <td>
+        <Link href={`/loans/${loan.id.toString()}`}>
+          <a className={styles['name-container']}>
+            <NFTMedia
+              collateralAddress={loan.collateralContractAddress}
+              collateralTokenID={loan.collateralTokenId}
+              forceImage
+              small
+            />
+            <div className={styles['field-and-subfield']}>
+              <span>{isLoading ? '---' : metadata?.name}</span>
+              <span>{loan.collateralName}</span>
+            </div>
+          </a>
+        </Link>
       </td>
       <td className={styles.right}>
         {loanAmount} {loan.loanAssetSymbol}
       </td>
       <td className={styles.right}>
         <div className={styles['field-and-subfield']}>
-          <span>{duration} Days</span>
+          <span>
+            {duration} {duration === 1 ? 'Day' : 'Days'}
+          </span>
           <span>
             {formattedTimeRemaining === '--'
               ? 'not begun'
