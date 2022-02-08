@@ -46,10 +46,10 @@ type LoanProps = {
 function Loan({ loan }: LoanProps) {
   const tokenSpec = useMemo(
     () => ({
-      contract: jsonRpcERC721Contract(loan.collateralContractAddress),
-      tokenId: loan.collateralTokenId,
+      tokenURI: loan.collateralTokenURI,
+      tokenID: loan.collateralTokenId,
     }),
-    [loan.collateralContractAddress, loan.collateralTokenId],
+    [loan.collateralTokenURI, loan.collateralTokenId],
   );
   const { metadata, isLoading } = useTokenMetadata(tokenSpec);
 
