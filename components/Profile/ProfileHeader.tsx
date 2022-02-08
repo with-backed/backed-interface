@@ -1,11 +1,13 @@
 import { DescriptionList } from 'components/DescriptionList';
+import { ethers } from 'ethers';
 import {
   getActiveLoanCount,
   getClosedLoanCount,
   getAllInterestAmounts,
   getAllPrincipalAmounts,
 } from 'lib/loans/profileHeaderMethods';
-import { useMemo } from 'react';
+import { getInterestOwed } from 'lib/loans/utils';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Loan } from 'types/Loan';
 import { BorrowerLenderBubble } from './BorrowerLenderBubble';
 import { NextLoanDueCountdown } from './NextLoanDueCountdown';
@@ -42,14 +44,41 @@ function LoanStats({ address, loans, kind }: LoanStatsProps) {
       kind === 'borrower' ? 'Total Owed Interest' : 'Total Accrued Interest',
     [kind],
   );
+
+  const [currentInterestAmounts, setCurrentInterestAmounts] = useState(
+    getAllInterestAmounts(loans),
+  );
+
+  const refreshInterest = useCallback(() => {
+    setCurrentInterestAmounts(
+      getAllInterestAmounts(
+        loans.map((l) => ({
+          ...l,
+          interestOwed: getInterestOwed(
+            ethers.BigNumber.from(Date.now()).div(1000),
+            l.loanAmount,
+            l.lastAccumulatedTimestamp,
+            l.perSecondInterestRate,
+            l.accumulatedInterest,
+          ),
+        })),
+      ),
+    );
+  }, [loans]);
+
+  useEffect(() => {
+    const timeOutId = setInterval(() => refreshInterest(), 1000);
+    return () => clearInterval(timeOutId);
+  }, [refreshInterest]);
+
   const interestAmounts = useMemo(() => {
-    return getAllInterestAmounts(loans).map((amount, i, arr) => (
+    return currentInterestAmounts.map((amount, i, arr) => (
       <div key={amount.symbol} className={styles.amount}>
-        {amount.nominal} {amount.symbol}
+        {parseFloat(amount.nominal).toFixed(6)} {amount.symbol}
         {i !== arr.length - 1 && ';'}
       </div>
     ));
-  }, [loans]);
+  }, [currentInterestAmounts]);
   return (
     <DescriptionList orientation="horizontal">
       <dt>

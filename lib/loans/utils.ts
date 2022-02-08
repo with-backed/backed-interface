@@ -15,11 +15,13 @@ export function parseSubgraphLoan(loan: SubgraphLoan): Loan {
   const now = ethers.BigNumber.from(Date.now()).div(1000);
   let interestOwed = ethers.BigNumber.from(0);
   if (!lastAccumulatedTimestamp.eq(0)) {
-    interestOwed = loanAmount
-      .mul(now.sub(lastAccumulatedTimestamp))
-      .mul(perSecondInterestRate)
-      .div(SCALAR)
-      .add(accumulatedInterest);
+    interestOwed = getInterestOwed(
+      now,
+      loanAmount,
+      lastAccumulatedTimestamp,
+      perSecondInterestRate,
+      accumulatedInterest,
+    );
   }
 
   return {
@@ -38,4 +40,18 @@ export function parseSubgraphLoan(loan: SubgraphLoan): Loan {
     interestOwed: interestOwed,
     endDateTimestamp: loan.endDateTimestamp || 0,
   };
+}
+
+export function getInterestOwed(
+  now: ethers.BigNumber,
+  loanAmount: ethers.BigNumber,
+  lastAccumulatedTimestamp: ethers.BigNumber,
+  perSecondInterestRate: ethers.BigNumber,
+  accumulatedInterest: ethers.BigNumber,
+): ethers.BigNumber {
+  return loanAmount
+    .mul(now.sub(lastAccumulatedTimestamp))
+    .mul(perSecondInterestRate)
+    .div(SCALAR)
+    .add(accumulatedInterest);
 }
