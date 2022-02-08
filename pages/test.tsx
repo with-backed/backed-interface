@@ -3,24 +3,25 @@ import { ethers } from 'ethers';
 import { MockDAI__factory, MockPUNK__factory } from 'types/generated/abis';
 import { TransactionButton } from 'components/ticketPage/TransactionButton';
 import { Fieldset } from 'components/Fieldset';
-import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { ConnectWallet } from 'components/ConnectWallet';
 import { useWeb3 } from 'hooks/useWeb3';
-import { PageWrapper } from 'components/layouts/PageWrapper';
+import { TwelveColumn } from 'components/layouts/TwelveColumn';
 
 export default function Test() {
   const { account } = useWeb3();
   return (
-    <PageWrapper>
-      <ThreeColumn>
-        <Fieldset legend="mint an NFT">
-          {account == null ? <ConnectWallet /> : <MintPunk />}
-        </Fieldset>
-        <Fieldset legend="mint DAI">
-          {account == null ? <ConnectWallet /> : <MintDAI />}
-        </Fieldset>
-      </ThreeColumn>
-    </PageWrapper>
+    <TwelveColumn>
+      <Fieldset
+        style={{ gridColumn: 'span 6', marginTop: 'var(--gap)' }}
+        legend="mint an NFT">
+        {account == null ? <ConnectWallet /> : <MintPunk />}
+      </Fieldset>
+      <Fieldset
+        style={{ gridColumn: 'span 6', marginTop: 'var(--gap)' }}
+        legend="mint DAI">
+        {account == null ? <ConnectWallet /> : <MintDAI />}
+      </Fieldset>
+    </TwelveColumn>
   );
 }
 
