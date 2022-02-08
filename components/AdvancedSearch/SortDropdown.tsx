@@ -22,13 +22,6 @@ const sortOptions: SortOptionInput[] = [
       field: Loan_OrderBy.CreatedAtTimestamp,
       direction: OrderDirection.Desc,
     },
-    label: 'Recent Activity',
-  },
-  {
-    value: {
-      field: Loan_OrderBy.CreatedAtTimestamp,
-      direction: OrderDirection.Desc,
-    },
     label: 'First Created',
   },
   {
