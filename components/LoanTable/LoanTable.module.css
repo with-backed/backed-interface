@@ -21,10 +21,6 @@
   padding-right: 1rem;
 }
 
-.table tr:nth-child(even) {
-  background-color: var(--neutral-5);
-}
-
 .table tr:hover:not(:first-child) {
   background-color: var(--highlight-clickable-5);
 }
@@ -55,6 +51,22 @@
 }
 
 .name-and-collection > span:last-child {
+  text-transform: uppercase;
+  font-size: var(--font-small);
+}
+
+.right,
+th.right {
+  text-align: right;
+}
+
+.rate {
+  composes: right;
+  display: flex;
+  flex-direction: column;
+}
+
+.rate > span:last-child {
   text-transform: uppercase;
   font-size: var(--font-small);
 }

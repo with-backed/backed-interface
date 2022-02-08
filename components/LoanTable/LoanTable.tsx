@@ -1,5 +1,6 @@
 import { NFTMedia } from 'components/Media/NFTMedia';
 import { ethers } from 'ethers';
+import { useLoanDetails } from 'hooks/useLoanDetails';
 import { useTokenMetadata } from 'hooks/useTokenMetadata';
 import { jsonRpcERC721Contract } from 'lib/contracts';
 import { secondsBigNumToDays } from 'lib/duration';
@@ -28,9 +29,9 @@ function Header() {
     <thead className={styles.header}>
       <tr>
         <th>Open to Lend</th>
-        <th>Loan Amount</th>
-        <th>Duration</th>
-        <th>Rate/Return</th>
+        <th className={styles.right}>Loan Amount</th>
+        <th className={styles.right}>Duration</th>
+        <th className={styles.right}>Rate/Return</th>
       </tr>
     </thead>
   );
@@ -49,8 +50,13 @@ function Loan({ loan }: LoanProps) {
   );
   const { metadata, isLoading } = useTokenMetadata(tokenSpec);
 
+  const { formattedEstimatedPaybackAtMaturity } = useLoanDetails(loan);
+
   const loanAmount = useMemo(
-    () => ethers.utils.formatUnits(loan.loanAmount, loan.loanAssetDecimals),
+    () =>
+      parseFloat(
+        ethers.utils.formatUnits(loan.loanAmount, loan.loanAssetDecimals),
+      ).toFixed(4),
     [loan.loanAmount, loan.loanAssetDecimals],
   );
 
@@ -61,7 +67,9 @@ function Loan({ loan }: LoanProps) {
 
   const rate = useMemo(
     () =>
-      formattedAnnualRate(ethers.BigNumber.from(loan.perSecondInterestRate)),
+      parseFloat(
+        formattedAnnualRate(ethers.BigNumber.from(loan.perSecondInterestRate)),
+      ).toFixed(4),
     [loan.perSecondInterestRate],
   );
   return (
@@ -78,11 +86,16 @@ function Loan({ loan }: LoanProps) {
           <span>{loan.collateralName}</span>
         </div>
       </td>
-      <td>
+      <td className={styles.right}>
         {loanAmount} {loan.loanAssetSymbol}
       </td>
-      <td>{duration} Days</td>
-      <td>{rate} %</td>
+      <td className={styles.right}>{duration} Days</td>
+      <td>
+        <div className={styles.rate}>
+          <span>{rate} %</span>
+          <span>{formattedEstimatedPaybackAtMaturity}</span>
+        </div>
+      </td>
     </tr>
   );
 }

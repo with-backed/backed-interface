@@ -1,6 +1,7 @@
 .wrapper {
   grid-column: span 12;
-  padding-top: var(--gap);
+  width: 100%;
+  padding-top: 35px;
   box-sizing: border-box;
 }
 
