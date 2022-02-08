@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { useLoanDetails } from 'hooks/useLoanDetails';
 import { useTokenMetadata } from 'hooks/useTokenMetadata';
 import { jsonRpcERC721Contract } from 'lib/contracts';
-import { humanizedDuration, secondsBigNumToDays } from 'lib/duration';
+import { secondsBigNumToDays } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
 import Link from 'next/link';
 import React, { useMemo } from 'react';
