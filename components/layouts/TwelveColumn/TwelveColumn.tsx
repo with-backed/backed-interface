@@ -1,6 +1,14 @@
-import React, { FunctionComponent } from 'react';
+import React from 'react';
 import styles from './TwelveColumn.module.css';
 
-export const TwelveColumn: FunctionComponent = ({ children }) => {
-  return <div className={styles.grid}>{children}</div>;
+type TwelveColumnProps = React.PropsWithChildren<{
+  padded?: boolean;
+}>;
+
+export const TwelveColumn = ({ children, padded }: TwelveColumnProps) => {
+  return (
+    <div className={padded ? styles['padded-grid'] : styles.grid}>
+      {children}
+    </div>
+  );
 };

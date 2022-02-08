@@ -18,15 +18,3 @@
   width: 50%;
   margin: 30px 0;
 }
-
-.three-column-wrapper {
-  padding: 30px 120px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--gap);
-}
-
-.three-column-wrapper > a {
-  width: 30%;
-}

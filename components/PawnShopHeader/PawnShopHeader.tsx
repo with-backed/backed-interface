@@ -6,6 +6,7 @@ import { ButtonLink } from 'components/Button';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import logo from './rinkebeeee.png';
+import { TwelveColumn } from 'components/layouts/TwelveColumn';
 
 type PawnShopHeaderProps = {};
 
@@ -16,7 +17,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = () => {
   const kind = pathname === CREATE_PATH ? 'secondary' : 'primary';
   return (
     <header className={styles.header}>
-      <div className={styles['top-row']}>
+      <TwelveColumn>
         <div className={styles.pawn}>
           <ButtonLink kind={kind} href={CREATE_PATH}>
             Pawn Your NFT
@@ -32,7 +33,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = () => {
         <div className={styles['connect-wallet']}>
           <ConnectWallet />
         </div>
-      </div>
+      </TwelveColumn>
     </header>
   );
 };

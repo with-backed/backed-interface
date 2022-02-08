@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiveColumn } from 'components/layouts/FiveColumn';
+import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { LoanCard } from 'components/LoanCard';
 import { LoanCardLoaded, LoanCardLoading } from 'components/LoanCard/LoanCard';
 import { GetNFTInfoResponse } from 'lib/getNFTInfo';
@@ -13,7 +13,7 @@ export default {
 const perSecondInterestRate = ethers.BigNumber.from('9');
 
 export const LoanCards = () => (
-  <FiveColumn>
+  <TwelveColumn>
     <LoanCardLoading />
     <LoanCardLoaded
       id="18"
@@ -43,5 +43,5 @@ export const LoanCards = () => (
         } as GetNFTInfoResponse
       }
     />
-  </FiveColumn>
+  </TwelveColumn>
 );

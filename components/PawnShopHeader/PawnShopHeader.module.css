@@ -16,7 +16,7 @@
 }
 
 .link {
-  justify-self: center;
+  grid-column: col-start 5 / span 4;
 }
 
 .link > a {
@@ -24,9 +24,11 @@
 }
 
 .pawn {
-  justify-self: start;
+  grid-column: col-start / span 3;
+  align-self: center;
 }
 
 .connect-wallet {
-  justify-self: end;
+  grid-column: col-start 10 / span 3;
+  align-self: center;
 }

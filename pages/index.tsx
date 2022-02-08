@@ -1,4 +1,3 @@
-import { FiveColumn } from 'components/layouts/FiveColumn';
 import { LoanCard } from 'components/LoanCard';
 import subgraphLoans from 'lib/loans/subgraph/subgraphLoans';
 import { parseSubgraphLoan } from 'lib/loans/utils';
@@ -13,6 +12,7 @@ import { AdvancedSearch } from 'components/AdvancedSearch/AdvancedSearch';
 import { SearchHeader } from 'components/AdvancedSearch/Header';
 import { usePaginatedLoans } from 'hooks/usePaginatedLoans';
 import searchStyles from '../components/AdvancedSearch/AdvancedSearch.module.css';
+import { TwelveColumn } from 'components/layouts/TwelveColumn';
 
 const PAGE_LIMIT = 20;
 
@@ -46,7 +46,7 @@ export default function Home({ loans }: HomeProps) {
   );
 
   return (
-    <>
+    <TwelveColumn>
       <div className={searchStyles.wrapper}>
         <SearchHeader
           setSelectedSort={setSelectedSort}
@@ -62,13 +62,11 @@ export default function Home({ loans }: HomeProps) {
         />
       </div>
 
-      <FiveColumn>
-        {paginatedLoans.map((loan) => (
-          <LoanCard key={loan.id.toString()} loan={parseSubgraphLoan(loan)} />
-        ))}
-      </FiveColumn>
+      {paginatedLoans.map((loan) => (
+        <LoanCard key={loan.id.toString()} loan={parseSubgraphLoan(loan)} />
+      ))}
 
-      <div ref={ref}>
+      <div ref={ref} style={{ gridColumn: 'span 12' }}>
         <p>
           Welcome! Homepage in progress, try{' '}
           <Link href="/loans/create"> Creating a loan</Link>
@@ -77,6 +75,6 @@ export default function Home({ loans }: HomeProps) {
           <Link href="/test">Get Rinkeby DAI and an NFT!</Link>
         )}
       </div>
-    </>
+    </TwelveColumn>
   );
 }

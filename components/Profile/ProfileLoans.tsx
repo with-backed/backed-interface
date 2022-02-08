@@ -1,7 +1,6 @@
-import { ThreeColumn } from 'components/layouts/ThreeColumn';
+import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { LoanCard } from 'components/LoanCard';
 import { Loan } from 'types/Loan';
-import styles from './profile.module.css';
 
 type ProfileLoansProps = {
   address: string;
@@ -10,7 +9,7 @@ type ProfileLoansProps = {
 
 export function ProfileLoans({ address, loans }: ProfileLoansProps) {
   return (
-    <div className={styles['three-column-wrapper']}>
+    <TwelveColumn padded>
       {loans.map((loan) => (
         <LoanCard
           key={loan.id.toString()}
@@ -18,6 +17,6 @@ export function ProfileLoans({ address, loans }: ProfileLoansProps) {
           selectedAddress={address}
         />
       ))}
-    </div>
+    </TwelveColumn>
   );
 }

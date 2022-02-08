@@ -1,10 +1,10 @@
 import { ethers } from 'ethers';
 import { useState } from 'react';
-import { web3LoanFacilitator, jsonRpcLoanFacilitator } from 'lib/contracts';
+import { web3LoanFacilitator } from 'lib/contracts';
 import { Fieldset } from 'components/Fieldset';
 import { useWeb3 } from 'hooks/useWeb3';
-import { TransactionButton } from 'components/ticketPage/TransactionButton';
 import { Loan } from 'types/Loan';
+import { TransactionButton } from 'components/Button';
 
 interface SeizeCollateralCardProps {
   loanInfo: Loan;

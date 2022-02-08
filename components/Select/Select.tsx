@@ -1,17 +1,33 @@
 import React, { useMemo } from 'react';
 import ReactSelect, { GroupBase, Props } from 'react-select';
 
+interface SelectProps<
+  Option,
+  IsMulti extends boolean = false,
+  Group extends GroupBase<Option> = GroupBase<Option>,
+> extends Props<Option, IsMulti, Group> {
+  color?: 'dark' | 'light';
+}
+
 export function Select<
   Option,
   IsMulti extends boolean = false,
   Group extends GroupBase<Option> = GroupBase<Option>,
->({ isClearable = false, ...props }: Props<Option, IsMulti, Group>) {
+>({
+  color = 'dark',
+  isClearable = false,
+  ...props
+}: SelectProps<Option, IsMulti, Group>) {
   const defaultValue = useMemo(() => {
     if (props && props.options && props.options.length > 0) {
       return props.options[0] as Option;
     }
     return undefined;
   }, [props]);
+  const controlBackground =
+    color === 'light'
+      ? 'var(--background-white)'
+      : 'var(--background-radial-gradient)';
   return (
     <ReactSelect
       openMenuOnFocus
@@ -26,7 +42,7 @@ export function Select<
           ...provided,
           background: state.isFocused
             ? 'var(--highlight-active-10)'
-            : 'var(--background-radial-gradient)',
+            : controlBackground,
           border: 'none',
           outline: 'none',
           borderRadius: 'var(--border-radius-large)',
