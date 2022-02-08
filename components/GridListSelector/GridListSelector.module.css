@@ -1,0 +1,39 @@
+.selector {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background: var(--background-white);
+  border-radius: var(--border-radius-large);
+  cursor: pointer;
+}
+
+.icon {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  padding: 0.5rem;
+  border-radius: var(--border-radius-large);
+}
+
+.grid {
+  composes: icon;
+  stroke: var(--neutral-50);
+}
+
+.list {
+  composes: icon;
+  fill: var(--neutral-50);
+}
+
+.selector[aria-checked='true'] > .grid {
+  background-color: var(--highlight-active-10);
+  stroke: var(--neutral-100);
+}
+
+.selector[aria-checked='false'] > .list {
+  background-color: var(--highlight-active-10);
+  fill: var(--neutral-100);
+}
