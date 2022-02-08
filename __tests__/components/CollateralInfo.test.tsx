@@ -12,12 +12,15 @@ import { baseLoan } from 'lib/mockData';
 
 const loan = baseLoan;
 
-const [items, owners] = getFakeItemsAndOwners();
+const floor = 17;
+const volume = 2;
+const items = 9999;
+const owners = 9000;
 const collectionStats = {
-  floor: getFakeFloor(),
+  floor,
   items,
   owners,
-  volume: getFakeVolume(),
+  volume,
 };
 
 const recentSale = generateFakeSaleForNFT(
