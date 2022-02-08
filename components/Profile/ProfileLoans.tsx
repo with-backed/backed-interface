@@ -9,7 +9,7 @@ type ProfileLoansProps = {
 
 export function ProfileLoans({ address, loans }: ProfileLoansProps) {
   return (
-    <TwelveColumn>
+    <TwelveColumn padded>
       {loans.map((loan) => (
         <LoanCard
           key={loan.id.toString()}

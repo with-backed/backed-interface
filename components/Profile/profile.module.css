@@ -6,7 +6,6 @@
   align-items: center;
   gap: var(--gap);
   padding: var(--gap) 0;
-  margin-bottom: var(--gap);
 }
 
 /* Bit of a hack to make sure the 2 <dl>s line up nicely */
