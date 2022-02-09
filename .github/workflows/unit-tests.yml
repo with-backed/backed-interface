@@ -44,5 +44,5 @@ jobs:
         uses: AthleticNet/comment-test-coverage@1.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          path: coverage/coverage-summary.json
-          title: Karma Test Coverage
+          path: coverage/coverage-final.json
+          title: Test Coverage
