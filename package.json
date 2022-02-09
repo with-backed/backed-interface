@@ -18,7 +18,7 @@
     "graphql:generate:nft-loans": "graphql-codegen --config codegen/nftLoans.yml",
     "graphql:generate:nft-sales": "graphql-codegen --config codegen/nftSales.yml",
     "abis:generate": "yarn typechain --target ethers-v5 --out-dir ./types/generated/abis './abis/*.json'",
-    "migrate-notifications:dev": "dotenv -e .env.test -- npx prisma migrate dev --name init"
+    "prisma-migrate:test": "dotenv -e .env.test -- npx prisma migrate dev --name init-test"
   },
   "dependencies": {
     "@ethersproject/providers": "^5.5.1",

@@ -25,7 +25,7 @@ jobs:
       - name: Build app
         run: yarn run build
       - name: Spin up Postgres
-        run: docker-compose up -d postgres && sleep 5
+        run: docker-compose up -d postgres && yarn run prisma-migrate:test
       - name: Run tests and calculate coverage
         run: yarn run test-coverage
       - name: Comment with coverage
