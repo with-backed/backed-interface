@@ -3,6 +3,7 @@
   background: var(--background-white);
   border-collapse: collapse;
   grid-column: 1 / -1;
+  box-shadow: var(--box-shadow);
 }
 
 .header th {
