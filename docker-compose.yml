@@ -1,0 +1,17 @@
+version: '3'
+services:
+  postgres:
+    image: 'postgres:12.8'
+    environment:
+      - POSTGRES_DB=notifications
+      - POSTGRES_USER=user
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_PASSWORD=password
+    volumes: 
+      - db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+volumes:
+  db:
+    driver: local
