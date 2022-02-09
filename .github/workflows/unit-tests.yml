@@ -26,13 +26,17 @@ jobs:
         run: yarn run build
       - name: Run tests and calculate coverage
         run: |
-          set -euxo pipefail
+          set -euo pipefail
+
+          $threshold=30
 
           # Second entry in "All files" is % of branch coverage
           coverage=`yarn run test-coverage | grep "All files" | grep -Eo '[0-9]+\.[0-9]+' | sed -n 2p`
 
-          if (( $(echo "$coverage >= 30" | bc -l) )) ; then
+          if (( $(echo "$coverage >= $threshold" | bc -l) )) ; then
+            echo "Coverage is good."
             exit 0
           else
+            echo "Coverage of $coverage is insufficient to meet threshold of $threshold"
             exit 1
           fi
