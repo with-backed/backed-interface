@@ -17,18 +17,21 @@
     "graphql:generate": "yarn graphql:generate:nft-loans && yarn graphql:generate:nft-sales",
     "graphql:generate:nft-loans": "graphql-codegen --config codegen/nftLoans.yml",
     "graphql:generate:nft-sales": "graphql-codegen --config codegen/nftSales.yml",
-    "abis:generate": "yarn typechain --target ethers-v5 --out-dir ./types/generated/abis './abis/*.json'"
+    "abis:generate": "yarn typechain --target ethers-v5 --out-dir ./types/generated/abis './abis/*.json'",
+    "migrate-notifications:dev": "dotenv -e .env.test -- npx prisma migrate dev --name init"
   },
   "dependencies": {
     "@ethersproject/providers": "^5.5.1",
     "@hookform/resolvers": "^2.8.8",
     "@pinata/ipfs-gateway-tools": "^1.1.6",
+    "@prisma/client": "^3.9.1",
     "@web3-react/core": "^6.1.9",
     "@web3-react/injected-connector": "^6.0.7",
     "@web3-react/walletconnect-connector": "^6.2.8",
     "@web3-react/walletlink-connector": "^6.2.8",
     "@xstate/react": "^1.6.3",
     "dayjs": "^1.10.7",
+    "dotenv-cli": "^5.0.0",
     "ethers": "^5.4.6",
     "graphql": "^16.0.1",
     "lodash": "^4.17.21",
