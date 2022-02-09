@@ -1,9 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import subgraphLoans, { searchLoans } from 'lib/loans/subgraph/subgraphLoans';
+import { searchLoans } from 'lib/loans/subgraph/subgraphLoans';
 import {
   Loan,
   LoanStatus,
   Loan_OrderBy,
+  OrderDirection,
 } from 'types/generated/graphql/nftLoans';
 
 export default async function handler(
@@ -15,6 +16,7 @@ export default async function handler(
       page,
       limit,
       sort,
+      sortDirection,
       statuses,
       collectionAddress,
       collectionName,
@@ -51,6 +53,7 @@ export default async function handler(
       parseInt(loanDurationMin as string),
       parseInt(loanDurationMax as string),
       sort as Loan_OrderBy,
+      sortDirection as OrderDirection,
       parseInt(limit as string),
       parseInt(page as string),
     );

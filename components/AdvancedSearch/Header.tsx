@@ -1,10 +1,9 @@
 import { Button } from 'components/Button';
-import { Loan_OrderBy } from 'types/generated/graphql/nftLoans';
 import styles from './AdvancedSearch.module.css';
-import SortDropdown from './SortDropdown';
+import SortDropdown, { SortOptionValue } from './SortDropdown';
 
 type SearchHeaderProps = {
-  setSelectedSort: (sort: Loan_OrderBy) => void;
+  setSelectedSort: (sort: SortOptionValue) => void;
   showSearch: boolean;
   setShowSearch: (showSearch: boolean) => void;
 };
@@ -18,7 +17,7 @@ export function SearchHeader({
     <div className={styles.header}>
       <div className={styles.searchButton}>
         <Button
-          kind={`${showSearch ? 'secondary' : 'primary'}`}
+          kind={`${showSearch ? 'secondary' : 'primary-dark-bg'}`}
           onClick={() => setShowSearch(!showSearch)}>
           &#x1F50D; Search
         </Button>

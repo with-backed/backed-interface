@@ -19,6 +19,16 @@
   background: var(--highlight-clickable-10);
 }
 
+.primary-dark-bg {
+  composes: button;
+  background: var(--highlight-clickable-10);
+  color: var(--highlight-clickable-100);
+}
+
+.primary-dark-bg:hover,
+.primary-dark-bg:focus {
+  background: var(--highlight-clickable-20);
+}
 .secondary {
   composes: button;
   background: var(--highlight-visited-5);

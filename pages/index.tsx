@@ -1,10 +1,7 @@
 import { LoanCard } from 'components/LoanCard';
 import subgraphLoans from 'lib/loans/subgraph/subgraphLoans';
 import { parseSubgraphLoan } from 'lib/loans/utils';
-import {
-  Loan as SubgraphLoan,
-  Loan_OrderBy,
-} from 'types/generated/graphql/nftLoans';
+import { Loan as SubgraphLoan } from 'types/generated/graphql/nftLoans';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 import React, { useRef, useState } from 'react';
@@ -13,6 +10,7 @@ import { SearchHeader } from 'components/AdvancedSearch/Header';
 import { usePaginatedLoans } from 'hooks/usePaginatedLoans';
 import searchStyles from '../components/AdvancedSearch/AdvancedSearch.module.css';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
+import { SortOptionValue } from 'components/AdvancedSearch/SortDropdown';
 
 const PAGE_LIMIT = 20;
 
@@ -33,7 +31,7 @@ export default function Home({ loans }: HomeProps) {
   const [showSearch, setShowSearch] = useState<boolean>(false);
   const [searchActive, setSearchActive] = useState<boolean>(false);
   const [searchUrl, setSearchUrl] = useState<string>('');
-  const [selectedSort, setSelectedSort] = useState<Loan_OrderBy | undefined>(
+  const [selectedSort, setSelectedSort] = useState<SortOptionValue | undefined>(
     undefined,
   );
 
