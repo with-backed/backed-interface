@@ -10,7 +10,7 @@
   font-weight: normal;
   text-transform: uppercase;
   font-size: var(--font-small);
-  padding: 1rem 0;
+  padding: 0.5rem 0;
 }
 
 .header th:first-child {
@@ -26,7 +26,7 @@
 }
 
 .table td {
-  padding: 1rem 0;
+  padding: 0.5rem 0;
 }
 
 .table td:first-child {
@@ -39,8 +39,8 @@
 
 .name-container {
   display: grid;
-  grid-template-columns: 60px 1fr;
-  grid-template-rows: 60px;
+  grid-template-columns: 75px 1fr;
+  grid-template-rows: 75px;
   gap: 1rem;
   color: var(--neutral-100);
 }
