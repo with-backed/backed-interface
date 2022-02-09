@@ -27,7 +27,7 @@ jobs:
       - name: Run tests and calculate coverage
         run: yarn run test-coverage
       - name: Comment with coverage
-        uses: AthleticNet/comment-test-coverage@1.1
+        uses: AthleticNet/comment-test-coverage@1.2.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           path: coverage/coverage-summary.json
