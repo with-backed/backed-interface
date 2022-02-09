@@ -42,7 +42,7 @@ describe('ConnectWallet', () => {
   it('directs users to MetaMask website if there is no injected provider', () => {
     const { getByText } = render(<ConnectWallet />);
     const button = getByText('Connect');
-    //
+
     userEvent.click(button);
 
     expect(window.open).not.toHaveBeenCalled();
