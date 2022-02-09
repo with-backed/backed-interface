@@ -49,13 +49,8 @@ th.right {
   text-align: right;
 }
 
-.rate {
-  composes: right;
-  display: flex;
-  flex-direction: column;
-}
-
-.rate > span:last-child {
-  text-transform: uppercase;
-  font-size: var(--font-small);
+.rate,
+th.rate {
+  text-align: right;
+  padding-right: 1rem;
 }

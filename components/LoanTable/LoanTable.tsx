@@ -34,7 +34,7 @@ function Header() {
         <th>Open to Lend</th>
         <th className={styles.right}>Loan Amount</th>
         <th className={styles.right}>Duration</th>
-        <th className={styles.right}>Rate/Return</th>
+        <th className={styles.rate}>Rate/Return</th>
       </tr>
     </thead>
   );
@@ -109,7 +109,7 @@ function Loan({ loan }: LoanProps) {
           </span>
         </div>
       </td>
-      <td className={styles.right}>
+      <td className={styles.rate}>
         <div className={styles['field-and-subfield']}>
           <span>{rate} %</span>
           <span>{formattedEstimatedPaybackAtMaturity}</span>
