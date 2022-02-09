@@ -10,13 +10,13 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  margin-bottom: var(--gap);
 }
 
 .searchButton {
   display: flex;
   flex-direction: row;
   align-items: center;
+  gap: 1rem;
 }
 
 .sortDropdown {

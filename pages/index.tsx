@@ -1,4 +1,3 @@
-import { LoanCard } from 'components/LoanCard';
 import subgraphLoans from 'lib/loans/subgraph/subgraphLoans';
 import { parseSubgraphLoan } from 'lib/loans/utils';
 import { Loan as SubgraphLoan } from 'types/generated/graphql/nftLoans';
@@ -11,6 +10,7 @@ import { usePaginatedLoans } from 'hooks/usePaginatedLoans';
 import searchStyles from '../components/AdvancedSearch/AdvancedSearch.module.css';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { SortOptionValue } from 'components/AdvancedSearch/SortDropdown';
+import { HomePageLoans } from 'components/HomePageLoans';
 
 const PAGE_LIMIT = 20;
 
@@ -34,6 +34,7 @@ export default function Home({ loans }: HomeProps) {
   const [selectedSort, setSelectedSort] = useState<SortOptionValue | undefined>(
     undefined,
   );
+  const [showGrid, setShowGrid] = useState(true);
 
   const { paginatedLoans } = usePaginatedLoans(
     searchActive ? searchUrl : '/api/loans/all?',
@@ -50,6 +51,7 @@ export default function Home({ loans }: HomeProps) {
           setSelectedSort={setSelectedSort}
           showSearch={showSearch}
           setShowSearch={setShowSearch}
+          handleViewChange={setShowGrid}
         />
         <AdvancedSearch
           showSearch={showSearch}
@@ -60,9 +62,10 @@ export default function Home({ loans }: HomeProps) {
         />
       </div>
 
-      {paginatedLoans.map((loan) => (
-        <LoanCard key={loan.id.toString()} loan={parseSubgraphLoan(loan)} />
-      ))}
+      <HomePageLoans
+        loans={paginatedLoans.map(parseSubgraphLoan)}
+        view={showGrid ? 'cards' : 'list'}
+      />
 
       <div ref={ref} style={{ gridColumn: 'span 12' }}>
         <p>

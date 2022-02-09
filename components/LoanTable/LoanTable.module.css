@@ -1,0 +1,57 @@
+.table {
+  width: 100%;
+  background: var(--background-white);
+  border-collapse: collapse;
+  grid-column: 1 / -1;
+  box-shadow: var(--box-shadow);
+}
+
+.header th {
+  text-align: left;
+  font-weight: normal;
+  text-transform: uppercase;
+  font-size: var(--font-small);
+  padding: 0.5rem 0;
+}
+
+.table tr {
+  border: 10px solid #fff;
+}
+
+.table > tbody > tr:hover {
+  background-color: var(--highlight-clickable-5);
+}
+
+.name-container {
+  display: grid;
+  grid-template-columns: 75px 1fr;
+  grid-template-rows: 75px;
+  gap: 1rem;
+  color: var(--neutral-100);
+}
+
+.name-container:visited {
+  color: var(--neutral-100);
+}
+
+.field-and-subfield {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.field-and-subfield > span:last-child {
+  text-transform: uppercase;
+  font-size: var(--font-small);
+}
+
+.right,
+th.right {
+  text-align: right;
+}
+
+.rate,
+th.rate {
+  text-align: right;
+  padding-right: 1rem;
+}
