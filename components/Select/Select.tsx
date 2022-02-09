@@ -32,6 +32,19 @@ export function Select<
     <ReactSelect
       openMenuOnFocus
       styles={{
+        option: (provided, state) => ({
+          ...provided,
+          background: state.isSelected
+            ? controlBackground
+            : state.isFocused
+            ? 'var(--highlight-clickable-5)'
+            : 'var(--background-white)',
+          color:
+            state.isFocused && !state.isSelected
+              ? 'var(--highlight-clickable-100)'
+              : 'black',
+          cursor: state.isDisabled ? 'not-allowed' : 'pointer',
+        }),
         control: (provided, state) => ({
           ...provided,
           background: state.isFocused
