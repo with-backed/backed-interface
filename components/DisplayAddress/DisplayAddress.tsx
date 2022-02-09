@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import React, { useEffect, useState } from 'react';
 
-interface DisplayAddressProps {
+export interface DisplayAddressProps {
   address: string;
   useEns?: boolean;
 }

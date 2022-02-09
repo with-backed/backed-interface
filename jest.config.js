@@ -7,6 +7,15 @@ module.exports = {
     '!**/*.d.ts',
     '!**/node_modules/**',
   ],
+  coverageReporters: ['json-summary', 'text-summary'],
+  coverageThreshold: {
+    global: {
+      branches: 21,
+      functions: 22,
+      lines: 25,
+      statements: 24,
+    },
+  },
   moduleDirectories: ['node_modules', '<rootDir>'],
   moduleNameMapper: {
     /* Handle CSS imports (with CSS modules)

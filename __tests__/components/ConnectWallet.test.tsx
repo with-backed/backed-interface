@@ -3,10 +3,18 @@ import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ConnectWallet } from 'components/ConnectWallet';
 import { useWeb3 } from 'hooks/useWeb3';
+import { DisplayAddressProps } from 'components/DisplayAddress/DisplayAddress';
 
 jest.mock('hooks/useWeb3', () => ({
   ...jest.requireActual('hooks/useWeb3'),
   useWeb3: jest.fn(),
+}));
+
+// Mocking this to suppress ethers error that adds console noise.
+// Let's test DisplayAddress separately and/or make it easier to mock the dep.
+jest.mock('components/DisplayAddress', () => ({
+  ...jest.requireActual('components/DisplayAddress'),
+  DisplayAddress: (props: DisplayAddressProps) => <span>{props.address}</span>,
 }));
 
 const mockActivate = jest.fn();
@@ -92,7 +100,7 @@ describe('ConnectWallet', () => {
     });
     const { getByText } = render(<ConnectWallet />);
 
-    const menuButton = getByText('0xaddr...ress');
+    const menuButton = getByText('0xaddress');
 
     userEvent.click(menuButton);
 
