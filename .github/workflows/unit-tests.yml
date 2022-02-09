@@ -31,4 +31,8 @@ jobs:
           # Second entry in "All files" is % of branch coverage
           coverage=`yarn run test-coverage | grep "All files" | grep -Eo '[0-9]+\.[0-9]+' | sed -n 2p`
 
-          exit `echo "$coverage >= 30" | bc -l`
+          if (( $(echo "$coverage >= 30" | bc -l) )) ; then
+            exit 0
+          else
+            exit 1
+          fi
