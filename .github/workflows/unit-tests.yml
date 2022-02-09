@@ -24,6 +24,8 @@ jobs:
         run: yarn
       - name: Build app
         run: yarn run build
+      - name: Spin up Postgres
+        run: docker-compose up -d postgres && sleep 5
       - name: Run tests and calculate coverage
         run: yarn run test-coverage
       - name: Comment with coverage
