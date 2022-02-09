@@ -7,6 +7,7 @@ module.exports = {
     '!**/*.d.ts',
     '!**/node_modules/**',
   ],
+  coverageReporters: ['json-summary', 'text-summary'],
   coverageThreshold: {
     global: {
       branches: 21,
