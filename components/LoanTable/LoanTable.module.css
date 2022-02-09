@@ -13,28 +13,12 @@
   padding: 0.5rem 0;
 }
 
-.header th:first-child {
-  padding-left: 1rem;
-}
-
-.header th:last-child {
-  padding-right: 1rem;
+.table tr {
+  border: 10px solid #fff;
 }
 
 .table > tbody > tr:hover {
   background-color: var(--highlight-clickable-5);
-}
-
-.table td {
-  padding: 0.5rem 0;
-}
-
-.table td:first-child {
-  padding-left: 1rem;
-}
-
-.table td:last-child {
-  padding-right: 1rem;
 }
 
 .name-container {
