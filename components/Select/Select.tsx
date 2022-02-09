@@ -32,6 +32,13 @@ export function Select<
     <ReactSelect
       openMenuOnFocus
       styles={{
+        container: (provided, state) => ({
+          ...provided,
+          filter: state.isFocused
+            ? 'drop-shadow(0px 0px 15px rgba(0, 0, 0, 0.1))'
+            : 'none',
+          zIndex: 2,
+        }),
         option: (provided, state) => ({
           ...provided,
           background: state.isSelected
