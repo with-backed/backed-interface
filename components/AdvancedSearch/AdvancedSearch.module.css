@@ -31,18 +31,20 @@
 }
 
 .searchOpen {
+  padding-top: var(--gap);
   transition-timing-function: cubic-bezier(0.895, 0.03, 0.685, 0.22);
-  transition-duration: 0.5s;
-  transition-property: max-height;
+  transition-duration: 300ms;
+  transition-property: max-height, padding;
   max-height: 2000px;
 }
 
 .searchClosed {
+  padding-top: 0;
   max-height: 0;
   overflow: hidden;
   text-transform: cubic-bezier(0.95, 0.05, 0.795, 0.035);
-  transition-duration: 0.5s;
-  transition-property: max-height;
+  transition-duration: 300ms;
+  transition-property: max-height, padding;
 }
 
 .inputGroupWrapperOpen {
