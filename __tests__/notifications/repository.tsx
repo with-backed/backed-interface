@@ -12,25 +12,38 @@ const notificationMethod = NotificationMethod.EMAIL;
 const notificationDestination = 'adamgobes@gmail.com';
 
 describe('Notifications repository', () => {
-  it('succesfully creates a new notification request for a given eth address', async () => {
-    const notificationRequest = await createNotificationRequestForAddress(
-      address,
-      event,
-      notificationMethod,
-      notificationDestination,
-    );
+  describe('createNotificationRequestForAddress', () => {
+    it('succesfully returns new notification request for a given eth address on success', async () => {
+      const notificationRequest = await createNotificationRequestForAddress(
+        address,
+        event,
+        notificationMethod,
+        notificationDestination,
+      );
 
-    expect(notificationRequest!.ethAddress).toEqual(address);
-    expect(notificationRequest!.event).toEqual(event);
-    expect(notificationRequest!.deliveryMethod).toEqual(notificationMethod);
-    expect(notificationRequest!.deliveryDestination).toEqual(
-      notificationDestination,
-    );
+      expect(notificationRequest!.ethAddress).toEqual(address);
+      expect(notificationRequest!.event).toEqual(event);
+      expect(notificationRequest!.deliveryMethod).toEqual(notificationMethod);
+      expect(notificationRequest!.deliveryDestination).toEqual(
+        notificationDestination,
+      );
 
-    const deleteResult = await deleteNotificationRequestById(
-      notificationRequest!.id,
-    );
-    expect(deleteResult).toBeTruthy;
+      const deleteResult = await deleteNotificationRequestById(
+        notificationRequest!.id,
+      );
+      expect(deleteResult).toBeTruthy;
+    });
+
+    it('returns null on error', async () => {
+      const notificationRequest = await createNotificationRequestForAddress(
+        null, // pass null address so DB errors
+        event,
+        notificationMethod,
+        notificationDestination,
+      );
+
+      expect(notificationRequest).toBeNull();
+    });
   });
 
   it('succesfully gets all notification requests for a user', async () => {
