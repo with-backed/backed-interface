@@ -80,10 +80,8 @@ describe('Notifications repository', () => {
       address,
     );
     expect(deleteAllResult).toBeTruthy;
-    expect(
-      await (
-        await getNotificationRequestsForAddress(address)
-      ).length,
-    ).toEqual(0);
+    expect((await getNotificationRequestsForAddress(address)).length).toEqual(
+      0,
+    );
   });
 });
