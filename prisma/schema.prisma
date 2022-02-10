@@ -12,8 +12,8 @@ datasource db {
 
 model NotificationRequest {
   id                  Int    @id @default(autoincrement())
-  ethAddress          String
-  event               String
-  deliveryMethod      String
-  deliveryDestination String
+  ethAddress          String @db.VarChar(40)
+  event               String @db.VarChar(40)
+  deliveryMethod      String @db.VarChar(40)
+  deliveryDestination String @db.VarChar(40)
 }
