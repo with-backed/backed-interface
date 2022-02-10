@@ -1,7 +1,7 @@
 import {
   createNotificationRequestForAddress,
   deleteAllNotificationRequestsForAddress,
-  deleteNotificationRequest,
+  deleteNotificationRequestById,
   getNotificationRequestsForAddress,
   NotificationMethod,
 } from 'notifications/repository';
@@ -27,7 +27,7 @@ describe('Notifications repository', () => {
       notificationDestination,
     );
 
-    const deleteResult = await deleteNotificationRequest(
+    const deleteResult = await deleteNotificationRequestById(
       notificationRequest!.id,
     );
     expect(deleteResult).toBeTruthy;
@@ -57,8 +57,8 @@ describe('Notifications repository', () => {
       'anotherEmail@gmail.com',
     );
 
-    await deleteNotificationRequest(first!.id);
-    await deleteNotificationRequest(second!.id);
+    await deleteNotificationRequestById(first!.id);
+    await deleteNotificationRequestById(second!.id);
   });
 
   it('succesfully deletes all notification requests for an address should they choose to opt out', async () => {

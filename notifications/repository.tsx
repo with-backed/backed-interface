@@ -28,7 +28,9 @@ export async function createNotificationRequestForAddress(
   }
 }
 
-export async function deleteNotificationRequest(id: number): Promise<boolean> {
+export async function deleteNotificationRequestById(
+  id: number,
+): Promise<boolean> {
   try {
     await prisma.notificationRequest.delete({
       where: { id },
