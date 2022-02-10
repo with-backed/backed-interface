@@ -37,3 +37,15 @@
   background-color: var(--highlight-active-10);
   fill: var(--neutral-100);
 }
+
+.selector:hover[aria-checked='true'] > .grid,
+.selector:hover[aria-checked='false'] > .list {
+  background-color: var(--highlight-active-20);
+}
+
+.selector:hover[aria-checked='true'] > .list {
+  fill: var(--neutral-100);
+}
+.selector:hover[aria-checked='false'] > .grid {
+  stroke: var(--neutral-100);
+}
