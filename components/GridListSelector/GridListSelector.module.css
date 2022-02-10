@@ -38,14 +38,14 @@
   fill: var(--neutral-100);
 }
 
-.selector:hover[aria-checked='true'] > .grid,
-.selector:hover[aria-checked='false'] > .list {
+.selector[aria-checked='true'] > .grid:hover,
+.selector[aria-checked='false'] > .list:hover {
   background-color: var(--highlight-active-20);
 }
 
-.selector:hover[aria-checked='true'] > .list {
+.selector[aria-checked='true'] > .list:hover {
   fill: var(--neutral-100);
 }
-.selector:hover[aria-checked='false'] > .grid {
+.selector[aria-checked='false'] > .grid:hover {
   stroke: var(--neutral-100);
 }
