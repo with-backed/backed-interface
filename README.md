@@ -25,3 +25,8 @@ NEXT_PUBLIC_OPENSEA_URL="https://testnets.opensea.io"
 
 2. `yarn install`
 3. `yarn run dev`
+
+### Tests
+`yarn run test`
+
+Note: you should expect to see `__tests/notifications/repository.ts` to fail if you do not have your local Docker postgres running

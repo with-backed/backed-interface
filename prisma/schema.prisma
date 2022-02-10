@@ -1,0 +1,19 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model NotificationRequest {
+  id                  Int    @id @default(autoincrement())
+  ethAddress          String @db.VarChar(42)
+  event               String @db.VarChar(40)
+  deliveryMethod      String @db.VarChar(40)
+  deliveryDestination String @db.VarChar(40)
+}
