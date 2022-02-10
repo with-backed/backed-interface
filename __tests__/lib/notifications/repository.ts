@@ -4,7 +4,7 @@ import {
   deleteNotificationRequestById,
   getNotificationRequestsForAddress,
   NotificationMethod,
-} from 'notifications/repository';
+} from 'lib/notifications/repository';
 
 const address = '0x7e6463782b87c57cffa6af66e7c2de64e97d1866';
 const event = '';
