@@ -39,3 +39,30 @@ export async function deleteNotificationRequest(id: number): Promise<boolean> {
     return false;
   }
 }
+
+export async function deleteAllNotificationRequestsForAddress(
+  address: string,
+): Promise<boolean> {
+  try {
+    await prisma.notificationRequest.deleteMany({
+      where: { ethAddress: address },
+    });
+    return true;
+  } catch (e) {
+    console.error(e);
+    return false;
+  }
+}
+
+export async function getNotificationRequestsForAddress(
+  address: string,
+): Promise<NotificationRequest[]> {
+  try {
+    return await prisma.notificationRequest.findMany({
+      where: { ethAddress: address },
+    });
+  } catch (e) {
+    console.error(e);
+    return [];
+  }
+}

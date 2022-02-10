@@ -1,6 +1,8 @@
 import {
   createNotificationRequestForAddress,
+  deleteAllNotificationRequestsForAddress,
   deleteNotificationRequest,
+  getNotificationRequestsForAddress,
   NotificationMethod,
 } from 'notifications/repository';
 
@@ -29,5 +31,59 @@ describe('Notifications repository', () => {
       notificationRequest!.id,
     );
     expect(deleteResult).toBeTruthy;
+  });
+
+  it('succesfully gets all notification requests for a user', async () => {
+    const first = await createNotificationRequestForAddress(
+      address,
+      event,
+      notificationMethod,
+      notificationDestination,
+    );
+
+    const second = await createNotificationRequestForAddress(
+      address,
+      event,
+      notificationMethod,
+      'anotherEmail@gmail.com',
+    );
+
+    const requestsForAddress = await getNotificationRequestsForAddress(address);
+    expect(requestsForAddress.length).toEqual(2);
+    expect(requestsForAddress[0].deliveryDestination).toEqual(
+      'adamgobes@gmail.com',
+    );
+    expect(requestsForAddress[1].deliveryDestination).toEqual(
+      'anotherEmail@gmail.com',
+    );
+
+    await deleteNotificationRequest(first!.id);
+    await deleteNotificationRequest(second!.id);
+  });
+
+  it('succesfully deletes all notification requests for an address should they choose to opt out', async () => {
+    await createNotificationRequestForAddress(
+      address,
+      event,
+      notificationMethod,
+      notificationDestination,
+    );
+
+    await createNotificationRequestForAddress(
+      address,
+      event,
+      notificationMethod,
+      'anotherEmail@gmail.com',
+    );
+
+    const deleteAllResult = await deleteAllNotificationRequestsForAddress(
+      address,
+    );
+    expect(deleteAllResult).toBeTruthy;
+    expect(
+      await (
+        await getNotificationRequestsForAddress(address)
+      ).length,
+    ).toEqual(0);
   });
 });
