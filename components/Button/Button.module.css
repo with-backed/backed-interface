@@ -51,13 +51,22 @@
   background: var(--neutral-10);
 }
 
+.quaternary {
+  composes: button;
+  background: var(--background-white);
+  color: var(--neutral-100);
+}
+
+.quaternary:hover {
+  background: var(--highlight-active-20);
+}
+
 .highlight {
   composes: button;
   background: var(--highlight-active-10);
 }
 
-.highlight:hover,
-.highlight:focus {
+.highlight:hover {
   background: var(--highlight-active-20);
 }
 

@@ -23,6 +23,7 @@ export const InputStyles = () => {
           <Button kind="primary">Primary Button</Button>
           <Button kind="secondary">Secondary Button</Button>
           <Button kind="tertiary">Tertiary Button</Button>
+          <Button kind="quaternary">Quaternary Button</Button>
           <Button kind="highlight">Highlight Button</Button>
           <Button disabled>Inactive Button</Button>
         </FormWrapper>
