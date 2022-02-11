@@ -5,6 +5,7 @@ import {
   CreateNotificationReqBody,
   NotificationMethod,
 } from 'lib/notifications/shared';
+import util from 'ethereumjs-util';
 
 export default async function handler(
   req: NextApiRequest,
@@ -16,12 +17,19 @@ export default async function handler(
   }
 
   try {
-    const { address, method, destination } =
+    const { address, method, destination, signedMessage } =
       req.body as CreateNotificationReqBody;
+
+    const addressFromSig = generateAddressFromSignedMessage(signedMessage);
+
+    if (addressFromSig.toLowerCase() != address.toLowerCase()) {
+      res.status(400).json('invalid signature sent with request');
+      return;
+    }
 
     const createdNotificationRequest =
       await createNotificationRequestForAddress(
-        address,
+        address.toLowerCase(),
         '',
         method,
         destination,
@@ -38,4 +46,22 @@ export default async function handler(
     console.error(e);
     res.status(404);
   }
+}
+
+function generateAddressFromSignedMessage(signedMessage: string): string {
+  const msg: Buffer = Buffer.from(
+    process.env.NEXT_PUBLIC_NOTIFICATION_REQ_MESSAGE!,
+  );
+
+  const prefix = Buffer.from('\x19Ethereum Signed Message:\n');
+  const prefixedMsg = util.keccak256(
+    Buffer.concat([prefix, Buffer.from(String(msg.length)), msg]),
+  );
+
+  const resSig = util.fromRpcSig(signedMessage);
+  const pubKey = util.ecrecover(prefixedMsg, resSig.v, resSig.r, resSig.s);
+  const addrBuf = util.pubToAddress(pubKey);
+  const addr = util.bufferToHex(addrBuf);
+
+  return addr;
 }
