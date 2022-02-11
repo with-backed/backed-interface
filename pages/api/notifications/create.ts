@@ -2,7 +2,14 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { createNotificationRequestForAddress } from 'lib/notifications/repository';
 import { NotificationRequest } from '@prisma/client';
 import { CreateNotificationReqBody } from 'lib/notifications/shared';
-import util from 'ethereumjs-util';
+import {
+  bufferToHex,
+  ecrecover,
+  fromRpcSig,
+  pubToAddress,
+  toBuffer,
+  keccak,
+} from 'ethereumjs-util';
 
 export default async function handler(
   req: NextApiRequest,
@@ -46,19 +53,14 @@ export default async function handler(
 }
 
 function generateAddressFromSignedMessage(signedMessage: string): string {
-  const msg: Buffer = Buffer.from(
-    process.env.NEXT_PUBLIC_NOTIFICATION_REQ_MESSAGE!,
-  );
-
-  const prefix = Buffer.from('\x19Ethereum Signed Message:\n');
-  const prefixedMsg = util.keccak256(
-    Buffer.concat([prefix, Buffer.from(String(msg.length)), msg]),
-  );
-
-  const resSig = util.fromRpcSig(signedMessage);
-  const pubKey = util.ecrecover(prefixedMsg, resSig.v, resSig.r, resSig.s);
-  const addrBuf = util.pubToAddress(pubKey);
-  const addr = util.bufferToHex(addrBuf);
+  let nonce = process.env.NEXT_PUBLIC_NOTIFICATION_REQ_MESSAGE!;
+  nonce = '\x19Ethereum Signed Message:\n' + nonce.length + nonce;
+  const nonceBuffer = keccak(toBuffer(nonce));
+  const sig = signedMessage;
+  const { v, r, s } = fromRpcSig(sig);
+  const pubKey = ecrecover(toBuffer(nonceBuffer), v, r, s);
+  const addrBuf = pubToAddress(pubKey);
+  const addr = bufferToHex(addrBuf);
 
   return addr;
 }
