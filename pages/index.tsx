@@ -3,14 +3,13 @@ import { parseSubgraphLoan } from 'lib/loans/utils';
 import { Loan as SubgraphLoan } from 'types/generated/graphql/nftLoans';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { AdvancedSearch, SearchHeader } from 'components/AdvancedSearch';
 import searchStyles from '../components/AdvancedSearch/AdvancedSearch.module.css';
 import { usePaginatedLoans } from 'hooks/usePaginatedLoans';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { SortOptionValue } from 'components/AdvancedSearch/SortDropdown';
 import { HomePageLoans } from 'components/HomePageLoans';
-import { NotificationMethod } from 'lib/notifications/shared';
 
 const PAGE_LIMIT = 20;
 

@@ -1,9 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import {
-  createNotificationRequestForAddress,
-  NotificationMethod,
-} from 'lib/notifications/repository';
+import { createNotificationRequestForAddress } from 'lib/notifications/repository';
 import { NotificationRequest } from '@prisma/client';
+import {
+  CreateNotificationReqBody,
+  NotificationMethod,
+} from 'lib/notifications/shared';
 
 export default async function handler(
   req: NextApiRequest,
@@ -15,13 +16,14 @@ export default async function handler(
   }
 
   try {
-    const { address, method, destination } = req.body;
+    const { address, method, destination } =
+      req.body as CreateNotificationReqBody;
 
     const createdNotificationRequest =
       await createNotificationRequestForAddress(
         address,
         '',
-        method as NotificationMethod,
+        method,
         destination,
       );
 
