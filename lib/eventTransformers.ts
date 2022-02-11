@@ -65,6 +65,6 @@ export function buyoutEventToUnified(event: BuyoutEvent): Event {
     interestEarned: ethers.BigNumber.from(event.interestEarned),
     replacedAmount: ethers.BigNumber.from(event.loanAmount),
     underwriter: event.newLender,
-    replacedLoanOwner: event.lendTicketOwner,
+    replacedLoanOwner: event.lendTicketHolder,
   };
 }

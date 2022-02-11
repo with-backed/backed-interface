@@ -43,7 +43,7 @@ export const LEND_EVENT_PROPERTIES = `
 export const BUYOUT_EVENT_PROPERTIES = `
     id,
     newLender,
-    lendTicketOwner,
+    lendTicketHolder,
     loanAmount,
     interestEarned,
     timestamp,
