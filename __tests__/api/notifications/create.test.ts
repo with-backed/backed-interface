@@ -24,7 +24,7 @@ describe('/api/notifications/create', () => {
   let sig: string;
   let expectedNotificationRequest: NotificationRequest;
 
-  describe('valid signed message makes call to prisma DB and returns 200', () => {
+  describe('valid signature with matching addresses', () => {
     beforeEach(async () => {
       wallet = ethers.Wallet.createRandom();
       sig = await wallet.signMessage(
@@ -47,7 +47,7 @@ describe('/api/notifications/create', () => {
         }),
       );
     });
-    it('returns 200 and makes a call to prisma repository on valid signed message + address', async () => {
+    it('makes a call to prisma repository and returns 200', async () => {
       const { req, res } = createMocks({
         method: 'POST',
         body: {
@@ -67,7 +67,7 @@ describe('/api/notifications/create', () => {
     });
   });
 
-  describe('invalid signed messages return 400', () => {
+  describe('invalid signature', () => {
     beforeEach(async () => {
       wallet = ethers.Wallet.createRandom();
       sig = 'random-invalid-sig';
@@ -91,7 +91,7 @@ describe('/api/notifications/create', () => {
     });
   });
 
-  describe('validly signed messages with mismatching addresses returns 400', () => {
+  describe('valid signature with mismatching addresses', () => {
     beforeEach(async () => {
       wallet = ethers.Wallet.createRandom();
       sig = await wallet.signMessage(
