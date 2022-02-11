@@ -164,7 +164,7 @@ export async function getAllEventsForAddress(
 ): Promise<Dictionary<[Event, ...Event[]]>> {
   const buyoutWhereFilters: BuyoutEvent_Filter[] = [
     { newLender: address },
-    { lendTicketOwner: address },
+    { lendTicketHolder: address },
   ];
 
   const collateralSeizedWhereFilters: CollateralSeizureEvent_Filter[] = [
