@@ -1,10 +1,7 @@
 import { PrismaClient, NotificationRequest } from '@prisma/client';
+import { NotificationMethod } from './shared';
 
 const prisma = new PrismaClient();
-
-export enum NotificationMethod {
-  EMAIL = 'email',
-}
 
 export async function createNotificationRequestForAddress(
   address: string,
