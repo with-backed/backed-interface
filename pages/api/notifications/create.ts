@@ -10,6 +10,7 @@ import {
   toBuffer,
   keccak,
 } from 'ethereumjs-util';
+import { ethers } from 'ethers';
 
 export default async function handler(
   req: NextApiRequest,
@@ -26,8 +27,13 @@ export default async function handler(
 
     const addressFromSig = generateAddressFromSignedMessage(signedMessage);
 
+    if (addressFromSig == '') {
+      res.status(400).json('invalid signature sent');
+      return;
+    }
+
     if (addressFromSig.toLowerCase() != address.toLowerCase()) {
-      res.status(400).json('invalid signature sent with request');
+      res.status(400).json('valid signature sent with mismatching addresses');
       return;
     }
 
@@ -53,14 +59,13 @@ export default async function handler(
 }
 
 function generateAddressFromSignedMessage(signedMessage: string): string {
-  let nonce = process.env.NEXT_PUBLIC_NOTIFICATION_REQ_MESSAGE!;
-  nonce = '\x19Ethereum Signed Message:\n' + nonce.length + nonce;
-  const nonceBuffer = keccak(toBuffer(nonce));
-  const sig = signedMessage;
-  const { v, r, s } = fromRpcSig(sig);
-  const pubKey = ecrecover(toBuffer(nonceBuffer), v, r, s);
-  const addrBuf = pubToAddress(pubKey);
-  const addr = bufferToHex(addrBuf);
-
-  return addr;
+  try {
+    const address = ethers.utils.verifyMessage(
+      process.env.NEXT_PUBLIC_NOTIFICATION_REQ_MESSAGE!,
+      signedMessage,
+    );
+    return address;
+  } catch (_e) {
+    return '';
+  }
 }

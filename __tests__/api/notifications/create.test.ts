@@ -1,3 +1,4 @@
+import { NotificationRequest } from '@prisma/client';
 import { ethers } from 'ethers';
 import { createNotificationRequestForAddress } from 'lib/notifications/repository';
 import { NotificationMethod } from 'lib/notifications/shared';
@@ -21,26 +22,28 @@ describe('/api/notifications/create', () => {
   let address: string;
   let wallet: ethers.Wallet;
   let sig: string;
+  let expectedNotificationRequest: NotificationRequest;
 
-  describe('valid signed message', () => {
+  describe('valid signed message makes call to prisma DB and returns 200', () => {
     beforeEach(async () => {
       wallet = ethers.Wallet.createRandom();
       sig = await wallet.signMessage(
         ethers.utils.arrayify(
-          new Buffer.from(process.env.NEXT_PUBLIC_NOTIFICATION_REQ_MESSAGE!),
+          Buffer.from(process.env.NEXT_PUBLIC_NOTIFICATION_REQ_MESSAGE!),
         ),
       );
       address = wallet.address;
+      expectedNotificationRequest = {
+        id: 1,
+        ethAddress: address,
+        deliveryDestination: notificationDestination,
+        deliveryMethod: notificationMethod,
+        event,
+      };
 
       mockedCreateDBCall.mockReturnValue(
-        new Promise((resolve, reject) => {
-          resolve({
-            id: 1,
-            ethAddress: address,
-            deliveryDestination: notificationDestination,
-            deliveryMethod: notificationMethod,
-            event,
-          });
+        new Promise((resolve, _reject) => {
+          resolve(expectedNotificationRequest);
         }),
       );
     });
@@ -59,13 +62,61 @@ describe('/api/notifications/create', () => {
 
       expect(res._getStatusCode()).toBe(200);
       expect(JSON.parse(res._getData())).toEqual(
-        expect.objectContaining({
-          id: 1,
-          ethAddress: address,
-          deliveryDestination: notificationDestination,
-          deliveryMethod: notificationMethod,
-          event,
-        }),
+        expect.objectContaining(expectedNotificationRequest),
+      );
+    });
+  });
+
+  describe('invalid signed messages return 400', () => {
+    beforeEach(async () => {
+      wallet = ethers.Wallet.createRandom();
+      sig = 'random-invalid-sig';
+      address = wallet.address;
+    });
+    it('returns 400', async () => {
+      const { req, res } = createMocks({
+        method: 'POST',
+        body: {
+          address,
+          method: notificationMethod,
+          destination: notificationDestination,
+          signedMessage: sig,
+        },
+      });
+
+      await handler(req, res);
+
+      expect(res._getStatusCode()).toBe(400);
+      expect(JSON.parse(res._getData())).toEqual('invalid signature sent');
+    });
+  });
+
+  describe('validly signed messages with mismatching addresses returns 400', () => {
+    beforeEach(async () => {
+      wallet = ethers.Wallet.createRandom();
+      sig = await wallet.signMessage(
+        ethers.utils.arrayify(
+          Buffer.from(process.env.NEXT_PUBLIC_NOTIFICATION_REQ_MESSAGE!),
+        ),
+      );
+      address = ethers.Wallet.createRandom().address; // use new random address
+    });
+    it('returns 400', async () => {
+      const { req, res } = createMocks({
+        method: 'POST',
+        body: {
+          address,
+          method: notificationMethod,
+          destination: notificationDestination,
+          signedMessage: sig,
+        },
+      });
+
+      await handler(req, res);
+
+      expect(res._getStatusCode()).toBe(400);
+      expect(JSON.parse(res._getData())).toEqual(
+        'valid signature sent with mismatching addresses',
       );
     });
   });
