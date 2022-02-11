@@ -1,10 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { createNotificationRequestForAddress } from 'lib/notifications/repository';
 import { NotificationRequest } from '@prisma/client';
-import {
-  CreateNotificationReqBody,
-  NotificationMethod,
-} from 'lib/notifications/shared';
+import { CreateNotificationReqBody } from 'lib/notifications/shared';
 import util from 'ethereumjs-util';
 
 export default async function handler(
