@@ -2,14 +2,6 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { createNotificationRequestForAddress } from 'lib/notifications/repository';
 import { NotificationRequest } from '@prisma/client';
 import { CreateNotificationReqBody } from 'lib/notifications/shared';
-import {
-  bufferToHex,
-  ecrecover,
-  fromRpcSig,
-  pubToAddress,
-  toBuffer,
-  keccak,
-} from 'ethereumjs-util';
 import { ethers } from 'ethers';
 
 export default async function handler(
