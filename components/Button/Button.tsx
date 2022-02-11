@@ -7,6 +7,7 @@ export type ButtonKind =
   | 'primary-dark-bg'
   | 'secondary'
   | 'tertiary'
+  | 'quaternary'
   | 'highlight'
   | 'white';
 

@@ -21,7 +21,7 @@ export function SearchHeader({
       <div className={styles.searchButton}>
         <GridListSelector handleChange={handleViewChange} />
         <Button
-          kind={`${showSearch ? 'secondary' : 'primary-dark-bg'}`}
+          kind={showSearch ? 'highlight' : 'quaternary'}
           onClick={() => setShowSearch(!showSearch)}>
           &#x1F50D; Search
         </Button>
