@@ -10,7 +10,27 @@
   align-items: center;
   justify-content: center;
   font-size: min(5vw, calc(var(--max-width) / 20));
-  background: var(--neutral-5);
+  background: #f7f3f1;
+}
+
+.fallback-animated {
+  composes: fallback;
+  background-image: linear-gradient(
+    110deg,
+    #f7f3f1 0%,
+    #f7f3f1 30%,
+    #fefaf8 50%,
+    #f7f3f1 70%,
+    #f7f3f1 100%
+  );
+  background-repeat: no-repeat;
+  background-size: 600px 600px;
+  position: relative;
+  animation-duration: 1600ms;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: placeholderShimmer;
+  animation-timing-function: linear;
 }
 
 .smallback {
@@ -20,4 +40,14 @@
 
 .fallback > span {
   opacity: 20%;
+}
+
+@keyframes placeholderShimmer {
+  0% {
+    background-position: -500px 0;
+  }
+
+  100% {
+    background-position: 500px 0;
+  }
 }
