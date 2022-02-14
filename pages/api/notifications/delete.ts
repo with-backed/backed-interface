@@ -36,7 +36,9 @@ export default async function handler(
       return;
     }
 
-    res.status(200);
+    res
+      .status(200)
+      .json(`notifications for address ${address} deleted successfully`);
   } catch (e) {
     // TODO: bugsnag
     console.error(e);
