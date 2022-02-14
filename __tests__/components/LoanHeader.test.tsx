@@ -106,7 +106,7 @@ describe('LoanHeader', () => {
     const { container } = render(
       <LoanHeader collateralMedia={null} loan={closedLoan} refresh={noop} />,
     );
-    const fallback = container.querySelector('.fallback');
+    const fallback = container.querySelector('.fallback-animated');
     expect(fallback).not.toBeNull();
   });
 });
