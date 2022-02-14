@@ -1,28 +1,21 @@
-import { NotificationRequest } from '@prisma/client';
 import { ethers } from 'ethers';
-import { createNotificationRequestForAddress } from 'lib/notifications/repository';
-import { NotificationMethod } from 'lib/notifications/shared';
+import { deleteAllNotificationRequestsForAddress } from 'lib/notifications/repository';
 import { createMocks } from 'node-mocks-http';
-import handler from 'pages/api/notifications/create';
-
-const event = '';
-const notificationMethod = NotificationMethod.EMAIL;
-const notificationDestination = 'adamgobes@gmail.com';
+import handler from 'pages/api/notifications/delete';
 
 jest.mock('lib/notifications/repository', () => ({
-  createNotificationRequestForAddress: jest.fn(),
+  deleteAllNotificationRequestsForAddress: jest.fn(),
 }));
 
 const mockedCreateDBCall =
-  createNotificationRequestForAddress as jest.MockedFunction<
-    typeof createNotificationRequestForAddress
+  deleteAllNotificationRequestsForAddress as jest.MockedFunction<
+    typeof deleteAllNotificationRequestsForAddress
   >;
 
-describe('/api/notifications/create', () => {
+describe('/api/notifications/delete', () => {
   let address: string;
   let wallet: ethers.Wallet;
   let sig: string;
-  let expectedNotificationRequest: NotificationRequest;
 
   describe('valid signature with matching addresses', () => {
     beforeEach(async () => {
@@ -33,37 +26,27 @@ describe('/api/notifications/create', () => {
         ),
       );
       address = wallet.address;
-      expectedNotificationRequest = {
-        id: 1,
-        ethAddress: address,
-        deliveryDestination: notificationDestination,
-        deliveryMethod: notificationMethod,
-        event,
-      };
 
       mockedCreateDBCall.mockReturnValue(
         new Promise((resolve, _reject) => {
-          resolve(expectedNotificationRequest);
+          resolve(true);
         }),
       );
     });
     it('makes a call to prisma repository and returns 200', async () => {
       const { req, res } = createMocks({
-        method: 'POST',
+        method: 'DELETE',
         body: {
           address,
-          method: notificationMethod,
-          destination: notificationDestination,
           signedMessage: sig,
         },
       });
-
       await handler(req, res);
 
       expect(mockedCreateDBCall.mock.calls.length).toBe(1);
       expect(res._getStatusCode()).toBe(200);
       expect(JSON.parse(res._getData())).toEqual(
-        expect.objectContaining(expectedNotificationRequest),
+        `notifications for address ${address} deleted successfully`,
       );
     });
   });
@@ -76,15 +59,12 @@ describe('/api/notifications/create', () => {
     });
     it('returns 400', async () => {
       const { req, res } = createMocks({
-        method: 'POST',
+        method: 'DELETE',
         body: {
           address,
-          method: notificationMethod,
-          destination: notificationDestination,
           signedMessage: sig,
         },
       });
-
       await handler(req, res);
 
       expect(res._getStatusCode()).toBe(400);
@@ -104,15 +84,12 @@ describe('/api/notifications/create', () => {
     });
     it('returns 400', async () => {
       const { req, res } = createMocks({
-        method: 'POST',
+        method: 'DELETE',
         body: {
           address,
-          method: notificationMethod,
-          destination: notificationDestination,
           signedMessage: sig,
         },
       });
-
       await handler(req, res);
 
       expect(res._getStatusCode()).toBe(400);
