@@ -19,7 +19,7 @@ export default async function handler(
 
     const addressFromSig = generateAddressFromSignedMessage(signedMessage);
 
-    if (addressFromSig == '') {
+    if (!addressFromSig) {
       res.status(400).json('invalid signature sent');
       return;
     }
@@ -50,7 +50,9 @@ export default async function handler(
   }
 }
 
-function generateAddressFromSignedMessage(signedMessage: string): string {
+function generateAddressFromSignedMessage(
+  signedMessage: string,
+): string | null {
   try {
     const address = ethers.utils.verifyMessage(
       process.env.NEXT_PUBLIC_NOTIFICATION_REQ_MESSAGE!,
@@ -58,6 +60,6 @@ function generateAddressFromSignedMessage(signedMessage: string): string {
     );
     return address;
   } catch (_e) {
-    return '';
+    return null;
   }
 }
