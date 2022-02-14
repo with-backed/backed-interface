@@ -1,22 +1,20 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { createNotificationRequestForAddress } from 'lib/notifications/repository';
+import { deleteAllNotificationRequestsForAddress } from 'lib/notifications/repository';
 import { NotificationRequest } from '@prisma/client';
 import { CreateNotificationReqBody } from 'lib/notifications/shared';
-import { ethers } from 'ethers';
 import { generateAddressFromSignedMessage } from 'lib/signedMessages';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<NotificationRequest | string>,
 ) {
-  if (req.method != 'POST') {
-    res.status(405).send('Only POST requests allowed');
+  if (req.method != 'DELETE') {
+    res.status(405).send('Only DELETE requests allowed');
     return;
   }
 
   try {
-    const { address, method, destination, signedMessage } =
-      req.body as CreateNotificationReqBody;
+    const { address, signedMessage } = req.body as CreateNotificationReqBody;
 
     const addressFromSig = generateAddressFromSignedMessage(signedMessage);
 
@@ -30,20 +28,15 @@ export default async function handler(
       return;
     }
 
-    const createdNotificationRequest =
-      await createNotificationRequestForAddress(
-        address.toLowerCase(),
-        '',
-        method,
-        destination,
-      );
+    const deleteNotificationRequestsRes =
+      await deleteAllNotificationRequestsForAddress(address.toLowerCase());
 
-    if (!createdNotificationRequest) {
-      res.status(400).json('unexpected error creating notification request');
+    if (!deleteNotificationRequestsRes) {
+      res.status(400).json('unexpected error deleting notification requests');
       return;
     }
 
-    res.status(200).json(createdNotificationRequest);
+    res.status(200);
   } catch (e) {
     // TODO: bugsnag
     console.error(e);
