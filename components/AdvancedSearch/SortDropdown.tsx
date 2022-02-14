@@ -19,6 +19,20 @@ export type SortOptionInput = {
 const sortOptions: SortOptionInput[] = [
   {
     value: {
+      field: Loan_OrderBy.LastUpdatedAtTimestamp,
+      direction: OrderDirection.Desc,
+    },
+    label: 'Recent Activity',
+  },
+  {
+    value: {
+      field: Loan_OrderBy.NumEvents,
+      direction: OrderDirection.Desc,
+    },
+    label: 'Most Activity',
+  },
+  {
+    value: {
       field: Loan_OrderBy.CreatedAtTimestamp,
       direction: OrderDirection.Desc,
     },
