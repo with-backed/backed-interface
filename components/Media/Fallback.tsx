@@ -8,17 +8,28 @@ const getRandomItem = () => {
 
 type FallbackProps = {
   small?: boolean;
+  animated?: boolean;
 };
 
-export const Fallback = ({ small }: FallbackProps) => {
+export const Fallback = ({ animated = true, small }: FallbackProps) => {
   const [item, setItem] = useState('');
   useEffect(() => {
     setItem(getRandomItem());
   }, [setItem]);
+
+  const className = useMemo(() => {
+    if (small) {
+      return styles.smallback;
+    }
+
+    if (animated) {
+      return styles['fallback-animated'];
+    }
+
+    return styles.fallback;
+  }, [animated, small]);
   return (
-    <div
-      aria-hidden="true"
-      className={small ? styles.smallback : styles.fallback}>
+    <div aria-hidden="true" className={className}>
       <span>{item}</span>
     </div>
   );

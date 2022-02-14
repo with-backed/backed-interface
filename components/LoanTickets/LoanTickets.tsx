@@ -58,7 +58,7 @@ function LenderColumn({ loan }: LenderColumnProps) {
   if (!loan.lender) {
     return (
       <div className={styles.column}>
-        <Fallback />
+        <Fallback animated={false} />
         <DescriptionList>
           <dt>Lender</dt>
           <dd>No lender yet</dd>

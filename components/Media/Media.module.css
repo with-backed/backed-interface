@@ -10,8 +10,11 @@
   align-items: center;
   justify-content: center;
   font-size: min(5vw, calc(var(--max-width) / 20));
-
   background: #f7f3f1;
+}
+
+.fallback-animated {
+  composes: fallback;
   background-image: linear-gradient(
     110deg,
     #f7f3f1 0%,
