@@ -43,6 +43,7 @@ describe('/api/notifications/delete', () => {
       });
       await handler(req, res);
 
+      expect(mockedCreateDBCall.mock.calls.length).toBe(1);
       expect(res._getStatusCode()).toBe(200);
       expect(JSON.parse(res._getData())).toEqual(
         `notifications for address ${address} deleted successfully`,
