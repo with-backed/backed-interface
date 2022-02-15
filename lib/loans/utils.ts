@@ -34,11 +34,18 @@ export function parseSubgraphLoan(loan: SubgraphLoan): Loan {
     durationSeconds: ethers.BigNumber.from(loan.durationSeconds),
     loanAmount: loanAmount,
     loanAssetDecimals: loan.loanAssetDecimal,
-    lender: loan.lendTicketHolder || null,
+    lender: ethers.utils.getAddress(loan.lendTicketHolder) || null,
     borrower:
-      loan.borrowTicketHolder || '0x0000000000000000000000000000000000000000',
+      ethers.utils.getAddress(loan.borrowTicketHolder) ||
+      '0x0000000000000000000000000000000000000000',
     interestOwed: interestOwed,
     endDateTimestamp: loan.endDateTimestamp || 0,
+    loanAssetContractAddress: ethers.utils.getAddress(
+      loan.loanAssetContractAddress,
+    ),
+    collateralContractAddress: ethers.utils.getAddress(
+      loan.collateralContractAddress,
+    ),
   };
 }
 

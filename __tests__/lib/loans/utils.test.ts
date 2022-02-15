@@ -18,6 +18,7 @@ describe('parseSubgraphLoan', () => {
   let endDateTimestamp = 1639776108;
   let id = '1';
   let lastAccumulatedTimestamp = '0';
+  const lastUpdatedAtTimestamp = 1644953457;
   let lendTicketHolder = '0xbc3ed6b537f2980e66f396fe14210a56ba3f72c4';
   let loanAmount = '1000000000000000000000';
   let loanAssetContractAddress = '0x6916577695d0774171de3ed95d03a3239139eddb';
@@ -26,6 +27,7 @@ describe('parseSubgraphLoan', () => {
   let perSecondInterestRate = '15';
   const collateralTokenURI = 'gopher://gopher.pawnshop.internet';
   const collateralName = 'This is a name';
+  const numEvents = 0;
   const status = LoanStatus.Active;
   let subgraphLoan: SubgraphLoan;
 
@@ -54,6 +56,8 @@ describe('parseSubgraphLoan', () => {
       collateralName,
       status,
       createdAtTimestamp,
+      lastUpdatedAtTimestamp,
+      numEvents,
     });
 
     // freeze date for calculations
@@ -61,32 +65,37 @@ describe('parseSubgraphLoan', () => {
   });
 
   it('parses values correctly', () => {
-    expect(result()).toEqual(
-      expect.objectContaining({
-        id: ethers.BigNumber.from(id),
-        loanAmount: ethers.BigNumber.from(loanAmount),
-        collateralTokenId: ethers.BigNumber.from(collateralTokenId),
+    expect(result()).toEqual({
+      id: ethers.BigNumber.from(id),
+      loanAmount: ethers.BigNumber.from(loanAmount),
+      collateralTokenId: ethers.BigNumber.from(collateralTokenId),
+      collateralContractAddress: ethers.utils.getAddress(
         collateralContractAddress,
-        durationSeconds: ethers.BigNumber.from(durationSeconds),
-        endDateTimestamp,
-        loanAssetDecimal,
-        loanAssetDecimals: loanAssetDecimal,
-        closed,
-        loanAssetSymbol,
+      ),
+      collateralName,
+      createdAtTimestamp,
+      durationSeconds: ethers.BigNumber.from(durationSeconds),
+      endDateTimestamp,
+      loanAssetDecimal,
+      loanAssetDecimals: loanAssetDecimal,
+      closed,
+      loanAssetSymbol,
+      loanAssetContractAddress: ethers.utils.getAddress(
         loanAssetContractAddress,
-        accumulatedInterest: ethers.BigNumber.from(accumulatedInterest),
-        borrowTicketHolder,
-        borrower: borrowTicketHolder,
-        lendTicketHolder,
-        lender: lendTicketHolder,
-        perSecondInterestRate: ethers.BigNumber.from(perSecondInterestRate),
-        lastAccumulatedTimestamp: ethers.BigNumber.from(
-          lastAccumulatedTimestamp,
-        ),
-        interestOwed: ethers.BigNumber.from('0'),
-        collateralTokenURI,
-      }),
-    );
+      ),
+      accumulatedInterest: ethers.BigNumber.from(accumulatedInterest),
+      borrowTicketHolder,
+      borrower: ethers.utils.getAddress(borrowTicketHolder),
+      lendTicketHolder,
+      lender: ethers.utils.getAddress(lendTicketHolder),
+      perSecondInterestRate: ethers.BigNumber.from(perSecondInterestRate),
+      lastAccumulatedTimestamp: ethers.BigNumber.from(lastAccumulatedTimestamp),
+      interestOwed: ethers.BigNumber.from('0'),
+      collateralTokenURI,
+      status,
+      lastUpdatedAtTimestamp,
+      numEvents,
+    });
   });
 
   describe('when last accumulated timestamp is not 0', () => {
