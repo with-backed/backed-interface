@@ -2,9 +2,10 @@ export enum NotificationMethod {
   EMAIL = 'email',
 }
 
-export type CreateNotificationReqBody = {
-  address: string;
-  method: NotificationMethod;
-  destination: string;
+export enum NotificationEventTrigger {
+  ALL = 'all',
+}
+
+export type NotificationReqBody = {
   signedMessage: string;
 };
