@@ -4,11 +4,14 @@ import {
   createNotificationRequestForAddress,
   deleteAllNotificationRequestsForAddress,
 } from 'lib/notifications/repository';
-import { NotificationMethod } from 'lib/notifications/shared';
+import {
+  NotificationEventTrigger,
+  NotificationMethod,
+} from 'lib/notifications/shared';
 import { createMocks } from 'node-mocks-http';
 import handler from 'pages/api/addresses/[address]/notifications/emails/[email]';
 
-const event = '';
+const event = NotificationEventTrigger.ALL;
 const notificationMethod = NotificationMethod.EMAIL;
 const notificationDestination = 'adamgobes@gmail.com';
 
@@ -61,6 +64,10 @@ describe('/api/addresses/[address]/notifications/emails/[email]', () => {
         }),
       );
     });
+    afterEach(() => {
+      mockedCreateDBCall.mockReset();
+      mockedDeleteDBCall.mockReset();
+    });
     it('makes a call to prisma repository and returns 200 on POST', async () => {
       const { req, res } = createMocks({
         method: 'POST',
@@ -76,6 +83,12 @@ describe('/api/addresses/[address]/notifications/emails/[email]', () => {
       await handler(req, res);
 
       expect(mockedCreateDBCall).toBeCalledTimes(1);
+      expect(mockedCreateDBCall).toHaveBeenCalledWith(
+        address.toLowerCase(),
+        event,
+        notificationMethod,
+        notificationDestination,
+      );
       expect(res._getStatusCode()).toBe(200);
       expect(JSON.parse(res._getData())).toEqual(
         expect.objectContaining(expectedNotificationRequest),
@@ -97,6 +110,7 @@ describe('/api/addresses/[address]/notifications/emails/[email]', () => {
       await handler(req, res);
 
       expect(mockedDeleteDBCall).toBeCalledTimes(1);
+      expect(mockedDeleteDBCall).toHaveBeenCalledWith(address.toLowerCase());
       expect(res._getStatusCode()).toBe(200);
       expect(JSON.parse(res._getData())).toEqual(
         `notifications for address ${address.toLowerCase()} deleted successfully`,
@@ -124,6 +138,7 @@ describe('/api/addresses/[address]/notifications/emails/[email]', () => {
 
       await handler(req, res);
 
+      expect(mockedCreateDBCall).toBeCalledTimes(0);
       expect(res._getStatusCode()).toBe(400);
       expect(JSON.parse(res._getData())).toEqual('invalid signature sent');
     });
@@ -141,6 +156,7 @@ describe('/api/addresses/[address]/notifications/emails/[email]', () => {
 
       await handler(req, res);
 
+      expect(mockedDeleteDBCall).toBeCalledTimes(0);
       expect(res._getStatusCode()).toBe(400);
       expect(JSON.parse(res._getData())).toEqual('invalid signature sent');
     });
@@ -170,6 +186,7 @@ describe('/api/addresses/[address]/notifications/emails/[email]', () => {
 
       await handler(req, res);
 
+      expect(mockedCreateDBCall).toBeCalledTimes(0);
       expect(res._getStatusCode()).toBe(400);
       expect(JSON.parse(res._getData())).toEqual(
         'valid signature sent with mismatching addresses',
@@ -189,6 +206,7 @@ describe('/api/addresses/[address]/notifications/emails/[email]', () => {
 
       await handler(req, res);
 
+      expect(mockedDeleteDBCall).toBeCalledTimes(0);
       expect(res._getStatusCode()).toBe(400);
       expect(JSON.parse(res._getData())).toEqual(
         'valid signature sent with mismatching addresses',
