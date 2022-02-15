@@ -36,7 +36,7 @@ export function NFTMedia({
   }, [load]);
 
   if (!nftInfo) {
-    return <Fallback small={small} />;
+    return <Fallback small={small} animated={collateralAddress.length > 0} />;
   }
 
   return (
