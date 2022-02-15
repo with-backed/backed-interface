@@ -66,7 +66,7 @@ export async function nodeLoanEventsById(loanIdString: string) {
       id: transactionHash,
       timestamp,
       typename: 'CreateEvent',
-      minter: args.minter.toLowerCase(),
+      minter: ethers.utils.getAddress(args.minter),
       maxInterestRate: args.maxInterestRate,
       minDurationSeconds: args.minDurationSeconds,
       minLoanAmount: args.minLoanAmount,
@@ -100,7 +100,7 @@ export async function nodeLoanEventsById(loanIdString: string) {
       loanAmount: args.loanAmount,
       durationSeconds: args.durationSeconds,
       interestRate: args.interestRate,
-      underwriter: args.underwriter.toLowerCase(),
+      underwriter: ethers.utils.getAddress(args.underwriter),
     };
     events.push(parsedEvent);
   }
@@ -117,8 +117,8 @@ export async function nodeLoanEventsById(loanIdString: string) {
       typename: 'BuyoutEvent',
       replacedAmount: args.replacedAmount,
       interestEarned: args.interestEarned,
-      replacedLoanOwner: args.replacedLoanOwner.toLowerCase(),
-      underwriter: args.underwriter.toLowerCase(),
+      replacedLoanOwner: ethers.utils.getAddress(args.replacedLoanOwner),
+      underwriter: ethers.utils.getAddress(args.underwriter),
     };
     events.push(parsedEvent);
   }
@@ -135,8 +135,8 @@ export async function nodeLoanEventsById(loanIdString: string) {
       typename: 'RepaymentEvent',
       loanAmount: args.loanAmount,
       interestEarned: args.interestEarned,
-      repayer: args.repayer.toLowerCase(),
-      loanOwner: args.loanOwner,
+      repayer: ethers.utils.getAddress(args.repayer),
+      loanOwner: ethers.utils.getAddress(args.loanOwner),
     };
     events.push(parsedEvent);
   }
