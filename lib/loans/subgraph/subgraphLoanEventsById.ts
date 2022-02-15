@@ -9,7 +9,6 @@ import {
   RepaymentEvent,
 } from 'types/generated/graphql/nftLoans';
 import { Event } from 'types/Event';
-import { ethers } from 'ethers';
 import {
   buyoutEventToUnified,
   closeEventToUnified,

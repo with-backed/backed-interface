@@ -53,9 +53,11 @@ export async function nodeLoanById(loanId: string): Promise<Loan> {
 
   return {
     id,
-    loanAssetContractAddress,
+    loanAssetContractAddress: ethers.utils.getAddress(loanAssetContractAddress),
     collateralName,
-    collateralContractAddress,
+    collateralContractAddress: ethers.utils.getAddress(
+      collateralContractAddress,
+    ),
     collateralTokenId,
     perSecondInterestRate: ethers.BigNumber.from(perSecondInterestRate),
     accumulatedInterest,
@@ -65,8 +67,8 @@ export async function nodeLoanById(loanId: string): Promise<Loan> {
     closed,
     loanAssetDecimals: parseInt(decimals.toString()),
     loanAssetSymbol,
-    lender,
-    borrower,
+    lender: lender ? ethers.utils.getAddress(lender) : null,
+    borrower: ethers.utils.getAddress(borrower),
     interestOwed,
     endDateTimestamp,
     collateralTokenURI,

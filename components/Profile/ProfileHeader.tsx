@@ -83,7 +83,7 @@ function LoanStats({ address, loans, kind }: LoanStatsProps) {
     <DescriptionList orientation="horizontal">
       <dt>
         <BorrowerLenderBubble
-          address={address || ''}
+          address={address}
           borrower={kind === 'borrower'}
         />
       </dt>
@@ -104,13 +104,11 @@ function LoanStats({ address, loans, kind }: LoanStatsProps) {
 
 export function ProfileHeader({ address, loans }: ProfileHeaderProps) {
   const loansAsBorrower = useMemo(
-    () =>
-      loans.filter((l) => l.borrower.toLowerCase() === address.toLowerCase()),
+    () => loans.filter((l) => l.borrower === ethers.utils.getAddress(address)),
     [loans, address],
   );
   const loansAsLender = useMemo(
-    () =>
-      loans.filter((l) => l.lender?.toLowerCase() === address.toLowerCase()),
+    () => loans.filter((l) => l.lender === ethers.utils.getAddress(address)),
     [loans, address],
   );
 
