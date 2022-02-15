@@ -84,7 +84,7 @@ describe('/api/addresses/[address]/notifications/emails/[email]', () => {
 
       expect(mockedCreateDBCall).toBeCalledTimes(1);
       expect(mockedCreateDBCall).toHaveBeenCalledWith(
-        address.toLowerCase(),
+        address,
         event,
         notificationMethod,
         notificationDestination,
@@ -110,10 +110,10 @@ describe('/api/addresses/[address]/notifications/emails/[email]', () => {
       await handler(req, res);
 
       expect(mockedDeleteDBCall).toBeCalledTimes(1);
-      expect(mockedDeleteDBCall).toHaveBeenCalledWith(address.toLowerCase());
+      expect(mockedDeleteDBCall).toHaveBeenCalledWith(address);
       expect(res._getStatusCode()).toBe(200);
       expect(JSON.parse(res._getData())).toEqual(
-        `notifications for address ${address.toLowerCase()} deleted successfully`,
+        `notifications for address ${address} deleted successfully`,
       );
     });
   });

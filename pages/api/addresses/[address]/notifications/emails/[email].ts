@@ -10,6 +10,7 @@ import {
   NotificationEventTrigger,
 } from 'lib/notifications/shared';
 import { generateAddressFromSignedMessage } from 'lib/signedMessages';
+import { ethers } from 'ethers';
 
 export default async function handler(
   req: NextApiRequest,
@@ -25,7 +26,7 @@ export default async function handler(
     const { signedMessage } = req.body as NotificationReqBody;
 
     const addressFromSig = generateAddressFromSignedMessage(signedMessage);
-    const addressFromQuery = (address as string).toLowerCase();
+    const addressFromQuery = ethers.utils.getAddress(address as string);
     const destination = email as string;
     const method = NotificationMethod.EMAIL;
 
@@ -34,7 +35,7 @@ export default async function handler(
       return;
     }
 
-    if (addressFromSig.toLowerCase() != addressFromQuery) {
+    if (ethers.utils.getAddress(addressFromSig) != addressFromQuery) {
       res.status(400).json('valid signature sent with mismatching addresses');
       return;
     }
