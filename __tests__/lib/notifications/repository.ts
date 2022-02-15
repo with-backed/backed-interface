@@ -4,10 +4,13 @@ import {
   deleteNotificationRequestById,
   getNotificationRequestsForAddress,
 } from 'lib/notifications/repository';
-import { NotificationMethod } from 'lib/notifications/shared';
+import {
+  NotificationEventTrigger,
+  NotificationMethod,
+} from 'lib/notifications/shared';
 
 const address = '0x7e6463782b87c57cffa6af66e7c2de64e97d1866';
-const event = '';
+const event = NotificationEventTrigger.ALL;
 const notificationMethod = NotificationMethod.EMAIL;
 const notificationDestination = 'adamgobes@gmail.com';
 

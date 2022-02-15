@@ -1,11 +1,11 @@
 import { PrismaClient, NotificationRequest } from '@prisma/client';
-import { NotificationMethod } from './shared';
+import { NotificationEventTrigger, NotificationMethod } from './shared';
 
 const prisma = new PrismaClient();
 
 export async function createNotificationRequestForAddress(
   address: string,
-  event: string,
+  event: NotificationEventTrigger,
   method: NotificationMethod,
   destination: string,
 ): Promise<NotificationRequest | null> {

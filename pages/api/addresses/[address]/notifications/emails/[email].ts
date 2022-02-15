@@ -7,6 +7,7 @@ import { NotificationRequest } from '@prisma/client';
 import {
   NotificationReqBody,
   NotificationMethod,
+  NotificationEventTrigger,
 } from 'lib/notifications/shared';
 import { generateAddressFromSignedMessage } from 'lib/signedMessages';
 
@@ -41,7 +42,7 @@ export default async function handler(
     if (req.method == 'POST') {
       const notificationRequest = await createNotificationRequestForAddress(
         addressFromQuery,
-        '',
+        NotificationEventTrigger.ALL,
         method,
         destination,
       );
