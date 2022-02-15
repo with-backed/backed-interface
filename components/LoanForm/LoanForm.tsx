@@ -67,7 +67,7 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
     loan.lastAccumulatedTimestamp
       .add(loan.durationSeconds)
       .lte(timestamp || 0) &&
-    account.toLowerCase() === loan.lender?.toLowerCase()
+    account === loan.lender
   ) {
     if (account.toUpperCase() === loan.lender?.toUpperCase()) {
       return (
