@@ -34,15 +34,15 @@ export async function nodeLoanById(loanId: string): Promise<Loan> {
   const decimals = await loanAssetContract.decimals();
   const loanAssetSymbol = await loanAssetContract.symbol();
   let lender = null;
-  if (!lastAccumulatedTimestamp.eq(0)) {
+  if (lastAccumulatedTimestamp != 0) {
     lender = await lendTicket.ownerOf(loanId);
   }
 
   const interestOwed = await loanFacilitator.interestOwed(loanId);
   const borrower = await borrowTicket.ownerOf(loanId);
   let endDateTimestamp: number = 0;
-  if (!lastAccumulatedTimestamp.eq(0)) {
-    endDateTimestamp = lastAccumulatedTimestamp.add(durationSeconds).toNumber();
+  if (lastAccumulatedTimestamp != 0) {
+    endDateTimestamp = lastAccumulatedTimestamp + durationSeconds;
   }
 
   const collateralAssetContract = jsonRpcERC721Contract(
@@ -57,10 +57,10 @@ export async function nodeLoanById(loanId: string): Promise<Loan> {
     collateralName,
     collateralContractAddress,
     collateralTokenId,
-    perSecondInterestRate,
+    perSecondInterestRate: ethers.BigNumber.from(perSecondInterestRate),
     accumulatedInterest,
-    lastAccumulatedTimestamp,
-    durationSeconds,
+    lastAccumulatedTimestamp: ethers.BigNumber.from(lastAccumulatedTimestamp),
+    durationSeconds: ethers.BigNumber.from(durationSeconds),
     loanAmount,
     closed,
     loanAssetDecimals: parseInt(decimals.toString()),
