@@ -1,9 +1,12 @@
 import { NotificationRequest } from '@prisma/client';
 import { ethers } from 'ethers';
-import { createNotificationRequestForAddress } from 'lib/notifications/repository';
+import {
+  createNotificationRequestForAddress,
+  deleteAllNotificationRequestsForAddress,
+} from 'lib/notifications/repository';
 import { NotificationMethod } from 'lib/notifications/shared';
 import { createMocks } from 'node-mocks-http';
-import handler from 'pages/api/notifications/create';
+import handler from 'pages/api/addresses/[address]/notifications/emails/[email]';
 
 const event = '';
 const notificationMethod = NotificationMethod.EMAIL;
@@ -11,6 +14,7 @@ const notificationDestination = 'adamgobes@gmail.com';
 
 jest.mock('lib/notifications/repository', () => ({
   createNotificationRequestForAddress: jest.fn(),
+  deleteAllNotificationRequestsForAddress: jest.fn(),
 }));
 
 const mockedCreateDBCall =
@@ -18,7 +22,12 @@ const mockedCreateDBCall =
     typeof createNotificationRequestForAddress
   >;
 
-describe('/api/notifications/create', () => {
+const mockedDeleteDBCall =
+  deleteAllNotificationRequestsForAddress as jest.MockedFunction<
+    typeof deleteAllNotificationRequestsForAddress
+  >;
+
+describe('/api/addresses/[address]/notifications/emails/[email]', () => {
   let address: string;
   let wallet: ethers.Wallet;
   let sig: string;
@@ -46,24 +55,51 @@ describe('/api/notifications/create', () => {
           resolve(expectedNotificationRequest);
         }),
       );
+      mockedDeleteDBCall.mockReturnValue(
+        new Promise((resolve, _reject) => {
+          resolve(true);
+        }),
+      );
     });
-    it('makes a call to prisma repository and returns 200', async () => {
+    it('makes a call to prisma repository and returns 200 on POST', async () => {
       const { req, res } = createMocks({
         method: 'POST',
-        body: {
+        query: {
           address,
-          method: notificationMethod,
-          destination: notificationDestination,
+          email: notificationDestination,
+        },
+        body: {
           signedMessage: sig,
         },
       });
 
       await handler(req, res);
 
-      expect(mockedCreateDBCall.mock.calls.length).toBe(1);
+      expect(mockedCreateDBCall).toBeCalledTimes(1);
       expect(res._getStatusCode()).toBe(200);
       expect(JSON.parse(res._getData())).toEqual(
         expect.objectContaining(expectedNotificationRequest),
+      );
+    });
+
+    it('makes a call to prisma repository and returns 200 on DELETE', async () => {
+      const { req, res } = createMocks({
+        method: 'DELETE',
+        query: {
+          address,
+          email: notificationDestination,
+        },
+        body: {
+          signedMessage: sig,
+        },
+      });
+
+      await handler(req, res);
+
+      expect(mockedDeleteDBCall).toBeCalledTimes(1);
+      expect(res._getStatusCode()).toBe(200);
+      expect(JSON.parse(res._getData())).toEqual(
+        `notifications for address ${address.toLowerCase()} deleted successfully`,
       );
     });
   });
@@ -74,13 +110,31 @@ describe('/api/notifications/create', () => {
       sig = 'random-invalid-sig';
       address = wallet.address;
     });
-    it('returns 400', async () => {
+    it('returns 400 on POST', async () => {
       const { req, res } = createMocks({
         method: 'POST',
-        body: {
+        query: {
           address,
-          method: notificationMethod,
-          destination: notificationDestination,
+          email: notificationDestination,
+        },
+        body: {
+          signedMessage: sig,
+        },
+      });
+
+      await handler(req, res);
+
+      expect(res._getStatusCode()).toBe(400);
+      expect(JSON.parse(res._getData())).toEqual('invalid signature sent');
+    });
+    it('returns 400 on DELETE', async () => {
+      const { req, res } = createMocks({
+        method: 'DELETE',
+        query: {
+          address,
+          email: notificationDestination,
+        },
+        body: {
           signedMessage: sig,
         },
       });
@@ -102,13 +156,33 @@ describe('/api/notifications/create', () => {
       );
       address = ethers.Wallet.createRandom().address; // use new random address
     });
-    it('returns 400', async () => {
+    it('returns 400 on POST', async () => {
       const { req, res } = createMocks({
         method: 'POST',
-        body: {
+        query: {
           address,
-          method: notificationMethod,
-          destination: notificationDestination,
+          email: notificationDestination,
+        },
+        body: {
+          signedMessage: sig,
+        },
+      });
+
+      await handler(req, res);
+
+      expect(res._getStatusCode()).toBe(400);
+      expect(JSON.parse(res._getData())).toEqual(
+        'valid signature sent with mismatching addresses',
+      );
+    });
+    it('returns 400 on DELETE', async () => {
+      const { req, res } = createMocks({
+        method: 'DELETE',
+        query: {
+          address,
+          email: notificationDestination,
+        },
+        body: {
           signedMessage: sig,
         },
       });
