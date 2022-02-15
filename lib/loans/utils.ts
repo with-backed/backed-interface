@@ -34,10 +34,12 @@ export function parseSubgraphLoan(loan: SubgraphLoan): Loan {
     durationSeconds: ethers.BigNumber.from(loan.durationSeconds),
     loanAmount: loanAmount,
     loanAssetDecimals: loan.loanAssetDecimal,
-    lender: ethers.utils.getAddress(loan.lendTicketHolder) || null,
-    borrower:
-      ethers.utils.getAddress(loan.borrowTicketHolder) ||
-      '0x0000000000000000000000000000000000000000',
+    lender: loan.lendTicketHolder
+      ? ethers.utils.getAddress(loan.lendTicketHolder)
+      : null,
+    borrower: loan.borrowTicketHolder
+      ? ethers.utils.getAddress(loan.borrowTicketHolder)
+      : '0x0000000000000000000000000000000000000000',
     interestOwed: interestOwed,
     endDateTimestamp: loan.endDateTimestamp || 0,
     loanAssetContractAddress: ethers.utils.getAddress(
