@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { Event } from 'types/Event';
+import * as EventTypes from 'types/Event';
 import {
   BuyoutEvent,
   CloseEvent,
@@ -9,18 +9,20 @@ import {
   RepaymentEvent,
 } from 'types/generated/graphql/nftLoans';
 
-export function createEventToUnified(event: CreateEvent): Event {
+export function createEventToUnified(
+  event: CreateEvent,
+): EventTypes.CreateEvent {
   return {
     ...event,
     typename: 'CreateEvent',
-    minter: event.creator,
+    minter: ethers.utils.getAddress(event.creator),
     maxInterestRate: ethers.BigNumber.from(event.maxPerSecondInterestRate),
     minLoanAmount: ethers.BigNumber.from(event.minLoanAmount),
     minDurationSeconds: ethers.BigNumber.from(event.minDurationSeconds),
   };
 }
 
-export function closeEventToUnified(event: CloseEvent): Event {
+export function closeEventToUnified(event: CloseEvent): EventTypes.CloseEvent {
   return {
     ...event,
     typename: 'CloseEvent',
@@ -29,42 +31,47 @@ export function closeEventToUnified(event: CloseEvent): Event {
 
 export function collateralSeizureEventToUnified(
   event: CollateralSeizureEvent,
-): Event {
+): EventTypes.CollateralSeizureEvent {
   return {
     ...event,
     typename: 'CollateralSeizureEvent',
   };
 }
 
-export function repaymentEventToUnified(event: RepaymentEvent): Event {
+export function repaymentEventToUnified(
+  event: RepaymentEvent,
+): EventTypes.RepaymentEvent {
   return {
     ...event,
     typename: 'RepaymentEvent',
-    loanOwner: event.lendTicketHolder,
+    loanOwner: ethers.utils.getAddress(event.lendTicketHolder),
     interestEarned: ethers.BigNumber.from(event.interestEarned),
     loanAmount: ethers.BigNumber.from(event.loanAmount),
+    repayer: ethers.utils.getAddress(event.repayer),
   };
 }
 
-export function lendEventToUnified(event: LendEvent): Event {
+export function lendEventToUnified(event: LendEvent): EventTypes.LendEvent {
   return {
     ...event,
     typename: 'LendEvent',
     interestRate: ethers.BigNumber.from(event.perSecondInterestRate),
     loanAmount: ethers.BigNumber.from(event.loanAmount),
     durationSeconds: ethers.BigNumber.from(event.durationSeconds),
-    underwriter: event.lender,
+    underwriter: ethers.utils.getAddress(event.lender),
   };
 }
 
-export function buyoutEventToUnified(event: BuyoutEvent): Event {
+export function buyoutEventToUnified(
+  event: BuyoutEvent,
+): EventTypes.BuyoutEvent {
   return {
     ...event,
     typename: 'BuyoutEvent',
 
     interestEarned: ethers.BigNumber.from(event.interestEarned),
     replacedAmount: ethers.BigNumber.from(event.loanAmount),
-    underwriter: event.newLender,
-    replacedLoanOwner: event.lendTicketHolder,
+    underwriter: ethers.utils.getAddress(event.newLender),
+    replacedLoanOwner: ethers.utils.getAddress(event.lendTicketHolder),
   };
 }
