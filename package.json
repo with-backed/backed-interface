@@ -19,7 +19,8 @@
     "graphql:generate:nft-sales": "graphql-codegen --config codegen/nftSales.yml",
     "abis:generate": "yarn typechain --target ethers-v5 --out-dir ./types/generated/abis './abis/*.json'",
     "prisma-migrate:test": "dotenv -e .env.test -- npx prisma migrate dev --name init-test",
-    "prisma:studio": "dotenv -e .env.test npx prisma studio"
+    "prisma:studio": "dotenv -e .env.test npx prisma studio",
+    "notifications:cron": "npx ts-node --skip-project lib/notifications/dailyCron.ts"
   },
   "dependencies": {
     "@ethersproject/providers": "^5.5.1",
