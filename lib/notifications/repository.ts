@@ -55,11 +55,33 @@ export async function deleteAllNotificationRequestsForAddress(
 
 export async function getNotificationRequestsForAddress(
   address: string,
+  event: NotificationEventTrigger = NotificationEventTrigger.ALL,
 ): Promise<NotificationRequest[]> {
   try {
     return await prisma.notificationRequest.findMany({
-      where: { ethAddress: address },
+      where: { ethAddress: address, event },
     });
+  } catch (e) {
+    console.error(e);
+    return [];
+  }
+}
+
+export async function getEmailsRegisteredForEvent(
+  event: NotificationEventTrigger,
+): Promise<string[]> {
+  try {
+    const requestsForAll = await prisma.notificationRequest.findMany({
+      where: { event: NotificationEventTrigger.ALL },
+    });
+
+    const requestsForEvent = await prisma.notificationRequest.findMany({
+      where: { event },
+    });
+
+    return [...requestsForAll, ...requestsForEvent]
+      .filter((r) => r.deliveryMethod === NotificationMethod.EMAIL)
+      .map((r) => r.deliveryDestination);
   } catch (e) {
     console.error(e);
     return [];

@@ -95,7 +95,7 @@ export async function getAllActiveLoansForAddress(
     .flat();
 }
 
-type EventFilter =
+export type EventFilter =
   | CreateEvent_Filter
   | CloseEvent_Filter
   | BuyoutEvent_Filter
@@ -111,7 +111,7 @@ type EventQueryArgs =
   | QueryRepaymentEventsArgs
   | QueryLendEventsArgs;
 
-function eventsQuery(
+export function eventsQuery(
   eventName: string,
   whereFilterType: string,
   properties: string,
@@ -129,7 +129,7 @@ function eventsQuery(
   `;
 }
 
-async function getEventsForEventType<T>(
+export async function getEventsForEventType<T>(
   eventQueryname: string,
   eventFilterType: string,
   properties: string,
