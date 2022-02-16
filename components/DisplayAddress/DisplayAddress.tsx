@@ -10,6 +10,7 @@ export function DisplayAddress({
   address,
   useEns = true,
 }: DisplayAddressProps) {
+  const [gotResponse, setGotResponse] = useState(false);
   const [addr, setAddr] = useState<string>(address);
 
   useEffect(() => {
@@ -17,14 +18,26 @@ export function DisplayAddress({
       try {
         let name = await addressToENS(address);
 
-        if (name) setAddr(name);
+        setGotResponse(true);
+        if (name) {
+          setAddr(name);
+        }
       } catch (error) {
         console.error(error);
+        setGotResponse(true);
       }
     }
 
     if (useEns) getEnsName();
   }, [address, useEns]);
 
-  return <>{addr}</>;
+  if (!useEns) {
+    return <>{addr}</>;
+  }
+
+  if (gotResponse) {
+    return <>{addr}</>;
+  }
+
+  return null;
 }
