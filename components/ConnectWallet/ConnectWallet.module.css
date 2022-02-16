@@ -25,3 +25,8 @@
 .menu > a:visited {
   color: var(--neutral-100);
 }
+
+.address {
+  display: flex;
+  gap: 1ch;
+}

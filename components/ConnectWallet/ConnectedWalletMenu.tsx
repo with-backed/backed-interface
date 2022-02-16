@@ -42,7 +42,9 @@ export function ConnectedWalletMenu({}: ConnectedWalletMenuProps) {
         onClick={toggleOpen}
         kind="secondary"
         style={{ background: open ? 'var(--highlight-visited-10)' : '' }}>
-        🔓 <DisplayAddress address={account} />
+        <span className={styles.address}>
+          🔓 <DisplayAddress address={account} />
+        </span>
       </Button>
       <div className={styles.menu} style={{ display: open ? '' : 'none' }}>
         <ButtonLink href={`/profile/${account}`} kind="tertiary">

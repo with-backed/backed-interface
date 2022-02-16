@@ -1,42 +1,52 @@
-import { ethers } from 'ethers';
+import { addressToENS } from 'lib/account';
 import React, { useEffect, useState } from 'react';
+import styles from './Address.module.css';
 
 export interface DisplayAddressProps {
   address: string;
   useEns?: boolean;
 }
 
-function addressToENS(address: string) {
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  return provider.lookupAddress(address);
-}
-
-function shortenAddress(address: string) {
-  if (address.substring(0, 2) != '0x') return address;
-  return (
-    address.substring(0, 6) + '...' + address.substring(address.length - 4)
-  );
-}
-
 export function DisplayAddress({
   address,
   useEns = true,
 }: DisplayAddressProps) {
-  const [addr, setAddr] = useState<string>(shortenAddress(address));
+  const [gotResponse, setGotResponse] = useState(false);
+  const [addr, setAddr] = useState<string>(address);
 
   useEffect(() => {
     async function getEnsName() {
       try {
         let name = await addressToENS(address);
 
-        if (name) setAddr(name);
+        setGotResponse(true);
+        if (name) {
+          setAddr(name);
+        }
       } catch (error) {
         console.error(error);
+        setGotResponse(true);
       }
     }
 
     if (useEns) getEnsName();
   }, [address, useEns]);
 
-  return <span>{addr}</span>;
+  if (!useEns) {
+    return (
+      <span title={addr} className={styles.truncate}>
+        {addr}
+      </span>
+    );
+  }
+
+  if (gotResponse) {
+    return (
+      <span title={addr} className={styles.truncate}>
+        {addr}
+      </span>
+    );
+  }
+
+  return null;
 }
