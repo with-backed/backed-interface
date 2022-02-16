@@ -33,11 +33,19 @@ export function DisplayAddress({
   }, [address, useEns]);
 
   if (!useEns) {
-    return <span className={styles.truncate}>{addr}</span>;
+    return (
+      <span title={addr} className={styles.truncate}>
+        {addr}
+      </span>
+    );
   }
 
   if (gotResponse) {
-    return <span className={styles.truncate}>{addr}</span>;
+    return (
+      <span title={addr} className={styles.truncate}>
+        {addr}
+      </span>
+    );
   }
 
   return null;
