@@ -1,5 +1,6 @@
 import { addressToENS } from 'lib/account';
 import React, { useEffect, useState } from 'react';
+import styles from './Address.module.css';
 
 export interface DisplayAddressProps {
   address: string;
@@ -32,11 +33,11 @@ export function DisplayAddress({
   }, [address, useEns]);
 
   if (!useEns) {
-    return <>{addr}</>;
+    return <span className={styles.truncate}>{addr}</span>;
   }
 
   if (gotResponse) {
-    return <>{addr}</>;
+    return <span className={styles.truncate}>{addr}</span>;
   }
 
   return null;
