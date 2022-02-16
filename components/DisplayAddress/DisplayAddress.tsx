@@ -1,14 +1,9 @@
-import { ethers } from 'ethers';
+import { addressToENS } from 'lib/account';
 import React, { useEffect, useState } from 'react';
 
 export interface DisplayAddressProps {
   address: string;
   useEns?: boolean;
-}
-
-function addressToENS(address: string) {
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  return provider.lookupAddress(address);
 }
 
 export function DisplayAddress({

@@ -48,10 +48,15 @@ export function waitForApproval(account: string, contractAddress: string) {
   });
 }
 
-export async function resolveEns(address: string) {
+export function resolveEns(address: string) {
   const provider = new ethers.providers.JsonRpcProvider(
     process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
   );
 
   return provider.resolveName(address);
+}
+
+export function addressToENS(address: string) {
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  return provider.lookupAddress(address);
 }
