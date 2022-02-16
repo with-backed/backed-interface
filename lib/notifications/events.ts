@@ -1,4 +1,3 @@
-import { EventFilter } from 'lib/loans/subgraph/getAllLoansEventsForAddress';
 import { nftBackedLoansClient } from 'lib/urql';
 import { gql } from 'urql';
 
@@ -17,15 +16,9 @@ export async function getEventFromTxHash<T>(
   eventName: string,
   properties: string,
 ): Promise<T> {
-  const where: EventFilter[] = [
-    {
-      id: txHash as string,
-    },
-  ];
-
   const graphResponse = await nftBackedLoansClient
     .query(eventsQuery(eventName, properties), {
-      where,
+      id: txHash,
     })
     .toPromise();
 

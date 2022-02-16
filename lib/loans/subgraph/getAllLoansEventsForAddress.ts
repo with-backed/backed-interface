@@ -95,7 +95,7 @@ export async function getAllActiveLoansForAddress(
     .flat();
 }
 
-export type EventFilter =
+type EventFilter =
   | CreateEvent_Filter
   | CloseEvent_Filter
   | BuyoutEvent_Filter
