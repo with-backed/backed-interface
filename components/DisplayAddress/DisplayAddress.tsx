@@ -11,18 +11,11 @@ function addressToENS(address: string) {
   return provider.lookupAddress(address);
 }
 
-function shortenAddress(address: string) {
-  if (address.substring(0, 2) != '0x') return address;
-  return (
-    address.substring(0, 6) + '...' + address.substring(address.length - 4)
-  );
-}
-
 export function DisplayAddress({
   address,
   useEns = true,
 }: DisplayAddressProps) {
-  const [addr, setAddr] = useState<string>(shortenAddress(address));
+  const [addr, setAddr] = useState<string>(address);
 
   useEffect(() => {
     async function getEnsName() {
@@ -38,5 +31,5 @@ export function DisplayAddress({
     if (useEns) getEnsName();
   }, [address, useEns]);
 
-  return <span>{addr}</span>;
+  return <>{addr}</>;
 }
