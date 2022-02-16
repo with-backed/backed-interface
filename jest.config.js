@@ -10,10 +10,10 @@ module.exports = {
   coverageReporters: ['json-summary', 'text-summary'],
   coverageThreshold: {
     global: {
-      branches: 22.5,
+      branches: 24,
       functions: 24,
-      lines: 27,
-      statements: 26.5,
+      lines: 28,
+      statements: 27.5,
     },
   },
   moduleDirectories: ['node_modules', '<rootDir>'],
