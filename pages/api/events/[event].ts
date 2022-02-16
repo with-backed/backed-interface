@@ -32,28 +32,28 @@ export default async function handler(
 
     if (event === 'BuyoutEvent') {
       const event = await getEventFromTxHash<BuyoutEvent>(
-        txHash,
+        txHash as string,
         'buyoutEvent',
         BUYOUT_EVENT_PROPERTIES,
       );
       involvedAddress = event.lendTicketHolder.toLowerCase();
     } else if (event === 'LendEvent') {
       const event = await getEventFromTxHash<LendEvent>(
-        txHash,
+        txHash as string,
         'lendEvent',
         LEND_EVENT_PROPERTIES,
       );
       involvedAddress = event.borrowTicketHolder.toLowerCase();
     } else if (event === 'RepaymentEvent') {
       const event = await getEventFromTxHash<RepaymentEvent>(
-        txHash,
+        txHash as string,
         'repaymentEvent',
         REPAY_EVENT_PROPERTIES,
       );
       involvedAddress = event.lendTicketHolder.toLowerCase();
     } else if (event === 'CollateralSeizureEvent') {
       const event = await getEventFromTxHash<CollateralSeizureEvent>(
-        txHash,
+        txHash as string,
         'collateralSeizureEvent',
         COLLATERAL_SEIZURE_EVENT_PROPERTIES,
       );
