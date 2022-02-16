@@ -111,7 +111,7 @@ type EventQueryArgs =
   | QueryRepaymentEventsArgs
   | QueryLendEventsArgs;
 
-export function eventsQuery(
+function eventsQuery(
   eventName: string,
   whereFilterType: string,
   properties: string,

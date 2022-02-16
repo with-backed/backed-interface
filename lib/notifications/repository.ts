@@ -66,24 +66,3 @@ export async function getNotificationRequestsForAddress(
     return [];
   }
 }
-
-export async function getEmailsRegisteredForEvent(
-  event: NotificationEventTrigger,
-): Promise<string[]> {
-  try {
-    const requestsForAll = await prisma.notificationRequest.findMany({
-      where: { event: NotificationEventTrigger.ALL },
-    });
-
-    const requestsForEvent = await prisma.notificationRequest.findMany({
-      where: { event },
-    });
-
-    return [...requestsForAll, ...requestsForEvent]
-      .filter((r) => r.deliveryMethod === NotificationMethod.EMAIL)
-      .map((r) => r.deliveryDestination);
-  } catch (e) {
-    console.error(e);
-    return [];
-  }
-}
