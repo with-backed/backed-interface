@@ -129,7 +129,7 @@ function eventsQuery(
   `;
 }
 
-export async function getEventsForEventType<T>(
+async function getEventsForEventType<T>(
   eventQueryname: string,
   eventFilterType: string,
   properties: string,
