@@ -55,10 +55,11 @@ export async function deleteAllNotificationRequestsForAddress(
 
 export async function getNotificationRequestsForAddress(
   address: string,
+  event: NotificationEventTrigger = NotificationEventTrigger.ALL,
 ): Promise<NotificationRequest[]> {
   try {
     return await prisma.notificationRequest.findMany({
-      where: { ethAddress: address },
+      where: { ethAddress: address, event },
     });
   } catch (e) {
     console.error(e);
