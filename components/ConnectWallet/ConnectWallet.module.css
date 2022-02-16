@@ -25,3 +25,10 @@
 .menu > a:visited {
   color: var(--neutral-100);
 }
+
+.address {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

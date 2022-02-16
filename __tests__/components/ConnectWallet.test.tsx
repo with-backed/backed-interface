@@ -96,16 +96,20 @@ describe('ConnectWallet', () => {
       active: false,
       setError: jest.fn(),
       deactivate: mockDeactivate,
-      account: '0xaddress',
+      account: '0xthisisareallylongaddresswhichisvisuallytruncatedbycss',
     });
     const { getByText } = render(<ConnectWallet />);
 
-    const menuButton = getByText('0xaddress');
+    const menuButton = getByText(
+      '0xthisisareallylongaddresswhichisvisuallytruncatedbycss',
+    );
 
     userEvent.click(menuButton);
 
     const profileLink = getByText('Profile');
-    expect(profileLink.getAttribute('href')).toEqual('/profile/0xaddress');
+    expect(profileLink.getAttribute('href')).toEqual(
+      '/profile/0xthisisareallylongaddresswhichisvisuallytruncatedbycss',
+    );
 
     expect(mockDeactivate).not.toHaveBeenCalled();
     const disconnectButton = getByText('Disconnect');
