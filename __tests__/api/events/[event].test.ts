@@ -62,17 +62,13 @@ describe('/api/events/[event]', () => {
   const txHash = 'random-hash';
 
   beforeEach(async () => {
+    jest.clearAllMocks();
     mockedGetNotificationsCall.mockReturnValue(
       new Promise((resolve, _reject) => {
         resolve([returnedNotificationRequest]);
       }),
     );
     mockedSendEmailCall.mockReturnValue();
-  });
-  afterEach(() => {
-    mockedGetEventFromGraphCall.mockReset();
-    mockedGetNotificationsCall.mockReset();
-    mockedSendEmailCall.mockReset();
   });
 
   describe('BuyoutEvent', () => {
