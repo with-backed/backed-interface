@@ -63,11 +63,7 @@ describe('/api/events/[event]', () => {
 
   beforeEach(async () => {
     jest.clearAllMocks();
-    mockedGetNotificationsCall.mockReturnValue(
-      new Promise((resolve, _reject) => {
-        resolve([returnedNotificationRequest]);
-      }),
-    );
+    mockedGetNotificationsCall.mockResolvedValue([returnedNotificationRequest]);
     mockedSendEmailCall.mockReturnValue();
   });
 

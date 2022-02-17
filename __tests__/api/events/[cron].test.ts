@@ -52,16 +52,8 @@ describe('/api/events/cron/[event]', () => {
 
   beforeEach(async () => {
     jest.clearAllMocks();
-    mockedGetNotificationsCall.mockReturnValueOnce(
-      new Promise((resolve, _reject) => {
-        resolve([notificationReqBorrower]);
-      }),
-    );
-    mockedGetNotificationsCall.mockReturnValueOnce(
-      new Promise((resolve, _reject) => {
-        resolve([notificationReqLender]);
-      }),
-    );
+    mockedGetNotificationsCall.mockResolvedValueOnce([notificationReqBorrower]);
+    mockedGetNotificationsCall.mockResolvedValueOnce([notificationReqLender]);
     mockedSendEmailCall.mockReturnValue();
   });
 
