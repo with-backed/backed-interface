@@ -1,9 +1,39 @@
 import { ethers } from 'ethers';
 import { Loan } from 'types/Loan';
+import {
+  Loan as SubgraphLoan,
+  LoanStatus,
+} from 'types/generated/graphql/nftLoans';
 import type { CreateEvent, Event, LendEvent } from 'types/Event';
 
 export const now = 1000000000;
 const durationSeconds = 259200;
+
+export const subgraphLoan: SubgraphLoan = {
+  id: '65',
+  loanAssetContractAddress: '0x6916577695d0774171de3ed95d03a3239139eddb',
+  collateralContractAddress: '0x9ec7ff8964afba6d8c43dc340a2e6c6c3156e966',
+  collateralTokenId: '147',
+  perSecondInterestRate: '20',
+  accumulatedInterest: '0',
+  lastAccumulatedTimestamp: '0',
+  durationSeconds: '10368000',
+  loanAmount: '8192000000000000000000',
+  status: LoanStatus.AwaitingLender,
+  createdAtTimestamp: 1645113000,
+  lastUpdatedAtTimestamp: 1645113000,
+  numEvents: 0,
+  closed: false,
+  loanAssetDecimal: 18,
+  loanAssetSymbol: 'DAI',
+  lendTicketHolder: null,
+  borrowTicketHolder: '0x0dd7d78ed27632839cd2a929ee570ead346c19fc',
+  endDateTimestamp: 0,
+  collateralTokenURI:
+    'ipfs://QmXuEFJVjQrHX7GRWY2WnbUP59re3WsyDLZoKqXvRPSxBY/147',
+  collateralName: 'monarchs',
+  __typename: 'Loan',
+};
 
 export const baseLoan: Loan = {
   accumulatedInterest: ethers.BigNumber.from('0'),
