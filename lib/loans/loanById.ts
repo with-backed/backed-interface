@@ -31,6 +31,7 @@ export async function loanById(id: string): Promise<Loan | null> {
 
     return loanInfo;
   } catch (e) {
+    console.error(e);
     // error, loan must not exist
     return null;
   }
