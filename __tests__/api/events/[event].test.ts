@@ -14,7 +14,7 @@ import {
   NotificationMethod,
 } from 'lib/notifications/shared';
 import { createMocks } from 'node-mocks-http';
-import handler from 'pages/api/events/[event]';
+import handler from 'pages/api/events/cron/[event]';
 import {
   BuyoutEvent,
   CollateralSeizureEvent,
@@ -63,11 +63,7 @@ describe('/api/events/[event]', () => {
 
   beforeEach(async () => {
     jest.clearAllMocks();
-    mockedGetNotificationsCall.mockReturnValue(
-      new Promise((resolve, _reject) => {
-        resolve([returnedNotificationRequest]);
-      }),
-    );
+    mockedGetNotificationsCall.mockResolvedValue([returnedNotificationRequest]);
     mockedSendEmailCall.mockReturnValue();
   });
 
@@ -106,7 +102,10 @@ describe('/api/events/[event]', () => {
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(address);
 
       expect(sendEmail).toHaveBeenCalledTimes(1);
-      expect(sendEmail).toHaveBeenCalledWith(notificationDestination);
+      expect(sendEmail).toHaveBeenCalledWith(
+        notificationDestination,
+        NotificationEventTrigger.BuyoutEvent,
+      );
 
       expect(res._getStatusCode()).toBe(200);
       expect(JSON.parse(res._getData())).toEqual(
@@ -150,7 +149,10 @@ describe('/api/events/[event]', () => {
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(address);
 
       expect(sendEmail).toHaveBeenCalledTimes(1);
-      expect(sendEmail).toHaveBeenCalledWith(notificationDestination);
+      expect(sendEmail).toHaveBeenCalledWith(
+        notificationDestination,
+        NotificationEventTrigger.LendEvent,
+      );
 
       expect(res._getStatusCode()).toBe(200);
       expect(JSON.parse(res._getData())).toEqual(
@@ -194,7 +196,10 @@ describe('/api/events/[event]', () => {
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(address);
 
       expect(sendEmail).toHaveBeenCalledTimes(1);
-      expect(sendEmail).toHaveBeenCalledWith(notificationDestination);
+      expect(sendEmail).toHaveBeenCalledWith(
+        notificationDestination,
+        NotificationEventTrigger.RepaymentEvent,
+      );
 
       expect(res._getStatusCode()).toBe(200);
       expect(JSON.parse(res._getData())).toEqual(
@@ -238,7 +243,10 @@ describe('/api/events/[event]', () => {
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(address);
 
       expect(sendEmail).toHaveBeenCalledTimes(1);
-      expect(sendEmail).toHaveBeenCalledWith(notificationDestination);
+      expect(sendEmail).toHaveBeenCalledWith(
+        notificationDestination,
+        NotificationEventTrigger.CollateralSeizureEvent,
+      );
 
       expect(res._getStatusCode()).toBe(200);
       expect(JSON.parse(res._getData())).toEqual(

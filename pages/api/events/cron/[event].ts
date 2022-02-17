@@ -14,6 +14,7 @@ import {
 } from 'lib/loans/subgraph/subgraphSharedConstants';
 import { getEventFromTxHash } from 'lib/notifications/events';
 import { sendEmail } from 'lib/notifications/emails';
+import { NotificationEventTrigger } from 'lib/notifications/shared';
 
 export default async function handler(
   req: NextApiRequest,
@@ -25,33 +26,33 @@ export default async function handler(
   }
 
   try {
-    const { event } = req.query;
+    const { event } = req.query as { event: NotificationEventTrigger };
     const { txHash } = req.body;
 
     let involvedAddress: string;
 
-    if (event === 'BuyoutEvent') {
+    if (event === NotificationEventTrigger.BuyoutEvent) {
       const event = await getEventFromTxHash<BuyoutEvent>(
         txHash as string,
         'buyoutEvent',
         BUYOUT_EVENT_PROPERTIES,
       );
       involvedAddress = event.lendTicketHolder.toLowerCase();
-    } else if (event === 'LendEvent') {
+    } else if (event === NotificationEventTrigger.LendEvent) {
       const event = await getEventFromTxHash<LendEvent>(
         txHash as string,
         'lendEvent',
         LEND_EVENT_PROPERTIES,
       );
       involvedAddress = event.borrowTicketHolder.toLowerCase();
-    } else if (event === 'RepaymentEvent') {
+    } else if (event === NotificationEventTrigger.RepaymentEvent) {
       const event = await getEventFromTxHash<RepaymentEvent>(
         txHash as string,
         'repaymentEvent',
         REPAY_EVENT_PROPERTIES,
       );
       involvedAddress = event.lendTicketHolder.toLowerCase();
-    } else if (event === 'CollateralSeizureEvent') {
+    } else if (event === NotificationEventTrigger.CollateralSeizureEvent) {
       const event = await getEventFromTxHash<CollateralSeizureEvent>(
         txHash as string,
         'collateralSeizureEvent',
@@ -68,7 +69,7 @@ export default async function handler(
     );
 
     for (let i = 0; i < notificationRequests.length; i++) {
-      sendEmail(notificationRequests[i].deliveryDestination);
+      sendEmail(notificationRequests[i].deliveryDestination, event);
     }
 
     res
