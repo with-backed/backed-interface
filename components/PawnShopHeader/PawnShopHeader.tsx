@@ -6,13 +6,18 @@ import { ButtonLink } from 'components/Button';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import logo from './rinkebeeee.png';
+import betterLogo from './prawnshop.png';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
 
-type PawnShopHeaderProps = {};
+type PawnShopHeaderProps = {
+  prawn?: boolean;
+};
 
 const CREATE_PATH = '/loans/create';
 
-export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = () => {
+export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
+  prawn,
+}) => {
   const { pathname } = useRouter();
   const kind = pathname === CREATE_PATH ? 'secondary' : 'primary';
   return (
@@ -26,7 +31,11 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = () => {
 
         <Link href="/" passHref>
           <a className={styles.link}>
-            <Image src={logo} alt="NFT Pawn Shop" priority={true} />
+            {prawn ? (
+              <Image src={betterLogo} alt="NFT Pawn Shop" priority={true} />
+            ) : (
+              <Image src={logo} alt="NFT Pawn Shop" priority={true} />
+            )}
           </a>
         </Link>
 
