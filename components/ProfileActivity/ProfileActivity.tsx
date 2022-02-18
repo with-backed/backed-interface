@@ -1,12 +1,15 @@
 import { EtherscanTransactionLink } from 'components/EtherscanLink';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
+import { Fallback } from 'components/Media/Fallback';
 import { renderEventName } from 'lib/text';
 import React, { useMemo } from 'react';
 import { Event } from 'types/Event';
+import { Loan } from 'types/Loan';
 import styles from './ProfileActivity.module.css';
 
 type ProfileActivityProps = {
   events: Event[];
+  loans: Loan[];
 };
 
 const lender = 'Lender';
@@ -21,7 +24,12 @@ const actionToRelationship = {
   RepaymentEvent: borrower,
 };
 
-export function ProfileActivity({ events }: ProfileActivityProps) {
+export function ProfileActivity({ events, loans }: ProfileActivityProps) {
+  const loanLookup = useMemo(() => {
+    const table: { [key: string]: Loan } = {};
+    loans.forEach((l) => (table[l.id.toString()] = l));
+    return table;
+  }, [loans]);
   return (
     <TwelveColumn>
       <table className={styles.table}>
@@ -38,7 +46,7 @@ export function ProfileActivity({ events }: ProfileActivityProps) {
         <tbody>
           {events.map((e) => {
             return (
-              <tr key={e.id}>
+              <tr key={`${e.id}-${e.typename}`}>
                 <td>
                   <Relationship typename={e.typename} />
                 </td>
@@ -48,6 +56,9 @@ export function ProfileActivity({ events }: ProfileActivityProps) {
                     typename={e.typename}
                     timestamp={e.timestamp}
                   />
+                </td>
+                <td>
+                  <EventCollateral loan={loanLookup[e.loanId.toString()]} />
                 </td>
               </tr>
             );
@@ -79,6 +90,18 @@ function EventLink({ id, timestamp, typename }: EventLinkProps) {
         {renderEventName(typename)} 🔗
       </EtherscanTransactionLink>
       {date}
+    </div>
+  );
+}
+
+type EventCollateralProps = {
+  loan: Loan;
+};
+function EventCollateral({ loan }: EventCollateralProps) {
+  console.log(loan);
+  return (
+    <div className={styles.collateral}>
+      <Fallback />
     </div>
   );
 }
