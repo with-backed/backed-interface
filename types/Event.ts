@@ -2,6 +2,7 @@ import { ethers } from 'ethers';
 
 type BaseEvent = {
   id: string;
+  loanId: ethers.BigNumber;
   blockNumber: number;
   timestamp: number;
   loanId: ethers.BigNumber;
