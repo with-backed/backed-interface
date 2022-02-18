@@ -17,6 +17,7 @@ import {
   lendEventToUnified,
   repaymentEventToUnified,
 } from 'lib/eventTransformers';
+import { ethers } from 'ethers';
 
 const graphqlQuery = `
 query ($id: ID!) {
@@ -41,35 +42,37 @@ export async function subgraphLoanHistoryById(id: string): Promise<Event[]> {
     return events;
   }
 
+  const bigNumLoanId = ethers.BigNumber.from(id);
+
   if (loan.createEvent) {
     const event = loan.createEvent as CreateEvent;
-    events.push(createEventToUnified(event));
+    events.push(createEventToUnified(event, bigNumLoanId));
   }
 
   if (loan.closeEvent) {
     const event = loan.closeEvent as CloseEvent;
-    events.push(closeEventToUnified(event));
+    events.push(closeEventToUnified(event, bigNumLoanId));
   }
 
   if (loan.collateralSeizureEvent) {
     const event = loan.collateralSeizureEvent as CollateralSeizureEvent;
-    events.push(collateralSeizureEventToUnified(event));
+    events.push(collateralSeizureEventToUnified(event, bigNumLoanId));
   }
 
   if (loan.repaymentEvent) {
     const event = loan.repaymentEvent as RepaymentEvent;
-    events.push(repaymentEventToUnified(event));
+    events.push(repaymentEventToUnified(event, bigNumLoanId));
   }
 
   if (loan.lendEvents && Array.isArray(loan.lendEvents)) {
     loan.lendEvents.forEach((event: LendEvent) => {
-      events.push(lendEventToUnified(event));
+      events.push(lendEventToUnified(event, bigNumLoanId));
     });
   }
 
   if (loan.buyoutEvents && Array.isArray(loan.buyoutEvents)) {
     loan.buyoutEvents.forEach((event: BuyoutEvent) => {
-      events.push(buyoutEventToUnified(event));
+      events.push(buyoutEventToUnified(event, bigNumLoanId));
     });
   }
 

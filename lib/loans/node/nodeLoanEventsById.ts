@@ -70,6 +70,7 @@ export async function nodeLoanEventsById(loanIdString: string) {
       maxInterestRate: args.maxInterestRate,
       minDurationSeconds: args.minDurationSeconds,
       minLoanAmount: args.minLoanAmount,
+      loanId,
     };
     events.push(parsedEvent);
   }
@@ -83,6 +84,7 @@ export async function nodeLoanEventsById(loanIdString: string) {
       id: transactionHash,
       timestamp,
       typename: 'CloseEvent',
+      loanId,
     };
     events.push(parsedEvent);
   }
@@ -101,6 +103,7 @@ export async function nodeLoanEventsById(loanIdString: string) {
       durationSeconds: args.durationSeconds,
       interestRate: args.interestRate,
       underwriter: ethers.utils.getAddress(args.underwriter),
+      loanId,
     };
     events.push(parsedEvent);
   }
@@ -119,6 +122,7 @@ export async function nodeLoanEventsById(loanIdString: string) {
       interestEarned: args.interestEarned,
       replacedLoanOwner: ethers.utils.getAddress(args.replacedLoanOwner),
       underwriter: ethers.utils.getAddress(args.underwriter),
+      loanId,
     };
     events.push(parsedEvent);
   }
@@ -137,6 +141,7 @@ export async function nodeLoanEventsById(loanIdString: string) {
       interestEarned: args.interestEarned,
       repayer: ethers.utils.getAddress(args.repayer),
       loanOwner: ethers.utils.getAddress(args.loanOwner),
+      loanId,
     };
     events.push(parsedEvent);
   }
@@ -151,6 +156,7 @@ export async function nodeLoanEventsById(loanIdString: string) {
       id: transactionHash,
       timestamp,
       typename: 'CollateralSeizureEvent',
+      loanId,
     };
     events.push(parsedEvent);
   }
