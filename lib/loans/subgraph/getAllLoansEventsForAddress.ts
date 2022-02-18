@@ -44,6 +44,7 @@ import {
   lendEventToUnified,
   repaymentEventToUnified,
 } from 'lib/eventTransformers';
+import { ethers } from 'ethers';
 
 const activeLoansQuery = gql`
     query($where: Loan_filter , $first: Int, $orderBy: String, $orderDirection: String) {
@@ -124,6 +125,9 @@ function eventsQuery(
         orderDirection: $orderDirection
       ) {
         ${properties}
+        loan {
+          id
+        }
       }
     }
   `;
@@ -134,7 +138,7 @@ async function getEventsForEventType<T>(
   eventFilterType: string,
   properties: string,
   whereArgs: EventFilter[],
-  toUnified: (event: any) => Event,
+  toUnified: (event: any, loanId: ethers.BigNumber) => Event,
 ): Promise<Event[]> {
   const sharedQueryArgs: EventQueryArgs = {
     orderBy: BuyoutEvent_OrderBy.Timestamp,
@@ -156,7 +160,11 @@ async function getEventsForEventType<T>(
   return resultArray
     .map((result) => (result.data ? result.data[eventQueryname] : []))
     .flat()
-    .map((event) => toUnified(event));
+    .map((event) =>
+      // It isn't part of the type, but we've included the loan id in the
+      // graphql request to allow for reverse lookup of event -> loan
+      toUnified(event, ethers.BigNumber.from((event as any).loan.id)),
+    );
 }
 
 export async function getAllEventsForAddress(

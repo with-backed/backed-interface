@@ -83,6 +83,7 @@ const createEvent: CreateEvent = {
   minLoanAmount: ethers.BigNumber.from('10000000000000000000'),
   timestamp: 1639409386,
   typename: 'CreateEvent',
+  loanId: ethers.BigNumber.from('2'),
 };
 
 const lendEvents: LendEvent[] = [
@@ -95,6 +96,7 @@ const lendEvents: LendEvent[] = [
     interestRate: ethers.BigNumber.from('11'),
     timestamp: 1641574026,
     typename: 'LendEvent',
+    loanId: ethers.BigNumber.from('2'),
   },
   {
     blockNumber: 9934164,
@@ -105,6 +107,7 @@ const lendEvents: LendEvent[] = [
     interestRate: ethers.BigNumber.from('15'),
     timestamp: 1641324990,
     typename: 'LendEvent',
+    loanId: ethers.BigNumber.from('2'),
   },
 ];
 

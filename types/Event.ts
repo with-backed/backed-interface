@@ -4,6 +4,7 @@ type BaseEvent = {
   id: string;
   blockNumber: number;
   timestamp: number;
+  loanId: ethers.BigNumber;
 };
 
 export type BuyoutEvent = BaseEvent & {
