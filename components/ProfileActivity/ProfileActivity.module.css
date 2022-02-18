@@ -7,6 +7,12 @@
   margin-top: var(--gap);
 }
 
+.table th {
+  text-align: left;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
 .table tr {
   border: 10px solid #fff;
 }
@@ -14,6 +20,7 @@
 .bubble {
   font-size: var(--font-small);
   padding: 0.5rem 0.5rem;
+  text-transform: uppercase;
 }
 
 .Lender {
@@ -30,4 +37,21 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+
+.collateral {
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  gap: 1rem;
+  align-items: center;
+}
+
+.name-and-collection {
+  display: flex;
+  flex-direction: column;
+}
+
+.right,
+th.right {
+  text-align: right;
 }

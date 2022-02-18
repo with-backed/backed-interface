@@ -1,6 +1,10 @@
 import { EtherscanTransactionLink } from 'components/EtherscanLink';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
-import { Fallback } from 'components/Media/Fallback';
+import { NFTMedia } from 'components/Media/NFTMedia';
+import { ethers } from 'ethers';
+import { useTokenMetadata } from 'hooks/useTokenMetadata';
+import { secondsBigNumToDays } from 'lib/duration';
+import { formattedAnnualRate } from 'lib/interest';
 import { renderEventName } from 'lib/text';
 import React, { useMemo } from 'react';
 import { Event } from 'types/Event';
@@ -30,6 +34,7 @@ export function ProfileActivity({ events, loans }: ProfileActivityProps) {
     loans.forEach((l) => (table[l.id.toString()] = l));
     return table;
   }, [loans]);
+
   return (
     <TwelveColumn>
       <table className={styles.table}>
@@ -38,13 +43,14 @@ export function ProfileActivity({ events, loans }: ProfileActivityProps) {
             <th></th>
             <th>Event</th>
             <th>Collateral</th>
-            <th>Amount</th>
-            <th>Duration</th>
-            <th>Rate</th>
+            <th className={styles.right}>Amount</th>
+            <th className={styles.right}>Duration</th>
+            <th className={styles.right}>Rate</th>
           </tr>
         </thead>
         <tbody>
           {events.map((e) => {
+            const loan = loanLookup[e.loanId.toString()];
             return (
               <tr key={`${e.id}-${e.typename}`}>
                 <td>
@@ -58,7 +64,16 @@ export function ProfileActivity({ events, loans }: ProfileActivityProps) {
                   />
                 </td>
                 <td>
-                  <EventCollateral loan={loanLookup[e.loanId.toString()]} />
+                  <EventCollateral loan={loan} />
+                </td>
+                <td className={styles.right}>
+                  <EventAmount event={e} loan={loan} />
+                </td>
+                <td className={styles.right}>
+                  <EventDuration event={e} loan={loan} />
+                </td>
+                <td className={styles.right}>
+                  <EventRate event={e} loan={loan} />
                 </td>
               </tr>
             );
@@ -98,10 +113,83 @@ type EventCollateralProps = {
   loan: Loan;
 };
 function EventCollateral({ loan }: EventCollateralProps) {
-  console.log(loan);
+  const tokenSpec = useMemo(
+    () => ({
+      tokenURI: loan.collateralTokenURI,
+      tokenID: loan.collateralTokenId,
+    }),
+    [loan.collateralTokenURI, loan.collateralTokenId],
+  );
+  const { metadata, isLoading } = useTokenMetadata(tokenSpec);
   return (
     <div className={styles.collateral}>
-      <Fallback />
+      <NFTMedia
+        collateralAddress={loan.collateralContractAddress}
+        collateralTokenID={loan.collateralTokenId}
+        small
+        forceImage
+      />
+      <div className={styles['name-and-collection']}>
+        <span>{isLoading ? '---' : metadata?.name}</span>
+        <span>{loan.collateralName}</span>
+      </div>
     </div>
   );
+}
+
+type EventDetailProps = {
+  event: Event;
+  loan: Loan;
+};
+
+function EventAmount({ event, loan }: EventDetailProps) {
+  const amount = useMemo(() => {
+    let amount = loan.loanAmount;
+    if (event.typename === 'BuyoutEvent') {
+      amount = event.replacedAmount;
+    }
+    if (event.typename === 'CreateEvent') {
+      amount = event.minLoanAmount;
+    }
+    if (event.typename === 'LendEvent' || event.typename === 'RepaymentEvent') {
+      amount = event.loanAmount;
+    }
+
+    return ethers.utils.formatUnits(amount, loan.loanAssetDecimals);
+  }, [event, loan]);
+  return (
+    <span>
+      {amount} {loan.loanAssetSymbol}
+    </span>
+  );
+}
+
+function EventDuration({ event, loan }: EventDetailProps) {
+  const duration = useMemo(() => {
+    let duration = loan.durationSeconds;
+    if (event.typename === 'CreateEvent') {
+      duration = event.minDurationSeconds;
+    }
+    if (event.typename === 'LendEvent') {
+      duration = event.durationSeconds;
+    }
+
+    return secondsBigNumToDays(duration);
+  }, [event, loan]);
+  return <span>{duration} days</span>;
+}
+
+function EventRate({ event, loan }: EventDetailProps) {
+  const rate = useMemo(() => {
+    let rate = loan.perSecondInterestRate;
+    if (event.typename === 'CreateEvent') {
+      rate = event.maxInterestRate;
+    }
+    if (event.typename === 'LendEvent') {
+      rate = event.interestRate;
+    }
+
+    return formattedAnnualRate(rate);
+  }, [event, loan]);
+  return <span>{rate} %</span>;
 }
