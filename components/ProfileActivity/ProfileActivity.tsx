@@ -123,7 +123,7 @@ function EventCollateral({ loan }: EventCollateralProps) {
   );
   const { metadata, isLoading } = useTokenMetadata(tokenSpec);
   return (
-    <Link href={`/${loan.id.toString()}`}>
+    <Link href={`/loans/${loan.id.toString()}`}>
       <a className={styles.collateral}>
         <NFTMedia
           collateralAddress={loan.collateralContractAddress}
