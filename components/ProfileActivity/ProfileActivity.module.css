@@ -44,11 +44,26 @@
   grid-template-columns: 70px 1fr;
   gap: 1rem;
   align-items: center;
+  color: var(--neutral-100);
+}
+
+.collateral:hover {
+  background-color: var(--highlight-clickable-5);
+  cursor: pointer;
+}
+
+.collateral:hover .name {
+  color: var(--highlight-clickable-100);
 }
 
 .name-and-collection {
   display: flex;
   flex-direction: column;
+}
+
+.collection {
+  font-size: var(--font-small);
+  text-transform: uppercase;
 }
 
 .right,

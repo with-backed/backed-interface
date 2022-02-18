@@ -6,6 +6,7 @@ import { useTokenMetadata } from 'hooks/useTokenMetadata';
 import { secondsBigNumToDays } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
 import { renderEventName } from 'lib/text';
+import Link from 'next/link';
 import React, { useMemo } from 'react';
 import { Event } from 'types/Event';
 import { Loan } from 'types/Loan';
@@ -122,18 +123,22 @@ function EventCollateral({ loan }: EventCollateralProps) {
   );
   const { metadata, isLoading } = useTokenMetadata(tokenSpec);
   return (
-    <div className={styles.collateral}>
-      <NFTMedia
-        collateralAddress={loan.collateralContractAddress}
-        collateralTokenID={loan.collateralTokenId}
-        small
-        forceImage
-      />
-      <div className={styles['name-and-collection']}>
-        <span>{isLoading ? '---' : metadata?.name}</span>
-        <span>{loan.collateralName}</span>
-      </div>
-    </div>
+    <Link href={`/${loan.id.toString()}`}>
+      <a className={styles.collateral}>
+        <NFTMedia
+          collateralAddress={loan.collateralContractAddress}
+          collateralTokenID={loan.collateralTokenId}
+          small
+          forceImage
+        />
+        <div className={styles['name-and-collection']}>
+          <span className={styles.name}>
+            {isLoading ? '---' : metadata?.name}
+          </span>
+          <span className={styles.collection}>{loan.collateralName}</span>
+        </div>
+      </a>
+    </Link>
   );
 }
 
