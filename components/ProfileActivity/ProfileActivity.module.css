@@ -1,0 +1,33 @@
+.table {
+  width: 100%;
+  background: var(--background-white);
+  border-collapse: collapse;
+  grid-column: 1 / -1;
+  box-shadow: var(--box-shadow);
+  margin-top: var(--gap);
+}
+
+.table tr {
+  border: 10px solid #fff;
+}
+
+.bubble {
+  font-size: var(--font-small);
+  padding: 0.5rem 0.5rem;
+}
+
+.Lender {
+  composes: bubble;
+  background-color: var(--neutral-30);
+}
+
+.Borrower {
+  composes: bubble;
+  background-color: var(--highlight-active-10);
+}
+
+.event-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
