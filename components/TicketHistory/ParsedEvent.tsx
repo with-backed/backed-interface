@@ -8,6 +8,7 @@ import { DescriptionList } from 'components/DescriptionList';
 import type * as Event from 'types/Event';
 import { Disclosure } from 'components/Disclosure';
 import { DisplayAddress } from 'components/DisplayAddress';
+import { renderEventName } from 'lib/text';
 
 const eventDetailComponents = {
   BuyoutEvent,
@@ -35,11 +36,6 @@ function toLocaleDateTime(seconds: number) {
   return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
 }
 
-function camelToSentenceCase(text: string) {
-  const result = text.replace(/([A-Z])/g, ' $1');
-  return result.charAt(0).toUpperCase() + result.slice(1);
-}
-
 type EventHeaderProps = {
   event: Event.Event;
 };
@@ -52,9 +48,7 @@ const EventDetailList: FunctionComponent<EventHeaderProps> = ({
   const date = toLocaleDateTime(event.timestamp);
   return (
     <section>
-      <Disclosure
-        title={camelToSentenceCase(event.typename as string)}
-        subtitle={date}>
+      <Disclosure title={renderEventName(event.typename)} subtitle={date}>
         <EtherscanTransactionLink transactionHash={event.id.toString()}>
           View on Etherscan 🔗
         </EtherscanTransactionLink>
