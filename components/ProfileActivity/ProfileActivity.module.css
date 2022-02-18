@@ -10,6 +10,7 @@
 .table th {
   text-align: left;
   font-weight: 400;
+  font-size: var(--font-small);
   text-transform: uppercase;
 }
 
