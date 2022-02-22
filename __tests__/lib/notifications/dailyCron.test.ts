@@ -49,23 +49,17 @@ describe('daily cron job', () => {
 
     expect(fetchMock).toHaveBeenCalledWith(
       `${process.env.PAWN_SHOP_URL!}/api/events/cron/LiquidationOccuring`,
-      expect.objectContaining({
-        body: {
-          borrowTicketHolder: aboutToExpireLoan.borrowTicketHolder,
-          lendTicketHolder: aboutToExpireLoan.lendTicketHolder,
-        },
+      {
+        body: `{\"borrowTicketHolder\":\"${aboutToExpireLoan.borrowTicketHolder}\",\"lendTicketHolder\":\"${aboutToExpireLoan.lendTicketHolder}\"}`,
         method: 'POST',
-      }),
+      },
     );
     expect(fetchMock).toHaveBeenCalledWith(
       `${process.env.PAWN_SHOP_URL!}/api/events/cron/LiquidationOccured`,
-      expect.objectContaining({
-        body: {
-          borrowTicketHolder: aboutToExpireLoan.borrowTicketHolder,
-          lendTicketHolder: aboutToExpireLoan.lendTicketHolder,
-        },
+      {
+        body: `{\"borrowTicketHolder\":\"${aboutToExpireLoan.borrowTicketHolder}\",\"lendTicketHolder\":\"${aboutToExpireLoan.lendTicketHolder}\"}`,
         method: 'POST',
-      }),
+      },
     );
     // expect(fetchMock).toHaveBeenCalledWith(`${process.env.PAWN_SHOP_URL!}/api/events/cron/LiquidationOccured`)
   });
