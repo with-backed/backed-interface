@@ -26,19 +26,24 @@ type LoanStatsProps = {
 function LoanStats({ address, loans, kind }: LoanStatsProps) {
   const numActiveLoans = useMemo(() => getActiveLoanCount(loans), [loans]);
   const numClosedLoans = useMemo(() => getClosedLoanCount(loans), [loans]);
+  const lentToLoans = useMemo(
+    () => loans.filter((l) => !l.lastAccumulatedTimestamp.eq(0)),
+    [loans],
+  );
+
   const principalLabel = useMemo(
     () =>
       kind === 'borrower' ? 'Total Owed Principal' : 'Outstanding Principal',
     [kind],
   );
   const principalAmounts = useMemo(() => {
-    return getAllPrincipalAmounts(loans).map((amount, i, arr) => (
+    return getAllPrincipalAmounts(lentToLoans).map((amount, i, arr) => (
       <div key={amount.symbol} className={styles.amount}>
         {amount.nominal} {amount.symbol}
         {i !== arr.length - 1 && ';'}
       </div>
     ));
-  }, [loans]);
+  }, [lentToLoans]);
   const interestLabel = useMemo(
     () =>
       kind === 'borrower' ? 'Total Owed Interest' : 'Total Accrued Interest',
@@ -46,13 +51,13 @@ function LoanStats({ address, loans, kind }: LoanStatsProps) {
   );
 
   const [currentInterestAmounts, setCurrentInterestAmounts] = useState(
-    getAllInterestAmounts(loans),
+    getAllInterestAmounts(lentToLoans),
   );
 
   const refreshInterest = useCallback(() => {
     setCurrentInterestAmounts(
       getAllInterestAmounts(
-        loans.map((l) => ({
+        lentToLoans.map((l) => ({
           ...l,
           interestOwed: getInterestOwed(
             ethers.BigNumber.from(Date.now()).div(1000),
@@ -64,7 +69,7 @@ function LoanStats({ address, loans, kind }: LoanStatsProps) {
         })),
       ),
     );
-  }, [loans]);
+  }, [lentToLoans]);
 
   useEffect(() => {
     const timeOutId = setInterval(() => refreshInterest(), 1000);
@@ -92,7 +97,7 @@ function LoanStats({ address, loans, kind }: LoanStatsProps) {
       </dd>
       <dt>Next Loan Due</dt>
       <dd>
-        <NextLoanDueCountdown loans={loans} />
+        <NextLoanDueCountdown loans={lentToLoans} />
       </dd>
       <dt>{principalLabel}</dt>
       <dd>{principalAmounts}</dd>
