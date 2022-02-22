@@ -57,7 +57,7 @@ function LoanStats({ address, loans, kind }: LoanStatsProps) {
   const refreshInterest = useCallback(() => {
     setCurrentInterestAmounts(
       getAllInterestAmounts(
-        loans.map((l) => ({
+        lentToLoans.map((l) => ({
           ...l,
           interestOwed: getInterestOwed(
             ethers.BigNumber.from(Date.now()).div(1000),
@@ -69,7 +69,7 @@ function LoanStats({ address, loans, kind }: LoanStatsProps) {
         })),
       ),
     );
-  }, [loans]);
+  }, [lentToLoans]);
 
   useEffect(() => {
     const timeOutId = setInterval(() => refreshInterest(), 1000);
