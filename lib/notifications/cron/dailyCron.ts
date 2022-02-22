@@ -4,7 +4,10 @@ import fs from 'fs';
 import { getLoansExpiringWithin } from 'lib/loans/subgraph/subgraphLoans';
 
 export async function main(currentTimestamp: number) {
-  if (process.env.killswitch) return;
+  console.log(
+    `running notifications cron job with timestamp ${currentTimestamp}`,
+  );
+  if (process.env.NEXT_PUBLIC_NOTIFICATIONS_KILLSWITCH) return;
 
   const timestampFilePath = path.resolve(
     __dirname,
