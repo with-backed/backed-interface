@@ -40,7 +40,7 @@ describe('daily cron job', () => {
     mockedGetExpiringLoansCall.mockResolvedValueOnce([alreadyExpiredLoan]);
   });
 
-  it('makes call to get expiring loans with correct params', async () => {
+  it('makes call to get expiring loans with correct params and then calls /LiquidationOccurring and /LiquidationOccurred', async () => {
     fetchMock.mockResponse('success');
     await main(now);
 
