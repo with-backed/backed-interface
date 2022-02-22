@@ -1,51 +1,49 @@
-import { ALL_LOAN_PROPERTIES } from 'lib/loans/subgraph/subgraphSharedConstants';
-import { nftBackedLoansClient } from 'lib/urql';
-import { Loan, Loan_Filter } from 'types/generated/graphql/nftLoans';
-import { gql } from 'urql';
+import path from 'path';
+import fs from 'fs';
 
-const loansQuery = gql`
-    query($where: Loan_filter) {
-        loans(where: $where) {
-            ${ALL_LOAN_PROPERTIES}
-        }
-    }
-`;
+import { getLoansExpiringWithin } from 'lib/loans/subgraph/subgraphLoans';
 
-async function main() {
+export async function main(currentTimestamp: number) {
   if (process.env.killswitch) return;
 
-  const currentTimestamp = Math.round(new Date().getTime() / 1000);
-  const futureTimestamp = currentTimestamp + 24 * 3600;
+  const timestampFilePath = path.resolve(
+    __dirname,
+    `./cron/${process.env.TIMESTAMP_FILENAME}.txt`,
+  );
 
-  const aboutToExpireWhere: Loan_Filter = {
-    endDateTimestamp_gt: currentTimestamp,
-    endDateTimestamp_lt: futureTimestamp,
-  };
+  const pastTimestamp = parseInt(fs.readFileSync(timestampFilePath).toString());
+  const futureTimestamp =
+    currentTimestamp + parseInt(process.env.FREQUENCY!) * 3600;
 
-  const graphResponse = await nftBackedLoansClient
-    .query(loansQuery, {
-      where: aboutToExpireWhere,
-    })
-    .toPromise();
-
-  const loans = graphResponse.data['loans'] as Loan[];
+  let loans = await getLoansExpiringWithin(currentTimestamp, futureTimestamp);
   for (let i = 0; i < loans.length; i++) {
-    await fetch('/api', {
-      method: 'POST',
-      body: JSON.stringify({ address: loans[i].borrowTicketHolder, event: '' }),
-    });
+    await fetch(
+      `${process.env.PAWN_SHOP_URL!}/api/events/cron/LiquidationOccuring`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          borrowTicketHolder: loans[i].borrowTicketHolder,
+          lendTicketHolder: loans[i].lendTicketHolder,
+        }),
+      },
+    );
   }
 
-  const alreadyExpiredWhere: Loan_Filter = {
-    endDateTimestamp_gt: currentTimestamp - 12 * 3600,
-    endDateTimestamp_lt: currentTimestamp,
-  };
-}
+  loans = await getLoansExpiringWithin(pastTimestamp, currentTimestamp);
+  for (let i = 0; i < loans.length; i++) {
+    await fetch(
+      `${process.env.PAWN_SHOP_URL!}/api/events/cron/LiquidationOccured`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          borrowTicketHolder: loans[i].borrowTicketHolder,
+          lendTicketHolder: loans[i].lendTicketHolder,
+        }),
+      },
+    );
+  }
 
-main()
-  .catch((e) => {
-    throw e;
-  })
-  .finally(() => {
-    console.log('script finished running');
-  });
+  if (!process.env.JEST_WORKER_ID) {
+    await fs.writeFileSync(timestampFilePath, currentTimestamp.toString());
+  }
+}
