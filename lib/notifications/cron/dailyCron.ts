@@ -8,7 +8,7 @@ export async function main(currentTimestamp: number) {
 
   const timestampFilePath = path.resolve(
     __dirname,
-    `./cron/timestamps/${process.env.NEXT_PUBLIC_NOTIFICATIONS_TIMESTAMP_FILENAME}.txt`,
+    `./timestamps/${process.env.NEXT_PUBLIC_NOTIFICATIONS_TIMESTAMP_FILENAME}.txt`,
   );
 
   const pastTimestamp = parseInt(fs.readFileSync(timestampFilePath).toString());

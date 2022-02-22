@@ -4,7 +4,7 @@ import { subgraphLoan } from 'lib/mockData';
 import { main } from 'lib/notifications/cron/dailyCron';
 import fetchMock from 'jest-fetch-mock';
 
-// value obtained from lib/notifications/cron/lastWrittenTimestampTest.txt
+// value obtained from lib/notifications/cron/timestamps/lastWrittenTimestampTest.txt
 let lastRun = 1645155901;
 let now =
   1645155901 +
@@ -12,14 +12,14 @@ let now =
 const future =
   now + parseInt(process.env.NEXT_PUBLIC_NOTIFICATIONS_FREQUENCY_HOURS!) * 3600;
 
-const aboutToExpireLoan = subgraphLoan;
+const aboutToExpireLoan = Object.assign({}, subgraphLoan);
 
 aboutToExpireLoan.borrowTicketHolder =
   ethers.Wallet.createRandom().address.toLowerCase();
 aboutToExpireLoan.lendTicketHolder =
   ethers.Wallet.createRandom().address.toLowerCase();
 
-const alreadyExpiredLoan = subgraphLoan;
+const alreadyExpiredLoan = Object.assign({}, subgraphLoan);
 
 alreadyExpiredLoan.borrowTicketHolder =
   ethers.Wallet.createRandom().address.toLowerCase();
@@ -62,7 +62,7 @@ describe('daily cron job', () => {
       `${process.env
         .NEXT_PUBLIC_PAWN_SHOP_API_URL!}/api/events/cron/LiquidationOccured`,
       {
-        body: `{\"borrowTicketHolder\":\"${aboutToExpireLoan.borrowTicketHolder}\",\"lendTicketHolder\":\"${aboutToExpireLoan.lendTicketHolder}\"}`,
+        body: `{\"borrowTicketHolder\":\"${alreadyExpiredLoan.borrowTicketHolder}\",\"lendTicketHolder\":\"${alreadyExpiredLoan.lendTicketHolder}\"}`,
         method: 'POST',
       },
     );
