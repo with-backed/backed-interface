@@ -8,8 +8,8 @@ export enum NotificationEventTrigger {
   LendEvent = 'LendEvent',
   RepaymentEvent = 'RepaymentEvent',
   CollateralSeizureEvent = 'CollateralSeizureEvent',
-  LiquidationOccuring = 'LiquidationOccuring',
-  LiquidationOccured = 'LiquidationOccured',
+  LiquidationOccurring = 'LiquidationOccurring',
+  LiquidationOccurred = 'LiquidationOccurred',
 }
 
 export type NotificationReqBody = {

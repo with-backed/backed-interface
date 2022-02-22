@@ -52,7 +52,7 @@ describe('daily cron job', () => {
 
     expect(fetchMock).toHaveBeenCalledWith(
       `${process.env
-        .NEXT_PUBLIC_PAWN_SHOP_API_URL!}/api/events/cron/LiquidationOccuring`,
+        .NEXT_PUBLIC_PAWN_SHOP_API_URL!}/api/events/cron/LiquidationOccurring`,
       {
         body: `{\"borrowTicketHolder\":\"${aboutToExpireLoan.borrowTicketHolder}\",\"lendTicketHolder\":\"${aboutToExpireLoan.lendTicketHolder}\"}`,
         method: 'POST',
@@ -60,7 +60,7 @@ describe('daily cron job', () => {
     );
     expect(fetchMock).toHaveBeenCalledWith(
       `${process.env
-        .NEXT_PUBLIC_PAWN_SHOP_API_URL!}/api/events/cron/LiquidationOccured`,
+        .NEXT_PUBLIC_PAWN_SHOP_API_URL!}/api/events/cron/LiquidationOccurred`,
       {
         body: `{\"borrowTicketHolder\":\"${alreadyExpiredLoan.borrowTicketHolder}\",\"lendTicketHolder\":\"${alreadyExpiredLoan.lendTicketHolder}\"}`,
         method: 'POST',
