@@ -4,7 +4,15 @@ import {
   Loan as SubgraphLoan,
   LoanStatus,
 } from 'types/generated/graphql/nftLoans';
-import type { CreateEvent, Event, LendEvent } from 'types/Event';
+import type {
+  CreateEvent,
+  Event,
+  LendEvent,
+  BuyoutEvent,
+  CloseEvent,
+  CollateralSeizureEvent,
+  RepaymentEvent,
+} from 'types/Event';
 
 export const now = 1000000000;
 const durationSeconds = 259200;
@@ -83,8 +91,61 @@ const createEvent: CreateEvent = {
   minLoanAmount: ethers.BigNumber.from('10000000000000000000'),
   timestamp: 1639409386,
   typename: 'CreateEvent',
-  loanId: ethers.BigNumber.from('2'),
+  loanId: ethers.BigNumber.from('8'),
 };
+
+const closeEvent: CloseEvent = {
+  blockNumber: 19808300,
+  id: '0x662993eef512ffe276ba4b86121626eba009b56fcdc98dfb18f12d749c58f1dc',
+  timestamp: 1639409386,
+  typename: 'CloseEvent',
+  loanId: ethers.BigNumber.from('8'),
+};
+
+const collateralSeizureEvent: CollateralSeizureEvent = {
+  blockNumber: 19808300,
+  id: '0x662993eef512ffe276ba4b86121626eba009b56fcdc98dfb18f12d749c58f1dc',
+  timestamp: 1639409386,
+  typename: 'CollateralSeizureEvent',
+  loanId: ethers.BigNumber.from('8'),
+};
+
+const repaymentEvent: RepaymentEvent = {
+  blockNumber: 9808300,
+  id: '0x662993eef512ffe276ba4b86121626eba009b56fcdc98dfb18f12d749c58f1dc',
+  timestamp: 1639409386,
+  typename: 'RepaymentEvent',
+  loanId: ethers.BigNumber.from('8'),
+  repayer: '0xaddress',
+  loanOwner: '0xotheraddress',
+  interestEarned: ethers.BigNumber.from('15'),
+  loanAmount: ethers.BigNumber.from('10000000000000000000'),
+};
+
+const buyoutEvents: BuyoutEvent[] = [
+  {
+    blockNumber: 9950758,
+    id: '0x7685d19b85fb80c03ac0c117ea542b77a6c8ecebea56744b121183cfb614bcYY',
+    underwriter: '0x10359616ab170c1bd6c478a40c6715a49ba25efc',
+    timestamp: 1641574026,
+    typename: 'BuyoutEvent',
+    loanId: ethers.BigNumber.from('8'),
+    replacedLoanOwner: '0xaddress',
+    replacedAmount: ethers.BigNumber.from('10000000000000000000'),
+    interestEarned: ethers.BigNumber.from('15'),
+  },
+  {
+    blockNumber: 9934164,
+    timestamp: 1641324990,
+    id: '0xc99d7b9eeca31f9de0bdb9a5f8e29ad2f3a0291e34b265271f8bea30a3755dXX',
+    underwriter: '0x0dd7d78ed27632839cd2a929ee570ead346c19fc',
+    replacedAmount: ethers.BigNumber.from('10000000000000000000'),
+    interestEarned: ethers.BigNumber.from('15'),
+    typename: 'BuyoutEvent',
+    loanId: ethers.BigNumber.from('8'),
+    replacedLoanOwner: '0xaddress',
+  },
+];
 
 const lendEvents: LendEvent[] = [
   {
@@ -96,7 +157,7 @@ const lendEvents: LendEvent[] = [
     interestRate: ethers.BigNumber.from('11'),
     timestamp: 1641574026,
     typename: 'LendEvent',
-    loanId: ethers.BigNumber.from('2'),
+    loanId: ethers.BigNumber.from('8'),
   },
   {
     blockNumber: 9934164,
@@ -107,10 +168,15 @@ const lendEvents: LendEvent[] = [
     interestRate: ethers.BigNumber.from('15'),
     timestamp: 1641324990,
     typename: 'LendEvent',
-    loanId: ethers.BigNumber.from('2'),
+    loanId: ethers.BigNumber.from('8'),
   },
 ];
 
-export const events: Event[] = [createEvent, ...lendEvents].sort(
-  (a, b) => b.blockNumber - a.blockNumber,
-);
+export const events: Event[] = [
+  closeEvent,
+  createEvent,
+  collateralSeizureEvent,
+  repaymentEvent,
+  ...lendEvents,
+  ...buyoutEvents,
+].sort((a, b) => b.blockNumber - a.blockNumber);
