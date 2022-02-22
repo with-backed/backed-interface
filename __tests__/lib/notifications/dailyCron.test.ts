@@ -1,13 +1,16 @@
 import { ethers } from 'ethers';
 import { getLoansExpiringWithin } from 'lib/loans/subgraph/subgraphLoans';
 import { subgraphLoan } from 'lib/mockData';
-import { main } from 'lib/notifications/dailyCron';
+import { main } from 'lib/notifications/cron/dailyCron';
 import fetchMock from 'jest-fetch-mock';
 
 // value obtained from lib/notifications/cron/lastWrittenTimestampTest.txt
 let lastRun = 1645155901;
-let now = 1645155901 + parseInt(process.env.FREQUENCY!) * 3600;
-const future = now + parseInt(process.env.FREQUENCY!) * 3600;
+let now =
+  1645155901 +
+  parseInt(process.env.NEXT_PUBLIC_NOTIFICATIONS_FREQUENCY_HOURS!) * 3600;
+const future =
+  now + parseInt(process.env.NEXT_PUBLIC_NOTIFICATIONS_FREQUENCY_HOURS!) * 3600;
 
 const aboutToExpireLoan = subgraphLoan;
 
@@ -61,6 +64,5 @@ describe('daily cron job', () => {
         method: 'POST',
       },
     );
-    // expect(fetchMock).toHaveBeenCalledWith(`${process.env.PAWN_SHOP_URL!}/api/events/cron/LiquidationOccured`)
   });
 });

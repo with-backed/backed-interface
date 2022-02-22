@@ -8,12 +8,13 @@ export async function main(currentTimestamp: number) {
 
   const timestampFilePath = path.resolve(
     __dirname,
-    `./cron/${process.env.TIMESTAMP_FILENAME}.txt`,
+    `./cron/timestamps/${process.env.NEXT_PUBLIC_NOTIFICATIONS_TIMESTAMP_FILENAME}.txt`,
   );
 
   const pastTimestamp = parseInt(fs.readFileSync(timestampFilePath).toString());
   const futureTimestamp =
-    currentTimestamp + parseInt(process.env.FREQUENCY!) * 3600;
+    currentTimestamp +
+    parseInt(process.env.NEXT_PUBLIC_NOTIFICATIONS_FREQUENCY_HOURS!) * 3600;
 
   let loans = await getLoansExpiringWithin(currentTimestamp, futureTimestamp);
   for (let i = 0; i < loans.length; i++) {
