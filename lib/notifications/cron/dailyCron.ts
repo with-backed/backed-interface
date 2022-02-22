@@ -20,7 +20,7 @@ export async function main(currentTimestamp: number) {
   for (let i = 0; i < loans.length; i++) {
     await fetch(
       `${process.env
-        .NEXT_PUBLIC_PAWN_SHOP_API_URL!}/api/events/cron/LiquidationOccuring`,
+        .NEXT_PUBLIC_PAWN_SHOP_API_URL!}/api/events/cron/LiquidationOccurring`,
       {
         method: 'POST',
         body: JSON.stringify({
@@ -35,7 +35,7 @@ export async function main(currentTimestamp: number) {
   for (let i = 0; i < loans.length; i++) {
     await fetch(
       `${process.env
-        .NEXT_PUBLIC_PAWN_SHOP_API_URL!}/api/events/cron/LiquidationOccured`,
+        .NEXT_PUBLIC_PAWN_SHOP_API_URL!}/api/events/cron/LiquidationOccurred`,
       {
         method: 'POST',
         body: JSON.stringify({

@@ -57,12 +57,12 @@ describe('/api/events/cron/[event]', () => {
     mockedSendEmailCall.mockReturnValue();
   });
 
-  describe('LiquidationOccuring', () => {
+  describe('LiquidationOccurring', () => {
     it('makes call to the graph, gets notifications associated with address, and sends email', async () => {
       const { req, res } = createMocks({
         method: 'POST',
         query: {
-          event: 'LiquidationOccuring',
+          event: 'LiquidationOccurring',
         },
         body: {
           borrowTicketHolder,
@@ -91,12 +91,12 @@ describe('/api/events/cron/[event]', () => {
     });
   });
 
-  describe('LiquidationOccured', () => {
+  describe('LiquidationOccurred', () => {
     it('makes call to the graph, gets notifications associated with address, and sends email', async () => {
       const { req, res } = createMocks({
         method: 'POST',
         query: {
-          event: 'LiquidationOccured',
+          event: 'LiquidationOccurred',
         },
         body: {
           borrowTicketHolder,
