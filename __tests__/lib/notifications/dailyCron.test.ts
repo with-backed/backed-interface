@@ -51,14 +51,16 @@ describe('daily cron job', () => {
     expect(fetchMock).toHaveBeenCalledTimes(2);
 
     expect(fetchMock).toHaveBeenCalledWith(
-      `${process.env.PAWN_SHOP_URL!}/api/events/cron/LiquidationOccuring`,
+      `${process.env
+        .NEXT_PUBLIC_PAWN_SHOP_API_URL!}/api/events/cron/LiquidationOccuring`,
       {
         body: `{\"borrowTicketHolder\":\"${aboutToExpireLoan.borrowTicketHolder}\",\"lendTicketHolder\":\"${aboutToExpireLoan.lendTicketHolder}\"}`,
         method: 'POST',
       },
     );
     expect(fetchMock).toHaveBeenCalledWith(
-      `${process.env.PAWN_SHOP_URL!}/api/events/cron/LiquidationOccured`,
+      `${process.env
+        .NEXT_PUBLIC_PAWN_SHOP_API_URL!}/api/events/cron/LiquidationOccured`,
       {
         body: `{\"borrowTicketHolder\":\"${aboutToExpireLoan.borrowTicketHolder}\",\"lendTicketHolder\":\"${aboutToExpireLoan.lendTicketHolder}\"}`,
         method: 'POST',

@@ -19,7 +19,8 @@ export async function main(currentTimestamp: number) {
   let loans = await getLoansExpiringWithin(currentTimestamp, futureTimestamp);
   for (let i = 0; i < loans.length; i++) {
     await fetch(
-      `${process.env.PAWN_SHOP_URL!}/api/events/cron/LiquidationOccuring`,
+      `${process.env
+        .NEXT_PUBLIC_PAWN_SHOP_API_URL!}/api/events/cron/LiquidationOccuring`,
       {
         method: 'POST',
         body: JSON.stringify({
@@ -33,7 +34,8 @@ export async function main(currentTimestamp: number) {
   loans = await getLoansExpiringWithin(pastTimestamp, currentTimestamp);
   for (let i = 0; i < loans.length; i++) {
     await fetch(
-      `${process.env.PAWN_SHOP_URL!}/api/events/cron/LiquidationOccured`,
+      `${process.env
+        .NEXT_PUBLIC_PAWN_SHOP_API_URL!}/api/events/cron/LiquidationOccured`,
       {
         method: 'POST',
         body: JSON.stringify({
