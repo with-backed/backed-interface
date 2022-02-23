@@ -3,11 +3,14 @@ import { getLoansExpiringWithin } from 'lib/loans/subgraph/subgraphLoans';
 import { subgraphLoan } from 'lib/mockData';
 import { main } from 'lib/notifications/cron/dailyCron';
 import fetchMock from 'jest-fetch-mock';
+import {
+  getLastWrittenTimestamp,
+  overrideLastWrittenTimestamp,
+} from 'lib/notifications/repository';
 
-// value obtained from lib/notifications/cron/timestamps/lastWrittenTimestampTest.txt
 let lastRun = 1645155901;
 let now =
-  1645155901 +
+  lastRun +
   parseInt(process.env.NEXT_PUBLIC_NOTIFICATIONS_FREQUENCY_HOURS!) * 3600;
 const future =
   now + parseInt(process.env.NEXT_PUBLIC_NOTIFICATIONS_FREQUENCY_HOURS!) * 3600;
@@ -30,14 +33,30 @@ jest.mock('lib/loans/subgraph/subgraphLoans', () => ({
   getLoansExpiringWithin: jest.fn(),
 }));
 
+jest.mock('lib/notifications/repository', () => ({
+  overrideLastWrittenTimestamp: jest.fn(),
+  getLastWrittenTimestamp: jest.fn(),
+}));
+
 const mockedGetExpiringLoansCall =
   getLoansExpiringWithin as jest.MockedFunction<typeof getLoansExpiringWithin>;
+
+const mockedOverrideLastTimestampCall =
+  overrideLastWrittenTimestamp as jest.MockedFunction<
+    typeof overrideLastWrittenTimestamp
+  >;
+const mockedGetLastWrittenTimestampCall =
+  getLastWrittenTimestamp as jest.MockedFunction<
+    typeof getLastWrittenTimestamp
+  >;
 
 describe('daily cron job', () => {
   beforeEach(async () => {
     jest.clearAllMocks();
     mockedGetExpiringLoansCall.mockResolvedValueOnce([aboutToExpireLoan]);
     mockedGetExpiringLoansCall.mockResolvedValueOnce([alreadyExpiredLoan]);
+    mockedOverrideLastTimestampCall.mockResolvedValue();
+    mockedGetLastWrittenTimestampCall.mockResolvedValue(lastRun);
   });
 
   it('makes call to get expiring loans with correct params and then calls /LiquidationOccurring and /LiquidationOccurred', async () => {

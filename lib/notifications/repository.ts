@@ -66,3 +66,32 @@ export async function getNotificationRequestsForAddress(
     return [];
   }
 }
+
+export async function overrideLastWrittenTimestamp(
+  lastWrittenTimestamp: number,
+) {
+  const lastTimestampObj =
+    await prisma.lastTimestampForNotifications.findFirst();
+
+  if (!lastTimestampObj) {
+    await prisma.lastTimestampForNotifications.create({
+      data: { lastWrittenTimestamp },
+    });
+    return;
+  }
+
+  await prisma.lastTimestampForNotifications.update({
+    data: { lastWrittenTimestamp },
+    where: { id: lastTimestampObj.id },
+  });
+}
+
+export async function getLastWrittenTimestamp(): Promise<number | null> {
+  try {
+    const timestampObj = await prisma.lastTimestampForNotifications.findFirst();
+    return timestampObj!.lastWrittenTimestamp;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+}

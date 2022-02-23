@@ -1,7 +1,8 @@
-import path from 'path';
-import fs from 'fs';
-
 import { getLoansExpiringWithin } from 'lib/loans/subgraph/subgraphLoans';
+import {
+  getLastWrittenTimestamp,
+  overrideLastWrittenTimestamp,
+} from '../repository';
 
 export async function main(currentTimestamp: number) {
   console.log(
@@ -9,15 +10,18 @@ export async function main(currentTimestamp: number) {
   );
   if (process.env.NEXT_PUBLIC_NOTIFICATIONS_KILLSWITCH) return;
 
-  const timestampFilePath = path.resolve(
-    __dirname,
-    `./timestamps/${process.env.NEXT_PUBLIC_NOTIFICATIONS_TIMESTAMP_FILENAME}.txt`,
-  );
+  const pastTimestamp = await getLastWrittenTimestamp();
+  if (!pastTimestamp) {
+    console.log('unable to get last written timestamp');
+    return;
+  }
+  console.log(`pastTimestamp is ${pastTimestamp}`);
 
-  const pastTimestamp = parseInt(fs.readFileSync(timestampFilePath).toString());
   const futureTimestamp =
     currentTimestamp +
     parseInt(process.env.NEXT_PUBLIC_NOTIFICATIONS_FREQUENCY_HOURS!) * 3600;
+
+  console.log(`future timestamp is ${futureTimestamp}`);
 
   let loans = await getLoansExpiringWithin(currentTimestamp, futureTimestamp);
   for (let i = 0; i < loans.length; i++) {
@@ -49,7 +53,5 @@ export async function main(currentTimestamp: number) {
     );
   }
 
-  if (!process.env.JEST_WORKER_ID) {
-    await fs.writeFileSync(timestampFilePath, currentTimestamp.toString());
-  }
+  await overrideLastWrittenTimestamp(currentTimestamp);
 }
