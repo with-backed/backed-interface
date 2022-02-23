@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "yarn graphql:generate && yarn abis:generate && next dev",
-    "build": "yarn graphql:generate && yarn abis:generate && next build",
+    "build": "npx prisma generate && yarn graphql:generate && yarn abis:generate && next build",
     "start": "next start",
     "storybook": "start-storybook -p 6006 -s ./public",
     "build-storybook": "build-storybook",
