@@ -10,18 +10,17 @@ export async function main(currentTimestamp: number) {
   );
   if (process.env.NEXT_PUBLIC_NOTIFICATIONS_KILLSWITCH) return;
 
-  const pastTimestamp = await getLastWrittenTimestamp();
+  let pastTimestamp = await getLastWrittenTimestamp();
   if (!pastTimestamp) {
-    console.log('unable to get last written timestamp');
-    return;
+    // if we couldn't get pastTimestamp from postgres for whatever reason, just default to N hours before
+    pastTimestamp =
+      currentTimestamp -
+      parseInt(process.env.NEXT_PUBLIC_NOTIFICATIONS_FREQUENCY_HOURS!) * 3600;
   }
-  console.log(`pastTimestamp is ${pastTimestamp}`);
 
   const futureTimestamp =
     currentTimestamp +
     parseInt(process.env.NEXT_PUBLIC_NOTIFICATIONS_FREQUENCY_HOURS!) * 3600;
-
-  console.log(`future timestamp is ${futureTimestamp}`);
 
   let loans = await getLoansExpiringWithin(currentTimestamp, futureTimestamp);
   for (let i = 0; i < loans.length; i++) {
