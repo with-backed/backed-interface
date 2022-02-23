@@ -96,7 +96,7 @@ function LoanStats({ address, loans, kind }: LoanStatsProps) {
         ...currentInterestAmounts,
         ...getAllPrincipalAmounts(lentToLoans),
       ]);
-      setTotalAmounts(total.toFixed(6));
+      setTotalAmounts(total.toFixed(2));
     }
     fetchTotalAmounts();
   }, [setTotalAmounts, lentToLoans, currentInterestAmounts]);
@@ -120,7 +120,7 @@ function LoanStats({ address, loans, kind }: LoanStatsProps) {
       <dt>{interestLabel}</dt>
       <dd>{interestAmounts}</dd>
       <dt>{totalLabel}</dt>
-      <dd>{totalAmounts}</dd>
+      <dd>${totalAmounts}</dd>
     </DescriptionList>
   );
 }
