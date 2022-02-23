@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { getUnitPriceForCoin } from 'lib/coingecko';
 import { getCurrentUnixTime } from 'lib/duration';
 import { groupBy } from 'lodash';
 import { Loan } from 'types/Loan';
@@ -23,6 +24,7 @@ export function getNextLoanDue(loans: Loan[]): number {
 type ERC20Amount = {
   nominal: string;
   symbol: string;
+  address: string;
 };
 
 function getSummedFieldByERC20(
@@ -33,6 +35,7 @@ function getSummedFieldByERC20(
   return Object.keys(loansByERC20).map((erc) => {
     const symbol = loansByERC20[erc][0].loanAssetSymbol;
     const decimals = loansByERC20[erc][0].loanAssetDecimals;
+    const address = loansByERC20[erc][0].loanAssetContractAddress;
 
     return {
       symbol,
@@ -43,6 +46,7 @@ function getSummedFieldByERC20(
         ),
         decimals,
       ),
+      address,
     };
   });
 }
@@ -53,4 +57,12 @@ export function getAllPrincipalAmounts(loans: Loan[]): ERC20Amount[] {
 
 export function getAllInterestAmounts(loans: Loan[]): ERC20Amount[] {
   return getSummedFieldByERC20(loans, (loan) => loan.interestOwed);
+}
+
+export async function getTotalInUSD(erc20s: ERC20Amount[]): Promise<number> {
+  let total = 0;
+  for (let i = 0; i < erc20s.length; i++) {
+    total += await getUnitPriceForCoin(erc20s[i].address);
+  }
+  return total;
 }

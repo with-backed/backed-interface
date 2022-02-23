@@ -49,6 +49,10 @@ function LoanStats({ address, loans, kind }: LoanStatsProps) {
       kind === 'borrower' ? 'Total Owed Interest' : 'Total Accrued Interest',
     [kind],
   );
+  const totalLabel = useMemo(
+    () => (kind === 'borrower' ? 'Total Owed' : 'Current Total (ALL)'),
+    [kind],
+  );
 
   const [currentInterestAmounts, setCurrentInterestAmounts] = useState(
     getAllInterestAmounts(lentToLoans),
@@ -103,6 +107,8 @@ function LoanStats({ address, loans, kind }: LoanStatsProps) {
       <dd>{principalAmounts}</dd>
       <dt>{interestLabel}</dt>
       <dd>{interestAmounts}</dd>
+      <dt>{totalLabel}</dt>
+      <dd>{totalAmounts}</dd>
     </DescriptionList>
   );
 }
