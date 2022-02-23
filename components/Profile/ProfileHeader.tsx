@@ -91,16 +91,14 @@ function LoanStats({ address, loans, kind }: LoanStatsProps) {
   }, [currentInterestAmounts]);
   const [totalAmounts, setTotalAmounts] = useState('0');
   useEffect(() => {
-    async function initTotalAmounts() {
+    async function fetchTotalAmounts() {
       const total = await getTotalInUSD([
         ...currentInterestAmounts,
         ...getAllPrincipalAmounts(lentToLoans),
       ]);
-      console.log({ total, currentInterestAmounts });
       setTotalAmounts(total.toFixed(6));
     }
-    console.log('here');
-    initTotalAmounts();
+    fetchTotalAmounts();
   }, [setTotalAmounts, lentToLoans, currentInterestAmounts]);
   return (
     <DescriptionList orientation="horizontal">
