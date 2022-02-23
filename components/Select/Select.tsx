@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import ReactSelect, { GroupBase, Props } from 'react-select';
+import ReactSelect, { components, GroupBase, Props } from 'react-select';
 
 interface SelectProps<
   Option,
@@ -8,6 +8,10 @@ interface SelectProps<
 > extends Props<Option, IsMulti, Group> {
   color?: 'dark' | 'light';
 }
+
+const Input: typeof components.Input = (props) => {
+  return <components.Input {...props} data-lpignore />;
+};
 
 export function Select<
   Option,
@@ -89,6 +93,7 @@ export function Select<
       }}
       defaultValue={defaultValue}
       isClearable={isClearable}
+      components={{ Input }}
       {...props}
     />
   );
