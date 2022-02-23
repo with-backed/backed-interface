@@ -51,7 +51,7 @@ function LoanStats({ address, loans, kind }: LoanStatsProps) {
     [kind],
   );
   const totalLabel = useMemo(
-    () => (kind === 'borrower' ? 'Total Owed' : 'Current Total (ALL)'),
+    () => (kind === 'borrower' ? 'Total Owed' : 'Current Total'),
     [kind],
   );
 
