@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "yarn graphql:generate && yarn abis:generate && next dev",
-    "build": "yarn graphql:generate && yarn abis:generate && next build",
+    "dev": "prisma generate && yarn graphql:generate && yarn abis:generate && next dev",
+    "build": "prisma generate && yarn graphql:generate && yarn abis:generate && next build",
     "start": "next start",
     "storybook": "start-storybook -p 6006 -s ./public",
     "build-storybook": "build-storybook",
@@ -75,6 +75,7 @@
     "husky": ">=6",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^27.3.1",
+    "jest-fetch-mock": "^3.0.3",
     "lint-staged": ">=10",
     "node-mocks-http": "^1.11.0",
     "prettier": "^2.4.1",

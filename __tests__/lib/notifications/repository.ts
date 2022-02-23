@@ -2,7 +2,9 @@ import {
   createNotificationRequestForAddress,
   deleteAllNotificationRequestsForAddress,
   deleteNotificationRequestById,
+  getLastWrittenTimestamp,
   getNotificationRequestsForAddress,
+  overrideLastWrittenTimestamp,
 } from 'lib/notifications/repository';
 import {
   NotificationEventTrigger,
@@ -99,5 +101,15 @@ describe('Notifications repository', () => {
     expect((await getNotificationRequestsForAddress(address)).length).toEqual(
       0,
     );
+  });
+
+  describe('lastWrittenTimestamp methods', () => {
+    it('successfully overwrites and retrieves last written timestamp', async () => {
+      await overrideLastWrittenTimestamp(1000);
+      expect(await getLastWrittenTimestamp()).toEqual(1000);
+
+      await overrideLastWrittenTimestamp(2000);
+      expect(await getLastWrittenTimestamp()).toEqual(2000);
+    });
   });
 });

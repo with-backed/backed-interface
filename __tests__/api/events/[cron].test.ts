@@ -7,7 +7,7 @@ import {
   NotificationMethod,
 } from 'lib/notifications/shared';
 import { createMocks } from 'node-mocks-http';
-import handler from 'pages/api/[event]';
+import handler from 'pages/api/events/cron/[event]';
 
 const borrowTicketHolder = ethers.Wallet.createRandom().address.toLowerCase();
 const lendTicketHolder = ethers.Wallet.createRandom().address.toLowerCase();
@@ -57,12 +57,12 @@ describe('/api/events/cron/[event]', () => {
     mockedSendEmailCall.mockReturnValue();
   });
 
-  describe('LiquidationOccuring', () => {
+  describe('LiquidationOccurring', () => {
     it('makes call to the graph, gets notifications associated with address, and sends email', async () => {
       const { req, res } = createMocks({
         method: 'POST',
         query: {
-          event: 'LiquidationOccuring',
+          event: 'LiquidationOccurring',
         },
         body: {
           borrowTicketHolder,
@@ -81,7 +81,7 @@ describe('/api/events/cron/[event]', () => {
       expect(sendEmail).toHaveBeenCalledTimes(2);
       expect(sendEmail).toHaveBeenCalledWith(
         notificationDestination,
-        NotificationEventTrigger.LiquidationOccuring,
+        NotificationEventTrigger.LiquidationOccurring,
       );
 
       expect(res._getStatusCode()).toBe(200);
@@ -91,12 +91,12 @@ describe('/api/events/cron/[event]', () => {
     });
   });
 
-  describe('LiquidationOccured', () => {
+  describe('LiquidationOccurred', () => {
     it('makes call to the graph, gets notifications associated with address, and sends email', async () => {
       const { req, res } = createMocks({
         method: 'POST',
         query: {
-          event: 'LiquidationOccured',
+          event: 'LiquidationOccurred',
         },
         body: {
           borrowTicketHolder,
@@ -115,7 +115,7 @@ describe('/api/events/cron/[event]', () => {
       expect(sendEmail).toHaveBeenCalledTimes(2);
       expect(sendEmail).toHaveBeenCalledWith(
         notificationDestination,
-        NotificationEventTrigger.LiquidationOccured,
+        NotificationEventTrigger.LiquidationOccurred,
       );
 
       expect(res._getStatusCode()).toBe(200);

@@ -169,3 +169,28 @@ const formatNumberForGraph = (loanAmount: LoanAmountInputType): string => {
     .parseUnits(loanAmount.nominal.toString(), loanAmount.loanAssetDecimal)
     .toString();
 };
+
+const liquidatingLoansQuery = gql`
+    query($where: Loan_filter) {
+        loans(where: $where) {
+            ${ALL_LOAN_PROPERTIES}
+        }
+    }
+`;
+
+export async function getLoansExpiringWithin(
+  timeOne: number,
+  timeTwo: number,
+): Promise<Loan[]> {
+  const where: Loan_Filter = {
+    endDateTimestamp_gt: timeOne,
+    endDateTimestamp_lt: timeTwo,
+  };
+
+  const graphResponse = await nftBackedLoansClient
+    .query(liquidatingLoansQuery, {
+      where,
+    })
+    .toPromise();
+  return graphResponse.data['loans'] as Loan[];
+}

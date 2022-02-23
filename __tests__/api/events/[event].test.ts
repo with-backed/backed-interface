@@ -14,7 +14,7 @@ import {
   NotificationMethod,
 } from 'lib/notifications/shared';
 import { createMocks } from 'node-mocks-http';
-import handler from 'pages/api/events/cron/[event]';
+import handler from 'pages/api/events/[event]';
 import {
   BuyoutEvent,
   CollateralSeizureEvent,
