@@ -5,6 +5,7 @@ import {
   getClosedLoanCount,
   getAllInterestAmounts,
   getAllPrincipalAmounts,
+  getTotalInUSD,
 } from 'lib/loans/profileHeaderMethods';
 import { getInterestOwed } from 'lib/loans/utils';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -88,6 +89,19 @@ function LoanStats({ address, loans, kind }: LoanStatsProps) {
       </div>
     ));
   }, [currentInterestAmounts]);
+  const [totalAmounts, setTotalAmounts] = useState('0');
+  useEffect(() => {
+    async function initTotalAmounts() {
+      const total = await getTotalInUSD([
+        ...currentInterestAmounts,
+        ...getAllPrincipalAmounts(lentToLoans),
+      ]);
+      console.log({ total, currentInterestAmounts });
+      setTotalAmounts(total.toFixed(6));
+    }
+    console.log('here');
+    initTotalAmounts();
+  }, [setTotalAmounts, lentToLoans, currentInterestAmounts]);
   return (
     <DescriptionList orientation="horizontal">
       <dt>

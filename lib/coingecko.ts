@@ -4,7 +4,7 @@ export async function getUnitPriceForCoin(
   tokenAddress: string,
 ): Promise<number> {
   if (!mainnet()) {
-    return Math.random();
+    return 1.01;
   }
 
   const statsRes = await fetch(

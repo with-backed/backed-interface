@@ -62,7 +62,9 @@ export function getAllInterestAmounts(loans: Loan[]): ERC20Amount[] {
 export async function getTotalInUSD(erc20s: ERC20Amount[]): Promise<number> {
   let total = 0;
   for (let i = 0; i < erc20s.length; i++) {
-    total += await getUnitPriceForCoin(erc20s[i].address);
+    total +=
+      parseFloat(erc20s[i].nominal) *
+      (await getUnitPriceForCoin(erc20s[i].address));
   }
   return total;
 }
