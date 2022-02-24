@@ -2,6 +2,7 @@ import { mainnet } from './chainEnv';
 
 export async function getUnitPriceForCoin(
   tokenAddress: string,
+  toCurrency: string,
 ): Promise<number | undefined> {
   if (!mainnet()) {
     return 1.01;
@@ -13,5 +14,5 @@ export async function getUnitPriceForCoin(
 
   const json = await statsRes.json();
 
-  return json?.market_data?.current_price?.usd;
+  return json?.market_data?.current_price[toCurrency];
 }

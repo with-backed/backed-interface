@@ -5,7 +5,6 @@ import {
   getClosedLoanCount,
   getAllInterestAmounts,
   getAllPrincipalAmounts,
-  getTotalInUSD,
 } from 'lib/loans/profileHeaderMethods';
 import { getInterestOwed } from 'lib/loans/utils';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -13,7 +12,7 @@ import { Loan } from 'types/Loan';
 import { BorrowerLenderBubble } from './BorrowerLenderBubble';
 import { NextLoanDueCountdown } from './NextLoanDueCountdown';
 import styles from './profile.module.css';
-import { USDTotals } from './USDTotals';
+import { DisplayCurrency } from '../DisplayCurrency/DisplayCurrency';
 
 type ProfileHeaderProps = {
   address: string;
@@ -114,9 +113,7 @@ function LoanStats({ address, loans, kind }: LoanStatsProps) {
       <dt>{interestLabel}</dt>
       <dd>{interestAmounts}</dd>
       <dt>{totalLabel}</dt>
-      <dd>
-        <USDTotals amounts={totalAmounts} />
-      </dd>
+      <dd>{DisplayCurrency({ amounts: totalAmounts, currency: 'usd' })}</dd>
     </DescriptionList>
   );
 }

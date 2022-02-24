@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
-import { getUnitPriceForCoin } from 'lib/coingecko';
 import { getCurrentUnixTime } from 'lib/duration';
+import { ERC20Amount } from 'lib/erc20Helper';
 import { groupBy } from 'lodash';
 import { Loan } from 'types/Loan';
 
@@ -20,12 +20,6 @@ export function getNextLoanDue(loans: Loan[]): number {
     )[0].endDateTimestamp - getCurrentUnixTime().toNumber();
   return nearestLoanDueDuration > 0 ? nearestLoanDueDuration : 0;
 }
-
-export type ERC20Amount = {
-  nominal: string;
-  symbol: string;
-  address: string;
-};
 
 function getSummedFieldByERC20(
   loans: Loan[],
@@ -57,14 +51,4 @@ export function getAllPrincipalAmounts(loans: Loan[]): ERC20Amount[] {
 
 export function getAllInterestAmounts(loans: Loan[]): ERC20Amount[] {
   return getSummedFieldByERC20(loans, (loan) => loan.interestOwed);
-}
-
-export async function getTotalInUSD(erc20s: ERC20Amount[]): Promise<number> {
-  let total = 0;
-  for (let i = 0; i < erc20s.length; i++) {
-    total +=
-      parseFloat(erc20s[i].nominal) *
-      (await getUnitPriceForCoin(erc20s[i].address));
-  }
-  return total;
 }
