@@ -113,7 +113,9 @@ function LoanStats({ address, loans, kind }: LoanStatsProps) {
       <dt>{interestLabel}</dt>
       <dd>{interestAmounts}</dd>
       <dt>{totalLabel}</dt>
-      <dd>{DisplayCurrency({ amounts: totalAmounts, currency: 'usd' })}</dd>
+      <dd>
+        <DisplayCurrency amounts={totalAmounts} currency="usd" />
+      </dd>
     </DescriptionList>
   );
 }

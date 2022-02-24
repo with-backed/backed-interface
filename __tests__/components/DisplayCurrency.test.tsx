@@ -51,5 +51,6 @@ describe('DisplayCurrency', () => {
     render(<DisplayCurrency amounts={[amount, amountTwo]} currency="usd" />);
 
     expect(mockUnitPriceForCoin).not.toHaveBeenCalled();
+    process.env.NEXT_PUBLIC_COINGECKO_KILLSWITCH_ON = undefined;
   });
 });
