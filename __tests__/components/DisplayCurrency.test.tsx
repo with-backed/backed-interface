@@ -5,7 +5,6 @@ import { DisplayCurrency } from 'components/DisplayCurrency/DisplayCurrency';
 import { ERC20Amount } from 'lib/erc20Helper';
 
 jest.mock('lib/coingecko', () => ({
-  ...jest.requireActual('lib/coingecko'),
   getUnitPriceForCoin: jest.fn(),
 }));
 
