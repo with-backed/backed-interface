@@ -2,7 +2,7 @@ import { mainnet } from './chainEnv';
 
 export async function getUnitPriceForCoin(
   tokenAddress: string,
-): Promise<number> {
+): Promise<number | undefined> {
   if (!mainnet()) {
     return 1.01;
   }

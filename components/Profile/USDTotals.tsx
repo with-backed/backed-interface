@@ -15,7 +15,11 @@ export function USDTotals({ amounts }: USDTotalsProps) {
 
     async function fetchTotalAmounts() {
       const total = await getTotalInUSD(amounts);
-      setTotalInUSD(`$${total.toFixed(2)}`);
+      if (!total) {
+        setTotalInUSD('');
+      } else {
+        setTotalInUSD(`$${total.toFixed(2)}`);
+      }
     }
 
     fetchTotalAmounts();
