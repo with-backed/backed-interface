@@ -21,7 +21,7 @@ export function getNextLoanDue(loans: Loan[]): number {
   return nearestLoanDueDuration > 0 ? nearestLoanDueDuration : 0;
 }
 
-type ERC20Amount = {
+export type ERC20Amount = {
   nominal: string;
   symbol: string;
   address: string;

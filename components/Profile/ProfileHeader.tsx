@@ -13,6 +13,7 @@ import { Loan } from 'types/Loan';
 import { BorrowerLenderBubble } from './BorrowerLenderBubble';
 import { NextLoanDueCountdown } from './NextLoanDueCountdown';
 import styles from './profile.module.css';
+import { USDTotals } from './USDTotals';
 
 type ProfileHeaderProps = {
   address: string;
@@ -89,17 +90,10 @@ function LoanStats({ address, loans, kind }: LoanStatsProps) {
       </div>
     ));
   }, [currentInterestAmounts]);
-  const [totalAmounts, setTotalAmounts] = useState('0');
-  useEffect(() => {
-    async function fetchTotalAmounts() {
-      const total = await getTotalInUSD([
-        ...currentInterestAmounts,
-        ...getAllPrincipalAmounts(lentToLoans),
-      ]);
-      setTotalAmounts(total.toFixed(2));
-    }
-    fetchTotalAmounts();
-  }, [setTotalAmounts, lentToLoans, currentInterestAmounts]);
+  const totalAmounts = useMemo(() => {
+    return [...currentInterestAmounts, ...getAllPrincipalAmounts(lentToLoans)];
+  }, [currentInterestAmounts, lentToLoans]);
+
   return (
     <DescriptionList orientation="horizontal">
       <dt>
@@ -119,8 +113,9 @@ function LoanStats({ address, loans, kind }: LoanStatsProps) {
       <dd>{principalAmounts}</dd>
       <dt>{interestLabel}</dt>
       <dd>{interestAmounts}</dd>
-      <dt>{totalLabel}</dt>
-      <dd>${totalAmounts}</dd>
+      {!process.env.NEXT_PUBLIC_COINGECKO_KILLSWITCH_ON && (
+        <USDTotals amounts={totalAmounts} label={totalLabel} />
+      )}
     </DescriptionList>
   );
 }
