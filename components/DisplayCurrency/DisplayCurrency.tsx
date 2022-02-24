@@ -11,9 +11,9 @@ type AggregateAmounts = BaseProps & {
   amounts: ERC20Amount[];
 };
 
-export function DisplayCurrency(props: SingleAmount): React.ReactNode;
-export function DisplayCurrency(props: AggregateAmounts): React.ReactNode;
-export function DisplayCurrency(props: any): React.ReactNode {
+export function DisplayCurrency(props: SingleAmount): JSX.Element | null;
+export function DisplayCurrency(props: AggregateAmounts): JSX.Element | null;
+export function DisplayCurrency(props: any): JSX.Element | null {
   // currency is a common property, this is safe
   const { currency } = props as SingleAmount | AggregateAmounts;
 
@@ -32,6 +32,11 @@ export function DisplayCurrency(props: any): React.ReactNode {
 
   const [total, setTotal] = useState<number | null>(null);
   useEffect(() => {
+    if (!!process.env.NEXT_PUBLIC_COINGECKO_KILLSWITCH_ON) {
+      setTotal(null);
+      return;
+    }
+
     async function fetchTotalAmounts() {
       const total = await convertERC20ToCurrency(amounts, currency);
       if (!total) {

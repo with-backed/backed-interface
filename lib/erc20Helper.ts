@@ -9,14 +9,14 @@ export type ERC20Amount = {
 export async function convertERC20ToCurrency(
   amounts: ERC20Amount[],
   currency: string,
-) {
+): Promise<number | null> {
   let total = 0;
   for (let i = 0; i < amounts.length; i++) {
     const convertedAmount = await getUnitPriceForCoin(
       amounts[i].address,
       currency,
     );
-    if (!convertedAmount) return 0;
+    if (!convertedAmount) return null;
     total += parseFloat(amounts[i].nominal) * convertedAmount;
   }
   return total;

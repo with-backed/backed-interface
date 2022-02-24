@@ -1,10 +1,11 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { getUnitPriceForCoin } from 'lib/coingecko';
 import { DisplayCurrency } from 'components/DisplayCurrency/DisplayCurrency';
 import { ERC20Amount } from 'lib/erc20Helper';
 
 jest.mock('lib/coingecko', () => ({
+  ...jest.requireActual('lib/coingecko'),
   getUnitPriceForCoin: jest.fn(),
 }));
 
@@ -19,47 +20,37 @@ const amount: ERC20Amount = {
 };
 
 const amountTwo: ERC20Amount = {
-  address: '0x6916577695D0774171De3ED95d03A3239139Eddb',
-  symbol: 'DAI',
+  address: '0xc778417e063141139fce010982780140aa0cd5ab',
+  symbol: 'WETH',
   nominal: '200.0',
 };
 
-const DisplayedCurrencyComponent = ({
-  displayedCurrency,
-}: {
-  displayedCurrency: React.ReactNode;
-}) => <div>{displayedCurrency}</div>;
-
 describe('DisplayCurrency', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.clearAllMocks();
     mockUnitPriceForCoin.mockResolvedValue(1.01);
   });
-  it('renders the converted amount with one ERC20Amount to convert', () => {
-    const { getByText } = render(
-      <DisplayedCurrencyComponent
-        displayedCurrency={DisplayCurrency({ amount, currency: 'usd' })}
-      />,
-    );
+  it('renders the converted amount with one ERC20Amount to convert', async () => {
+    render(<DisplayCurrency amount={amount} currency="usd" />);
 
-    expect(mockUnitPriceForCoin).toHaveBeenCalledWith([amount], 'usd');
-    getByText('$101.00');
+    expect(mockUnitPriceForCoin).toHaveBeenCalledWith(amount.address, 'usd');
+    await screen.findByText('$101.00');
   });
 
   it('renders the converted amount with multiple ERC20Amount to convert', async () => {
-    const { getByText } = render(
-      <DisplayedCurrencyComponent
-        displayedCurrency={DisplayCurrency({
-          amounts: [amount, amountTwo],
-          currency: 'usd',
-        })}
-      />,
-    );
+    render(<DisplayCurrency amounts={[amount, amountTwo]} currency="usd" />);
 
-    expect(mockUnitPriceForCoin).toHaveBeenCalledWith(
-      [amount, amountTwo],
-      'usd',
-    );
-    getByText('$303.00');
+    await screen.findByText('$303.00');
+
+    expect(mockUnitPriceForCoin).toHaveBeenCalledTimes(2);
+    expect(mockUnitPriceForCoin).toHaveBeenCalledWith(amount.address, 'usd');
+    expect(mockUnitPriceForCoin).toHaveBeenCalledWith(amountTwo.address, 'usd');
+  });
+
+  it('makes no calls to coingecko if killswitch is on', async () => {
+    process.env.NEXT_PUBLIC_COINGECKO_KILLSWITCH_ON = 'true';
+    render(<DisplayCurrency amounts={[amount, amountTwo]} currency="usd" />);
+
+    expect(mockUnitPriceForCoin).not.toHaveBeenCalled();
   });
 });
