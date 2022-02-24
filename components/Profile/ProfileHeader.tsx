@@ -113,9 +113,10 @@ function LoanStats({ address, loans, kind }: LoanStatsProps) {
       <dd>{principalAmounts}</dd>
       <dt>{interestLabel}</dt>
       <dd>{interestAmounts}</dd>
-      {!process.env.NEXT_PUBLIC_COINGECKO_KILLSWITCH_ON && (
-        <USDTotals amounts={totalAmounts} label={totalLabel} />
-      )}
+      <dt>{totalLabel}</dt>
+      <dd>
+        <USDTotals amounts={totalAmounts} />
+      </dd>
     </DescriptionList>
   );
 }

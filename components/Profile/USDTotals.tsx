@@ -2,24 +2,24 @@ import { ERC20Amount, getTotalInUSD } from 'lib/loans/profileHeaderMethods';
 import { useEffect, useState } from 'react';
 
 type USDTotalsProps = {
-  label: string;
   amounts: ERC20Amount[];
 };
 
-export function USDTotals({ label, amounts }: USDTotalsProps) {
-  const [totalAmounts, setTotalAmounts] = useState('0');
+export function USDTotals({ amounts }: USDTotalsProps) {
+  const [totalInUSD, setTotalInUSD] = useState<string>('$0.00');
   useEffect(() => {
+    if (process.env.NEXT_PUBLIC_COINGECKO_KILLSWITCH_ON) {
+      setTotalInUSD('');
+      return;
+    }
+
     async function fetchTotalAmounts() {
       const total = await getTotalInUSD(amounts);
-      setTotalAmounts(total.toFixed(2));
+      setTotalInUSD(`$${total.toFixed(2)}`);
     }
+
     fetchTotalAmounts();
   }, [amounts]);
 
-  return (
-    <>
-      <dt>{label}</dt>
-      <dd>${totalAmounts}</dd>
-    </>
-  );
+  return <>{totalInUSD}</>;
 }
