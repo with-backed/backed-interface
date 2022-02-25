@@ -60,7 +60,6 @@ export function ProfileActivity({
             const loan = loanLookup[e.loanId.toString()];
             const user = getUserForEvent(e, loan);
 
-            console.log({ user, profileAddress });
             return (
               <tr key={`${e.id}-${e.typename}`}>
                 <td>
