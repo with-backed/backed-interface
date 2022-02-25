@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { getUnitPriceForCoin } from 'lib/coingecko';
 import { DisplayCurrency } from 'components/DisplayCurrency/DisplayCurrency';
-import { ERC20Amount } from 'lib/erc20Helper';
+import { ERC20Amount } from 'lib/erc20Helpers';
 
 jest.mock('lib/coingecko', () => ({
   getUnitPriceForCoin: jest.fn(),
