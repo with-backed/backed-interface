@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
 import { getCurrentUnixTime } from 'lib/duration';
+import { ERC20Amount } from 'lib/erc20Helper';
 import { groupBy } from 'lodash';
 import { Loan } from 'types/Loan';
 
@@ -20,11 +21,6 @@ export function getNextLoanDue(loans: Loan[]): number {
   return nearestLoanDueDuration > 0 ? nearestLoanDueDuration : 0;
 }
 
-type ERC20Amount = {
-  nominal: string;
-  symbol: string;
-};
-
 function getSummedFieldByERC20(
   loans: Loan[],
   selector: (loan: Loan) => ethers.BigNumber,
@@ -33,6 +29,7 @@ function getSummedFieldByERC20(
   return Object.keys(loansByERC20).map((erc) => {
     const symbol = loansByERC20[erc][0].loanAssetSymbol;
     const decimals = loansByERC20[erc][0].loanAssetDecimals;
+    const address = loansByERC20[erc][0].loanAssetContractAddress;
 
     return {
       symbol,
@@ -43,6 +40,7 @@ function getSummedFieldByERC20(
         ),
         decimals,
       ),
+      address,
     };
   });
 }

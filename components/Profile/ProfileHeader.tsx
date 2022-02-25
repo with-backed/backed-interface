@@ -12,6 +12,7 @@ import { Loan } from 'types/Loan';
 import { BorrowerLenderBubble } from './BorrowerLenderBubble';
 import { NextLoanDueCountdown } from './NextLoanDueCountdown';
 import styles from './profile.module.css';
+import { DisplayCurrency } from 'components/DisplayCurrency';
 
 type ProfileHeaderProps = {
   address: string;
@@ -49,6 +50,10 @@ function LoanStats({ address, loans, kind }: LoanStatsProps) {
       kind === 'borrower' ? 'Total Owed Interest' : 'Total Accrued Interest',
     [kind],
   );
+  const totalLabel = useMemo(
+    () => (kind === 'borrower' ? 'Total Owed' : 'Current Total'),
+    [kind],
+  );
 
   const [currentInterestAmounts, setCurrentInterestAmounts] = useState(
     getAllInterestAmounts(lentToLoans),
@@ -84,6 +89,10 @@ function LoanStats({ address, loans, kind }: LoanStatsProps) {
       </div>
     ));
   }, [currentInterestAmounts]);
+  const totalAmounts = useMemo(() => {
+    return [...currentInterestAmounts, ...getAllPrincipalAmounts(lentToLoans)];
+  }, [currentInterestAmounts, lentToLoans]);
+
   return (
     <DescriptionList orientation="horizontal">
       <dt>
@@ -103,6 +112,10 @@ function LoanStats({ address, loans, kind }: LoanStatsProps) {
       <dd>{principalAmounts}</dd>
       <dt>{interestLabel}</dt>
       <dd>{interestAmounts}</dd>
+      <dt>{totalLabel}</dt>
+      <dd>
+        <DisplayCurrency amounts={totalAmounts} currency="usd" />
+      </dd>
     </DescriptionList>
   );
 }
