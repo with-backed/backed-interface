@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { getCurrentUnixTime } from 'lib/duration';
-import { ERC20Amount } from 'lib/erc20Helpers';
+import { ERC20Amount } from 'lib/erc20Helper';
 import { groupBy } from 'lodash';
 import { Loan } from 'types/Loan';
 

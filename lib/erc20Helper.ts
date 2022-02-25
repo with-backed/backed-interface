@@ -1,13 +1,13 @@
-import { getUnitPriceForCoin } from '../coingecko';
+import { getUnitPriceForCoin } from './coingecko';
 
-export type ERC20AmountType = {
+export type ERC20Amount = {
   nominal: string;
   symbol: string;
   address: string;
 };
 
 export async function convertERC20ToCurrency(
-  amounts: ERC20AmountType[],
+  amounts: ERC20Amount[],
   currency: string,
 ): Promise<number | null> {
   let total = 0;
