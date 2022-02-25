@@ -110,7 +110,7 @@ describe('Sending emails with Amazon SES', () => {
       expect(mockedSesEmailCall).toBeCalledTimes(1);
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
         expect.objectContaining(
-          emailParamsMatchingObject('Your loan was bought out'),
+          emailParamsMatchingObject('Your NFT collateral can be liquidated'),
         ),
       );
     });
