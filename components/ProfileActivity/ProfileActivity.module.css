@@ -5,7 +5,7 @@
   grid-column: 1 / -1;
   box-shadow: var(--box-shadow);
   margin-top: var(--gap);
-  table-layout: auto;
+  table-layout: fixed;
 }
 
 .table th {
@@ -17,11 +17,22 @@
 
 /* kind of hacky, makes the column sort of line up with stats in header */
 .table th:last-of-type {
-  width: 48.5%;
+  width: 45%;
+}
+
+/* kind of hacky, makes the column sort of line up with stats in header */
+.table th:first-of-type {
+  width: 10%;
 }
 
 .table tr {
   border: 10px solid #fff;
+}
+
+.table td,
+.table th {
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
 }
 
 .bubble {
@@ -80,4 +91,8 @@
 .right,
 th.right {
   text-align: right;
+}
+
+.profile-owner {
+  background-color: var(--highlight-active-10);
 }

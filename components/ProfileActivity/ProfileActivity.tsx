@@ -1,3 +1,4 @@
+import { DisplayAddress } from 'components/DisplayAddress';
 import { EtherscanTransactionLink } from 'components/EtherscanLink';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { NFTMedia } from 'components/Media/NFTMedia';
@@ -12,21 +13,31 @@ import styles from './ProfileActivity.module.css';
 type ProfileActivityProps = {
   events: Event[];
   loans: Loan[];
+  profileAddress: string;
 };
 
-const lender = 'Lender';
-const borrower = 'Borrower';
+function getUserForEvent(event: Event, loan: Loan) {
+  switch (event.typename) {
+    case 'BuyoutEvent':
+      return event.underwriter;
+    case 'CloseEvent':
+      return loan.borrower;
+    case 'CollateralSeizureEvent':
+      return loan.lender!;
+    case 'CreateEvent':
+      return event.minter;
+    case 'LendEvent':
+      return event.underwriter;
+    case 'RepaymentEvent':
+      return event.repayer;
+  }
+}
 
-const actionToRelationship = {
-  BuyoutEvent: lender,
-  CloseEvent: borrower,
-  CollateralSeizureEvent: lender,
-  CreateEvent: borrower,
-  LendEvent: lender,
-  RepaymentEvent: borrower,
-};
-
-export function ProfileActivity({ events, loans }: ProfileActivityProps) {
+export function ProfileActivity({
+  events,
+  loans,
+  profileAddress,
+}: ProfileActivityProps) {
   const loanLookup = useMemo(() => {
     const table: { [key: string]: Loan } = {};
     loans.forEach((l) => (table[l.id.toString()] = l));
@@ -47,10 +58,20 @@ export function ProfileActivity({ events, loans }: ProfileActivityProps) {
         <tbody>
           {events.map((e) => {
             const loan = loanLookup[e.loanId.toString()];
+            const user = getUserForEvent(e, loan);
+
+            console.log({ user, profileAddress });
             return (
               <tr key={`${e.id}-${e.typename}`}>
                 <td>
-                  <Relationship typename={e.typename} />
+                  <div
+                    className={
+                      user === profileAddress
+                        ? styles['profile-owner']
+                        : styles.user
+                    }>
+                    <DisplayAddress address={user} />
+                  </div>
                 </td>
                 <td>
                   <EventLink id={e.id} typename={e.typename} />
@@ -68,15 +89,6 @@ export function ProfileActivity({ events, loans }: ProfileActivityProps) {
       </table>
     </TwelveColumn>
   );
-}
-
-type RelationshipProps = Pick<Event, 'typename'>;
-function Relationship({ typename }: RelationshipProps) {
-  const relationship = useMemo(
-    () => actionToRelationship[typename],
-    [typename],
-  );
-  return <span className={styles[relationship]}>{relationship}</span>;
 }
 
 type EventDateProps = Pick<Event, 'timestamp'>;

@@ -53,7 +53,11 @@ export default function Profile({ address, loans, events }: ProfilePageProps) {
   return (
     <>
       <ProfileHeader address={address} loans={parsedLoans} />
-      <ProfileActivity events={parsedEvents} loans={parsedLoans} />
+      <ProfileActivity
+        events={parsedEvents}
+        loans={parsedLoans}
+        profileAddress={address}
+      />
     </>
   );
 }
