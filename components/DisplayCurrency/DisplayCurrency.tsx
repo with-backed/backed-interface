@@ -14,10 +14,8 @@ type AggregateAmounts = BaseProps & {
 export function DisplayCurrency(props: SingleAmount): JSX.Element | null;
 export function DisplayCurrency(props: AggregateAmounts): JSX.Element | null;
 export function DisplayCurrency(props: any): JSX.Element | null {
-  // currency is a common property, this is safe
   const { currency } = props as SingleAmount | AggregateAmounts;
 
-  // Better to use this, automatically supports various currencies and locales
   const formatter = useMemo(() => {
     return new Intl.NumberFormat('en-US', { currency, style: 'currency' });
   }, [currency]);
