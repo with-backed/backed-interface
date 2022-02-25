@@ -14,13 +14,11 @@ export function DisplayAddress({
   const [gotResponse, setGotResponse] = useState(false);
   const [addr, setAddr] = useState<string>(address);
 
-  console.log({ address, gotResponse });
-
   useEffect(() => {
     async function getEnsName() {
       try {
         let name = await addressToENS(address);
-        console.log({ name });
+
         setGotResponse(true);
         if (name) {
           setAddr(name);
