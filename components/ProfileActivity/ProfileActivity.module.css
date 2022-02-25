@@ -5,6 +5,7 @@
   grid-column: 1 / -1;
   box-shadow: var(--box-shadow);
   margin-top: var(--gap);
+  table-layout: auto;
 }
 
 .table th {
@@ -12,6 +13,11 @@
   font-weight: 400;
   font-size: var(--font-small);
   text-transform: uppercase;
+}
+
+/* kind of hacky, makes the column sort of line up with stats in header */
+.table th:last-of-type {
+  width: 48.5%;
 }
 
 .table tr {
@@ -45,6 +51,10 @@
   grid-template-columns: 70px 1fr;
   gap: 1rem;
   align-items: center;
+  color: var(--neutral-100);
+}
+
+.collateral:visited {
   color: var(--neutral-100);
 }
 
