@@ -12,7 +12,7 @@ import { Loan } from 'types/Loan';
 import { BorrowerLenderBubble } from './BorrowerLenderBubble';
 import { NextLoanDueCountdown } from './NextLoanDueCountdown';
 import styles from './profile.module.css';
-import { DisplayCurrency } from '../DisplayCurrency';
+import { DisplayCurrency } from 'components/DisplayCurrency';
 
 type ProfileHeaderProps = {
   address: string;
