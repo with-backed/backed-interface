@@ -1,15 +1,7 @@
 import mjml2html from 'mjml';
-import aws from 'aws-sdk';
 
 import { NotificationEventTrigger } from './shared';
-
-const sesConfig = {
-  region: 'us-east-1', // Change it to match your region
-  credentials: {
-    accessKeyId: 'AKIAZEACKAGKWKKWV54C',
-    secretAccessKey: 'nWhANLEpnJBM1LMg3PNnkjVq2ApvZhLmnk4S8fb+',
-  },
-};
+import { executeEmailSendWithSes } from './ses';
 
 const notificationEventToEmailMetadata: {
   [key in NotificationEventTrigger]?: { subject: string; text: string };
@@ -40,17 +32,16 @@ const notificationEventToEmailMetadata: {
   },
 };
 
-// TODO(adamgobes): Fill this out with actual email logic
 export async function sendEmail(
   emailAddress: string,
   notificationEventTrigger: NotificationEventTrigger,
 ) {
   const params = {
-    Source: 'adamgobes@gmail.com',
+    Source: process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_EMAIL!,
     Destination: {
-      ToAddresses: ['gobran.ny@gmail.com'],
+      ToAddresses: [emailAddress],
     },
-    ReplyToAddresses: ['adamgobes@gmail.com'],
+    ReplyToAddresses: [process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_EMAIL!],
     Message: {
       Body: {
         Html: {
@@ -67,9 +58,7 @@ export async function sendEmail(
       },
     },
   };
-
-  const res = await new aws.SES(sesConfig).sendEmail(params).promise();
-  console.log(res);
+  await executeEmailSendWithSes(params);
 }
 
 function generateHTMLForEmail(text: string): string {
@@ -91,6 +80,8 @@ function generateHTMLForEmail(text: string): string {
   ).html;
 }
 
-sendEmail('', NotificationEventTrigger.ALL)
-  .then((res) => console.log(res))
+sendEmail('gobran.ny@gmail.com', NotificationEventTrigger.BuyoutEvent)
+  .then((res) => {
+    console.log(res);
+  })
   .catch((err) => console.log(err));
