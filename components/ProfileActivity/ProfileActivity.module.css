@@ -17,12 +17,17 @@
 
 /* kind of hacky, makes the column sort of line up with stats in header */
 .table th:last-of-type {
-  width: 45%;
+  width: 48.5%;
 }
 
-/* kind of hacky, makes the column sort of line up with stats in header */
+/* truncate address */
 .table th:first-of-type {
   width: 10%;
+}
+
+/* clamp down link to etherscan */
+.table th:nth-of-type(2) {
+  width: 15%;
 }
 
 .table tr {
