@@ -79,9 +79,3 @@ function generateHTMLForEmail(text: string): string {
     {},
   ).html;
 }
-
-sendEmail('gobran.ny@gmail.com', NotificationEventTrigger.BuyoutEvent)
-  .then((res) => {
-    console.log(res);
-  })
-  .catch((err) => console.log(err));
