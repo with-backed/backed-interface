@@ -1,0 +1,61 @@
+.banner {
+  min-height: 40px;
+  width: 100%;
+  font-family: var(--sans);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1ch;
+  padding: var(--padding-button);
+  transition: opacity 200ms ease;
+}
+
+.banner-enter {
+  opacity: 0;
+}
+
+.error {
+  composes: banner;
+  background-color: var(--highlight-alert-10);
+}
+
+.success {
+  composes: banner;
+  background-color: var(--highlight-success-10);
+}
+
+.info {
+  composes: banner;
+  background-color: var(--highlight-active-5);
+}
+
+.inner {
+  max-width: var(--max-width);
+  text-align: center;
+}
+
+.close {
+  font-weight: var(--weight-semibold);
+  color: var(--background-white);
+  border-radius: 2rem;
+  height: 1.25rem;
+  width: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  border: none;
+}
+
+.error > .close {
+  background-color: var(--highlight-alert-100);
+}
+
+.success > .close {
+  background-color: var(--highlight-success-100);
+}
+
+.info > .close {
+  background-color: var(--neutral-100);
+}
