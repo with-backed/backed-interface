@@ -28,7 +28,7 @@ const notificationEventToEmailMetadata: {
   },
   [NotificationEventTrigger.LiquidationOccurred]: {
     subject: 'Your NFT collateral can be liquidated',
-    text: 'Your loan was bought out',
+    text: 'Your NFT collateral can be liquidated',
   },
 };
 
