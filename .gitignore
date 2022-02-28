@@ -38,3 +38,6 @@ yarn-error.log*
 # gen
 /abis/types
 /types/generated
+
+# intellij
+.idea/

@@ -15,6 +15,16 @@ import { LoanFormEarlyClosure } from './LoanFormEarlyClosure';
 import { LoanFormSeizeCollateral } from './LoanFormSeizeCollateral';
 import styles from './LoanForm.module.css';
 
+const useLoanViewerRole = (loan: Loan, account?: string | null) =>
+  useMemo(() => {
+    if (account?.toUpperCase() === loan.borrower.toUpperCase()) {
+      return 'borrower';
+    } else if (account?.toUpperCase() === loan.lender?.toUpperCase()) {
+      return 'lender';
+    }
+    return null;
+  }, [account, loan.lender, loan.borrower]);
+
 type LoanFormProps = {
   loan: Loan;
   refresh: () => void;
@@ -24,10 +34,11 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
   const timestamp = useTimestamp();
   const [balance, setBalance] = useState(0);
   const [needsAllowance, setNeedsAllowance] = useState(true);
-  const viewerIsBorrower = useMemo(
-    () => account?.toUpperCase() === loan.borrower.toUpperCase(),
-    [account, loan.borrower],
-  );
+  const role = useLoanViewerRole(loan, account);
+  const viewerIsBorrower = role === 'borrower';
+  const viewerIsLender = role === 'lender';
+
+  console.log('debug:: role', role);
 
   useEffect(() => {
     if (account) {
@@ -67,9 +78,9 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
     loan.lastAccumulatedTimestamp
       .add(loan.durationSeconds)
       .lte(timestamp || 0) &&
-    account === loan.lender
+    viewerIsLender
   ) {
-    if (account.toUpperCase() === loan.lender?.toUpperCase()) {
+    if (viewerIsLender) {
       return (
         <div className={styles.wrapper}>
           <LoanFormSeizeCollateral loan={loan} refresh={refresh} />
@@ -79,10 +90,7 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
     return null;
   }
 
-  if (
-    loan.lastAccumulatedTimestamp.eq(0) &&
-    account.toUpperCase() === loan.borrower.toUpperCase()
-  ) {
+  if (loan.lastAccumulatedTimestamp.eq(0) && viewerIsBorrower) {
     return (
       <div className={styles.wrapper}>
         <LoanFormEarlyClosure loan={loan} refresh={refresh} />
@@ -105,26 +113,32 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
 
   if (viewerIsBorrower) {
     return (
+      <>
+        <div style={{ color: 'red' }}>VIEWER IS BORROWER</div>
+        <div className={styles.wrapper}>
+          <LoanFormRepay
+            loan={loan}
+            balance={balance}
+            needsAllowance={needsAllowance}
+            setNeedsAllowance={setNeedsAllowance}
+            refresh={refresh}
+          />
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <div style={{ color: 'red' }}>{JSON.stringify(loan, null, 4)}</div>
       <div className={styles.wrapper}>
-        <LoanFormRepay
+        <LoanFormBetterTerms
           loan={loan}
-          balance={balance}
           needsAllowance={needsAllowance}
           setNeedsAllowance={setNeedsAllowance}
           refresh={refresh}
         />
       </div>
-    );
-  }
-
-  return (
-    <div className={styles.wrapper}>
-      <LoanFormBetterTerms
-        loan={loan}
-        needsAllowance={needsAllowance}
-        setNeedsAllowance={setNeedsAllowance}
-        refresh={refresh}
-      />
-    </div>
+    </>
   );
 }
