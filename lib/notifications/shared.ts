@@ -4,12 +4,15 @@ export enum NotificationMethod {
 
 export enum NotificationEventTrigger {
   ALL = 'all',
-  BuyoutEvent = 'BuyoutEvent',
+  BuyoutEventBorrower = 'BuyoutEventBorrower',
+  BuyoutEventOldLender = 'BuyoutEventOldLender',
   LendEvent = 'LendEvent',
   RepaymentEvent = 'RepaymentEvent',
   CollateralSeizureEvent = 'CollateralSeizureEvent',
-  LiquidationOccurring = 'LiquidationOccurring',
-  LiquidationOccurred = 'LiquidationOccurred',
+  LiquidationOccurringBorrower = 'LiquidationOccurringBorrower',
+  LiquidationOccurringLender = 'LiquidationOccurringLender',
+  LiquidationOccurredBorrower = 'LiquidationOccurredBorrower',
+  LiquidationOccurredLender = 'LiquidationOccurredLender',
 }
 
 export type NotificationReqBody = {

@@ -26,12 +26,22 @@ export async function main(currentTimestamp: number) {
   for (let i = 0; i < loans.length; i++) {
     await fetch(
       `${process.env
-        .NEXT_PUBLIC_PAWN_SHOP_API_URL!}/api/events/cron/LiquidationOccurring`,
+        .NEXT_PUBLIC_PAWN_SHOP_API_URL!}/api/events/cron/LiquidationOccurringBorrower`,
       {
         method: 'POST',
         body: JSON.stringify({
-          borrowTicketHolder: loans[i].borrowTicketHolder,
-          lendTicketHolder: loans[i].lendTicketHolder,
+          loan: loans[i],
+        }),
+      },
+    );
+
+    await fetch(
+      `${process.env
+        .NEXT_PUBLIC_PAWN_SHOP_API_URL!}/api/events/cron/LiquidationOccurringLender`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          loan: loans[i],
         }),
       },
     );
@@ -41,12 +51,22 @@ export async function main(currentTimestamp: number) {
   for (let i = 0; i < loans.length; i++) {
     await fetch(
       `${process.env
-        .NEXT_PUBLIC_PAWN_SHOP_API_URL!}/api/events/cron/LiquidationOccurred`,
+        .NEXT_PUBLIC_PAWN_SHOP_API_URL!}/api/events/cron/LiquidationOccurredBorrower`,
       {
         method: 'POST',
         body: JSON.stringify({
-          borrowTicketHolder: loans[i].borrowTicketHolder,
-          lendTicketHolder: loans[i].lendTicketHolder,
+          loan: loans[i],
+        }),
+      },
+    );
+
+    await fetch(
+      `${process.env
+        .NEXT_PUBLIC_PAWN_SHOP_API_URL!}/api/events/cron/LiquidationOccurredLender`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          loan: loans[i],
         }),
       },
     );

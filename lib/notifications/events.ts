@@ -1,3 +1,4 @@
+import { ALL_LOAN_PROPERTIES } from 'lib/loans/subgraph/subgraphSharedConstants';
 import { nftBackedLoansClient } from 'lib/urql';
 import { gql } from 'urql';
 
@@ -6,6 +7,9 @@ function eventsQuery(eventName: string, properties: string) {
       query($id: String) {
         ${eventName}(id: $id) {
           ${properties}
+          loan {
+            ${ALL_LOAN_PROPERTIES}
+          }
         }
       }
     `;

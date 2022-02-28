@@ -67,21 +67,38 @@ describe('daily cron job', () => {
     expect(mockedGetExpiringLoansCall).toHaveBeenCalledWith(now, future);
     expect(mockedGetExpiringLoansCall).toHaveBeenCalledWith(lastRun, now);
 
-    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(fetchMock).toHaveBeenCalledTimes(4);
 
     expect(fetchMock).toHaveBeenCalledWith(
       `${process.env
-        .NEXT_PUBLIC_PAWN_SHOP_API_URL!}/api/events/cron/LiquidationOccurring`,
+        .NEXT_PUBLIC_PAWN_SHOP_API_URL!}/api/events/cron/LiquidationOccurringBorrower`,
       {
-        body: `{\"borrowTicketHolder\":\"${aboutToExpireLoan.borrowTicketHolder}\",\"lendTicketHolder\":\"${aboutToExpireLoan.lendTicketHolder}\"}`,
+        body: JSON.stringify({ loan: aboutToExpireLoan }),
         method: 'POST',
       },
     );
     expect(fetchMock).toHaveBeenCalledWith(
       `${process.env
-        .NEXT_PUBLIC_PAWN_SHOP_API_URL!}/api/events/cron/LiquidationOccurred`,
+        .NEXT_PUBLIC_PAWN_SHOP_API_URL!}/api/events/cron/LiquidationOccurringLender`,
       {
-        body: `{\"borrowTicketHolder\":\"${alreadyExpiredLoan.borrowTicketHolder}\",\"lendTicketHolder\":\"${alreadyExpiredLoan.lendTicketHolder}\"}`,
+        body: JSON.stringify({ loan: aboutToExpireLoan }),
+        method: 'POST',
+      },
+    );
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      `${process.env
+        .NEXT_PUBLIC_PAWN_SHOP_API_URL!}/api/events/cron/LiquidationOccurredBorrower`,
+      {
+        body: JSON.stringify({ loan: alreadyExpiredLoan }),
+        method: 'POST',
+      },
+    );
+    expect(fetchMock).toHaveBeenCalledWith(
+      `${process.env
+        .NEXT_PUBLIC_PAWN_SHOP_API_URL!}/api/events/cron/LiquidationOccurredLender`,
+      {
+        body: JSON.stringify({ loan: alreadyExpiredLoan }),
         method: 'POST',
       },
     );
