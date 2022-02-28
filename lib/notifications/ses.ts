@@ -1,7 +1,7 @@
 import aws from 'aws-sdk';
 
 const sesConfig = {
-  region: 'us-east-1', // Change it to match your region
+  region: 'us-east-1',
   credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY!,
     secretAccessKey: process.env.AWS_SECRET_KEY!,

@@ -3,6 +3,7 @@ import mjml2html from 'mjml';
 import { NotificationEventTrigger } from './shared';
 import { executeEmailSendWithSes } from './ses';
 
+// TODO(adamgobes): text field should be function that takes Loan as param
 const notificationEventToEmailMetadata: {
   [key in NotificationEventTrigger]?: { subject: string; text: string };
 } = {
@@ -61,6 +62,7 @@ export async function sendEmail(
   await executeEmailSendWithSes(params);
 }
 
+// todo(adamgobes); actually style these email tags to make them look good rather than just plain text
 function generateHTMLForEmail(text: string): string {
   return mjml2html(
     `
