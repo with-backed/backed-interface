@@ -32,9 +32,11 @@ query ($id: ID!) {
  * @returns a list of all events associated with a loan in the subgraph, ordered by blockNumber ascending.
  */
 export async function subgraphLoanHistoryById(id: string): Promise<Event[]> {
-  const {
-    data: { loan },
-  } = await nftBackedLoansClient.query(graphqlQuery, { id }).toPromise();
+  const { data } = await nftBackedLoansClient
+    .query<{ loan: any }>(graphqlQuery, { id })
+    .toPromise();
+
+  const loan = data?.loan;
 
   const events: Event[] = [];
 

@@ -149,10 +149,13 @@ async function getEventsForEventType<T>(
     await Promise.all(
       whereArgs.map((where) =>
         nftBackedLoansClient
-          .query(eventsQuery(eventQueryname, eventFilterType, properties), {
-            ...sharedQueryArgs,
-            where,
-          })
+          .query<{ [eventName: string]: any }>(
+            eventsQuery(eventQueryname, eventFilterType, properties),
+            {
+              ...sharedQueryArgs,
+              where,
+            },
+          )
           .toPromise(),
       ),
     );

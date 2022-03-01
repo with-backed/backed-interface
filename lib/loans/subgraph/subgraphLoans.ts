@@ -130,10 +130,8 @@ export async function searchLoans(
   first: number,
   page: number = 1,
 ): Promise<Loan[]> {
-  const {
-    data: { loans },
-  } = await nftBackedLoansClient
-    .query(
+  const { data } = await nftBackedLoansClient
+    .query<{ loans: Loan[] }>(
       searchQuery(
         lendTicketHolder,
         loanAmountMax.nominal,
@@ -161,7 +159,11 @@ export async function searchLoans(
     )
     .toPromise();
 
-  return loans;
+  if (data?.loans) {
+    return data.loans;
+  }
+
+  return [];
 }
 
 const formatNumberForGraph = (loanAmount: LoanAmountInputType): string => {

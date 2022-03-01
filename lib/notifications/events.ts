@@ -19,12 +19,16 @@ export async function getEventFromTxHash<T>(
   txHash: string,
   eventName: string,
   properties: string,
-): Promise<T> {
+): Promise<T | null> {
   const graphResponse = await nftBackedLoansClient
-    .query(eventsQuery(eventName, properties), {
+    .query<{ [eventName: string]: T }>(eventsQuery(eventName, properties), {
       id: txHash,
     })
     .toPromise();
 
-  return graphResponse.data[eventName] as T;
+  if (graphResponse.data?.[eventName]) {
+    return graphResponse.data[eventName] as T;
+  }
+
+  return null;
 }
