@@ -31,11 +31,9 @@ const graphqlQuery = `
 export async function queryMostRecentSaleForNFT(
   nftContractAddress: string,
   nftTokenId: string,
-): Promise<NFTSale> {
-  const {
-    data: { sales },
-  } = await nftSalesClient
-    .query(graphqlQuery, {
+): Promise<NFTSale | null> {
+  const { data } = await nftSalesClient
+    .query<{ sales: NFTSale[] }>(graphqlQuery, {
       nftContractAddress,
       nftTokenId,
       first: 1,
@@ -44,7 +42,11 @@ export async function queryMostRecentSaleForNFT(
     })
     .toPromise();
 
-  return sales[0];
+  if (data?.sales && data.sales.length > 0) {
+    return data.sales[0];
+  }
+
+  return null;
 }
 
 // MOCK METHODS TO GENERATE FAKE SALES FOR RINKEBY
