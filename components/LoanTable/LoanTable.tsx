@@ -102,11 +102,7 @@ function Loan({ loan }: LoanProps) {
           <span>
             {duration} {duration === 1 ? 'Day' : 'Days'}
           </span>
-          <span>
-            {formattedTimeRemaining === '--'
-              ? 'not begun'
-              : `${formattedTimeRemaining} left`}
-          </span>
+          <span>{formattedTimeRemaining}</span>
         </div>
       </td>
       <td className={styles.rate}>
