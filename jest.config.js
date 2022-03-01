@@ -13,10 +13,10 @@ const customJestConfig = {
     '!**/*.d.ts',
     '!**/node_modules/**',
   ],
-  coverageReporters: ['json-summary', 'text-summary'],
+  coverageReporters: ['json-summary', 'text'],
   coverageThreshold: {
     global: {
-      branches: 27.5,
+      branches: 28,
       functions: 27.5,
       lines: 31.5,
       statements: 31,

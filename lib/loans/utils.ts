@@ -2,8 +2,13 @@ import { ethers } from 'ethers';
 import { SCALAR } from 'lib/constants';
 import { Loan } from 'types/Loan';
 import { Loan as SubgraphLoan } from 'types/generated/graphql/nftLoans';
+import { LoanByIdQuery } from 'types/generated/graphql/graphql-operations';
 
-export function parseSubgraphLoan(loan: SubgraphLoan): Loan {
+export function parseSubgraphLoan(subgraphLoan: LoanByIdQuery['loan']): Loan;
+/** TODO: deprecate SubgraphLoan in favor of new type */
+export function parseSubgraphLoan(subgraphLoan: SubgraphLoan): Loan;
+export function parseSubgraphLoan(subgraphLoan: unknown): Loan {
+  const loan = (subgraphLoan as LoanByIdQuery['loan'])!;
   const loanAmount = ethers.BigNumber.from(loan.loanAmount);
   const perSecondInterestRate = ethers.BigNumber.from(
     loan.perSecondInterestRate,

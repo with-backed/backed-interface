@@ -1,27 +1,16 @@
-import { Loan } from 'types/generated/graphql/nftLoans';
 import { nftBackedLoansClient } from 'lib/urql';
-import { ALL_EVENTS, ALL_LOAN_PROPERTIES } from './subgraphSharedConstants';
+import {
+  LoanByIdDocument,
+  LoanByIdQuery,
+} from 'types/generated/graphql/graphql-operations';
 
-function graphqlQuery(includeEvents: boolean) {
-  return `
-  query ($id: ID!) {
-    loan(id: $id) {
-      ${ALL_LOAN_PROPERTIES}
-      ${includeEvents ? ALL_EVENTS : ''}
-    }
-  }
-  `;
-}
-
-export async function subgraphLoanById(
-  id: string,
-  includeEvents: boolean,
-): Promise<Loan | null> {
-  const {
-    data: { loan },
-  } = await nftBackedLoansClient
-    .query(graphqlQuery(includeEvents), { id })
+export async function subgraphLoanById(id: string) {
+  const { data } = await nftBackedLoansClient
+    .query<LoanByIdQuery>(LoanByIdDocument, { id })
     .toPromise();
 
-  return loan;
+  if (data?.loan) {
+    return data.loan;
+  }
+  return null;
 }
