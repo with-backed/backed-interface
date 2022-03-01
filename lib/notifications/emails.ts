@@ -8,13 +8,14 @@ type EmailMetadataType = {
   subject: string;
   getTextFromLoan: (loan: Loan) => string;
 };
-// TODO(adamgobes): text field should be function that takes Loan as param
+
 const notificationEventToEmailMetadata: {
   [key in NotificationEventTrigger]?: EmailMetadataType;
 } = {
   [NotificationEventTrigger.BuyoutEventBorrower]: {
     subject: 'Your loan was bought out',
-    getTextFromLoan: (_loan: Loan) => 'Your loan was bought out',
+    getTextFromLoan: (_loan: Loan) =>
+      'The terms for one of your loans has been improved',
   },
   [NotificationEventTrigger.BuyoutEventOldLender]: {
     subject: 'Your loan was bought out',
@@ -40,7 +41,7 @@ const notificationEventToEmailMetadata: {
   [NotificationEventTrigger.LiquidationOccurringLender]: {
     subject: 'Your NFT collateral is approaching liquidation',
     getTextFromLoan: (_loan: Loan) =>
-      'Your NFT collateral is approaching liquidation',
+      'An NFT you have lent against can be seized soon',
   },
   [NotificationEventTrigger.LiquidationOccurredBorrower]: {
     subject: 'Your NFT collateral can be liquidated',
@@ -48,7 +49,8 @@ const notificationEventToEmailMetadata: {
   },
   [NotificationEventTrigger.LiquidationOccurredLender]: {
     subject: 'Your NFT collateral can be liquidated',
-    getTextFromLoan: (_loan: Loan) => 'Your NFT collateral can be liquidated',
+    getTextFromLoan: (_loan: Loan) =>
+      'An NFT you have lent against can be seized',
   },
 };
 

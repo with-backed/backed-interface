@@ -46,7 +46,9 @@ describe('Sending emails with Amazon SES', () => {
       expect(mockedSesEmailCall).toBeCalledTimes(1);
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
         expect.objectContaining(
-          emailParamsMatchingObject('Your loan was bought out'),
+          emailParamsMatchingObject(
+            'The terms for one of your loans has been improved',
+          ),
         ),
       );
     });
@@ -141,7 +143,7 @@ describe('Sending emails with Amazon SES', () => {
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
         expect.objectContaining(
           emailParamsMatchingObject(
-            'Your NFT collateral is approaching liquidation',
+            'An NFT you have lent against can be seized soon',
           ),
         ),
       );
@@ -174,7 +176,9 @@ describe('Sending emails with Amazon SES', () => {
       expect(mockedSesEmailCall).toBeCalledTimes(1);
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
         expect.objectContaining(
-          emailParamsMatchingObject('Your NFT collateral can be liquidated'),
+          emailParamsMatchingObject(
+            'An NFT you have lent against can be seized',
+          ),
         ),
       );
     });
