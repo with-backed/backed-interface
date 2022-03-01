@@ -1,3 +1,4 @@
+import { subgraphLoan } from 'lib/mockData';
 import { sendEmail } from 'lib/notifications/emails';
 import { executeEmailSendWithSes } from 'lib/notifications/ses';
 import { NotificationEventTrigger } from 'lib/notifications/shared';
@@ -11,6 +12,8 @@ const mockedSesEmailCall = executeEmailSendWithSes as jest.MockedFunction<
 >;
 
 const testRecipient = 'adamgobes@gmail.com';
+
+let loan = subgraphLoan;
 
 const emailParamsMatchingObject = (text: string) => ({
   Source: process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_EMAIL!,
@@ -32,9 +35,31 @@ describe('Sending emails with Amazon SES', () => {
     jest.clearAllMocks();
     mockedSesEmailCall.mockResolvedValue();
   });
-  describe('BuyoutEvent', () => {
+  describe('BuyoutEventBorrower', () => {
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmail(testRecipient, NotificationEventTrigger.BuyoutEvent);
+      await sendEmail(
+        testRecipient,
+        NotificationEventTrigger.BuyoutEventBorrower,
+        loan,
+      );
+
+      expect(mockedSesEmailCall).toBeCalledTimes(1);
+      expect(mockedSesEmailCall).toHaveBeenCalledWith(
+        expect.objectContaining(
+          emailParamsMatchingObject(
+            'The terms for one of your loans has been improved',
+          ),
+        ),
+      );
+    });
+  });
+  describe('BuyoutEventOldLender', () => {
+    it('successfully calls SES send email method with correct params', async () => {
+      await sendEmail(
+        testRecipient,
+        NotificationEventTrigger.BuyoutEventOldLender,
+        loan,
+      );
 
       expect(mockedSesEmailCall).toBeCalledTimes(1);
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
@@ -46,7 +71,7 @@ describe('Sending emails with Amazon SES', () => {
   });
   describe('LendEvent', () => {
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmail(testRecipient, NotificationEventTrigger.LendEvent);
+      await sendEmail(testRecipient, NotificationEventTrigger.LendEvent, loan);
 
       expect(mockedSesEmailCall).toBeCalledTimes(1);
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
@@ -58,7 +83,11 @@ describe('Sending emails with Amazon SES', () => {
   });
   describe('RepaymentEvent', () => {
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmail(testRecipient, NotificationEventTrigger.RepaymentEvent);
+      await sendEmail(
+        testRecipient,
+        NotificationEventTrigger.RepaymentEvent,
+        loan,
+      );
 
       expect(mockedSesEmailCall).toBeCalledTimes(1);
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
@@ -73,6 +102,7 @@ describe('Sending emails with Amazon SES', () => {
       await sendEmail(
         testRecipient,
         NotificationEventTrigger.CollateralSeizureEvent,
+        loan,
       );
 
       expect(mockedSesEmailCall).toBeCalledTimes(1);
@@ -83,11 +113,12 @@ describe('Sending emails with Amazon SES', () => {
       );
     });
   });
-  describe('LiquidationOccuring', () => {
+  describe('LiquidationOccuringBorrower', () => {
     it('successfully calls SES send email method with correct params', async () => {
       await sendEmail(
         testRecipient,
-        NotificationEventTrigger.LiquidationOccurring,
+        NotificationEventTrigger.LiquidationOccurringBorrower,
+        loan,
       );
 
       expect(mockedSesEmailCall).toBeCalledTimes(1);
@@ -100,17 +131,54 @@ describe('Sending emails with Amazon SES', () => {
       );
     });
   });
-  describe('LiquidationOccurred', () => {
+  describe('LiquidationOccuringLender', () => {
     it('successfully calls SES send email method with correct params', async () => {
       await sendEmail(
         testRecipient,
-        NotificationEventTrigger.LiquidationOccurred,
+        NotificationEventTrigger.LiquidationOccurringLender,
+        loan,
+      );
+
+      expect(mockedSesEmailCall).toBeCalledTimes(1);
+      expect(mockedSesEmailCall).toHaveBeenCalledWith(
+        expect.objectContaining(
+          emailParamsMatchingObject(
+            'An NFT you have lent against can be seized soon',
+          ),
+        ),
+      );
+    });
+  });
+  describe('LiquidationOccurredBorrower', () => {
+    it('successfully calls SES send email method with correct params', async () => {
+      await sendEmail(
+        testRecipient,
+        NotificationEventTrigger.LiquidationOccurredBorrower,
+        loan,
       );
 
       expect(mockedSesEmailCall).toBeCalledTimes(1);
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
         expect.objectContaining(
           emailParamsMatchingObject('Your NFT collateral can be liquidated'),
+        ),
+      );
+    });
+  });
+  describe('LiquidationOccurredLender', () => {
+    it('successfully calls SES send email method with correct params', async () => {
+      await sendEmail(
+        testRecipient,
+        NotificationEventTrigger.LiquidationOccurredLender,
+        loan,
+      );
+
+      expect(mockedSesEmailCall).toBeCalledTimes(1);
+      expect(mockedSesEmailCall).toHaveBeenCalledWith(
+        expect.objectContaining(
+          emailParamsMatchingObject(
+            'An NFT you have lent against can be seized',
+          ),
         ),
       );
     });

@@ -3,6 +3,7 @@ import {
   BuyoutEvent,
   CollateralSeizureEvent,
   LendEvent,
+  Loan,
   RepaymentEvent,
 } from 'types/generated/graphql/nftLoans';
 import { getNotificationRequestsForAddress } from 'lib/notifications/repository';
@@ -30,14 +31,24 @@ export default async function handler(
     const { txHash } = req.body;
 
     let involvedAddress: string;
+    let loan: Loan;
 
-    if (event === NotificationEventTrigger.BuyoutEvent) {
+    if (event === NotificationEventTrigger.BuyoutEventOldLender) {
       const event = await getEventFromTxHash<BuyoutEvent>(
         txHash as string,
         'buyoutEvent',
         BUYOUT_EVENT_PROPERTIES,
       );
       involvedAddress = event.lendTicketHolder.toLowerCase();
+      loan = event.loan;
+    } else if (event === NotificationEventTrigger.BuyoutEventBorrower) {
+      const event = await getEventFromTxHash<BuyoutEvent>(
+        txHash as string,
+        'buyoutEvent',
+        BUYOUT_EVENT_PROPERTIES,
+      );
+      involvedAddress = event.loan.borrowTicketHolder.toLowerCase();
+      loan = event.loan;
     } else if (event === NotificationEventTrigger.LendEvent) {
       const event = await getEventFromTxHash<LendEvent>(
         txHash as string,
@@ -45,6 +56,7 @@ export default async function handler(
         LEND_EVENT_PROPERTIES,
       );
       involvedAddress = event.borrowTicketHolder.toLowerCase();
+      loan = event.loan;
     } else if (event === NotificationEventTrigger.RepaymentEvent) {
       const event = await getEventFromTxHash<RepaymentEvent>(
         txHash as string,
@@ -52,6 +64,7 @@ export default async function handler(
         REPAY_EVENT_PROPERTIES,
       );
       involvedAddress = event.lendTicketHolder.toLowerCase();
+      loan = event.loan;
     } else if (event === NotificationEventTrigger.CollateralSeizureEvent) {
       const event = await getEventFromTxHash<CollateralSeizureEvent>(
         txHash as string,
@@ -59,6 +72,7 @@ export default async function handler(
         COLLATERAL_SEIZURE_EVENT_PROPERTIES,
       );
       involvedAddress = event.borrowTicketHolder.toLowerCase();
+      loan = event.loan;
     } else {
       res.status(400).send('invalid event name passed to POST /events/[event]');
       return;
@@ -69,7 +83,7 @@ export default async function handler(
     );
 
     for (let i = 0; i < notificationRequests.length; i++) {
-      sendEmail(notificationRequests[i].deliveryDestination, event);
+      sendEmail(notificationRequests[i].deliveryDestination, event, loan);
     }
 
     res
