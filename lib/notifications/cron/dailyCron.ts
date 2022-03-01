@@ -6,9 +6,11 @@ import {
 
 export async function main(currentTimestamp: number) {
   console.log(
-    `running notifications cron job with timestamp ${currentTimestamp}`,
+    `running notifications cron job with timestamp ${currentTimestamp} and killswitch is ${
+      process.env.NOTIFICATIONS_KILLSWITCH ? 'on' : 'off'
+    }`,
   );
-  if (process.env.NEXT_PUBLIC_NOTIFICATIONS_KILLSWITCH) return;
+  if (process.env.NOTIFICATIONS_KILLSWITCH) return;
 
   let pastTimestamp = await getLastWrittenTimestamp();
   if (!pastTimestamp) {
