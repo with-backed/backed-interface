@@ -1,4 +1,4 @@
-import { main } from './dailyCron';
+import { main } from 'lib/notifications/cron/dailyCron';
 
 // code that will be called from Github actions or Tenderly
 // TODO(adamgobes): Hook this up to github actions or tenderly once we decide what we're going with
