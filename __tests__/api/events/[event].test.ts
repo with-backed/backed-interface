@@ -23,7 +23,10 @@ import {
   RepaymentEvent,
 } from 'types/generated/graphql/nftLoans';
 
-const subgraphLoanCopy = Object.assign({}, subgraphLoan);
+const subgraphLoanCopy = {
+  ...subgraphLoan,
+  lendTicketHolder: ethers.Wallet.createRandom().address.toLowerCase(),
+}
 subgraphLoanCopy.lendTicketHolder =
   ethers.Wallet.createRandom().address.toLowerCase();
 
