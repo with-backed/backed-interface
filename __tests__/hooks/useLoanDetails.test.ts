@@ -1,5 +1,4 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { ethers } from 'ethers';
 import { useLoanDetails } from 'hooks/useLoanDetails';
 import { useTimestamp } from 'hooks/useTimestamp';
 import { baseLoan } from 'lib/mockData';
