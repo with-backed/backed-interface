@@ -5,7 +5,7 @@ import { subgraphLoanById } from './subgraph/subgraphLoanById';
 import { parseSubgraphLoan } from './utils';
 
 export async function loanById(id: string): Promise<Loan | null> {
-  const loanInfoFromGraphQL = await subgraphLoanById(id, false);
+  const loanInfoFromGraphQL = await subgraphLoanById(id);
 
   // The Graph has indexed this loan. Fetch the interest owed and send it on its way.
   if (
