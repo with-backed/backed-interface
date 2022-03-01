@@ -111,10 +111,16 @@ export function useLoanDetails(loan: Loan) {
     perSecondInterestRate,
   ]);
   const formattedTimeRemaining = useMemo(() => {
-    if (!timestamp || endDateTimestamp === 0) {
+    if (!timestamp) {
       return '--';
     }
-    return humanizedDuration(endDateTimestamp - timestamp);
+    if (endDateTimestamp === 0) {
+      return 'awaiting lender';
+    }
+    if (timestamp > endDateTimestamp) {
+      return 'past due';
+    }
+    return humanizedDuration(endDateTimestamp - timestamp) + ' left';
   }, [endDateTimestamp, timestamp]);
 
   return {
