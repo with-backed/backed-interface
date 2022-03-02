@@ -123,7 +123,7 @@ describe('/api/addresses/[address]/notifications/emails/[email]', () => {
 
       expect(res._getStatusCode()).toBe(400);
       expect(JSON.parse(res._getData())).toEqual(
-        'you can only follow 5 addresses per email',
+        'you can only subscribe to ${MAX_ADDRESSES_PER_NOTIFICATION_DESTINATION} addresses per email address',
       );
     });
   });

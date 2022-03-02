@@ -43,7 +43,7 @@ export default async function handler(
         res
           .status(400)
           .json(
-            `you can only follow ${MAX_ADDRESSES_PER_NOTIFICATION_DESTINATION} addresses per email`,
+            `you can only subscribe to ${MAX_ADDRESSES_PER_NOTIFICATION_DESTINATION} addresses per email address`,
           );
         return;
       }
