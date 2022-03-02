@@ -76,27 +76,6 @@ export const CLOSE_EVENT_PROPERTIES = `
     closer
 `;
 
-export const ALL_EVENTS = `
-    createEvent{
-        ${CREATE_EVENT_PROPERTIES}
-    }
-    lendEvents{
-        ${LEND_EVENT_PROPERTIES}
-    }
-    buyoutEvents{
-        ${BUYOUT_EVENT_PROPERTIES}
-    }
-    repaymentEvent{
-        ${REPAY_EVENT_PROPERTIES}
-    }
-    collateralSeizureEvent{
-        ${COLLATERAL_SEIZURE_EVENT_PROPERTIES}
-    }
-    closeEvent{
-        ${CLOSE_EVENT_PROPERTIES}
-    }
-`;
-
 export const ALL_SALE_INFO_PROPERTIES = `
     id
     nftContractAddress

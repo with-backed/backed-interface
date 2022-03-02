@@ -1,0 +1,5 @@
+query eventsByLoanId($id: ID!) {
+  loan(id: $id) {
+    ...allLoanEvents
+  }
+}

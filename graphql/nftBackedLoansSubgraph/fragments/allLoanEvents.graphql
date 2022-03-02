@@ -1,0 +1,71 @@
+fragment allLoanEvents on Loan {
+  createEvent {
+    id
+    timestamp
+    blockNumber
+    creator
+    maxPerSecondInterestRate
+    minDurationSeconds
+    minLoanAmount
+    loan {
+      id
+    }
+  }
+  lendEvents {
+    id
+    lender
+    loanAmount
+    durationSeconds
+    perSecondInterestRate
+    timestamp
+    blockNumber
+    borrowTicketHolder
+    loan {
+      id
+    }
+  }
+  buyoutEvents {
+    id
+    newLender
+    lendTicketHolder
+    loanAmount
+    interestEarned
+    timestamp
+    blockNumber
+    loan {
+      id
+    }
+  }
+  repaymentEvent {
+    id
+    repayer
+    loanAmount
+    interestEarned
+    timestamp
+    blockNumber
+    lendTicketHolder
+    borrowTicketHolder
+    loan {
+      id
+    }
+  }
+  collateralSeizureEvent {
+    id
+    timestamp
+    blockNumber
+    lendTicketHolder
+    borrowTicketHolder
+    loan {
+      id
+    }
+  }
+  closeEvent {
+    id
+    timestamp
+    blockNumber
+    closer
+    loan {
+      id
+    }
+  }
+}
