@@ -33,7 +33,7 @@ describe('loanById', () => {
 
   it('checks the subgraph for the loan, returning that data parsed if present', async () => {
     const loan = await loanById(loanId);
-    expect(mockedSubgraphLoanById).toHaveBeenCalledWith(loanId, false);
+    expect(mockedSubgraphLoanById).toHaveBeenCalledWith(loanId);
     expect(loan?.id).toEqual(ethers.BigNumber.from(loanId));
     expect(mockedNodeLoanById).not.toHaveBeenCalled();
   });
@@ -41,7 +41,7 @@ describe('loanById', () => {
   it('falls back to the node when there is no subgraph data', async () => {
     mockedSubgraphLoanById.mockResolvedValue(null);
     const loan = await loanById(loanId);
-    expect(mockedSubgraphLoanById).toHaveBeenCalledWith(loanId, false);
+    expect(mockedSubgraphLoanById).toHaveBeenCalledWith(loanId);
     expect(loan?.id).toEqual(ethers.BigNumber.from(loanId));
     expect(mockedNodeLoanById).toHaveBeenCalledWith(loanId);
   });

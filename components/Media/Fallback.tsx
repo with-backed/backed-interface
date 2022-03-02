@@ -29,7 +29,7 @@ export const Fallback = ({ animated = true, small }: FallbackProps) => {
     return styles.fallback;
   }, [animated, small]);
   return (
-    <div aria-hidden="true" className={className}>
+    <div aria-hidden="true" data-testid="fallback" className={className}>
       <span>{item}</span>
     </div>
   );

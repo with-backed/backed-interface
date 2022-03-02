@@ -1,0 +1,13 @@
+name: notifications-cron
+on:
+  schedule:
+    - cron: "0 */12 * * *" # every 12th hour
+jobs:
+  cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call our notifications cron api
+        run: |
+          curl --request POST \
+          --url 'https://https://nft-pawn-shop-rinkeby.vercel.app/api/cron/notifications' \
+          --header 'Authorization: Bearer ${{ secrets.NOTIFICATIONS_CRON_API_SECRET_KEY }}'
