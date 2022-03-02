@@ -3,7 +3,7 @@ import {
   createNotificationRequestForAddress,
   deleteAllNotificationRequestsForAddress,
   getNotificationRequestsForDestination,
-  getNumberRequestsForNotificationDestination,
+  getNumberOfRequestsForNotificationDestination,
 } from 'lib/notifications/repository';
 import { NotificationRequest } from '@prisma/client';
 import {
@@ -33,7 +33,7 @@ export default async function handler(
 
     if (req.method == 'POST') {
       const numRequestsForEmail =
-        await getNumberRequestsForNotificationDestination(destination);
+        await getNumberOfRequestsForNotificationDestination(destination);
       if (!numRequestsForEmail) {
         res.status(400).json('unexpected error creating notification request');
         return;

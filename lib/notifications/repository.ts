@@ -67,7 +67,7 @@ export async function getNotificationRequestsForAddress(
   }
 }
 
-export async function getNumberRequestsForNotificationDestination(
+export async function getNumberOfRequestsForNotificationDestination(
   notificationDestination: string,
 ): Promise<number | null> {
   try {

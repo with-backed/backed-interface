@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import {
   createNotificationRequestForAddress,
   deleteAllNotificationRequestsForAddress,
-  getNumberRequestsForNotificationDestination,
+  getNumberOfRequestsForNotificationDestination,
 } from 'lib/notifications/repository';
 import {
   NotificationEventTrigger,
@@ -33,8 +33,8 @@ const mockedDeleteDBCall =
   >;
 
 const mockedGetReqCountCall =
-  getNumberRequestsForNotificationDestination as jest.MockedFunction<
-    typeof getNumberRequestsForNotificationDestination
+  getNumberOfRequestsForNotificationDestination as jest.MockedFunction<
+    typeof getNumberOfRequestsForNotificationDestination
   >;
 
 describe('/api/addresses/[address]/notifications/emails/[email]', () => {
