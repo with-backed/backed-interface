@@ -1,5 +1,4 @@
 import {
-  ALL_LOAN_PROPERTIES,
   BUYOUT_EVENT_PROPERTIES,
   CLOSE_EVENT_PROPERTIES,
   COLLATERAL_SEIZURE_EVENT_PROPERTIES,
@@ -45,18 +44,10 @@ import {
   repaymentEventToUnified,
 } from 'lib/eventTransformers';
 import { ethers } from 'ethers';
-
-const activeLoansQuery = gql`
-    query($where: Loan_filter , $first: Int, $orderBy: String, $orderDirection: String) {
-      loans(
-        where: $where,
-        orderBy: $orderBy, 
-        orderDirection: $orderDirection
-      ) {
-        ${ALL_LOAN_PROPERTIES}
-      }
-    }
-  `;
+import {
+  ActiveLoansDocument,
+  ActiveLoansQuery,
+} from 'types/generated/graphql/nft-backed-loans-operations';
 
 export async function getAllActiveLoansForAddress(
   address: string,
@@ -84,11 +75,13 @@ export async function getAllActiveLoansForAddress(
     where: whereFilterAsLender,
   };
 
-  const resultArray: { data?: { loans: Loan[] } }[] = await Promise.all([
+  const resultArray = await Promise.all([
     nftBackedLoansClient
-      .query(activeLoansQuery, queryArgsAsBorrower)
+      .query<ActiveLoansQuery>(ActiveLoansDocument, queryArgsAsBorrower)
       .toPromise(),
-    nftBackedLoansClient.query(activeLoansQuery, queryArgsAsLender).toPromise(),
+    nftBackedLoansClient
+      .query<ActiveLoansQuery>(ActiveLoansDocument, queryArgsAsLender)
+      .toPromise(),
   ]);
 
   return resultArray
