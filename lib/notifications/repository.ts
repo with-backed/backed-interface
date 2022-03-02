@@ -67,6 +67,20 @@ export async function getNotificationRequestsForAddress(
   }
 }
 
+export async function getNumberRequestsForNotificationDestination(
+  notificationDestination: string,
+): Promise<number | null> {
+  try {
+    const reqs = await prisma.notificationRequest.findMany({
+      where: { deliveryDestination: notificationDestination },
+    });
+    return reqs.length;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+}
+
 export async function overrideLastWrittenTimestamp(
   lastWrittenTimestamp: number,
 ) {

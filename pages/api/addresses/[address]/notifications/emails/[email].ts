@@ -2,6 +2,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import {
   createNotificationRequestForAddress,
   deleteAllNotificationRequestsForAddress,
+  getNotificationRequestsForDestination,
+  getNumberRequestsForNotificationDestination,
 } from 'lib/notifications/repository';
 import { NotificationRequest } from '@prisma/client';
 import {
@@ -11,6 +13,8 @@ import {
 } from 'lib/notifications/shared';
 import { generateAddressFromSignedMessage } from 'lib/signedMessages';
 import { ethers } from 'ethers';
+
+const MAX_ADDRESSES_PER_NOTIFICATION_DESTINATION = 5;
 
 export default async function handler(
   req: NextApiRequest,
@@ -22,27 +26,30 @@ export default async function handler(
   }
 
   try {
-    const { address, email } = req.query;
-    const { signedMessage } = req.body as NotificationReqBody;
+    const { address, email } = req.query as { address: string; email: string };
 
-    const addressFromSig = generateAddressFromSignedMessage(signedMessage);
-    const addressFromQuery = ethers.utils.getAddress(address as string);
     const destination = email as string;
     const method = NotificationMethod.EMAIL;
 
-    if (!addressFromSig) {
-      res.status(400).json('invalid signature sent');
-      return;
-    }
-
-    if (ethers.utils.getAddress(addressFromSig) != addressFromQuery) {
-      res.status(400).json('valid signature sent with mismatching addresses');
-      return;
-    }
-
     if (req.method == 'POST') {
+      const numRequestsForEmail =
+        await getNumberRequestsForNotificationDestination(destination);
+      if (!numRequestsForEmail) {
+        res.status(400).json('unexpected error creating notification request');
+        return;
+      }
+
+      if (numRequestsForEmail > MAX_ADDRESSES_PER_NOTIFICATION_DESTINATION) {
+        res
+          .status(400)
+          .json(
+            `you can only follow ${MAX_ADDRESSES_PER_NOTIFICATION_DESTINATION} addresses per email`,
+          );
+        return;
+      }
+
       const notificationRequest = await createNotificationRequestForAddress(
-        addressFromQuery,
+        address,
         NotificationEventTrigger.ALL,
         method,
         destination,
@@ -54,16 +61,14 @@ export default async function handler(
       res.status(200).json(notificationRequest);
     } else if (req.method == 'DELETE') {
       const deleteNotificationRequestsRes =
-        await deleteAllNotificationRequestsForAddress(addressFromQuery);
+        await deleteAllNotificationRequestsForAddress(address);
       if (!deleteNotificationRequestsRes) {
         res.status(400).json('unexpected error deleting notification requests');
         return;
       }
       res
         .status(200)
-        .json(
-          `notifications for address ${addressFromQuery} deleted successfully`,
-        );
+        .json(`notifications for address ${address} deleted successfully`);
     }
   } catch (e) {
     // TODO: bugsnag
