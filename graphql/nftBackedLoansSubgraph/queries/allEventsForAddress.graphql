@@ -1,0 +1,111 @@
+query allEventsForAddress(
+  $first: Int
+  $orderDirection: OrderDirection
+  $buyoutWhere: BuyoutEvent_filter
+  $buyoutOrderBy: BuyoutEvent_orderBy
+  $collateralWhere: CollateralSeizureEvent_filter
+  $collateralOrderBy: CollateralSeizureEvent_orderBy
+  $repaymentWhere: RepaymentEvent_filter
+  $repaymentOrderBy: RepaymentEvent_orderBy
+  $lendWhere: LendEvent_filter
+  $lendOrderBy: LendEvent_orderBy
+  $createWhere: CreateEvent_filter
+  $createOrderBy: CreateEvent_orderBy
+  $closeWhere: CloseEvent_filter
+  $closeOrderBy: CloseEvent_orderBy
+) {
+  buyoutEvents(
+    where: $buyoutWhere
+    orderBy: $buyoutOrderBy
+    orderDirection: $orderDirection
+    first: $first
+  ) {
+    id
+    newLender
+    lendTicketHolder
+    loanAmount
+    interestEarned
+    timestamp
+    blockNumber
+    loan {
+      id
+    }
+  }
+  collateralSeizureEvents(
+    where: $collateralWhere
+    orderBy: $collateralOrderBy
+    orderDirection: $orderDirection
+  ) {
+    id
+    timestamp
+    blockNumber
+    lendTicketHolder
+    borrowTicketHolder
+    loan {
+      id
+    }
+  }
+  repaymentEvents(
+    where: $repaymentWhere
+    orderBy: $repaymentOrderBy
+    orderDirection: $orderDirection
+  ) {
+    id
+    repayer
+    loanAmount
+    interestEarned
+    timestamp
+    blockNumber
+    lendTicketHolder
+    borrowTicketHolder
+    loan {
+      id
+    }
+  }
+  lendEvents(
+    where: $lendWhere
+    orderBy: $lendOrderBy
+    orderDirection: $orderDirection
+  ) {
+    id
+    lender
+    loanAmount
+    durationSeconds
+    perSecondInterestRate
+    timestamp
+    blockNumber
+    borrowTicketHolder
+    loan {
+      id
+    }
+  }
+  createEvents(
+    where: $createWhere
+    orderBy: $createOrderBy
+    orderDirection: $orderDirection
+  ) {
+    id
+    timestamp
+    blockNumber
+    creator
+    maxPerSecondInterestRate
+    minDurationSeconds
+    minLoanAmount
+    loan {
+      id
+    }
+  }
+  closeEvents(
+    where: $closeWhere
+    orderBy: $closeOrderBy
+    orderDirection: $orderDirection
+  ) {
+    id
+    timestamp
+    blockNumber
+    closer
+    loan {
+      id
+    }
+  }
+}

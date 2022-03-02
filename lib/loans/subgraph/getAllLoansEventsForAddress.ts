@@ -1,38 +1,23 @@
 import {
-  BUYOUT_EVENT_PROPERTIES,
-  CLOSE_EVENT_PROPERTIES,
-  COLLATERAL_SEIZURE_EVENT_PROPERTIES,
-  CREATE_EVENT_PROPERTIES,
-  LEND_EVENT_PROPERTIES,
-  REPAY_EVENT_PROPERTIES,
-} from './subgraphSharedConstants';
-import {
-  BuyoutEvent,
   BuyoutEvent_Filter,
   BuyoutEvent_OrderBy,
-  CreateEvent,
   CloseEvent_Filter,
-  CollateralSeizureEvent,
   CollateralSeizureEvent_Filter,
   CreateEvent_Filter,
-  LendEvent,
   LendEvent_Filter,
   Loan,
   Loan_Filter,
   Loan_OrderBy,
   OrderDirection,
-  QueryBuyoutEventsArgs,
-  QueryCollateralSeizureEventsArgs,
-  QueryLendEventsArgs,
   QueryLoansArgs,
-  QueryRepaymentEventsArgs,
-  RepaymentEvent,
   RepaymentEvent_Filter,
-  QueryCreateEventsArgs,
-  QueryCloseEventsArgs,
+  CollateralSeizureEvent_OrderBy,
+  RepaymentEvent_OrderBy,
+  LendEvent_OrderBy,
+  CreateEvent_OrderBy,
+  CloseEvent_OrderBy,
 } from 'types/generated/graphql/nftLoans';
-import { nftBackedLoansClient } from '../../urql';
-import { gql } from 'urql';
+import { nftBackedLoansClient } from 'lib/urql';
 import { Dictionary, groupBy } from 'lodash';
 import { Event } from 'types/Event';
 import {
@@ -43,10 +28,11 @@ import {
   lendEventToUnified,
   repaymentEventToUnified,
 } from 'lib/eventTransformers';
-import { ethers } from 'ethers';
 import {
   ActiveLoansDocument,
   ActiveLoansQuery,
+  AllEventsForAddressDocument,
+  AllEventsForAddressQuery,
 } from 'types/generated/graphql/nft-backed-loans-operations';
 
 export async function getAllActiveLoansForAddress(
@@ -89,80 +75,6 @@ export async function getAllActiveLoansForAddress(
     .flat();
 }
 
-type EventFilter =
-  | CreateEvent_Filter
-  | CloseEvent_Filter
-  | BuyoutEvent_Filter
-  | CollateralSeizureEvent_Filter
-  | RepaymentEvent_Filter
-  | LendEvent_Filter;
-
-type EventQueryArgs =
-  | QueryCreateEventsArgs
-  | QueryCloseEventsArgs
-  | QueryBuyoutEventsArgs
-  | QueryCollateralSeizureEventsArgs
-  | QueryRepaymentEventsArgs
-  | QueryLendEventsArgs;
-
-function eventsQuery(
-  eventName: string,
-  whereFilterType: string,
-  properties: string,
-) {
-  return gql`
-    query($where: ${whereFilterType}, $first: Int, $orderBy: String, $orderDirection: String) {
-      ${eventName}(
-        where: $where,
-        orderBy: $orderBy, 
-        orderDirection: $orderDirection
-      ) {
-        ${properties}
-        loan {
-          id
-        }
-      }
-    }
-  `;
-}
-
-async function getEventsForEventType<T>(
-  eventQueryname: string,
-  eventFilterType: string,
-  properties: string,
-  whereArgs: EventFilter[],
-  toUnified: (event: any, loanId: ethers.BigNumber) => Event,
-): Promise<Event[]> {
-  const sharedQueryArgs: EventQueryArgs = {
-    orderBy: BuyoutEvent_OrderBy.Timestamp,
-    orderDirection: OrderDirection.Desc,
-  };
-
-  const resultArray: { data?: { [eventQueryname: string]: T[] } }[] =
-    await Promise.all(
-      whereArgs.map((where) =>
-        nftBackedLoansClient
-          .query<{ [eventName: string]: any }>(
-            eventsQuery(eventQueryname, eventFilterType, properties),
-            {
-              ...sharedQueryArgs,
-              where,
-            },
-          )
-          .toPromise(),
-      ),
-    );
-
-  return resultArray
-    .map((result) => (result.data ? result.data[eventQueryname] : []))
-    .flat()
-    .map((event) =>
-      // It isn't part of the type, but we've included the loan id in the
-      // graphql request to allow for reverse lookup of event -> loan
-      toUnified(event, ethers.BigNumber.from((event as any).loan.id)),
-    );
-}
-
 export async function getAllEventsForAddress(
   address: string,
 ): Promise<Dictionary<[Event, ...Event[]]>> {
@@ -190,50 +102,51 @@ export async function getAllEventsForAddress(
 
   const closeWhereFilters: CloseEvent_Filter[] = [{ closer: address }];
 
-  const allEventLoans = await Promise.all([
-    getEventsForEventType<BuyoutEvent>(
-      'buyoutEvents',
-      'BuyoutEvent_filter',
-      BUYOUT_EVENT_PROPERTIES,
-      buyoutWhereFilters,
-      buyoutEventToUnified,
-    ),
-    getEventsForEventType<CollateralSeizureEvent>(
-      'collateralSeizedEvents',
-      'CollateralSeizureEvent_filter',
-      COLLATERAL_SEIZURE_EVENT_PROPERTIES,
-      collateralSeizedWhereFilters,
-      collateralSeizureEventToUnified,
-    ),
-    getEventsForEventType<RepaymentEvent>(
-      'repaymentEvents',
-      'RepaymentEvent_filter',
-      REPAY_EVENT_PROPERTIES,
-      repaymentWhereFilters,
-      repaymentEventToUnified,
-    ),
-    getEventsForEventType<LendEvent>(
-      'lendEvents',
-      'LendEvent_filter',
-      LEND_EVENT_PROPERTIES,
-      lendWhereFilters,
-      lendEventToUnified,
-    ),
-    getEventsForEventType<CreateEvent>(
-      'createEvents',
-      'CreateEvent_filter',
-      CREATE_EVENT_PROPERTIES,
-      createWhereFilters,
-      createEventToUnified,
-    ),
-    getEventsForEventType<CloseEvent>(
-      'closeEvents',
-      'closeEvent_filter',
-      CLOSE_EVENT_PROPERTIES,
-      closeWhereFilters,
-      closeEventToUnified,
-    ),
-  ]);
+  const queryResult = await nftBackedLoansClient
+    .query<AllEventsForAddressQuery>(AllEventsForAddressDocument, {
+      orderDirection: OrderDirection.Desc,
+      buyoutWhere: buyoutWhereFilters,
+      buyoutOrderBy: BuyoutEvent_OrderBy.Timestamp,
+      collateralWhere: collateralSeizedWhereFilters,
+      collateralOrderBy: CollateralSeizureEvent_OrderBy.Timestamp,
+      repaymentWhere: repaymentWhereFilters,
+      repaymentOrderBy: RepaymentEvent_OrderBy.Timestamp,
+      lendWhere: lendWhereFilters,
+      lendOrderBy: LendEvent_OrderBy.Timestamp,
+      createWhere: createWhereFilters,
+      createOrderBy: CreateEvent_OrderBy.Timestamp,
+      closeWhere: closeWhereFilters,
+      closeOrderBy: CloseEvent_OrderBy.Timestamp,
+    })
+    .toPromise();
 
-  return groupBy(allEventLoans.flat(), (event) => event.typename);
+  if (!queryResult.data) {
+    return {};
+  }
+
+  let events: Event[] = [];
+
+  queryResult.data.buyoutEvents.forEach((event) => {
+    // TODO: @cnasc, instead of any we should be able to use the Event type
+    // we've actually pulled from the graph. Right now the loan fields are
+    // incompatible.
+    events.push(buyoutEventToUnified(event as any));
+  });
+  queryResult.data.closeEvents.forEach((event) => {
+    events.push(closeEventToUnified(event as any));
+  });
+  queryResult.data.collateralSeizureEvents.forEach((event) => {
+    events.push(collateralSeizureEventToUnified(event as any));
+  });
+  queryResult.data.createEvents.forEach((event) => {
+    events.push(createEventToUnified(event as any));
+  });
+  queryResult.data.lendEvents.forEach((event) => {
+    events.push(lendEventToUnified(event as any));
+  });
+  queryResult.data.repaymentEvents.forEach((event) => {
+    events.push(repaymentEventToUnified(event as any));
+  });
+
+  return groupBy(events, (event) => event.typename);
 }
