@@ -1,0 +1,17 @@
+query homepageQuery(
+  $where: Loan_filter
+  $first: Int
+  $skip: Int
+  $orderBy: Loan_orderBy
+  $orderDirection: OrderDirection
+) {
+  loans(
+    where: $where
+    first: $first
+    skip: $skip
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+  ) {
+    ...allLoanProperties
+  }
+}

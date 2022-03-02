@@ -12,14 +12,10 @@ import { ethers } from 'ethers';
 import { annualRateToPerSecond } from 'lib/interest';
 import { daysToSecondsBigNum } from 'lib/duration';
 import { gql } from 'urql';
-
-const homepageQuery = gql`
-    query($where: Loan_filter , $first: Int, $skip: Int, $orderBy: String, $orderDirection: String) {
-        loans(where: $where, first: $first, skip: $skip, orderBy: $orderBy, orderDirection: $orderDirection) {
-            ${ALL_LOAN_PROPERTIES}
-        }
-    }
-`;
+import {
+  HomepageQueryDocument,
+  HomepageQueryQuery,
+} from 'types/generated/graphql/nft-backed-loans-operations';
 
 // TODO(Wilson): this is a temp fix just for this query. We should generalize this method to
 // take an arguments and return a cursor to return paginated results
@@ -38,11 +34,15 @@ export default async function subgraphLoans(
     orderDirection: sortDirection,
   };
 
-  const {
-    data: { loans },
-  } = await nftBackedLoansClient.query(homepageQuery, queryArgs).toPromise();
+  const { data } = await nftBackedLoansClient
+    .query<HomepageQueryQuery>(HomepageQueryDocument, queryArgs)
+    .toPromise();
 
-  return loans;
+  if (!data?.loans) {
+    return [];
+  }
+
+  return data.loans;
 }
 
 const searchQuery = (
