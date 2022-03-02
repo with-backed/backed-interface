@@ -17,4 +17,7 @@ fragment allLoanProperties on Loan {
   endDateTimestamp
   collateralTokenURI
   collateralName
+  createdAtTimestamp
+  lastUpdatedAtTimestamp
+  numEvents
 }
