@@ -19,7 +19,7 @@ const notificationDestination = 'adamgobes@gmail.com';
 jest.mock('lib/notifications/repository', () => ({
   createNotificationRequestForAddress: jest.fn(),
   deleteAllNotificationRequestsForAddress: jest.fn(),
-  getNumberRequestsForNotificationDestination: jest.fn(),
+  getNumberOfRequestsForNotificationDestination: jest.fn(),
 }));
 
 const mockedCreateDBCall =
