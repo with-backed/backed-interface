@@ -75,17 +75,3 @@ export const CLOSE_EVENT_PROPERTIES = `
     blockNumber,
     closer
 `;
-
-export const ALL_SALE_INFO_PROPERTIES = `
-    id
-    nftContractAddress
-    nftTokenId
-    saleType
-    blockNumber
-    timestamp
-    seller
-    buyer
-    exchange
-    paymentToken
-    price
-`;

@@ -1,39 +1,19 @@
 import { ethers } from 'ethers';
 import {
+  NftSalesDocument,
+  NftSalesQuery,
   Sale as NFTSale,
   SaleType,
   Sale_OrderBy,
 } from 'types/generated/graphql/nftSales';
-import { ALL_SALE_INFO_PROPERTIES } from './loans/subgraph/subgraphSharedConstants';
 import { nftSalesClient } from './urql';
-
-const graphqlQuery = `
-  query(
-    $nftContractAddress: String!,
-    $nftTokenId: String!,
-    $first: Int!,
-    $orderBy: String,
-    $orderDirection: String,
-  ) {
-    sales(where: {
-      nftContractAddress: $nftContractAddress,
-      nftTokenId: $nftTokenId,
-    },
-    first: $first,
-    orderBy: $orderBy,
-    orderDirection: $orderDirection,
-    ) {
-      ${ALL_SALE_INFO_PROPERTIES}
-    }
-  }
-`;
 
 export async function queryMostRecentSaleForNFT(
   nftContractAddress: string,
   nftTokenId: string,
 ): Promise<NFTSale | null> {
   const { data } = await nftSalesClient
-    .query<{ sales: NFTSale[] }>(graphqlQuery, {
+    .query<NftSalesQuery>(NftSalesDocument, {
       nftContractAddress,
       nftTokenId,
       first: 1,

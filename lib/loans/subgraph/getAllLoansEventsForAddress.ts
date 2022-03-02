@@ -16,6 +16,10 @@ import {
   LendEvent_OrderBy,
   CreateEvent_OrderBy,
   CloseEvent_OrderBy,
+  ActiveLoansQuery,
+  ActiveLoansDocument,
+  AllEventsForAddressQuery,
+  AllEventsForAddressDocument,
 } from 'types/generated/graphql/nftLoans';
 import { nftBackedLoansClient } from 'lib/urql';
 import { Dictionary, groupBy } from 'lodash';
@@ -28,12 +32,6 @@ import {
   lendEventToUnified,
   repaymentEventToUnified,
 } from 'lib/eventTransformers';
-import {
-  ActiveLoansDocument,
-  ActiveLoansQuery,
-  AllEventsForAddressDocument,
-  AllEventsForAddressQuery,
-} from 'types/generated/graphql/nft-backed-loans-operations';
 
 export async function getAllActiveLoansForAddress(
   address: string,

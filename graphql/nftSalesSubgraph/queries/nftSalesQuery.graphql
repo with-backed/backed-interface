@@ -1,0 +1,16 @@
+query nftSales(
+  $nftContractAddress: Bytes
+  $nftTokenId: String!
+  $first: Int!
+  $orderBy: Sale_orderBy
+  $orderDirection: OrderDirection
+) {
+  sales(
+    where: { nftContractAddress: $nftContractAddress, nftTokenId: $nftTokenId }
+    first: $first
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+  ) {
+    ...allSaleInfoProperties
+  }
+}

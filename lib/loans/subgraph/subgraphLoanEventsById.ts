@@ -4,6 +4,8 @@ import {
   CloseEvent,
   CollateralSeizureEvent,
   CreateEvent,
+  EventsByLoanIdDocument,
+  EventsByLoanIdQuery,
   LendEvent,
   RepaymentEvent,
 } from 'types/generated/graphql/nftLoans';
@@ -16,10 +18,6 @@ import {
   lendEventToUnified,
   repaymentEventToUnified,
 } from 'lib/eventTransformers';
-import {
-  EventsByLoanIdDocument,
-  EventsByLoanIdQuery,
-} from 'types/generated/graphql/nft-backed-loans-operations';
 
 /**
  * @param id the id of the loan

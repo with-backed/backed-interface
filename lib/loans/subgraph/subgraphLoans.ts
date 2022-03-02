@@ -6,18 +6,16 @@ import {
   Loan_OrderBy,
   OrderDirection,
   LoanStatus,
+  HomepageQueryQuery,
+  HomepageQueryDocument,
+  HomepageSearchQuery,
+  HomepageSearchDocument,
+  LoansWhereQuery,
+  LoansWhereDocument,
 } from 'types/generated/graphql/nftLoans';
 import { ethers } from 'ethers';
 import { annualRateToPerSecond } from 'lib/interest';
 import { daysToSecondsBigNum } from 'lib/duration';
-import {
-  HomepageQueryDocument,
-  HomepageQueryQuery,
-  HomepageSearchDocument,
-  HomepageSearchQuery,
-  LoansWhereDocument,
-  LoansWhereQuery,
-} from 'types/generated/graphql/nft-backed-loans-operations';
 
 // TODO(Wilson): this is a temp fix just for this query. We should generalize this method to
 // take an arguments and return a cursor to return paginated results
