@@ -1,8 +1,8 @@
 overwrite: true
 schema: 'https://api.thegraph.com/subgraphs/name/wilsoncusack/nft-backed-loans'
-documents: './lib/**/*.graphql'
+documents: './graphql/nftBackedLoansSubgraph/**/*.graphql'
 generates:
-  types/generated/graphql/graphql-operations.ts:
+  types/generated/graphql/nft-backed-loans-operations.ts:
     plugins:
       - typescript
       - typescript-operations

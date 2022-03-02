@@ -1,0 +1,20 @@
+fragment allLoanProperties on Loan {
+  id
+  loanAssetContractAddress
+  collateralContractAddress
+  collateralTokenId
+  perSecondInterestRate
+  accumulatedInterest
+  lastAccumulatedTimestamp
+  durationSeconds
+  loanAmount
+  status
+  closed
+  loanAssetDecimal
+  loanAssetSymbol
+  lendTicketHolder
+  borrowTicketHolder
+  endDateTimestamp
+  collateralTokenURI
+  collateralName
+}
