@@ -2,7 +2,6 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import {
   createNotificationRequestForAddress,
   deleteAllNotificationRequestsForAddress,
-  getNotificationRequestsForDestination,
   getNumberOfRequestsForNotificationDestination,
 } from 'lib/notifications/repository';
 import { NotificationRequest } from '@prisma/client';
