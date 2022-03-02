@@ -1,0 +1,5 @@
+query loansWhere($where: Loan_filter) {
+  loans(where: $where) {
+    ...allLoanProperties
+  }
+}

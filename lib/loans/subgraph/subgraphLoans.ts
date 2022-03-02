@@ -1,4 +1,3 @@
-import { ALL_LOAN_PROPERTIES } from './subgraphSharedConstants';
 import { nftBackedLoansClient } from '../../urql';
 import {
   QueryLoansArgs,
@@ -11,10 +10,13 @@ import {
 import { ethers } from 'ethers';
 import { annualRateToPerSecond } from 'lib/interest';
 import { daysToSecondsBigNum } from 'lib/duration';
-import { gql } from 'urql';
 import {
   HomepageQueryDocument,
   HomepageQueryQuery,
+  HomepageSearchDocument,
+  HomepageSearchQuery,
+  LoansWhereDocument,
+  LoansWhereQuery,
 } from 'types/generated/graphql/nft-backed-loans-operations';
 
 // TODO(Wilson): this is a temp fix just for this query. We should generalize this method to
@@ -45,68 +47,6 @@ export default async function subgraphLoans(
   return data.loans;
 }
 
-const searchQuery = (
-  lendTicketHolder: string,
-  loanAmountMax: number,
-  perSecondInterestRateMax: number,
-  durationSecondsMax: number,
-) => gql`
-  query(
-    $statuses: [String], 
-    $collateralContractAddress: String,
-    $collateralName: String,
-    $loanAssetSymbol: String,
-    $borrowTicketHolder: String,
-    $lendTicketHolder: String,
-    $loanAmountMin: BigInt,
-    $loanAmountMax: BigInt,
-    $perSecondInterestRateMin: BigInt,
-    $perSecondInterestRateMax: BigInt,
-    $durationSecondsMin: BigInt,
-    $durationSecondsMax: BigInt,
-    $selectedSort: String,
-    $sortDirection: String,
-    $first: Int, 
-    $skip: Int,
-  ) {
-    loans(where: 
-      {
-        status_in: $statuses,
-        collateralContractAddress_contains: $collateralContractAddress,
-        collateralName_contains: $collateralName,
-        loanAssetSymbol_contains: $loanAssetSymbol,
-        borrowTicketHolder_contains: $borrowTicketHolder,
-        ${
-          lendTicketHolder != ''
-            ? 'lendTicketHolder_contains: $lendTicketHolder,'
-            : ''
-        }
-        loanAmount_gt: $loanAmountMin,
-        ${loanAmountMax != 0 ? 'loanAmount_lt: $loanAmountMax' : ''}
-        
-        perSecondInterestRate_gt: $perSecondInterestRateMin,
-        ${
-          perSecondInterestRateMax != 0
-            ? 'perSecondInterestRate_lt: $perSecondInterestRateMax'
-            : ''
-        }
-        durationSeconds_gt: $durationSecondsMin,
-        ${
-          durationSecondsMax != 0
-            ? 'durationSeconds_lt: $durationSecondsMax'
-            : ''
-        }
-      },
-      orderBy: $selectedSort,
-      orderDirection: $sortDirection,
-      first: $first, 
-      skip: $skip,
-    ) {
-      ${ALL_LOAN_PROPERTIES}
-    }
-  }
-`;
-
 export type LoanAmountInputType = {
   loanAssetDecimal: number;
   nominal: number;
@@ -131,32 +71,24 @@ export async function searchLoans(
   page: number = 1,
 ): Promise<Loan[]> {
   const { data } = await nftBackedLoansClient
-    .query<{ loans: Loan[] }>(
-      searchQuery(
-        lendTicketHolder,
-        loanAmountMax.nominal,
-        loanInterestMax,
-        loanDurationMax,
-      ),
-      {
-        statuses,
-        collateralContractAddress,
-        collateralName,
-        loanAssetSymbol,
-        borrowTicketHolder,
-        lendTicketHolder,
-        loanAmountMin: formatNumberForGraph(loanAmountMin),
-        loanAmountMax: formatNumberForGraph(loanAmountMax),
-        perSecondInterestRateMin: annualRateToPerSecond(loanInterestMin),
-        perSecondInterestRateMax: annualRateToPerSecond(loanInterestMax),
-        durationSecondsMin: daysToSecondsBigNum(loanDurationMin).toString(),
-        durationSecondsMax: daysToSecondsBigNum(loanDurationMax).toString(),
-        selectedSort,
-        sortDirection,
-        first,
-        skip: (page - 1) * first,
-      },
-    )
+    .query<HomepageSearchQuery>(HomepageSearchDocument, {
+      statuses,
+      collateralContractAddress,
+      collateralName,
+      loanAssetSymbol,
+      borrowTicketHolder,
+      lendTicketHolder,
+      loanAmountMin: formatNumberForGraph(loanAmountMin),
+      loanAmountMax: formatNumberForGraph(loanAmountMax),
+      perSecondInterestRateMin: annualRateToPerSecond(loanInterestMin),
+      perSecondInterestRateMax: annualRateToPerSecond(loanInterestMax),
+      durationSecondsMin: daysToSecondsBigNum(loanDurationMin).toString(),
+      durationSecondsMax: daysToSecondsBigNum(loanDurationMax).toString(),
+      selectedSort,
+      sortDirection,
+      first,
+      skip: (page - 1) * first,
+    })
     .toPromise();
 
   if (data?.loans) {
@@ -172,14 +104,6 @@ const formatNumberForGraph = (loanAmount: LoanAmountInputType): string => {
     .toString();
 };
 
-const liquidatingLoansQuery = gql`
-    query($where: Loan_filter) {
-        loans(where: $where) {
-            ${ALL_LOAN_PROPERTIES}
-        }
-    }
-`;
-
 export async function getLoansExpiringWithin(
   timeOne: number,
   timeTwo: number,
@@ -189,10 +113,13 @@ export async function getLoansExpiringWithin(
     endDateTimestamp_lt: timeTwo,
   };
 
-  const graphResponse = await nftBackedLoansClient
-    .query(liquidatingLoansQuery, {
+  const { data } = await nftBackedLoansClient
+    .query<LoansWhereQuery>(LoansWhereDocument, {
       where,
     })
     .toPromise();
-  return graphResponse.data['loans'] as Loan[];
+  if (!data?.loans) {
+    return [];
+  }
+  return data.loans;
 }
