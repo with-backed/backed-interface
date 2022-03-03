@@ -26,64 +26,10 @@ export default async function handler(
 
   try {
     const { event } = req.query as { event: NotificationEventTrigger };
-    const { txHash } = req.body;
-
-    let involvedAddress: string;
-    let loan: Loan;
-
-    if (event === NotificationEventTrigger.BuyoutEventOldLender) {
-      const { data } = await nftBackedLoansClient
-        .query<BuyoutByTransactionHashQuery>(BuyoutByTransactionHashDocument, {
-          id: txHash,
-        })
-        .toPromise();
-
-      const event = data!.buyoutEvent!;
-      involvedAddress = event.lendTicketHolder.toLowerCase();
-      loan = event.loan;
-    } else if (event === NotificationEventTrigger.BuyoutEventBorrower) {
-      const { data } = await nftBackedLoansClient
-        .query<BuyoutByTransactionHashQuery>(BuyoutByTransactionHashDocument, {
-          id: txHash,
-        })
-        .toPromise();
-
-      const event = data!.buyoutEvent!;
-      involvedAddress = event.loan.borrowTicketHolder.toLowerCase();
-      loan = event.loan;
-    } else if (event === NotificationEventTrigger.LendEvent) {
-      const { data } = await nftBackedLoansClient
-        .query<LendByTransactionHashQuery>(LendByTransactionHashDocument, {
-          id: txHash,
-        })
-        .toPromise();
-      const event = data!.lendEvent!;
-      involvedAddress = event.borrowTicketHolder.toLowerCase();
-      loan = event.loan;
-    } else if (event === NotificationEventTrigger.RepaymentEvent) {
-      const { data } = await nftBackedLoansClient
-        .query<RepaymentEventByTransactionHashQuery>(
-          RepaymentEventByTransactionHashDocument,
-          { id: txHash },
-        )
-        .toPromise();
-      const event = data!.repaymentEvent!;
-      involvedAddress = event.lendTicketHolder.toLowerCase();
-      loan = event.loan;
-    } else if (event === NotificationEventTrigger.CollateralSeizureEvent) {
-      const { data } = await nftBackedLoansClient
-        .query<CollateralSeizureEventByTransactionHashQuery>(
-          CollateralSeizureEventByTransactionHashDocument,
-          { id: txHash },
-        )
-        .toPromise();
-      const event = data!.collateralSeizureEvent!;
-      involvedAddress = event.borrowTicketHolder.toLowerCase();
-      loan = event.loan;
-    } else {
-      res.status(400).send('invalid event name passed to POST /events/[event]');
-      return;
-    }
+    const { involvedAddress, loan } = req.body as {
+      involvedAddress: string;
+      loan: Loan;
+    };
 
     const notificationRequests = await getNotificationRequestsForAddress(
       involvedAddress,
