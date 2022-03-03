@@ -1,0 +1,10 @@
+overwrite: true
+schema: 'https://api.thegraph.com/subgraphs/name/sunguru98/erc721-rinkeby-subgraph'
+documents: './graphql/eip721/**/*.graphql'
+generates:
+  types/generated/graphql/eip721subgraph.ts:
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'
+      - 'urql-introspection'
+      - 'typed-document-node'

@@ -1,0 +1,41 @@
+query homepageSearch(
+  $statuses: [LoanStatus!]
+  $collateralContractAddress: Bytes
+  $collateralName: String
+  $loanAssetSymbol: String
+  $borrowTicketHolder: Bytes
+  $lendTicketHolder: Bytes
+  $loanAmountMin: BigInt
+  $loanAmountMax: BigInt
+  $perSecondInterestRateMin: BigInt
+  $perSecondInterestRateMax: BigInt
+  $durationSecondsMin: BigInt
+  $durationSecondsMax: BigInt
+  $selectedSort: Loan_orderBy
+  $sortDirection: OrderDirection
+  $first: Int
+  $skip: Int
+) {
+  loans(
+    where: {
+      status_in: $statuses
+      collateralContractAddress_contains: $collateralContractAddress
+      collateralName_contains: $collateralName
+      loanAssetSymbol_contains: $loanAssetSymbol
+      borrowTicketHolder_contains: $borrowTicketHolder
+      lendTicketHolder_contains: $lendTicketHolder
+      loanAmount_gt: $loanAmountMin
+      loanAmount_lt: $loanAmountMax
+      perSecondInterestRate_gt: $perSecondInterestRateMin
+      perSecondInterestRate_lt: $perSecondInterestRateMax
+      durationSeconds_gt: $durationSecondsMin
+      durationSeconds_lt: $durationSecondsMax
+    }
+    orderBy: $selectedSort
+    orderDirection: $sortDirection
+    first: $first
+    skip: $skip
+  ) {
+    ...allLoanProperties
+  }
+}

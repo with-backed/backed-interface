@@ -3,10 +3,10 @@ import { ethers } from 'ethers';
 export interface NFTEntity {
   id: string;
   identifier: ethers.BigNumber;
-  uri: string;
+  uri?: string | null;
   registry: {
-    symbol: string;
-    name: string;
+    symbol?: string | null;
+    name?: string | null;
   };
   approvals: Approval[];
 }

@@ -1,32 +1,20 @@
 import { NotificationRequest } from '@prisma/client';
 import { ethers } from 'ethers';
-import {
-  BUYOUT_EVENT_PROPERTIES,
-  COLLATERAL_SEIZURE_EVENT_PROPERTIES,
-  LEND_EVENT_PROPERTIES,
-  REPAY_EVENT_PROPERTIES,
-} from 'lib/loans/subgraph/subgraphSharedConstants';
 import { subgraphLoan } from 'lib/mockData';
 import { sendEmail } from 'lib/notifications/emails';
-import { getEventFromTxHash } from 'lib/notifications/events';
 import { getNotificationRequestsForAddress } from 'lib/notifications/repository';
 import {
   NotificationEventTrigger,
   NotificationMethod,
 } from 'lib/notifications/shared';
+import { nftBackedLoansClient } from 'lib/urql';
 import { createMocks } from 'node-mocks-http';
 import handler from 'pages/api/events/[event]';
-import {
-  BuyoutEvent,
-  CollateralSeizureEvent,
-  LendEvent,
-  RepaymentEvent,
-} from 'types/generated/graphql/nftLoans';
 
 const subgraphLoanCopy = {
   ...subgraphLoan,
   lendTicketHolder: ethers.Wallet.createRandom().address.toLowerCase(),
-}
+};
 subgraphLoanCopy.lendTicketHolder =
   ethers.Wallet.createRandom().address.toLowerCase();
 
@@ -42,8 +30,11 @@ const returnedNotificationRequest: NotificationRequest = {
   event,
 };
 
-jest.mock('lib/notifications/events', () => ({
-  getEventFromTxHash: jest.fn(),
+jest.mock('lib/urql', () => ({
+  ...jest.requireActual('lib/urql'),
+  nftBackedLoansClient: {
+    query: jest.fn(),
+  },
 }));
 
 jest.mock('lib/notifications/emails', () => ({
@@ -59,9 +50,10 @@ const mockedGetNotificationsCall =
     typeof getNotificationRequestsForAddress
   >;
 
-const mockedGetEventFromGraphCall = getEventFromTxHash as jest.MockedFunction<
-  typeof getEventFromTxHash
->;
+const mockedNftBackedLoansClientQuery =
+  nftBackedLoansClient.query as jest.MockedFunction<
+    typeof nftBackedLoansClient.query
+  >;
 
 const mockedSendEmailCall = sendEmail as jest.MockedFunction<typeof sendEmail>;
 
@@ -76,14 +68,16 @@ describe('/api/events/[event]', () => {
 
   describe('BuyoutEventOldLender', () => {
     beforeEach(async () => {
-      mockedGetEventFromGraphCall.mockReturnValue(
-        new Promise((resolve, _reject) => {
-          resolve({
-            lendTicketHolder: subgraphLoanCopy.lendTicketHolder,
-            loan: subgraphLoanCopy,
-          } as BuyoutEvent);
+      mockedNftBackedLoansClientQuery.mockReturnValue({
+        toPromise: async () => ({
+          data: {
+            buyoutEvent: {
+              lendTicketHolder: subgraphLoanCopy.lendTicketHolder,
+              loan: subgraphLoanCopy,
+            },
+          },
         }),
-      );
+      } as any);
     });
 
     it('makes call to the graph, gets notifications associated with address, and sends email', async () => {
@@ -98,13 +92,6 @@ describe('/api/events/[event]', () => {
       });
 
       await handler(req, res);
-
-      expect(mockedGetEventFromGraphCall).toHaveBeenCalledTimes(1);
-      expect(mockedGetEventFromGraphCall).toHaveBeenCalledWith(
-        txHash,
-        'buyoutEvent',
-        BUYOUT_EVENT_PROPERTIES,
-      );
 
       expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
@@ -127,13 +114,16 @@ describe('/api/events/[event]', () => {
 
   describe('BuyoutEventBorrower', () => {
     beforeEach(async () => {
-      mockedGetEventFromGraphCall.mockReturnValue(
-        new Promise((resolve, _reject) => {
-          resolve({
-            loan: subgraphLoanCopy,
-          } as BuyoutEvent);
+      mockedNftBackedLoansClientQuery.mockReturnValue({
+        toPromise: async () => ({
+          data: {
+            buyoutEvent: {
+              lendTicketHolder: subgraphLoanCopy.lendTicketHolder,
+              loan: subgraphLoanCopy,
+            },
+          },
         }),
-      );
+      } as any);
     });
 
     it('makes call to the graph, gets notifications associated with address, and sends email', async () => {
@@ -148,13 +138,6 @@ describe('/api/events/[event]', () => {
       });
 
       await handler(req, res);
-
-      expect(mockedGetEventFromGraphCall).toHaveBeenCalledTimes(1);
-      expect(mockedGetEventFromGraphCall).toHaveBeenCalledWith(
-        txHash,
-        'buyoutEvent',
-        BUYOUT_EVENT_PROPERTIES,
-      );
 
       expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
@@ -177,14 +160,16 @@ describe('/api/events/[event]', () => {
 
   describe('LendEvent', () => {
     beforeEach(async () => {
-      mockedGetEventFromGraphCall.mockReturnValue(
-        new Promise((resolve, _reject) => {
-          resolve({
-            borrowTicketHolder: subgraphLoanCopy.borrowTicketHolder,
-            loan: subgraphLoanCopy,
-          } as LendEvent);
+      mockedNftBackedLoansClientQuery.mockReturnValue({
+        toPromise: async () => ({
+          data: {
+            lendEvent: {
+              borrowTicketHolder: subgraphLoanCopy.borrowTicketHolder,
+              loan: subgraphLoanCopy,
+            },
+          },
         }),
-      );
+      } as any);
     });
 
     it('makes call to the graph, gets notifications associated with address, and sends email', async () => {
@@ -199,13 +184,6 @@ describe('/api/events/[event]', () => {
       });
 
       await handler(req, res);
-
-      expect(mockedGetEventFromGraphCall).toHaveBeenCalledTimes(1);
-      expect(mockedGetEventFromGraphCall).toHaveBeenCalledWith(
-        txHash,
-        'lendEvent',
-        LEND_EVENT_PROPERTIES,
-      );
 
       expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
@@ -228,14 +206,16 @@ describe('/api/events/[event]', () => {
 
   describe('RepaymentEvent', () => {
     beforeEach(async () => {
-      mockedGetEventFromGraphCall.mockReturnValue(
-        new Promise((resolve, _reject) => {
-          resolve({
-            lendTicketHolder: subgraphLoanCopy.lendTicketHolder,
-            loan: subgraphLoanCopy,
-          } as RepaymentEvent);
+      mockedNftBackedLoansClientQuery.mockReturnValue({
+        toPromise: async () => ({
+          data: {
+            repaymentEvent: {
+              lendTicketHolder: subgraphLoanCopy.lendTicketHolder,
+              loan: subgraphLoanCopy,
+            },
+          },
         }),
-      );
+      } as any);
     });
 
     it('makes call to the graph, gets notifications associated with address, and sends email', async () => {
@@ -250,13 +230,6 @@ describe('/api/events/[event]', () => {
       });
 
       await handler(req, res);
-
-      expect(mockedGetEventFromGraphCall).toHaveBeenCalledTimes(1);
-      expect(mockedGetEventFromGraphCall).toHaveBeenCalledWith(
-        txHash,
-        'repaymentEvent',
-        REPAY_EVENT_PROPERTIES,
-      );
 
       expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
@@ -279,14 +252,16 @@ describe('/api/events/[event]', () => {
 
   describe('CollateralSeizureEvent', () => {
     beforeEach(async () => {
-      mockedGetEventFromGraphCall.mockReturnValue(
-        new Promise((resolve, _reject) => {
-          resolve({
-            borrowTicketHolder: subgraphLoanCopy.borrowTicketHolder,
-            loan: subgraphLoanCopy,
-          } as CollateralSeizureEvent);
+      mockedNftBackedLoansClientQuery.mockReturnValue({
+        toPromise: async () => ({
+          data: {
+            collateralSeizureEvent: {
+              borrowTicketHolder: subgraphLoanCopy.borrowTicketHolder,
+              loan: subgraphLoanCopy,
+            },
+          },
         }),
-      );
+      } as any);
     });
 
     it('makes call to the graph, gets notifications associated with address, and sends email', async () => {
@@ -301,13 +276,6 @@ describe('/api/events/[event]', () => {
       });
 
       await handler(req, res);
-
-      expect(mockedGetEventFromGraphCall).toHaveBeenCalledTimes(1);
-      expect(mockedGetEventFromGraphCall).toHaveBeenCalledWith(
-        txHash,
-        'collateralSeizureEvent',
-        COLLATERAL_SEIZURE_EVENT_PROPERTIES,
-      );
 
       expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(

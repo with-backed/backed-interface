@@ -53,4 +53,12 @@ describe('CollateralInfo', () => {
     getByText('volume');
     getByText(`${collectionStats.volume} ETH`);
   });
+
+  it('renders a Fieldset with a message when there is no collateral info', () => {
+    const { getByText } = render(
+      <CollateralInfo loan={loan} collateralSaleInfo={null} />,
+    );
+
+    getByText('No recent sale info');
+  });
 });
