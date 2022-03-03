@@ -87,7 +87,7 @@ export function NFTCollateralPicker({
           return (
             <NFTGroup
               key={contractAddress}
-              nftCollectionName={nfts[0]?.registry.name.toLowerCase()}
+              nftCollectionName={nfts[0]?.registry.name?.toLowerCase() || ''}
               nftContractAddress={contractAddress}
               nfts={nfts}
               handleNFTClick={handleNFTClick}
