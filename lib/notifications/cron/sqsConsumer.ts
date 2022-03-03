@@ -108,6 +108,9 @@ export async function main() {
         continue;
       }
 
+      // we check to see if event exists cause graph may not be in sync by the time our SQS consumer runs
+      // if graph is not yet in sync, skip
+      // if graph is in sync and event exists, push to SNS for consumption by bots/email APIs and delete message from SQS queue
       if (!!event) {
         pushEventForProcessing(involvedAddress, event.loan);
         deleteMessage(message.receiptHandle);
