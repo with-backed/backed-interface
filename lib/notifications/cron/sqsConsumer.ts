@@ -12,11 +12,8 @@ import {
 } from 'types/generated/graphql/nftLoans';
 import { getEventFromTxHash } from '../events';
 import { NotificationEventTrigger } from '../shared';
-import {
-  deleteMessage,
-  FormattedNotificationEventMessageType,
-  receiveMessages,
-} from '../sqs';
+import { pushEventForProcessing } from '../sns';
+import { deleteMessage, receiveMessages } from '../sqs';
 
 export async function main() {
   let notificationEventMessages = await receiveMessages();
@@ -70,6 +67,7 @@ export async function main() {
       }
 
       if (!!event) {
+        pushEventForProcessing(event.loan);
         deleteMessage(message.receiptHandle);
       }
     }

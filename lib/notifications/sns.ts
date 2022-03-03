@@ -1,4 +1,5 @@
 import { SNS } from 'aws-sdk';
+import { Loan } from 'types/generated/graphql/nftLoans';
 
 const snsConfig = {
   region: 'us-east-1',
@@ -8,7 +9,5 @@ const snsConfig = {
   },
 };
 
-export function pushToTopic(topicUrl: string) {
-  const sns = new SNS(snsConfig);
-  sns.publish();
-}
+//TODO(adamgobes): fill this out with actual pushing of message to SNS -- to be implemented in follow up PR
+export function pushEventForProcessing(_loan: Loan) {}
