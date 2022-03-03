@@ -214,8 +214,10 @@ describe('/api/events/[event]', () => {
       mockedNftBackedLoansClientQuery.mockReturnValueOnce({
         toPromise: async () => ({
           data: {
-            lendTicketHolder: subgraphLoanCopy.lendTicketHolder,
-            loan: subgraphLoanCopy,
+            buyoutEvent: {
+              lendTicketHolder: subgraphLoanCopy.lendTicketHolder,
+              loan: subgraphLoanCopy,
+            },
           },
         }),
       } as any);

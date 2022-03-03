@@ -32,7 +32,6 @@ export default async function handler(
     let loan: Loan;
 
     if (event === NotificationEventTrigger.BuyoutEventOldLender) {
-<<<<<<< HEAD
       const { data } = await nftBackedLoansClient
         .query<BuyoutByTransactionHashQuery>(BuyoutByTransactionHashDocument, {
           id: txHash,
@@ -79,96 +78,6 @@ export default async function handler(
         )
         .toPromise();
       const event = data!.collateralSeizureEvent!;
-=======
-      const event = await getEventFromTxHash<BuyoutEvent>(
-        txHash as string,
-        'buyoutEvent',
-        BUYOUT_EVENT_PROPERTIES,
-      );
-
-      if (!event) {
-        res
-          .status(400)
-          .send(`could not find event with tx hash ${txHash as string}`);
-        return;
-      }
-
-      involvedAddress = event.lendTicketHolder.toLowerCase();
-      loan = event.loan;
-    } else if (event === NotificationEventTrigger.BuyoutEventBorrower) {
-      const event = await getEventFromTxHash<BuyoutEvent>(
-        txHash as string,
-        'buyoutEvent',
-        BUYOUT_EVENT_PROPERTIES,
-      );
-
-      if (!event) {
-        res
-          .status(400)
-          .send(`could not find event with tx hash ${txHash as string}`);
-        return;
-      }
-
-      involvedAddress = event.loan.borrowTicketHolder.toLowerCase();
-      loan = event.loan;
-    } else if (event === NotificationEventTrigger.LendEvent) {
-      const event = await getEventFromTxHash<LendEvent>(
-        txHash as string,
-        'lendEvent',
-        LEND_EVENT_PROPERTIES,
-      );
-
-      if (!event) {
-        res
-          .status(400)
-          .send(`could not find event with tx hash ${txHash as string}`);
-        return;
-      }
-
-      const buyoutEventWithSameTx = await getEventFromTxHash<BuyoutEvent>(
-        txHash as string,
-        'buyoutEvent',
-        BUYOUT_EVENT_PROPERTIES,
-      );
-      if (!!buyoutEventWithSameTx) {
-        res
-          .status(200)
-          .json('buyout emails will already be sent, no need for lend emails');
-        return;
-      }
-      involvedAddress = event.borrowTicketHolder.toLowerCase();
-      loan = event.loan;
-    } else if (event === NotificationEventTrigger.RepaymentEvent) {
-      const event = await getEventFromTxHash<RepaymentEvent>(
-        txHash as string,
-        'repaymentEvent',
-        REPAY_EVENT_PROPERTIES,
-      );
-
-      if (!event) {
-        res
-          .status(400)
-          .send(`could not find event with tx hash ${txHash as string}`);
-        return;
-      }
-
-      involvedAddress = event.lendTicketHolder.toLowerCase();
-      loan = event.loan;
-    } else if (event === NotificationEventTrigger.CollateralSeizureEvent) {
-      const event = await getEventFromTxHash<CollateralSeizureEvent>(
-        txHash as string,
-        'collateralSeizureEvent',
-        COLLATERAL_SEIZURE_EVENT_PROPERTIES,
-      );
-
-      if (!event) {
-        res
-          .status(400)
-          .send(`could not find event with tx hash ${txHash as string}`);
-        return;
-      }
-
->>>>>>> 2006631... chore: ensure lend event is not part of buyout before sending email
       involvedAddress = event.borrowTicketHolder.toLowerCase();
       loan = event.loan;
     } else {
