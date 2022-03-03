@@ -1,16 +1,18 @@
+import { nftBackedLoansClient } from 'lib/urql';
 import {
-  BUYOUT_EVENT_PROPERTIES,
-  COLLATERAL_SEIZURE_EVENT_PROPERTIES,
-  LEND_EVENT_PROPERTIES,
-  REPAY_EVENT_PROPERTIES,
-} from 'lib/loans/subgraph/subgraphSharedConstants';
-import {
+  BuyoutByTransactionHashDocument,
+  BuyoutByTransactionHashQuery,
   BuyoutEvent,
   CollateralSeizureEvent,
+  CollateralSeizureEventByTransactionHashDocument,
+  CollateralSeizureEventByTransactionHashQuery,
+  LendByTransactionHashDocument,
+  LendByTransactionHashQuery,
   LendEvent,
   RepaymentEvent,
+  RepaymentEventByTransactionHashDocument,
+  RepaymentEventByTransactionHashQuery,
 } from 'types/generated/graphql/nftLoans';
-import { getEventFromTxHash } from '../events';
 import { NotificationEventTrigger } from '../shared';
 import { pushEventForProcessing } from '../sns';
 import { deleteMessage, receiveMessages } from '../sqs';
@@ -24,50 +26,73 @@ export async function main() {
         | BuyoutEvent
         | LendEvent
         | RepaymentEvent
-        | CollateralSeizureEvent;
+        | CollateralSeizureEvent
+        | undefined
+        | null;
+      let involvedAddress: string;
 
       if (message.eventName === NotificationEventTrigger.BuyoutEventOldLender) {
-        event = await getEventFromTxHash<BuyoutEvent>(
-          message.txHash,
-          'buyoutEvent',
-          BUYOUT_EVENT_PROPERTIES,
-        );
+        const { data } = await nftBackedLoansClient
+          .query<BuyoutByTransactionHashQuery>(
+            BuyoutByTransactionHashDocument,
+            {
+              id: message.txHash,
+            },
+          )
+          .toPromise();
+
+        event = data?.buyoutEvent;
+        involvedAddress = event?.lendTicketHolder;
       } else if (
         message.eventName === NotificationEventTrigger.BuyoutEventBorrower
       ) {
-        event = await getEventFromTxHash<BuyoutEvent>(
-          message.txHash,
-          'buyoutEvent',
-          BUYOUT_EVENT_PROPERTIES,
-        );
+        const { data } = await nftBackedLoansClient
+          .query<BuyoutByTransactionHashQuery>(
+            BuyoutByTransactionHashDocument,
+            {
+              id: message.txHash,
+            },
+          )
+          .toPromise();
+
+        event = data?.buyoutEvent;
+        involvedAddress = event?.loan.borrowTicketHolder;
       } else if (message.eventName === NotificationEventTrigger.LendEvent) {
-        event = await getEventFromTxHash<LendEvent>(
-          message.txHash,
-          'lendEvent',
-          LEND_EVENT_PROPERTIES,
-        );
+        const { data } = await nftBackedLoansClient
+          .query<LendByTransactionHashQuery>(LendByTransactionHashDocument, {
+            id: message.txHash,
+          })
+          .toPromise();
+        event = data?.lendEvent;
+        involvedAddress = event?.borrowTicketHolder;
       } else if (
         message.eventName === NotificationEventTrigger.RepaymentEvent
       ) {
-        event = await getEventFromTxHash<RepaymentEvent>(
-          message.txHash,
-          'repaymentEvent',
-          REPAY_EVENT_PROPERTIES,
-        );
+        const { data } = await nftBackedLoansClient
+          .query<RepaymentEventByTransactionHashQuery>(
+            RepaymentEventByTransactionHashDocument,
+            { id: message.txHash },
+          )
+          .toPromise();
+        event = data?.repaymentEvent;
+        involvedAddress = event?.lendTicketHolder;
       } else if (
         message.eventName === NotificationEventTrigger.CollateralSeizureEvent
       ) {
-        event = await getEventFromTxHash<CollateralSeizureEvent>(
-          message.txHash,
-          'collateralSeizureEvent',
-          COLLATERAL_SEIZURE_EVENT_PROPERTIES,
-        );
+        const { data } = await nftBackedLoansClient
+          .query<CollateralSeizureEventByTransactionHashQuery>(
+            CollateralSeizureEventByTransactionHashDocument,
+            { id: message.txHash },
+          )
+          .toPromise();
+        event = data?.collateralSeizureEvent;
+        involvedAddress = event?.borrowTicketHolder;
       } else {
         continue;
       }
 
       if (!!event) {
-        pushEventForProcessing(event.loan);
+        pushEventForProcessing(involvedAddress, event.loan);
         deleteMessage(message.receiptHandle);
       }
     }
