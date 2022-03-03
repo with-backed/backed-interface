@@ -1,0 +1,22 @@
+query eventsForLoan($id: ID!) {
+  loan(id: $id) {
+    createEvent {
+      ...createEventProperties
+    }
+    lendEvents {
+      ...lendEventProperties
+    }
+    buyoutEvents {
+      ...buyoutEventProperties
+    }
+    repaymentEvent {
+      ...repaymentEventProperties
+    }
+    collateralSeizureEvent {
+      ...collateralSeizureEventProperties
+    }
+    closeEvent {
+      ...closeEventProperties
+    }
+  }
+}

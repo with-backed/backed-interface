@@ -9,6 +9,7 @@ import {
   RepaymentEvent,
 } from 'types/generated/graphql/nftLoans';
 
+// TODO: @cnasc these function can use loan.id instead of taking an additional param
 export function createEventToUnified(
   event: CreateEvent,
   loanId: ethers.BigNumber,

@@ -1,0 +1,35 @@
+query buyoutByTransactionHash($id: ID!) {
+  buyoutEvent(id: $id) {
+    ...buyoutEventProperties
+    loan {
+      ...allLoanProperties
+    }
+  }
+}
+
+query lendByTransactionHash($id: ID!) {
+  lendEvent(id: $id) {
+    ...lendEventProperties
+    loan {
+      ...allLoanProperties
+    }
+  }
+}
+
+query repaymentEventByTransactionHash($id: ID!) {
+  repaymentEvent(id: $id) {
+    ...repaymentEventProperties
+    loan {
+      ...allLoanProperties
+    }
+  }
+}
+
+query collateralSeizureEventByTransactionHash($id: ID!) {
+  collateralSeizureEvent(id: $id) {
+    ...collateralSeizureEventProperties
+    loan {
+      ...allLoanProperties
+    }
+  }
+}

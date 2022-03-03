@@ -1,21 +1,19 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import {
-  BuyoutEvent,
-  CollateralSeizureEvent,
-  LendEvent,
+  BuyoutByTransactionHashDocument,
+  BuyoutByTransactionHashQuery,
+  CollateralSeizureEventByTransactionHashDocument,
+  CollateralSeizureEventByTransactionHashQuery,
+  LendByTransactionHashDocument,
+  LendByTransactionHashQuery,
   Loan,
-  RepaymentEvent,
+  RepaymentEventByTransactionHashDocument,
+  RepaymentEventByTransactionHashQuery,
 } from 'types/generated/graphql/nftLoans';
 import { getNotificationRequestsForAddress } from 'lib/notifications/repository';
-import {
-  BUYOUT_EVENT_PROPERTIES,
-  COLLATERAL_SEIZURE_EVENT_PROPERTIES,
-  LEND_EVENT_PROPERTIES,
-  REPAY_EVENT_PROPERTIES,
-} from 'lib/loans/subgraph/subgraphSharedConstants';
-import { getEventFromTxHash } from 'lib/notifications/events';
 import { sendEmail } from 'lib/notifications/emails';
 import { NotificationEventTrigger } from 'lib/notifications/shared';
+import { nftBackedLoansClient } from 'lib/urql';
 
 export default async function handler(
   req: NextApiRequest,
@@ -34,43 +32,52 @@ export default async function handler(
     let loan: Loan;
 
     if (event === NotificationEventTrigger.BuyoutEventOldLender) {
-      const event = await getEventFromTxHash<BuyoutEvent>(
-        txHash as string,
-        'buyoutEvent',
-        BUYOUT_EVENT_PROPERTIES,
-      );
+      const { data } = await nftBackedLoansClient
+        .query<BuyoutByTransactionHashQuery>(BuyoutByTransactionHashDocument, {
+          id: txHash,
+        })
+        .toPromise();
+
+      const event = data!.buyoutEvent!;
       involvedAddress = event.lendTicketHolder.toLowerCase();
       loan = event.loan;
     } else if (event === NotificationEventTrigger.BuyoutEventBorrower) {
-      const event = await getEventFromTxHash<BuyoutEvent>(
-        txHash as string,
-        'buyoutEvent',
-        BUYOUT_EVENT_PROPERTIES,
-      );
+      const { data } = await nftBackedLoansClient
+        .query<BuyoutByTransactionHashQuery>(BuyoutByTransactionHashDocument, {
+          id: txHash,
+        })
+        .toPromise();
+
+      const event = data!.buyoutEvent!;
       involvedAddress = event.loan.borrowTicketHolder.toLowerCase();
       loan = event.loan;
     } else if (event === NotificationEventTrigger.LendEvent) {
-      const event = await getEventFromTxHash<LendEvent>(
-        txHash as string,
-        'lendEvent',
-        LEND_EVENT_PROPERTIES,
-      );
+      const { data } = await nftBackedLoansClient
+        .query<LendByTransactionHashQuery>(LendByTransactionHashDocument, {
+          id: txHash,
+        })
+        .toPromise();
+      const event = data!.lendEvent!;
       involvedAddress = event.borrowTicketHolder.toLowerCase();
       loan = event.loan;
     } else if (event === NotificationEventTrigger.RepaymentEvent) {
-      const event = await getEventFromTxHash<RepaymentEvent>(
-        txHash as string,
-        'repaymentEvent',
-        REPAY_EVENT_PROPERTIES,
-      );
+      const { data } = await nftBackedLoansClient
+        .query<RepaymentEventByTransactionHashQuery>(
+          RepaymentEventByTransactionHashDocument,
+          { id: txHash },
+        )
+        .toPromise();
+      const event = data!.repaymentEvent!;
       involvedAddress = event.lendTicketHolder.toLowerCase();
       loan = event.loan;
     } else if (event === NotificationEventTrigger.CollateralSeizureEvent) {
-      const event = await getEventFromTxHash<CollateralSeizureEvent>(
-        txHash as string,
-        'collateralSeizureEvent',
-        COLLATERAL_SEIZURE_EVENT_PROPERTIES,
-      );
+      const { data } = await nftBackedLoansClient
+        .query<CollateralSeizureEventByTransactionHashQuery>(
+          CollateralSeizureEventByTransactionHashDocument,
+          { id: txHash },
+        )
+        .toPromise();
+      const event = data!.collateralSeizureEvent!;
       involvedAddress = event.borrowTicketHolder.toLowerCase();
       loan = event.loan;
     } else {

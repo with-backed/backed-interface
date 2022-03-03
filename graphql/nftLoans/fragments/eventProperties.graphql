@@ -1,0 +1,56 @@
+fragment buyoutEventProperties on BuyoutEvent {
+  id
+  newLender
+  lendTicketHolder
+  loanAmount
+  interestEarned
+  timestamp
+  blockNumber
+}
+
+fragment closeEventProperties on CloseEvent {
+  id
+  timestamp
+  blockNumber
+  closer
+}
+
+fragment collateralSeizureEventProperties on CollateralSeizureEvent {
+  id
+  timestamp
+  blockNumber
+  lendTicketHolder
+  borrowTicketHolder
+}
+
+fragment createEventProperties on CreateEvent {
+  id
+  timestamp
+  blockNumber
+  creator
+  maxPerSecondInterestRate
+  minDurationSeconds
+  minLoanAmount
+}
+
+fragment lendEventProperties on LendEvent {
+  id
+  lender
+  loanAmount
+  durationSeconds
+  perSecondInterestRate
+  timestamp
+  blockNumber
+  borrowTicketHolder
+}
+
+fragment repaymentEventProperties on RepaymentEvent {
+  id
+  repayer
+  loanAmount
+  interestEarned
+  timestamp
+  blockNumber
+  lendTicketHolder
+  borrowTicketHolder
+}
