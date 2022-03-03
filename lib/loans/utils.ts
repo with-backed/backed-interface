@@ -1,8 +1,10 @@
 import { ethers } from 'ethers';
 import { SCALAR } from 'lib/constants';
 import { Loan } from 'types/Loan';
-import { Loan as SubgraphLoan } from 'types/generated/graphql/nftLoans';
-import { LoanByIdQuery } from 'types/generated/graphql/graphql-operations';
+import {
+  Loan as SubgraphLoan,
+  LoanByIdQuery,
+} from 'types/generated/graphql/nftLoans';
 
 export function parseSubgraphLoan(subgraphLoan: LoanByIdQuery['loan']): Loan;
 /** TODO: deprecate SubgraphLoan in favor of new type */

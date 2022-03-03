@@ -20,13 +20,18 @@ export type CollateralSaleInfo = {
     price: number;
   };
   collectionStats: CollectionStatistics;
-};
+} | null;
 
 export async function getCollateralSaleInfo(
   nftContractAddress: string,
   tokenId: string,
 ): Promise<CollateralSaleInfo> {
   const recentSale = await getMostRecentSale(nftContractAddress, tokenId);
+
+  if (!recentSale) {
+    return null;
+  }
+
   const erc20Contract = jsonRpcERC20Contract(recentSale.paymentToken);
 
   const recentSaleToken = await erc20Contract.symbol();
@@ -50,7 +55,7 @@ export async function getCollateralSaleInfo(
 async function getMostRecentSale(
   nftContractAddress: string,
   tokenId: string,
-): Promise<NFTSale> {
+): Promise<NFTSale | null> {
   if (!mainnet()) return generateFakeSaleForNFT(nftContractAddress, tokenId);
   return await queryMostRecentSaleForNFT(nftContractAddress, tokenId);
 }
