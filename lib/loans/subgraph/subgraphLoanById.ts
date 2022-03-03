@@ -2,7 +2,7 @@ import { nftBackedLoansClient } from 'lib/urql';
 import {
   LoanByIdDocument,
   LoanByIdQuery,
-} from 'types/generated/graphql/graphql-operations';
+} from 'types/generated/graphql/nftLoans';
 
 export async function subgraphLoanById(id: string) {
   const { data } = await nftBackedLoansClient
