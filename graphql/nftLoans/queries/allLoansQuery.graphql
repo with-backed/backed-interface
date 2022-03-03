@@ -1,0 +1,10 @@
+query allLoans(
+  $where: Loan_filter
+  $first: Int
+  $orderBy: Loan_orderBy
+  $orderDirection: OrderDirection
+) {
+  loans(where: $where, orderBy: $orderBy, orderDirection: $orderDirection) {
+    ...allLoanProperties
+  }
+}

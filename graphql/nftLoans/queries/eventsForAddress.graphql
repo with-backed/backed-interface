@@ -1,0 +1,78 @@
+query allEventsForAddress(
+  $first: Int
+  $orderDirection: OrderDirection
+  $buyoutWhere: BuyoutEvent_filter
+  $buyoutOrderBy: BuyoutEvent_orderBy
+  $collateralWhere: CollateralSeizureEvent_filter
+  $collateralOrderBy: CollateralSeizureEvent_orderBy
+  $repaymentWhere: RepaymentEvent_filter
+  $repaymentOrderBy: RepaymentEvent_orderBy
+  $lendWhere: LendEvent_filter
+  $lendOrderBy: LendEvent_orderBy
+  $createWhere: CreateEvent_filter
+  $createOrderBy: CreateEvent_orderBy
+  $closeWhere: CloseEvent_filter
+  $closeOrderBy: CloseEvent_orderBy
+) {
+  buyoutEvents(
+    where: $buyoutWhere
+    orderBy: $buyoutOrderBy
+    orderDirection: $orderDirection
+    first: $first
+  ) {
+    ...buyoutEventProperties
+    loan {
+      id
+    }
+  }
+  collateralSeizureEvents(
+    where: $collateralWhere
+    orderBy: $collateralOrderBy
+    orderDirection: $orderDirection
+  ) {
+    ...collateralSeizureEventProperties
+    loan {
+      id
+    }
+  }
+  repaymentEvents(
+    where: $repaymentWhere
+    orderBy: $repaymentOrderBy
+    orderDirection: $orderDirection
+  ) {
+    ...repaymentEventProperties
+    loan {
+      id
+    }
+  }
+  lendEvents(
+    where: $lendWhere
+    orderBy: $lendOrderBy
+    orderDirection: $orderDirection
+  ) {
+    ...lendEventProperties
+    loan {
+      id
+    }
+  }
+  createEvents(
+    where: $createWhere
+    orderBy: $createOrderBy
+    orderDirection: $orderDirection
+  ) {
+    ...createEventProperties
+    loan {
+      id
+    }
+  }
+  closeEvents(
+    where: $closeWhere
+    orderBy: $closeOrderBy
+    orderDirection: $orderDirection
+  ) {
+    ...closeEventProperties
+    loan {
+      id
+    }
+  }
+}
