@@ -171,9 +171,45 @@ describe('SQS consumer', () => {
             },
           }),
         } as any);
+        mockedNftBackedLoansClientQuery.mockReturnValueOnce({
+          toPromise: async () => ({
+            data: {
+              buyoutEvent: null,
+            },
+          }),
+        } as any);
         await main();
         expect(mockedSnsPushCall).not.toHaveBeenCalled;
         expect(mockedSqsDeleteMessageCall).not.toHaveBeenCalled;
+      });
+
+      it('does not make call to pushEventForProcessing if buyoutEvent with same tx hash exists, but still deletes message', async () => {
+        mockedNftBackedLoansClientQuery.mockReturnValueOnce({
+          toPromise: async () => ({
+            data: {
+              lendEvent: {
+                borrowTicketHolder: subgraphLoanCopy.borrowTicketHolder,
+                loan: subgraphLoanCopy,
+              },
+            },
+          }),
+        } as any);
+        mockedNftBackedLoansClientQuery.mockReturnValueOnce({
+          toPromise: async () => ({
+            data: {
+              buyoutEvent: {
+                loan: subgraphLoanCopy,
+              },
+            },
+          }),
+        } as any);
+        await main();
+        expect(mockedSnsPushCall).not.toHaveBeenCalled;
+
+        expect(mockedSqsDeleteMessageCall).toHaveBeenCalledTimes(1);
+        expect(mockedSqsDeleteMessageCall).toHaveBeenCalledWith(
+          'random-receipt-handle',
+        );
       });
 
       it('makes calls to SNS and deletes SQS message if graph is in sync', async () => {
@@ -184,6 +220,13 @@ describe('SQS consumer', () => {
                 borrowTicketHolder: subgraphLoanCopy.borrowTicketHolder,
                 loan: subgraphLoanCopy,
               },
+            },
+          }),
+        } as any);
+        mockedNftBackedLoansClientQuery.mockReturnValueOnce({
+          toPromise: async () => ({
+            data: {
+              buyoutEvent: null,
             },
           }),
         } as any);

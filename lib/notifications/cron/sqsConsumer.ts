@@ -58,12 +58,29 @@ export async function main() {
         event = data?.buyoutEvent;
         involvedAddress = event?.loan.borrowTicketHolder;
       } else if (message.eventName === NotificationEventTrigger.LendEvent) {
-        const { data } = await nftBackedLoansClient
-          .query<LendByTransactionHashQuery>(LendByTransactionHashDocument, {
-            id: message.txHash,
-          })
-          .toPromise();
-        event = data?.lendEvent;
+        const lendAndBuyoutEvents = await Promise.all([
+          await nftBackedLoansClient
+            .query<LendByTransactionHashQuery>(LendByTransactionHashDocument, {
+              id: message.txHash,
+            })
+            .toPromise(),
+          await nftBackedLoansClient
+            .query<BuyoutByTransactionHashQuery>(
+              BuyoutByTransactionHashDocument,
+              {
+                id: message.txHash,
+              },
+            )
+            .toPromise(),
+        ]);
+
+        // buyoutEvent already exists, no need to publish to SNS
+        if (!!lendAndBuyoutEvents[1].data?.buyoutEvent) {
+          deleteMessage(message.receiptHandle);
+          continue;
+        }
+
+        event = lendAndBuyoutEvents[0].data?.lendEvent;
         involvedAddress = event?.borrowTicketHolder;
       } else if (
         message.eventName === NotificationEventTrigger.RepaymentEvent
