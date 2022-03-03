@@ -58,6 +58,20 @@ export default async function handler(
         })
         .toPromise();
       const event = data!.lendEvent!;
+
+      const { data: buyoutEventData } = await nftBackedLoansClient
+        .query<BuyoutByTransactionHashQuery>(BuyoutByTransactionHashDocument, {
+          id: txHash,
+        })
+        .toPromise();
+
+      if (!!buyoutEventData?.buyoutEvent) {
+        res
+          .status(200)
+          .json('buyout emails will already be sent, no need for lend emails');
+        return;
+      }
+
       involvedAddress = event.borrowTicketHolder.toLowerCase();
       loan = event.loan;
     } else if (event === NotificationEventTrigger.RepaymentEvent) {
