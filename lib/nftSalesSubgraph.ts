@@ -1,41 +1,19 @@
 import { ethers } from 'ethers';
 import {
   Sale as NFTSale,
+  SalesByAddressDocument,
+  SalesByAddressQuery,
   SaleType,
   Sale_OrderBy,
 } from 'types/generated/graphql/nftSales';
-import { ALL_SALE_INFO_PROPERTIES } from './loans/subgraph/subgraphSharedConstants';
 import { nftSalesClient } from './urql';
-
-const graphqlQuery = `
-  query(
-    $nftContractAddress: String!,
-    $nftTokenId: String!,
-    $first: Int!,
-    $orderBy: String,
-    $orderDirection: String,
-  ) {
-    sales(where: {
-      nftContractAddress: $nftContractAddress,
-      nftTokenId: $nftTokenId,
-    },
-    first: $first,
-    orderBy: $orderBy,
-    orderDirection: $orderDirection,
-    ) {
-      ${ALL_SALE_INFO_PROPERTIES}
-    }
-  }
-`;
 
 export async function queryMostRecentSaleForNFT(
   nftContractAddress: string,
   nftTokenId: string,
-): Promise<NFTSale> {
-  const {
-    data: { sales },
-  } = await nftSalesClient
-    .query(graphqlQuery, {
+): Promise<NFTSale | null> {
+  const { data } = await nftSalesClient
+    .query<SalesByAddressQuery>(SalesByAddressDocument, {
       nftContractAddress,
       nftTokenId,
       first: 1,
@@ -44,7 +22,12 @@ export async function queryMostRecentSaleForNFT(
     })
     .toPromise();
 
-  return sales[0];
+  if (data?.sales && data.sales.length > 0) {
+    return data.sales[0];
+  }
+
+  // TODO: bugsnag? is this case exceptional or just something that happens?
+  return null;
 }
 
 // MOCK METHODS TO GENERATE FAKE SALES FOR RINKEBY

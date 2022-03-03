@@ -1,0 +1,13 @@
+fragment allSaleProperties on Sale {
+  id
+  nftContractAddress
+  nftTokenId
+  saleType
+  blockNumber
+  timestamp
+  seller
+  buyer
+  exchange
+  paymentToken
+  price
+}

@@ -12,5 +12,7 @@ export async function subgraphLoanById(id: string) {
   if (data?.loan) {
     return data.loan;
   }
+
+  // TODO: bugsnag? is this case exceptional or just something that happens?
   return null;
 }
