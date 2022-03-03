@@ -3,6 +3,7 @@ import { ethers } from 'ethers';
 import {
   createNotificationRequestForAddress,
   deleteAllNotificationRequestsForAddress,
+  getNumberOfRequestsForNotificationDestination,
 } from 'lib/notifications/repository';
 import {
   NotificationEventTrigger,
@@ -18,6 +19,7 @@ const notificationDestination = 'adamgobes@gmail.com';
 jest.mock('lib/notifications/repository', () => ({
   createNotificationRequestForAddress: jest.fn(),
   deleteAllNotificationRequestsForAddress: jest.fn(),
+  getNumberOfRequestsForNotificationDestination: jest.fn(),
 }));
 
 const mockedCreateDBCall =
@@ -30,20 +32,21 @@ const mockedDeleteDBCall =
     typeof deleteAllNotificationRequestsForAddress
   >;
 
+const mockedGetReqCountCall =
+  getNumberOfRequestsForNotificationDestination as jest.MockedFunction<
+    typeof getNumberOfRequestsForNotificationDestination
+  >;
+
 describe('/api/addresses/[address]/notifications/emails/[email]', () => {
   let address: string;
   let wallet: ethers.Wallet;
   let sig: string;
   let expectedNotificationRequest: NotificationRequest;
 
-  describe('valid signature with matching addresses', () => {
+  describe('adding and removing an email request', () => {
     beforeEach(async () => {
+      jest.clearAllMocks();
       wallet = ethers.Wallet.createRandom();
-      sig = await wallet.signMessage(
-        ethers.utils.arrayify(
-          Buffer.from(process.env.NEXT_PUBLIC_NOTIFICATION_REQ_MESSAGE!),
-        ),
-      );
       address = wallet.address;
       expectedNotificationRequest = {
         id: 1,
@@ -52,31 +55,16 @@ describe('/api/addresses/[address]/notifications/emails/[email]', () => {
         deliveryMethod: notificationMethod,
         event,
       };
-
-      mockedCreateDBCall.mockReturnValue(
-        new Promise((resolve, _reject) => {
-          resolve(expectedNotificationRequest);
-        }),
-      );
-      mockedDeleteDBCall.mockReturnValue(
-        new Promise((resolve, _reject) => {
-          resolve(true);
-        }),
-      );
-    });
-    afterEach(() => {
-      mockedCreateDBCall.mockReset();
-      mockedDeleteDBCall.mockReset();
     });
     it('makes a call to prisma repository and returns 200 on POST', async () => {
+      mockedGetReqCountCall.mockResolvedValue(1);
+      mockedCreateDBCall.mockResolvedValue(expectedNotificationRequest);
+
       const { req, res } = createMocks({
         method: 'POST',
         query: {
           address,
           email: notificationDestination,
-        },
-        body: {
-          signedMessage: sig,
         },
       });
 
@@ -96,6 +84,7 @@ describe('/api/addresses/[address]/notifications/emails/[email]', () => {
     });
 
     it('makes a call to prisma repository and returns 200 on DELETE', async () => {
+      mockedDeleteDBCall.mockResolvedValue(true);
       const { req, res } = createMocks({
         method: 'DELETE',
         query: {
@@ -116,15 +105,9 @@ describe('/api/addresses/[address]/notifications/emails/[email]', () => {
         `notifications for address ${address} deleted successfully`,
       );
     });
-  });
 
-  describe('invalid signature', () => {
-    beforeEach(async () => {
-      wallet = ethers.Wallet.createRandom();
-      sig = 'random-invalid-sig';
-      address = wallet.address;
-    });
-    it('returns 400 on POST', async () => {
+    it('returns a 400 if an email has tried to subscribe to more than 5 addresses', async () => {
+      mockedGetReqCountCall.mockResolvedValue(6);
       const { req, res } = createMocks({
         method: 'POST',
         query: {
@@ -138,78 +121,9 @@ describe('/api/addresses/[address]/notifications/emails/[email]', () => {
 
       await handler(req, res);
 
-      expect(mockedCreateDBCall).toBeCalledTimes(0);
-      expect(res._getStatusCode()).toBe(400);
-      expect(JSON.parse(res._getData())).toEqual('invalid signature sent');
-    });
-    it('returns 400 on DELETE', async () => {
-      const { req, res } = createMocks({
-        method: 'DELETE',
-        query: {
-          address,
-          email: notificationDestination,
-        },
-        body: {
-          signedMessage: sig,
-        },
-      });
-
-      await handler(req, res);
-
-      expect(mockedDeleteDBCall).toBeCalledTimes(0);
-      expect(res._getStatusCode()).toBe(400);
-      expect(JSON.parse(res._getData())).toEqual('invalid signature sent');
-    });
-  });
-
-  describe('valid signature with mismatching addresses', () => {
-    beforeEach(async () => {
-      wallet = ethers.Wallet.createRandom();
-      sig = await wallet.signMessage(
-        ethers.utils.arrayify(
-          Buffer.from(process.env.NEXT_PUBLIC_NOTIFICATION_REQ_MESSAGE!),
-        ),
-      );
-      address = ethers.Wallet.createRandom().address; // use new random address
-    });
-    it('returns 400 on POST', async () => {
-      const { req, res } = createMocks({
-        method: 'POST',
-        query: {
-          address,
-          email: notificationDestination,
-        },
-        body: {
-          signedMessage: sig,
-        },
-      });
-
-      await handler(req, res);
-
-      expect(mockedCreateDBCall).toBeCalledTimes(0);
       expect(res._getStatusCode()).toBe(400);
       expect(JSON.parse(res._getData())).toEqual(
-        'valid signature sent with mismatching addresses',
-      );
-    });
-    it('returns 400 on DELETE', async () => {
-      const { req, res } = createMocks({
-        method: 'DELETE',
-        query: {
-          address,
-          email: notificationDestination,
-        },
-        body: {
-          signedMessage: sig,
-        },
-      });
-
-      await handler(req, res);
-
-      expect(mockedDeleteDBCall).toBeCalledTimes(0);
-      expect(res._getStatusCode()).toBe(400);
-      expect(JSON.parse(res._getData())).toEqual(
-        'valid signature sent with mismatching addresses',
+        'you can only subscribe to 5 addresses per email address',
       );
     });
   });
