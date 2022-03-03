@@ -4,3 +4,7 @@
   gap: var(--gap);
   margin-top: var(--gap);
 }
+
+.mt-gap {
+  margin-top: var(--gap);
+}

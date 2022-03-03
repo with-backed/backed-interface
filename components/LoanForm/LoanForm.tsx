@@ -39,13 +39,6 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
         ),
         getAccountLoanAssetAllowance(account, loan.loanAssetContractAddress),
       ]).then(([balance, allowanceAmount]) => {
-        console.log('debug:: balance', balance);
-        console.log('debug:: allowanceAmount', allowanceAmount.toNumber());
-        console.log(
-          'debug:: needs allowance',
-          allowanceAmount.lt(loan.loanAmount),
-        );
-
         setBalance(balance);
         setNeedsAllowance(allowanceAmount.lt(loan.loanAmount));
       });
@@ -64,9 +57,9 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
 
   if (!account) {
     // TODO: what about the case of "Past Due" here
+    console.log('not logged in');
     return (
       <div className={styles.wrapper}>
-        <Dev>not logged in</Dev>
         <Button disabled>{loan.lender ? 'Offer better terms' : 'Lend'}</Button>
       </div>
     );
@@ -80,9 +73,9 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
     viewerIsLender
   ) {
     if (viewerIsLender) {
+      console.log('loan form sieze collateral');
       return (
         <div className={styles.wrapper}>
-          <Dev>loan form sieze collateral</Dev>
           <LoanFormSeizeCollateral loan={loan} refresh={refresh} />
         </div>
       );
@@ -91,9 +84,9 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
   }
 
   if (loan.lastAccumulatedTimestamp.eq(0) && viewerIsBorrower) {
+    console.log('loan form early closure');
     return (
       <div className={styles.wrapper}>
-        <Dev>loan form early closure</Dev>
         <LoanFormEarlyClosure loan={loan} refresh={refresh} />
       </div>
     );
@@ -102,8 +95,7 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
   // TODO: is this the same check as loan.lender?
   if (loan.lastAccumulatedTimestamp.eq(0)) {
     return (
-      <div className={styles.wrapper}>
-        <Dev>loan form awaiting</Dev>
+      <div className={styles['mt-gap']}>
         <LoanFormAwaiting
           loan={loan}
           needsAllowance={needsAllowance}
@@ -115,10 +107,10 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
   }
 
   if (viewerIsBorrower) {
+    console.log('loan form repay');
     return (
       <>
         <div className={styles.wrapper}>
-          <Dev>loan form repay</Dev>
           <LoanFormRepay
             loan={loan}
             balance={balance}
@@ -134,6 +126,7 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
   return (
     <>
       <div className={styles.wrapper}>
+        {() => console.log('offer better terms')}
         <Dev>offer better terms</Dev>
         <LoanFormBetterTerms
           loan={loan}
@@ -146,13 +139,9 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
   );
 }
 
-const Dev = ({ children }: { children: any }) => {
+export const Dev = ({ children }: { children: any }) => {
   if (process.env.NODE_ENV === 'development') {
-    return (
-      <div style={{ color: 'red', position: 'absolute', left: 0, top: 0 }}>
-        {children}
-      </div>
-    );
+    return <div style={{ color: 'red' }}>{children}</div>;
   } else {
     return null;
   }

@@ -42,6 +42,7 @@ export function AllowButton({
 
   return (
     <TransactionButton
+      type={'button'}
       text={buttonText}
       onClick={allow}
       txHash={txHash}
