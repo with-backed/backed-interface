@@ -1,10 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getNotificationRequestsForAddress } from 'lib/notifications/repository';
 import { sendEmail } from 'lib/notifications/emails';
-import { NotificationEventTrigger } from 'lib/notifications/shared';
+import { NotificationTriggerType } from 'lib/notifications/shared';
 import { Loan } from 'types/generated/graphql/nftLoans';
 import { NotificationRequest } from '@prisma/client';
 
+// TODO(adamgobes): Rename this API route to be more specific to liquidations
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<string>,
@@ -15,21 +16,21 @@ export default async function handler(
   }
 
   try {
-    const { event } = req.query as { event: NotificationEventTrigger };
+    const { event } = req.query as { event: NotificationTriggerType };
     const { loan } = req.body as { loan: Loan };
 
     let notificationRequests: NotificationRequest[];
 
     if (
-      event === NotificationEventTrigger.LiquidationOccurringBorrower ||
-      event === NotificationEventTrigger.LiquidationOccurredBorrower
+      event === 'LiquidationOccurringBorrower' ||
+      event === 'LiquidationOccurredBorrower'
     ) {
       notificationRequests = await getNotificationRequestsForAddress(
         loan.borrowTicketHolder,
       );
     } else if (
-      event === NotificationEventTrigger.LiquidationOccurringLender ||
-      NotificationEventTrigger.LiquidationOccurredLender
+      event === 'LiquidationOccurringLender' ||
+      'LiquidationOccurredLender'
     ) {
       notificationRequests = await getNotificationRequestsForAddress(
         loan.lendTicketHolder,
