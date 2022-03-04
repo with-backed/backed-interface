@@ -14,8 +14,8 @@ describe('/api/cron/notifications', () => {
     mockedNotificationsRun.mockResolvedValue();
   });
 
-  describe('Returns 401 if caller is not authenitcated', () => {
-    it('Returns 401 if caller is not authenitcated', async () => {
+  describe('Returns 401 if caller is not authenticated', () => {
+    it('Returns 401 if caller is not authenticated', async () => {
       const { req, res } = createMocks({
         method: 'POST',
       });
@@ -28,7 +28,7 @@ describe('/api/cron/notifications', () => {
   });
 
   describe('Calls main notification script and returns 200 if authenticated', () => {
-    it('Returns 401 if caller is not authenitcated', async () => {
+    it('Returns 401 if caller is not authenticated', async () => {
       const { req, res } = createMocks({
         method: 'POST',
         headers: {
