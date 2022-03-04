@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styles from './Button.module.css';
 
 import { CoinbaseWallet } from 'components/Icons/CoinbaseWallet';
@@ -32,10 +32,16 @@ interface WalletButtonProps extends ButtonProps {
   wallet: string;
 }
 export function WalletButton({ wallet, onClick }: WalletButtonProps) {
+  const [providerAvailable, setProviderAvailable] = useState(false);
   const Icon = icons[wallet] || icons.injected;
   const walletClass = classNames[wallet] || classNames.injected;
   const className = [styles['wallet-button'], styles[walletClass]].join(' ');
-  const providerAvailable = !!window?.ethereum;
+
+  useEffect(() => {
+    if (window.ethereum) {
+      setProviderAvailable(true);
+    }
+  }, [setProviderAvailable]);
 
   return (
     <button
