@@ -3,12 +3,13 @@ import { ethers } from 'ethers';
 import { MockDAI__factory, MockPUNK__factory } from 'types/generated/abis';
 import { Fieldset } from 'components/Fieldset';
 import { ConnectWallet } from 'components/ConnectWallet';
-import { useWeb3 } from 'hooks/useWeb3';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { TransactionButton } from 'components/Button';
+import { useAccount, useSigner } from 'wagmi';
 
 export default function Test() {
-  const { account } = useWeb3();
+  const [{ data }] = useAccount();
+  const account = data?.address;
   return (
     <TwelveColumn>
       <Fieldset
@@ -26,15 +27,15 @@ export default function Test() {
 }
 
 function MintPunk() {
-  const { account, library } = useWeb3();
+  const [{ data }] = useAccount();
+  const [{ data: signer }] = useSigner();
+  const account = data?.address;
   const [txHash, setTxHash] = useState('');
   const [txPending, setTxPending] = useState(false);
   const [id, setId] = useState<ethers.BigNumber | null>(null);
   const mockPunkContract = process.env.NEXT_PUBLIC_MOCK_PUNK_CONTRACT || '';
   const mintPunk = async () => {
-    const provider = library!;
-    const signer = provider.getSigner(0);
-    const punk = MockPUNK__factory.connect(mockPunkContract, signer);
+    const punk = MockPUNK__factory.connect(mockPunkContract, signer!);
     const t = await punk.mint();
     setTxHash(t.hash);
     setTxPending(true);
@@ -78,15 +79,15 @@ function MintPunk() {
 }
 
 function MintDAI() {
-  const { account, library } = useWeb3();
+  const [{ data }] = useAccount();
+  const [{ data: signer }] = useSigner();
+  const account = data?.address;
   const [txHash, setTxHash] = useState('');
   const [txPending, setTxPending] = useState(false);
   const mockDAIContract = process.env.NEXT_PUBLIC_MOCK_DAI_CONTRACT || '';
 
   const mint = async () => {
-    const provider = library!;
-    const signer = provider.getSigner(0);
-    const dai = MockDAI__factory.connect(mockDAIContract, signer);
+    const dai = MockDAI__factory.connect(mockDAIContract, signer!);
     const t = await dai.mint(ethers.BigNumber.from(10000), account as string);
     setTxHash(t.hash);
     setTxPending(true);

@@ -13,7 +13,7 @@ const icons: { [key: string]: () => JSX.Element } = {
 };
 
 const names: { [key: string]: string } = {
-  injected: 'Metamask',
+  injected: 'MetaMask',
   walletLink: 'Coinbase Wallet',
   walletConnect: 'Wallet Connect',
 };

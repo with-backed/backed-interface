@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { Loan } from 'types/Loan';
-import React, { useEffect, useState } from 'react';
-import { useWeb3 } from 'hooks/useWeb3';
+import React, { useEffect, useMemo, useState } from 'react';
+import { ConnectWallet } from 'components/ConnectWallet';
 import {
   getAccountLoanAssetAllowance,
   getAccountLoanAssetBalance,
@@ -16,13 +16,16 @@ import styles from './LoanForm.module.css';
 import { Button } from 'components/Button';
 import { useLoanViewerRole } from 'hooks/useLoanViewerRole';
 import { LoanFormDisclosure } from './LoanFormDisclosure';
+import { useAccount } from 'wagmi';
 
 type LoanFormProps = {
   loan: Loan;
   refresh: () => void;
 };
 export function LoanForm({ loan, refresh }: LoanFormProps) {
-  const { account } = useWeb3();
+  const [{ data }] = useAccount();
+  const account = data?.address;
+
   const timestamp = useTimestamp();
   const [balance, setBalance] = useState(0);
   const [needsAllowance, setNeedsAllowance] = useState(true);

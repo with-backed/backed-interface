@@ -19,11 +19,6 @@ export const ConnectWallet = () => {
     }
   }, [address, dialog]);
 
-  console.log({
-    accountData,
-    address,
-  });
-
   return (
     <>
       {!address && (

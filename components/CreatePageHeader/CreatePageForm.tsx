@@ -3,7 +3,6 @@ import { Form } from 'components/Form';
 import { Input } from 'components/Input';
 import { Select } from 'components/Select';
 import { ethers } from 'ethers';
-import { useWeb3 } from 'hooks/useWeb3';
 import {
   INTEREST_RATE_PERCENT_DECIMALS,
   SECONDS_IN_A_DAY,
@@ -23,6 +22,7 @@ import React, {
   useState,
 } from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
+import { useAccount, useProvider, useSigner } from 'wagmi';
 import { CreateFormData } from './CreateFormData';
 
 type CreatePageFormProps = {
@@ -57,7 +57,9 @@ export function CreatePageForm({
     watch,
     formState: { errors },
   } = form;
-  const { account, library } = useWeb3();
+  const [{ data }] = useAccount();
+  const [{ data: signer }] = useSigner();
+  const account = data?.address;
   const buttonText = useMemo(() => 'Mint Borrower Ticket', []);
   const [txHash, setTxHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
@@ -91,7 +93,7 @@ export function CreatePageForm({
         Math.floor(parsedInterestRate * 10 ** INTEREST_RATE_PERCENT_DECIMALS),
       ).div(SECONDS_IN_A_YEAR);
 
-      const contract = web3LoanFacilitator(library!);
+      const contract = web3LoanFacilitator(signer!);
       onSubmit();
       const t = await contract.createLoan(
         collateralTokenID,
@@ -117,7 +119,15 @@ export function CreatePageForm({
           console.error(err);
         });
     },
-    [account, collateralAddress, collateralTokenID, onError, onSubmit, wait],
+    [
+      account,
+      collateralAddress,
+      collateralTokenID,
+      onError,
+      onSubmit,
+      signer,
+      wait,
+    ],
   );
 
   const loadAssets = useCallback(async () => {
