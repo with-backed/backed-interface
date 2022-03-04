@@ -6,10 +6,13 @@ import {
   getNotificationRequestsForAddress,
   overrideLastWrittenTimestamp,
 } from 'lib/notifications/repository';
-import { EmailTriggerType, NotificationMethod } from 'lib/notifications/shared';
+import {
+  NotificationTriggerType,
+  NotificationMethod,
+} from 'lib/notifications/shared';
 
 const address = '0x7e6463782b87c57cffa6af66e7c2de64e97d1866';
-const event: EmailTriggerType = 'All';
+const event: NotificationTriggerType = 'All';
 const notificationMethod = NotificationMethod.EMAIL;
 const notificationDestination = 'adamgobes@gmail.com';
 

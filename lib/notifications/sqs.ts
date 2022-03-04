@@ -21,15 +21,15 @@ export async function receiveMessages(): Promise<
   const queueUrl = process.env.SQS_NOTIFICATIONS_EVENTS_URL!;
   const sqs = new SQS(sqsConfig);
 
-  const response = await sqs
-    .receiveMessage({ QueueUrl: queueUrl, MessageAttributeNames: ['All'] })
-    .promise();
-  return response.Messages?.map((message) => ({
-    eventName: message.MessageAttributes!['EventName']
-      .StringValue! as EventAsStringType,
-    txHash: message.Body!,
-    receiptHandle: message.ReceiptHandle!,
-  }));
+  const response = await sqs.receiveMessage({ QueueUrl: queueUrl }).promise();
+  return response.Messages?.map((message) => {
+    const messageBody: { txHash: string; eventName: EventAsStringType } =
+      JSON.parse(message.Body!);
+    return {
+      ...messageBody,
+      receiptHandle: message.ReceiptHandle!,
+    };
+  });
 }
 
 export function deleteMessage(receiptHandle: string) {

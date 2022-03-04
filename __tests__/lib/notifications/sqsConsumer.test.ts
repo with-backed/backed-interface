@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { subgraphLoan } from 'lib/mockData';
 import { main } from 'lib/notifications/cron/sqsConsumer';
-import { EmailTriggerType } from 'lib/notifications/shared';
+import { NotificationTriggerType } from 'lib/notifications/shared';
 import { pushEventForProcessing } from 'lib/notifications/sns';
 import { deleteMessage, receiveMessages } from 'lib/notifications/sqs';
 import { nftBackedLoansClient } from 'lib/urql';
@@ -95,10 +95,7 @@ describe('SQS consumer', () => {
         } as any);
         await main();
         expect(mockedSnsPushCall).toHaveBeenCalledTimes(1);
-        expect(mockedSnsPushCall).toHaveBeenCalledWith(
-          subgraphLoanCopy.lendTicketHolder,
-          subgraphLoanCopy,
-        );
+        expect(mockedSnsPushCall).toHaveBeenCalledWith(subgraphLoanCopy);
 
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledTimes(1);
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledWith(
@@ -143,10 +140,7 @@ describe('SQS consumer', () => {
         } as any);
         await main();
         expect(mockedSnsPushCall).toHaveBeenCalledTimes(1);
-        expect(mockedSnsPushCall).toHaveBeenCalledWith(
-          subgraphLoanCopy.borrowTicketHolder,
-          subgraphLoanCopy,
-        );
+        expect(mockedSnsPushCall).toHaveBeenCalledWith(subgraphLoanCopy);
 
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledTimes(1);
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledWith(
@@ -190,10 +184,7 @@ describe('SQS consumer', () => {
         } as any);
         await main();
         expect(mockedSnsPushCall).toHaveBeenCalledTimes(1);
-        expect(mockedSnsPushCall).toHaveBeenCalledWith(
-          subgraphLoanCopy.lendTicketHolder,
-          subgraphLoanCopy,
-        );
+        expect(mockedSnsPushCall).toHaveBeenCalledWith(subgraphLoanCopy);
 
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledTimes(1);
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledWith(
@@ -237,10 +228,7 @@ describe('SQS consumer', () => {
         } as any);
         await main();
         expect(mockedSnsPushCall).toHaveBeenCalledTimes(1);
-        expect(mockedSnsPushCall).toHaveBeenCalledWith(
-          subgraphLoanCopy.borrowTicketHolder,
-          subgraphLoanCopy,
-        );
+        expect(mockedSnsPushCall).toHaveBeenCalledWith(subgraphLoanCopy);
 
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledTimes(1);
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledWith(

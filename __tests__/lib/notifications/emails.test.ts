@@ -1,7 +1,7 @@
 import { subgraphLoan } from 'lib/mockData';
 import { sendEmail } from 'lib/notifications/emails';
 import { executeEmailSendWithSes } from 'lib/notifications/ses';
-import { EmailTriggerType } from 'lib/notifications/shared';
+import { NotificationTriggerType } from 'lib/notifications/shared';
 import { nftBackedLoansClient } from 'lib/urql';
 
 jest.mock('lib/urql', () => ({

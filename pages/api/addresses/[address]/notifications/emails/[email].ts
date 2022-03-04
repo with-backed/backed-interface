@@ -8,7 +8,7 @@ import { NotificationRequest } from '@prisma/client';
 import {
   NotificationReqBody,
   NotificationMethod,
-  EmailTriggerType,
+  NotificationTriggerType,
 } from 'lib/notifications/shared';
 import { generateAddressFromSignedMessage } from 'lib/signedMessages';
 import { ethers } from 'ethers';

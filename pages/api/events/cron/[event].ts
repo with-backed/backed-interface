@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getNotificationRequestsForAddress } from 'lib/notifications/repository';
 import { sendEmail } from 'lib/notifications/emails';
-import { EmailTriggerType } from 'lib/notifications/shared';
+import { NotificationTriggerType } from 'lib/notifications/shared';
 import { Loan } from 'types/generated/graphql/nftLoans';
 import { NotificationRequest } from '@prisma/client';
 
@@ -16,7 +16,7 @@ export default async function handler(
   }
 
   try {
-    const { event } = req.query as { event: EmailTriggerType };
+    const { event } = req.query as { event: NotificationTriggerType };
     const { loan } = req.body as { loan: Loan };
 
     let notificationRequests: NotificationRequest[];

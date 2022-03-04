@@ -3,7 +3,10 @@ import { ethers } from 'ethers';
 import { subgraphLoan } from 'lib/mockData';
 import { sendEmail } from 'lib/notifications/emails';
 import { getNotificationRequestsForAddress } from 'lib/notifications/repository';
-import { EmailTriggerType, NotificationMethod } from 'lib/notifications/shared';
+import {
+  NotificationTriggerType,
+  NotificationMethod,
+} from 'lib/notifications/shared';
 import { nftBackedLoansClient } from 'lib/urql';
 import { createMocks } from 'node-mocks-http';
 import handler from 'pages/api/events/[event]';
@@ -15,7 +18,7 @@ const subgraphLoanCopy = {
 subgraphLoanCopy.lendTicketHolder =
   ethers.Wallet.createRandom().address.toLowerCase();
 
-const event: EmailTriggerType = 'All';
+const event: NotificationTriggerType = 'All';
 const notificationMethod = NotificationMethod.EMAIL;
 const notificationDestination = 'adamgobes@gmail.com';
 

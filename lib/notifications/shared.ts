@@ -4,7 +4,7 @@ export enum NotificationMethod {
   EMAIL = 'email',
 }
 
-export type EmailTriggerType =
+export type NotificationTriggerType =
   | EventAsStringType
   | 'LiquidationOccurringBorrower'
   | 'LiquidationOccurringLender'

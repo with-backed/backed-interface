@@ -1,11 +1,11 @@
 import { PrismaClient, NotificationRequest } from '@prisma/client';
-import { EmailTriggerType, NotificationMethod } from './shared';
+import { NotificationTriggerType, NotificationMethod } from './shared';
 
 const prisma = new PrismaClient();
 
 export async function createNotificationRequestForAddress(
   address: string,
-  event: EmailTriggerType,
+  event: NotificationTriggerType,
   method: NotificationMethod,
   destination: string,
 ): Promise<NotificationRequest | null> {
@@ -55,7 +55,7 @@ export async function deleteAllNotificationRequestsForAddress(
 
 export async function getNotificationRequestsForAddress(
   address: string,
-  event: EmailTriggerType = 'All',
+  event: NotificationTriggerType = 'All',
 ): Promise<NotificationRequest[]> {
   try {
     return await prisma.notificationRequest.findMany({

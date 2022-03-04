@@ -10,4 +10,4 @@ const snsConfig = {
 };
 
 //TODO(adamgobes): fill this out with actual pushing of message to SNS -- to be implemented in follow up PR
-export function pushEventForProcessing(_involvedAddress: string, _loan: Loan) {}
+export function pushEventForProcessing(_loan: Loan) {}

@@ -2,7 +2,7 @@ import mjml2html from 'mjml';
 
 import { executeEmailSendWithSes } from './ses';
 import { Loan } from 'types/generated/graphql/nftLoans';
-import { EmailTriggerType } from './shared';
+import { NotificationTriggerType } from './shared';
 
 type EmailMetadataType = {
   subject: string;
@@ -54,7 +54,7 @@ const notificationEventToEmailMetadata: {
 
 export async function sendEmail(
   emailAddress: string,
-  emailTrigger: EmailTriggerType,
+  emailTrigger: NotificationTriggerType,
   loan: Loan,
   hasPreviousLender: boolean = false,
 ) {
