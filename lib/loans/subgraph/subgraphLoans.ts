@@ -33,7 +33,7 @@ export default async function subgraphLoans(
   };
 
   const { data } = await nftBackedLoansClient
-    .query<HomepageSearchQuery>(HomepageSearchDocument, queryArgs)
+    .query<AllLoansQuery>(AllLoansDocument, queryArgs)
     .toPromise();
 
   return data?.loans || [];

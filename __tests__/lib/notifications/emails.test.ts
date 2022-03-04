@@ -1,7 +1,20 @@
 import { subgraphLoan } from 'lib/mockData';
 import { sendEmail } from 'lib/notifications/emails';
 import { executeEmailSendWithSes } from 'lib/notifications/ses';
-import { NotificationEventTrigger } from 'lib/notifications/shared';
+import { NotificationTriggerType } from 'lib/notifications/shared';
+import { nftBackedLoansClient } from 'lib/urql';
+
+jest.mock('lib/urql', () => ({
+  ...jest.requireActual('lib/urql'),
+  nftBackedLoansClient: {
+    query: jest.fn(),
+  },
+}));
+
+const mockedNftBackedLoansClientQuery =
+  nftBackedLoansClient.query as jest.MockedFunction<
+    typeof nftBackedLoansClient.query
+  >;
 
 jest.mock('lib/notifications/ses', () => ({
   executeEmailSendWithSes: jest.fn(),
@@ -35,13 +48,32 @@ describe('Sending emails with Amazon SES', () => {
     jest.clearAllMocks();
     mockedSesEmailCall.mockResolvedValue();
   });
-  describe('BuyoutEventBorrower', () => {
+  describe('BuyoutEvent', () => {
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmail(
-        testRecipient,
-        NotificationEventTrigger.BuyoutEventBorrower,
-        loan,
+      await sendEmail(testRecipient, 'BuyoutEvent', loan);
+
+      expect(mockedSesEmailCall).toBeCalledTimes(1);
+      expect(mockedSesEmailCall).toHaveBeenCalledWith(
+        expect.objectContaining(
+          emailParamsMatchingObject('Your loan was bought out'),
+        ),
       );
+    });
+  });
+  describe('LendEvent', () => {
+    it('successfully calls SES send email method with correct params when there was no previous lender', async () => {
+      await sendEmail(testRecipient, 'LendEvent', loan, false);
+
+      expect(mockedSesEmailCall).toBeCalledTimes(1);
+      expect(mockedSesEmailCall).toHaveBeenCalledWith(
+        expect.objectContaining(
+          emailParamsMatchingObject('Your loan was fulfilled'),
+        ),
+      );
+    });
+
+    it('successfully calls SES send email method with correct params when there was a previous lender', async () => {
+      await sendEmail(testRecipient, 'LendEvent', loan, true);
 
       expect(mockedSesEmailCall).toBeCalledTimes(1);
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
@@ -53,41 +85,9 @@ describe('Sending emails with Amazon SES', () => {
       );
     });
   });
-  describe('BuyoutEventOldLender', () => {
-    it('successfully calls SES send email method with correct params', async () => {
-      await sendEmail(
-        testRecipient,
-        NotificationEventTrigger.BuyoutEventOldLender,
-        loan,
-      );
-
-      expect(mockedSesEmailCall).toBeCalledTimes(1);
-      expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(
-          emailParamsMatchingObject('Your loan was bought out'),
-        ),
-      );
-    });
-  });
-  describe('LendEvent', () => {
-    it('successfully calls SES send email method with correct params', async () => {
-      await sendEmail(testRecipient, NotificationEventTrigger.LendEvent, loan);
-
-      expect(mockedSesEmailCall).toBeCalledTimes(1);
-      expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(
-          emailParamsMatchingObject('Your loan was fulfilled'),
-        ),
-      );
-    });
-  });
   describe('RepaymentEvent', () => {
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmail(
-        testRecipient,
-        NotificationEventTrigger.RepaymentEvent,
-        loan,
-      );
+      await sendEmail(testRecipient, 'RepaymentEvent', loan);
 
       expect(mockedSesEmailCall).toBeCalledTimes(1);
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
@@ -99,11 +99,7 @@ describe('Sending emails with Amazon SES', () => {
   });
   describe('CollateralSeizureEvent', () => {
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmail(
-        testRecipient,
-        NotificationEventTrigger.CollateralSeizureEvent,
-        loan,
-      );
+      await sendEmail(testRecipient, 'CollateralSeizureEvent', loan);
 
       expect(mockedSesEmailCall).toBeCalledTimes(1);
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
@@ -115,11 +111,7 @@ describe('Sending emails with Amazon SES', () => {
   });
   describe('LiquidationOccuringBorrower', () => {
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmail(
-        testRecipient,
-        NotificationEventTrigger.LiquidationOccurringBorrower,
-        loan,
-      );
+      await sendEmail(testRecipient, 'LiquidationOccurringBorrower', loan);
 
       expect(mockedSesEmailCall).toBeCalledTimes(1);
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
@@ -133,11 +125,7 @@ describe('Sending emails with Amazon SES', () => {
   });
   describe('LiquidationOccuringLender', () => {
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmail(
-        testRecipient,
-        NotificationEventTrigger.LiquidationOccurringLender,
-        loan,
-      );
+      await sendEmail(testRecipient, 'LiquidationOccurringLender', loan);
 
       expect(mockedSesEmailCall).toBeCalledTimes(1);
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
@@ -151,11 +139,7 @@ describe('Sending emails with Amazon SES', () => {
   });
   describe('LiquidationOccurredBorrower', () => {
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmail(
-        testRecipient,
-        NotificationEventTrigger.LiquidationOccurredBorrower,
-        loan,
-      );
+      await sendEmail(testRecipient, 'LiquidationOccurredBorrower', loan);
 
       expect(mockedSesEmailCall).toBeCalledTimes(1);
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
@@ -167,11 +151,7 @@ describe('Sending emails with Amazon SES', () => {
   });
   describe('LiquidationOccurredLender', () => {
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmail(
-        testRecipient,
-        NotificationEventTrigger.LiquidationOccurredLender,
-        loan,
-      );
+      await sendEmail(testRecipient, 'LiquidationOccurredLender', loan);
 
       expect(mockedSesEmailCall).toBeCalledTimes(1);
       expect(mockedSesEmailCall).toHaveBeenCalledWith(

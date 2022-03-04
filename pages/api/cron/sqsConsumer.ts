@@ -1,5 +1,4 @@
-import { authenticateRequest, AUTH_STATUS } from 'lib/authentication';
-import { main } from 'lib/notifications/cron/dailyCron';
+import { main } from 'lib/notifications/cron/sqsConsumer';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(
@@ -12,16 +11,20 @@ export default async function handler(
   }
 
   try {
-    const authStatus = authenticateRequest(req);
-    if (authStatus == AUTH_STATUS.ok) {
-      await main(Math.floor(new Date().getTime() / 1000));
+    const { authorization } = req.headers;
+
+    if (
+      authorization ===
+      `Bearer ${process.env.NOTIFICATIONS_CRON_API_SECRET_KEY}`
+    ) {
+      await main();
       res.status(200).json({ success: true });
     } else {
-      res.status(authStatus).json({ success: false });
+      res.status(401).json({ success: false });
     }
   } catch (e) {
     // TODO: bugsnag
     console.error(e);
-    res.status(500);
+    res.status(404);
   }
 }
