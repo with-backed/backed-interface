@@ -5,14 +5,11 @@ import {
   deleteAllNotificationRequestsForAddress,
   getNumberOfRequestsForNotificationDestination,
 } from 'lib/notifications/repository';
-import {
-  NotificationEventTrigger,
-  NotificationMethod,
-} from 'lib/notifications/shared';
+import { EmailTriggerType, NotificationMethod } from 'lib/notifications/shared';
 import { createMocks } from 'node-mocks-http';
 import handler from 'pages/api/addresses/[address]/notifications/emails/[email]';
 
-const event = NotificationEventTrigger.ALL;
+const event: EmailTriggerType = 'All';
 const notificationMethod = NotificationMethod.EMAIL;
 const notificationDestination = 'adamgobes@gmail.com';
 

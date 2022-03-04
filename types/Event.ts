@@ -54,3 +54,11 @@ export type Event =
   | CreateEvent
   | LendEvent
   | RepaymentEvent;
+
+export type EventAsStringType =
+  | 'BuyoutEvent'
+  | 'CloseEvent'
+  | 'CollateralSeizureEvent'
+  | 'CreateEvent'
+  | 'LendEvent'
+  | 'RepaymentEvent';

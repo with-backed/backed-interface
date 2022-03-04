@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { subgraphLoan } from 'lib/mockData';
 import { main } from 'lib/notifications/cron/sqsConsumer';
-import { NotificationEventTrigger } from 'lib/notifications/shared';
+import { EmailTriggerType } from 'lib/notifications/shared';
 import { pushEventForProcessing } from 'lib/notifications/sns';
 import { deleteMessage, receiveMessages } from 'lib/notifications/sqs';
 import { nftBackedLoansClient } from 'lib/urql';
@@ -59,11 +59,11 @@ describe('SQS consumer', () => {
   });
 
   describe('SQS queue not empty', () => {
-    describe('BuyoutEventOldLender', () => {
+    describe('BuyoutEvent', () => {
       beforeEach(() => {
         mockedSqsReceiveCall.mockResolvedValueOnce([
           {
-            eventName: NotificationEventTrigger.BuyoutEventOldLender,
+            eventName: 'BuyoutEvent',
             txHash: 'random-tx-hash',
             receiptHandle: 'random-receipt-handle',
           },
@@ -106,58 +106,12 @@ describe('SQS consumer', () => {
         );
       });
     });
-    describe('BuyoutEventBorrower', () => {
-      beforeEach(() => {
-        mockedSqsReceiveCall.mockResolvedValueOnce([
-          {
-            eventName: NotificationEventTrigger.BuyoutEventBorrower,
-            txHash: 'random-tx-hash',
-            receiptHandle: 'random-receipt-handle',
-          },
-        ]);
-      });
-      it('does not make call to deleteMessage or pushEventForProcessing if graph is still not in sync', async () => {
-        mockedNftBackedLoansClientQuery.mockReturnValueOnce({
-          toPromise: async () => ({
-            data: {
-              buyoutEvent: null,
-            },
-          }),
-        } as any);
-        await main();
-        expect(mockedSnsPushCall).not.toHaveBeenCalled;
-        expect(mockedSqsDeleteMessageCall).not.toHaveBeenCalled;
-      });
 
-      it('makes calls to SNS and deletes SQS message if graph is in sync', async () => {
-        mockedNftBackedLoansClientQuery.mockReturnValueOnce({
-          toPromise: async () => ({
-            data: {
-              buyoutEvent: {
-                borrowTicketHolder: subgraphLoanCopy.borrowTicketHolder,
-                loan: subgraphLoanCopy,
-              },
-            },
-          }),
-        } as any);
-        await main();
-        expect(mockedSnsPushCall).toHaveBeenCalledTimes(1);
-        expect(mockedSnsPushCall).toHaveBeenCalledWith(
-          subgraphLoanCopy.borrowTicketHolder,
-          subgraphLoanCopy,
-        );
-
-        expect(mockedSqsDeleteMessageCall).toHaveBeenCalledTimes(1);
-        expect(mockedSqsDeleteMessageCall).toHaveBeenCalledWith(
-          'random-receipt-handle',
-        );
-      });
-    });
     describe('LendEvent', () => {
       beforeEach(() => {
         mockedSqsReceiveCall.mockResolvedValueOnce([
           {
-            eventName: NotificationEventTrigger.LendEvent,
+            eventName: 'LendEvent',
             txHash: 'random-tx-hash',
             receiptHandle: 'random-receipt-handle',
           },
@@ -171,45 +125,9 @@ describe('SQS consumer', () => {
             },
           }),
         } as any);
-        mockedNftBackedLoansClientQuery.mockReturnValueOnce({
-          toPromise: async () => ({
-            data: {
-              buyoutEvent: null,
-            },
-          }),
-        } as any);
         await main();
         expect(mockedSnsPushCall).not.toHaveBeenCalled;
         expect(mockedSqsDeleteMessageCall).not.toHaveBeenCalled;
-      });
-
-      it('does not make call to pushEventForProcessing if buyoutEvent with same tx hash exists, but still deletes message', async () => {
-        mockedNftBackedLoansClientQuery.mockReturnValueOnce({
-          toPromise: async () => ({
-            data: {
-              lendEvent: {
-                borrowTicketHolder: subgraphLoanCopy.borrowTicketHolder,
-                loan: subgraphLoanCopy,
-              },
-            },
-          }),
-        } as any);
-        mockedNftBackedLoansClientQuery.mockReturnValueOnce({
-          toPromise: async () => ({
-            data: {
-              buyoutEvent: {
-                loan: subgraphLoanCopy,
-              },
-            },
-          }),
-        } as any);
-        await main();
-        expect(mockedSnsPushCall).not.toHaveBeenCalled;
-
-        expect(mockedSqsDeleteMessageCall).toHaveBeenCalledTimes(1);
-        expect(mockedSqsDeleteMessageCall).toHaveBeenCalledWith(
-          'random-receipt-handle',
-        );
       });
 
       it('makes calls to SNS and deletes SQS message if graph is in sync', async () => {
@@ -220,13 +138,6 @@ describe('SQS consumer', () => {
                 borrowTicketHolder: subgraphLoanCopy.borrowTicketHolder,
                 loan: subgraphLoanCopy,
               },
-            },
-          }),
-        } as any);
-        mockedNftBackedLoansClientQuery.mockReturnValueOnce({
-          toPromise: async () => ({
-            data: {
-              buyoutEvent: null,
             },
           }),
         } as any);
@@ -247,7 +158,7 @@ describe('SQS consumer', () => {
       beforeEach(() => {
         mockedSqsReceiveCall.mockResolvedValueOnce([
           {
-            eventName: NotificationEventTrigger.RepaymentEvent,
+            eventName: 'RepaymentEvent',
             txHash: 'random-tx-hash',
             receiptHandle: 'random-receipt-handle',
           },
@@ -294,7 +205,7 @@ describe('SQS consumer', () => {
       beforeEach(() => {
         mockedSqsReceiveCall.mockResolvedValueOnce([
           {
-            eventName: NotificationEventTrigger.CollateralSeizureEvent,
+            eventName: 'CollateralSeizureEvent',
             txHash: 'random-tx-hash',
             receiptHandle: 'random-receipt-handle',
           },

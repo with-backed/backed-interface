@@ -1,53 +1,51 @@
 import mjml2html from 'mjml';
 
-import { NotificationEventTrigger } from './shared';
 import { executeEmailSendWithSes } from './ses';
 import { Loan } from 'types/generated/graphql/nftLoans';
+import { EmailTriggerType } from './shared';
 
 type EmailMetadataType = {
   subject: string;
-  getTextFromLoan: (loan: Loan) => string;
+  getTextFromLoan: (loan: Loan, hasPreviousLender?: boolean) => string;
 };
 
 const notificationEventToEmailMetadata: {
-  [key in NotificationEventTrigger]?: EmailMetadataType;
+  [key: string]: EmailMetadataType;
 } = {
-  [NotificationEventTrigger.BuyoutEventBorrower]: {
-    subject: 'Your loan was bought out',
-    getTextFromLoan: (_loan: Loan) =>
-      'The terms for one of your loans has been improved',
-  },
-  [NotificationEventTrigger.BuyoutEventOldLender]: {
+  BuyoutEvent: {
     subject: 'Your loan was bought out',
     getTextFromLoan: (_loan: Loan) => 'Your loan was bought out',
   },
-  [NotificationEventTrigger.LendEvent]: {
+  LendEvent: {
     subject: 'Your loan was fulfilled',
-    getTextFromLoan: (_loan: Loan) => 'Your loan was fulfilled',
+    getTextFromLoan: (_loan: Loan, hasPreviousLender?: boolean) =>
+      hasPreviousLender
+        ? 'The terms for one of your loans has been improved'
+        : 'Your loan was fulfilled',
   },
-  [NotificationEventTrigger.RepaymentEvent]: {
+  RepaymentEvent: {
     subject: 'Your loan was repaid',
     getTextFromLoan: (_loan: Loan) => 'Your loan was repaid',
   },
-  [NotificationEventTrigger.CollateralSeizureEvent]: {
+  CollateralSeizureEvent: {
     subject: 'Your collateral was seized',
     getTextFromLoan: (_loan: Loan) => 'Your collateral was seized',
   },
-  [NotificationEventTrigger.LiquidationOccurringBorrower]: {
+  LiquidationOccurringBorrower: {
     subject: 'Your NFT collateral is approaching liquidation',
     getTextFromLoan: (_loan: Loan) =>
       'Your NFT collateral is approaching liquidation',
   },
-  [NotificationEventTrigger.LiquidationOccurringLender]: {
+  LiquidationOccurringLender: {
     subject: 'Your NFT collateral is approaching liquidation',
     getTextFromLoan: (_loan: Loan) =>
       'An NFT you have lent against can be seized soon',
   },
-  [NotificationEventTrigger.LiquidationOccurredBorrower]: {
+  LiquidationOccurredBorrower: {
     subject: 'Your NFT collateral can be liquidated',
     getTextFromLoan: (_loan: Loan) => 'Your NFT collateral can be liquidated',
   },
-  [NotificationEventTrigger.LiquidationOccurredLender]: {
+  LiquidationOccurredLender: {
     subject: 'Your NFT collateral can be liquidated',
     getTextFromLoan: (_loan: Loan) =>
       'An NFT you have lent against can be seized',
@@ -56,8 +54,9 @@ const notificationEventToEmailMetadata: {
 
 export async function sendEmail(
   emailAddress: string,
-  notificationEventTrigger: NotificationEventTrigger,
+  emailTrigger: EmailTriggerType,
   loan: Loan,
+  hasPreviousLender: boolean = false,
 ) {
   const params = {
     Source: process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_EMAIL!,
@@ -70,16 +69,16 @@ export async function sendEmail(
         Html: {
           Charset: 'UTF-8',
           Data: generateHTMLForEmail(
-            notificationEventToEmailMetadata[
-              notificationEventTrigger
-            ]!.getTextFromLoan(loan),
+            notificationEventToEmailMetadata[emailTrigger]!.getTextFromLoan(
+              loan,
+              hasPreviousLender,
+            ),
           ),
         },
       },
       Subject: {
         Charset: 'UTF-8',
-        Data: notificationEventToEmailMetadata[notificationEventTrigger]!
-          .subject,
+        Data: notificationEventToEmailMetadata[emailTrigger]!.subject,
       },
     },
   };

@@ -3,10 +3,7 @@ import { ethers } from 'ethers';
 import { subgraphLoan } from 'lib/mockData';
 import { sendEmail } from 'lib/notifications/emails';
 import { getNotificationRequestsForAddress } from 'lib/notifications/repository';
-import {
-  NotificationEventTrigger,
-  NotificationMethod,
-} from 'lib/notifications/shared';
+import { EmailTriggerType, NotificationMethod } from 'lib/notifications/shared';
 import { createMocks } from 'node-mocks-http';
 import handler from 'pages/api/events/cron/[event]';
 
@@ -14,7 +11,7 @@ const subgraphLoanCopy = Object.assign({}, subgraphLoan);
 subgraphLoanCopy.lendTicketHolder =
   ethers.Wallet.createRandom().address.toLowerCase();
 
-const event = NotificationEventTrigger.ALL;
+const event: EmailTriggerType = 'All';
 const notificationMethod = NotificationMethod.EMAIL;
 const notificationDestination = 'adamgobes@gmail.com';
 
@@ -79,7 +76,7 @@ describe('/api/events/cron/[event]', () => {
       expect(sendEmail).toHaveBeenCalledTimes(1);
       expect(sendEmail).toHaveBeenCalledWith(
         notificationDestination,
-        NotificationEventTrigger.LiquidationOccurringBorrower,
+        'LiquidationOccurringBorrower',
         subgraphLoanCopy,
       );
 
@@ -112,7 +109,7 @@ describe('/api/events/cron/[event]', () => {
       expect(sendEmail).toHaveBeenCalledTimes(1);
       expect(sendEmail).toHaveBeenCalledWith(
         notificationDestination,
-        NotificationEventTrigger.LiquidationOccurringLender,
+        'LiquidationOccurringLender',
         subgraphLoanCopy,
       );
 
@@ -145,7 +142,7 @@ describe('/api/events/cron/[event]', () => {
       expect(sendEmail).toHaveBeenCalledTimes(1);
       expect(sendEmail).toHaveBeenCalledWith(
         notificationDestination,
-        NotificationEventTrigger.LiquidationOccurredBorrower,
+        'LiquidationOccurredBorrower',
         subgraphLoanCopy,
       );
 
@@ -178,7 +175,7 @@ describe('/api/events/cron/[event]', () => {
       expect(sendEmail).toHaveBeenCalledTimes(1);
       expect(sendEmail).toHaveBeenCalledWith(
         notificationDestination,
-        NotificationEventTrigger.LiquidationOccurredLender,
+        'LiquidationOccurredLender',
         subgraphLoanCopy,
       );
 

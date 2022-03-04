@@ -1,5 +1,5 @@
 import { SQS } from 'aws-sdk';
-import { NotificationEventTrigger } from './shared';
+import { EventAsStringType } from 'types/Event';
 
 const sqsConfig = {
   region: 'us-east-1',
@@ -10,7 +10,7 @@ const sqsConfig = {
 };
 
 export type FormattedNotificationEventMessageType = {
-  eventName: NotificationEventTrigger;
+  eventName: EventAsStringType;
   txHash: string;
   receiptHandle: string;
 };
@@ -26,7 +26,7 @@ export async function receiveMessages(): Promise<
     .promise();
   return response.Messages?.map((message) => ({
     eventName: message.MessageAttributes!['EventName']
-      .StringValue! as NotificationEventTrigger,
+      .StringValue! as EventAsStringType,
     txHash: message.Body!,
     receiptHandle: message.ReceiptHandle!,
   }));
