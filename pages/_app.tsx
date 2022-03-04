@@ -9,6 +9,7 @@ import { AppWrapper } from 'components/layouts/AppWrapper';
 import { TimestampProvider } from 'hooks/useTimestamp/useTimestamp';
 import { useEffect, useState } from 'react';
 import { GlobalMessagingProvider } from 'hooks/useGlobalMessages';
+import { Provider } from 'wagmi';
 
 const getLibrary: React.ComponentProps<typeof Web3ReactProvider>['getLibrary'] =
   (provider) => {
@@ -54,14 +55,16 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <GlobalMessagingProvider>
-      <Web3ReactProvider getLibrary={getLibrary}>
-        <TimestampProvider>
-          <AppWrapper>
-            <PawnShopHeader prawn={showVariant} />
-            <Component {...pageProps} />
-          </AppWrapper>
-        </TimestampProvider>
-      </Web3ReactProvider>
+      <Provider>
+        <Web3ReactProvider getLibrary={getLibrary}>
+          <TimestampProvider>
+            <AppWrapper>
+              <PawnShopHeader prawn={showVariant} />
+              <Component {...pageProps} />
+            </AppWrapper>
+          </TimestampProvider>
+        </Web3ReactProvider>
+      </Provider>
     </GlobalMessagingProvider>
   );
 }
