@@ -125,18 +125,24 @@ export function LoanFormBetterTerms({
     }
   }, [send, transactionPending, txHash]);
 
+  const explainerState = current.toStrings()[0];
+  const FormExplainer = useMemo(
+    () => (
+      <Explainer
+        form={form}
+        state={explainerState}
+        top={explainerTop}
+        loan={loan}
+      />
+    ),
+    [form, explainerState, explainerTop, loan],
+  );
+
   return (
     <div className={styles.marginTop}>
       <LoanFormDisclosure
         title={'Offer better terms'}
-        rightColContent={
-          <Explainer
-            form={form}
-            state={current.toStrings()[0]}
-            top={explainerTop}
-            loan={loan}
-          />
-        }>
+        rightColContent={FormExplainer}>
         {/* `underwrite` is any due to some automatic conversion of number values, which contradict the types */}
         <Form
           onSubmit={handleSubmit(underwrite as any)}

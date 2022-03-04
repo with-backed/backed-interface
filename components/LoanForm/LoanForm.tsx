@@ -109,7 +109,7 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
     console.log('loan form repay');
     return (
       <>
-        <div className={styles.wrapper}>
+        <div className={styles['mt-gap']}>
           <LoanFormRepay
             loan={loan}
             balance={balance}
@@ -123,6 +123,7 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
   }
 
   return (
+    // TODO: if viewer is the lender do we want to do anything else here?
     <>
       <div className={styles['mt-gap']}>
         {() => console.log('offer better terms')}
