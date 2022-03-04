@@ -14,7 +14,7 @@ export default async function handler(
   try {
     const authStatus = authenticateRequest(req);
     if (authStatus == AUTH_STATUS.ok) {
-      await main(new Date().getTime() / 1000);
+      await main(Math.floor(new Date().getTime() / 1000));
       res.status(200).json({ success: true });
     } else {
       res.status(authStatus).json({ success: false });
