@@ -20,10 +20,12 @@ export function authenticateRequest(req: NextApiRequest | NextRequest) {
     if (typeof req.headers.get === 'function') {
       authorization = req.headers.get('authorization');
     } else {
-      // Cast req.headers to any so that typescript doesn't complain
-      // about indexing object 'authorization' (which doesn't exist in
-      // NextRequest). It's okay if the header isn't available at runtime.
-      const headers = req.headers as any;
+      // Temporarily cast req.headers so that typescript doesn't complain
+      // about indexing object 'authorization' (which isn't explicitly defined
+      // in NextRequest). It's okay if the header isn't available at runtime.
+      const headers = req.headers as typeof req.headers & {
+        authorization?: string;
+      };
       authorization = headers['authorization'];
     }
 
