@@ -18,6 +18,8 @@ import { ethers } from 'ethers';
 import { annualRateToPerSecond, formattedAnnualRate } from 'lib/interest';
 import { daysToSecondsBigNum, secondsBigNumToDays } from 'lib/duration';
 import { yupResolver } from '@hookform/resolvers/yup';
+import styles from '../LoanForm.module.css';
+import { LoanFormDisclosure } from '../LoanFormDisclosure';
 
 type LoanFormBetterTermsProps = {
   loan: Loan;
@@ -124,81 +126,88 @@ export function LoanFormBetterTerms({
   }, [send, transactionPending, txHash]);
 
   return (
-    <>
-      {/* `underwrite` is any due to some automatic conversion of number values, which contradict the types */}
-      <Form onSubmit={handleSubmit(underwrite as any)} autoComplete="off">
-        <CompletedButton buttonText="Lend" />
-
-        <label htmlFor="amount">
-          <span>Amount</span>
-          <Input
-            id="loanAmount"
-            placeholder="0"
-            type="text"
-            color="dark"
-            unit={loan.loanAssetSymbol}
-            aria-invalid={!!errors.loanAmount}
-            onFocus={() => send('LOAN_AMOUNT')}
-            {...register('loanAmount', {
-              onBlur: handleBlur,
-            })}
+    <div className={styles.marginTop}>
+      <LoanFormDisclosure
+        title={'Offer better terms'}
+        rightColContent={
+          <Explainer
+            form={form}
+            state={current.toStrings()[0]}
+            top={explainerTop}
+            loan={loan}
           />
-        </label>
+        }>
+        {/* `underwrite` is any due to some automatic conversion of number values, which contradict the types */}
+        <Form
+          onSubmit={handleSubmit(underwrite as any)}
+          autoComplete="off"
+          // TODO: fix this style
+          style={{ marginTop: 'calc(var(--gap) / 2)' }}>
+          <label htmlFor="amount">
+            <span>Amount</span>
+            <Input
+              id="loanAmount"
+              placeholder="0"
+              type="text"
+              color="dark"
+              unit={loan.loanAssetSymbol}
+              aria-invalid={!!errors.loanAmount}
+              onFocus={() => send('LOAN_AMOUNT')}
+              {...register('loanAmount', {
+                onBlur: handleBlur,
+              })}
+            />
+          </label>
 
-        <label htmlFor="duration">
-          <span>Duration</span>
-          <Input
-            id="duration"
-            placeholder="0"
-            type="text"
-            color="dark"
-            unit="Days"
-            aria-invalid={!!errors.duration}
-            onFocus={() => send('DURATION')}
-            {...register('duration', { onBlur: handleBlur })}
+          <label htmlFor="duration">
+            <span>Duration</span>
+            <Input
+              id="duration"
+              placeholder="0"
+              type="text"
+              color="dark"
+              unit="Days"
+              aria-invalid={!!errors.duration}
+              onFocus={() => send('DURATION')}
+              {...register('duration', { onBlur: handleBlur })}
+            />
+          </label>
+
+          <label htmlFor="interestRate">
+            <span>Interest Rate</span>
+            <Input
+              id="interestRate"
+              placeholder="0"
+              type="text"
+              color="dark"
+              unit="%"
+              aria-invalid={!!errors.interestRate}
+              onFocus={() => send('INTEREST_RATE')}
+              {...register('interestRate', { onBlur: handleBlur })}
+            />
+          </label>
+
+          <AllowButton
+            contractAddress={loan.loanAssetContractAddress}
+            symbol={loan.loanAssetSymbol}
+            callback={() => setNeedsAllowance(false)}
+            done={!needsAllowance}
           />
-        </label>
-
-        <label htmlFor="interestRate">
-          <span>Interest Rate</span>
-          <Input
-            id="interestRate"
-            placeholder="0"
-            type="text"
-            color="dark"
-            unit="%"
-            aria-invalid={!!errors.interestRate}
-            onFocus={() => send('INTEREST_RATE')}
-            {...register('interestRate', { onBlur: handleBlur })}
+          <TransactionButton
+            id="Lend"
+            text="Lend"
+            type="submit"
+            txHash={txHash}
+            isPending={transactionPending}
+            disabled={
+              needsAllowance ||
+              Object.keys(errors).length > 0 ||
+              !hasTenPercentImprovement
+            }
+            onMouseEnter={() => send('LEND_HOVER')}
           />
-        </label>
-
-        <AllowButton
-          contractAddress={loan.loanAssetContractAddress}
-          symbol={loan.loanAssetSymbol}
-          callback={() => setNeedsAllowance(false)}
-          done={!needsAllowance}
-        />
-        <TransactionButton
-          id="Lend"
-          text="Lend"
-          type="submit"
-          txHash={txHash}
-          isPending={transactionPending}
-          disabled={
-            needsAllowance ||
-            Object.keys(errors).length > 0 ||
-            !hasTenPercentImprovement
-          }
-          onMouseEnter={() => send('LEND_HOVER')}
-        />
-      </Form>
-      <Explainer
-        form={form}
-        state={current.toStrings()[0]}
-        top={explainerTop}
-        loan={loan}
-      />
-    </>
+        </Form>
+      </LoanFormDisclosure>
+    </div>
   );
 }

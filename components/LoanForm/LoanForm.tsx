@@ -51,8 +51,7 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
   ]);
 
   if (loan.closed) {
-    return <Dev>loan closed</Dev>;
-    // return null;
+    return null;
   }
 
   if (!account) {
@@ -125,9 +124,8 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
 
   return (
     <>
-      <div className={styles.wrapper}>
+      <div className={styles['mt-gap']}>
         {() => console.log('offer better terms')}
-        <Dev>offer better terms</Dev>
         <LoanFormBetterTerms
           loan={loan}
           needsAllowance={needsAllowance}

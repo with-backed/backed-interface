@@ -15,9 +15,6 @@ export function LoanFormDisclosure({
 }: LoanFormDisclosure) {
   const disclosure = useDisclosureState({ visible: false });
   const disclosure2 = useDisclosureState({ visible: false });
-
-  console.log('debug:: disclosure 2', disclosure2);
-
   return (
     <div className={styles.wrapper}>
       <div>
@@ -27,6 +24,7 @@ export function LoanFormDisclosure({
               {...props}
               {...disclosure2}
               as={'button'}
+              disabled={disclosure2.visible}
               className={buttonStyles['primary']}>
               {title}
             </ReakitDisclosure>

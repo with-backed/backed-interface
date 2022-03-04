@@ -19,10 +19,8 @@ import { ethers } from 'ethers';
 import { formattedAnnualRate } from 'lib/interest';
 import { secondsBigNumToDays } from 'lib/duration';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Dev } from '../LoanForm';
-import { Disclosure } from '../../Disclosure';
-import styles from '../LoanForm.module.css';
 import { LoanFormDisclosure } from '../LoanFormDisclosure';
+import styles from '../LoanForm.module.css';
 
 type LoanFormAwaitingProps = {
   loan: Loan;
@@ -112,10 +110,10 @@ export function LoanFormAwaiting({
     }
   }, [send, transactionPending, txHash]);
 
-  const currentState = current.toStrings()[0];
+  const explainerState = current.toStrings()[0];
   const FormExplainer = useMemo(
-    () => <Explainer form={form} state={currentState} top={explainerTop} />,
-    [form, currentState, explainerTop],
+    () => <Explainer form={form} state={explainerState} top={explainerTop} />,
+    [form, explainerState, explainerTop],
   );
 
   return (
@@ -125,7 +123,8 @@ export function LoanFormAwaiting({
         <Form
           onSubmit={handleSubmit(underwrite as any)}
           autoComplete="off"
-          style={{ marginTop: '10px' }}>
+          // TODO: fix this style
+          style={{ marginTop: 'calc(var(--gap) / 2)' }}>
           <label htmlFor="amount">
             <span>Amount</span>
             <Input
@@ -173,10 +172,7 @@ export function LoanFormAwaiting({
           <AllowButton
             contractAddress={loan.loanAssetContractAddress}
             symbol={loan.loanAssetSymbol}
-            callback={() => {
-              console.log('debug:: allow callback hit');
-              setNeedsAllowance(false);
-            }}
+            callback={() => setNeedsAllowance(false)}
             done={!needsAllowance}
           />
           <TransactionButton
