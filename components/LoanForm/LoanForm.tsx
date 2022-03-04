@@ -137,11 +137,3 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
     </>
   );
 }
-
-export const Dev = ({ children }: { children: any }) => {
-  if (process.env.NODE_ENV === 'development') {
-    return <div style={{ color: 'red' }}>{children}</div>;
-  } else {
-    return null;
-  }
-};
