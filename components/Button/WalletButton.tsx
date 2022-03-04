@@ -35,7 +35,7 @@ export function WalletButton({ wallet, onClick }: WalletButtonProps) {
   const Icon = icons[wallet] || icons.injected;
   const walletClass = classNames[wallet] || classNames.injected;
   const className = [styles['wallet-button'], styles[walletClass]].join(' ');
-  const providerAvailable = !!window.ethereum;
+  const providerAvailable = !!window?.ethereum;
 
   return (
     <button
