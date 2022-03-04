@@ -6,32 +6,36 @@ import { Metamask } from 'components/Icons/Metamask';
 import { WalletConnect } from 'components/Icons/WalletConnect';
 import { ButtonProps } from './Button';
 
-type SupportedWallet = 'MetaMask' | 'Coinbase Wallet' | 'Wallet Connect';
-
-const icons: { [key in SupportedWallet]: () => JSX.Element } = {
-  MetaMask: Metamask,
-  'Coinbase Wallet': CoinbaseWallet,
-  'Wallet Connect': WalletConnect,
+const icons: { [key: string]: () => JSX.Element } = {
+  injected: Metamask,
+  walletLink: CoinbaseWallet,
+  walletConnect: WalletConnect,
 };
 
-const classNames: { [key in SupportedWallet]: string } = {
-  MetaMask: 'metamask',
-  'Coinbase Wallet': 'coinbase-wallet',
-  'Wallet Connect': 'wallet-connect',
+const names: { [key: string]: string } = {
+  injected: 'Metamask',
+  walletLink: 'Coinbase Wallet',
+  walletConnect: 'Wallet Connect',
+};
+
+const classNames: { [key: string]: string } = {
+  injected: 'metamask',
+  walletLink: 'coinbase-wallet',
+  walletConnect: 'wallet-connect',
 };
 
 interface WalletButtonProps extends ButtonProps {
-  wallet: SupportedWallet;
+  wallet: string;
 }
 export function WalletButton({ wallet, onClick }: WalletButtonProps) {
-  const Icon = icons[wallet];
-  const walletClass = classNames[wallet];
+  const Icon = icons[wallet] || icons.injected;
+  const walletClass = classNames[wallet] || classNames.injected;
   const className = [styles['wallet-button'], styles[walletClass]].join(' ');
   return (
     <button className={className} onClick={onClick}>
       <div className={styles['button-grid-wrapper']}>
         <Icon />
-        <p>{wallet}</p>
+        <p>{names[wallet]}</p>
       </div>
     </button>
   );
