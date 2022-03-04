@@ -51,6 +51,7 @@ describe('ConnectWallet', () => {
       },
       mockConnect,
     ] as any);
+    window.open = jest.fn();
   });
 
   it('renders', () => {
@@ -58,7 +59,7 @@ describe('ConnectWallet', () => {
     getByText('Connect');
   });
 
-  it.skip('directs users to MetaMask website if there is no injected provider', () => {
+  it('directs users to MetaMask website if there is no injected provider', () => {
     const { getByText } = render(<ConnectWallet />);
     const button = getByText('Connect');
 

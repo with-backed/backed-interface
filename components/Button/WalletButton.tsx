@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import styles from './Button.module.css';
 
 import { CoinbaseWallet } from 'components/Icons/CoinbaseWallet';
@@ -24,6 +24,10 @@ const classNames: { [key: string]: string } = {
   walletConnect: 'wallet-connect',
 };
 
+const visitMetaMask = () => {
+  window.open('https://metamask.io', '_blank');
+};
+
 interface WalletButtonProps extends ButtonProps {
   wallet: string;
 }
@@ -31,8 +35,14 @@ export function WalletButton({ wallet, onClick }: WalletButtonProps) {
   const Icon = icons[wallet] || icons.injected;
   const walletClass = classNames[wallet] || classNames.injected;
   const className = [styles['wallet-button'], styles[walletClass]].join(' ');
+  const providerAvailable = !!window.ethereum;
+
   return (
-    <button className={className} onClick={onClick}>
+    <button
+      className={className}
+      onClick={
+        wallet === 'injected' && !providerAvailable ? visitMetaMask : onClick
+      }>
       <div className={styles['button-grid-wrapper']}>
         <Icon />
         <p>{names[wallet]}</p>
