@@ -1,5 +1,5 @@
-import '../styles/global.css';
-import '../styles/fonts-maru.css';
+import 'styles/global.css';
+import 'styles/fonts-maru.css';
 import 'normalize.css';
 import { AppProps } from 'next/app';
 import { Web3ReactProvider } from '@web3-react/core';
