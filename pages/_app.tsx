@@ -8,8 +8,32 @@ import { PawnShopHeader } from 'components/PawnShopHeader';
 import { AppWrapper } from 'components/layouts/AppWrapper';
 import { TimestampProvider } from 'hooks/useTimestamp/useTimestamp';
 import { useEffect, useState } from 'react';
+import { Provider, chain, defaultChains } from 'wagmi';
+import { InjectedConnector } from 'wagmi/connectors/injected';
+import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
+import { WalletLinkConnector } from 'wagmi/connectors/walletLink';
 import { GlobalMessagingProvider } from 'hooks/useGlobalMessages';
-import { Provider } from 'wagmi';
+
+const chains = defaultChains;
+const jsonRpcUrl = process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER || '';
+
+const connectors = [
+  new InjectedConnector({
+    chains,
+    options: { shimDisconnect: true },
+  }),
+  new WalletConnectConnector({
+    options: {
+      qrcode: true,
+    },
+  }),
+  new WalletLinkConnector({
+    options: {
+      appName: 'NFT Pawn Shop',
+      jsonRpcUrl,
+    },
+  }),
+];
 
 const getLibrary: React.ComponentProps<typeof Web3ReactProvider>['getLibrary'] =
   (provider) => {
@@ -55,7 +79,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <GlobalMessagingProvider>
-      <Provider>
+      <Provider autoConnect connectors={connectors}>
         <Web3ReactProvider getLibrary={getLibrary}>
           <TimestampProvider>
             <AppWrapper>
