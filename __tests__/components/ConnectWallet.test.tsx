@@ -71,7 +71,7 @@ describe('ConnectWallet', () => {
   });
 
   it('connects through Wallet Connect', () => {
-    window.ethereum = true;
+    window.ethereum = {} as any;
     const { getByText } = render(<ConnectWallet />);
     const button = getByText('Connect');
 
@@ -84,7 +84,7 @@ describe('ConnectWallet', () => {
   });
 
   it('connects through Wallet Link', () => {
-    window.ethereum = true;
+    window.ethereum = {} as any;
     const { getByText } = render(<ConnectWallet />);
     const button = getByText('Connect');
 
@@ -97,7 +97,7 @@ describe('ConnectWallet', () => {
   });
 
   it('connects through MetaMask if there is an injected provider', () => {
-    window.ethereum = true;
+    window.ethereum = {} as any;
     const { getByText } = render(<ConnectWallet />);
     const button = getByText('Connect');
 

@@ -35,7 +35,13 @@ function MintPunk() {
   const [id, setId] = useState<ethers.BigNumber | null>(null);
   const mockPunkContract = process.env.NEXT_PUBLIC_MOCK_PUNK_CONTRACT || '';
   const mintPunk = async () => {
+<<<<<<< HEAD
     const punk = MockPUNK__factory.connect(mockPunkContract, signer!);
+=======
+    const provider = new ethers.providers.Web3Provider(window.ethereum as any);
+    const signer = provider.getSigner(0);
+    const punk = MockPUNK__factory.connect(mockPunkContract, signer);
+>>>>>>> c1ac414 (fix: window.ethereum types)
     const t = await punk.mint();
     setTxHash(t.hash);
     setTxPending(true);
@@ -87,7 +93,13 @@ function MintDAI() {
   const mockDAIContract = process.env.NEXT_PUBLIC_MOCK_DAI_CONTRACT || '';
 
   const mint = async () => {
+<<<<<<< HEAD
     const dai = MockDAI__factory.connect(mockDAIContract, signer!);
+=======
+    const provider = new ethers.providers.Web3Provider(window.ethereum as any);
+    const signer = provider.getSigner(0);
+    const dai = MockDAI__factory.connect(mockDAIContract, signer);
+>>>>>>> c1ac414 (fix: window.ethereum types)
     const t = await dai.mint(ethers.BigNumber.from(10000), account as string);
     setTxHash(t.hash);
     setTxPending(true);
