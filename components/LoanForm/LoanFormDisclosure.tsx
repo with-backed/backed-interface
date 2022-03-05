@@ -1,7 +1,8 @@
 import { Disclosure as ReakitDisclosure, DisclosureContent } from 'reakit';
 import { useDisclosureState } from 'reakit/Disclosure';
 import buttonStyles from '../../Button/Button.module.css';
-import styles from './LoanFormDisclosure.module.css';
+import formStyles from '../../Form/Form.module.css';
+import loanFormStyles from '../LoanForm.module.css';
 
 type LoanFormDisclosure = React.PropsWithChildren<{
   title: string;
@@ -16,8 +17,8 @@ export function LoanFormDisclosure({
   const disclosure = useDisclosureState({ visible: false });
   const disclosure2 = useDisclosureState({ visible: false });
   return (
-    <div className={styles.wrapper}>
-      <div className={styles['left-col-wrapper']}>
+    <div className={loanFormStyles.wrapper}>
+      <div className={formStyles.form}>
         <ReakitDisclosure {...disclosure}>
           {(props) => (
             <ReakitDisclosure

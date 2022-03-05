@@ -117,7 +117,6 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
   }
 
   return (
-    // TODO: if viewer is the lender do we want to do anything else here?
     <>
       <div className={styles['mt-gap']}>
         <LoanFormBetterTerms
