@@ -110,13 +110,13 @@ export function LoanFormAwaiting({
   }, [send, transactionPending, txHash]);
 
   const explainerState = current.toStrings()[0];
-  const FormExplainer = useMemo(
+  const renderFormExplainer = useCallback(
     () => <Explainer form={form} state={explainerState} top={explainerTop} />,
     [form, explainerState, explainerTop],
   );
 
   return (
-    <LoanFormDisclosure title={'Loan'} rightColContent={FormExplainer}>
+    <LoanFormDisclosure title={'Loan'} renderRightCol={renderFormExplainer}>
       {/* `underwrite` is any due to some automatic conversion of number values, which contradict the types */}
       <Form onSubmit={handleSubmit(underwrite as any)} autoComplete="off">
         <label htmlFor="amount">

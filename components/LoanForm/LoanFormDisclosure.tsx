@@ -6,13 +6,13 @@ import loanFormStyles from './LoanForm.module.css';
 
 type LoanFormDisclosure = React.PropsWithChildren<{
   title: string;
-  rightColContent: any;
+  renderRightCol: () => React.ReactElement;
 }>;
 
 export function LoanFormDisclosure({
   title,
   children,
-  rightColContent,
+  renderRightCol,
 }: LoanFormDisclosure) {
   const disclosure = useDisclosureState({ visible: false });
   const disclosure2 = useDisclosureState({ visible: false });
@@ -36,7 +36,7 @@ export function LoanFormDisclosure({
         </ReakitDisclosure>
         <DisclosureContent {...disclosure}>{children}</DisclosureContent>
       </div>
-      <DisclosureContent {...disclosure2}>{rightColContent}</DisclosureContent>
+      <DisclosureContent {...disclosure2}>{renderRightCol()}</DisclosureContent>
     </div>
   );
 }

@@ -126,7 +126,7 @@ export function LoanFormBetterTerms({
   }, [send, transactionPending, txHash]);
 
   const explainerState = current.toStrings()[0];
-  const FormExplainer = useMemo(
+  const renderFormExplainer = useCallback(
     () => (
       <Explainer
         form={form}
@@ -141,7 +141,7 @@ export function LoanFormBetterTerms({
   return (
     <LoanFormDisclosure
       title={'Offer better terms'}
-      rightColContent={FormExplainer}>
+      renderRightCol={renderFormExplainer}>
       {/* `underwrite` is any due to some automatic conversion of number values, which contradict the types */}
       <Form onSubmit={handleSubmit(underwrite as any)} autoComplete="off">
         <label htmlFor="amount">

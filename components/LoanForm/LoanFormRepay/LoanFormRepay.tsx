@@ -51,7 +51,7 @@ export function LoanFormRepay({
   return (
     <LoanFormDisclosure
       title={'Repay loan & Claim NFT'}
-      rightColContent={<Explainer top={0} />}>
+      renderRightCol={() => <Explainer top={0} />}>
       <Form onSubmit={(e) => e.preventDefault()}>
         <p>
           The current Payback amount is:
