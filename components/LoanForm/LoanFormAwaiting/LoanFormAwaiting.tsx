@@ -1,9 +1,4 @@
-import {
-  AllowButton,
-  Button,
-  CompletedButton,
-  TransactionButton,
-} from 'components/Button';
+import { AllowButton, TransactionButton } from 'components/Button';
 import { useLoanUnderwriter } from 'hooks/useLoanUnderwriter';
 import { Loan } from 'types/Loan';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';

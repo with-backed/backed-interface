@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { Loan } from 'types/Loan';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useWeb3 } from 'hooks/useWeb3';
 import {
   getAccountLoanAssetAllowance,

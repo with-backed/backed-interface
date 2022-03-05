@@ -1,15 +1,10 @@
-import {
-  AllowButton,
-  CompletedButton,
-  TransactionButton,
-} from 'components/Button';
+import { AllowButton, TransactionButton } from 'components/Button';
 import { Loan } from 'types/Loan';
 import React, { useCallback, useState } from 'react';
 import { useLoanDetails } from 'hooks/useLoanDetails';
 import { web3LoanFacilitator } from 'lib/contracts';
 import { Explainer } from './Explainer';
 import { Form } from 'components/Form';
-import styles from '../LoanForm.module.css';
 import { LoanFormDisclosure } from '../LoanFormDisclosure';
 
 type LoanFormRepayProps = {

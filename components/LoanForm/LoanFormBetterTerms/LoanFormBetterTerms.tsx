@@ -1,8 +1,4 @@
-import {
-  AllowButton,
-  CompletedButton,
-  TransactionButton,
-} from 'components/Button';
+import { AllowButton, TransactionButton } from 'components/Button';
 import { useLoanUnderwriter } from 'hooks/useLoanUnderwriter';
 import { Loan } from 'types/Loan';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -19,7 +15,6 @@ import { annualRateToPerSecond, formattedAnnualRate } from 'lib/interest';
 import { daysToSecondsBigNum, secondsBigNumToDays } from 'lib/duration';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { LoanFormDisclosure } from '../LoanFormDisclosure';
-import styles from '../LoanForm.module.css';
 
 type LoanFormBetterTermsProps = {
   loan: Loan;
