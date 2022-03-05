@@ -24,8 +24,11 @@ export function LoanFormDisclosure({
               {...props}
               {...disclosure2}
               as={'button'}
-              disabled={disclosure2.visible}
-              className={buttonStyles['primary']}>
+              className={
+                disclosure2.visible
+                  ? buttonStyles['secondary']
+                  : buttonStyles['primary']
+              }>
               {title}
             </ReakitDisclosure>
           )}

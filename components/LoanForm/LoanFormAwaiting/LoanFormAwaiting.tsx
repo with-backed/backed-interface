@@ -177,7 +177,7 @@ export function LoanFormAwaiting({
           />
           <TransactionButton
             id="Lend"
-            text="Lend"
+            text="Mint Lending Ticket"
             type="submit"
             txHash={txHash}
             isPending={transactionPending}
