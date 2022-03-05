@@ -1,8 +1,8 @@
 import { Disclosure as ReakitDisclosure, DisclosureContent } from 'reakit';
 import { useDisclosureState } from 'reakit/Disclosure';
-import buttonStyles from '../../Button/Button.module.css';
-import formStyles from '../../Form/Form.module.css';
-import loanFormStyles from '../LoanForm.module.css';
+import buttonStyles from '../Button/Button.module.css';
+import formStyles from '../Form/Form.module.css';
+import loanFormStyles from './LoanForm.module.css';
 
 type LoanFormDisclosure = React.PropsWithChildren<{
   title: string;

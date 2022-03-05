@@ -49,36 +49,34 @@ export function LoanFormRepay({
   }, [loan.id, refresh]);
 
   return (
-    <div className={styles.marginTop}>
-      <LoanFormDisclosure
-        title={'Repay loan & Claim NFT'}
-        rightColContent={<Explainer top={0} />}>
-        <Form onSubmit={(e) => e.preventDefault()}>
-          <p>
-            The current Payback amount is:
-            <br />
-            {formattedPrincipal} (principal)
-            <br />+ {formattedInterestAccrued} (interest accrued so far)
-            <br />= {formattedTotalPayback} Total
-            <br />
-            “Repay & Claim” will pay this amount, close the loan, and transfer
-            the collateral to your wallet.
-          </p>
-          <AllowButton
-            contractAddress={loan.loanAssetContractAddress}
-            symbol={loan.loanAssetSymbol}
-            callback={() => setNeedsAllowance(false)}
-            done={!needsAllowance}
-          />
-          <TransactionButton
-            text="Repay & claim"
-            onClick={repay}
-            txHash={txHash}
-            isPending={waitingForTx}
-            disabled={needsAllowance}
-          />
-        </Form>
-      </LoanFormDisclosure>
-    </div>
+    <LoanFormDisclosure
+      title={'Repay loan & Claim NFT'}
+      rightColContent={<Explainer top={0} />}>
+      <Form onSubmit={(e) => e.preventDefault()}>
+        <p>
+          The current Payback amount is:
+          <br />
+          {formattedPrincipal} (principal)
+          <br />+ {formattedInterestAccrued} (interest accrued so far)
+          <br />= {formattedTotalPayback} Total
+          <br />
+          “Repay & Claim” will pay this amount, close the loan, and transfer the
+          collateral to your wallet.
+        </p>
+        <AllowButton
+          contractAddress={loan.loanAssetContractAddress}
+          symbol={loan.loanAssetSymbol}
+          callback={() => setNeedsAllowance(false)}
+          done={!needsAllowance}
+        />
+        <TransactionButton
+          text="Repay & claim"
+          onClick={repay}
+          txHash={txHash}
+          isPending={waitingForTx}
+          disabled={needsAllowance}
+        />
+      </Form>
+    </LoanFormDisclosure>
   );
 }
