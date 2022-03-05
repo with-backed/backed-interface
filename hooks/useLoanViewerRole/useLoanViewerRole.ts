@@ -8,7 +8,6 @@ export const useLoanViewerRole = (loan: Loan, account?: string | null) =>
         return 'borrower';
       case loan.lender?.toUpperCase():
         return 'lender';
-      // TODO: return something more descriptive here rather than null
       default:
         return null;
     }
