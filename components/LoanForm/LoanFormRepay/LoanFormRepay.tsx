@@ -5,7 +5,7 @@ import { useLoanDetails } from 'hooks/useLoanDetails';
 import { web3LoanFacilitator } from 'lib/contracts';
 import { Explainer } from './Explainer';
 import { Form } from 'components/Form';
-import { LoanFormDisclosure } from '../LoanFormDisclosure';
+import { LoanFormDisclosure } from 'components/LoanForm/LoanFormDisclosure';
 
 type LoanFormRepayProps = {
   loan: Loan;

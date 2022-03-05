@@ -14,7 +14,7 @@ import { ethers } from 'ethers';
 import { formattedAnnualRate } from 'lib/interest';
 import { secondsBigNumToDays } from 'lib/duration';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { LoanFormDisclosure } from '../LoanFormDisclosure';
+import { LoanFormDisclosure } from 'components/LoanForm/LoanFormDisclosure';
 
 type LoanFormAwaitingProps = {
   loan: Loan;

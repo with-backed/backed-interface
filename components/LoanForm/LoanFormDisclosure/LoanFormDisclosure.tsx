@@ -3,9 +3,8 @@ import {
   DisclosureContent,
 } from 'reakit/Disclosure';
 import { useDisclosureState } from 'reakit/Disclosure';
-import buttonStyles from '../Button/Button.module.css';
-import formStyles from '../Form/Form.module.css';
-import loanFormStyles from './LoanForm.module.css';
+import { DisclosureButton } from 'components/Button';
+import styles from './LoanFormDisclosure.module.css';
 
 type LoanFormDisclosure = React.PropsWithChildren<{
   title: string;
@@ -20,24 +19,21 @@ export function LoanFormDisclosure({
   const disclosure = useDisclosureState({ visible: false });
   const disclosure2 = useDisclosureState({ visible: false });
   return (
-    <div className={loanFormStyles.wrapper}>
-      <div className={formStyles.form}>
+    <div className={styles.wrapper}>
+      <div>
         <ReakitDisclosure {...disclosure}>
           {(props) => (
-            <ReakitDisclosure
+            <DisclosureButton
+              kind={disclosure2.visible ? 'secondary' : 'primary'}
               {...props}
-              {...disclosure2}
-              as={'button'}
-              className={
-                disclosure2.visible
-                  ? buttonStyles['secondary']
-                  : buttonStyles['primary']
-              }>
+              {...disclosure2}>
               {title}
-            </ReakitDisclosure>
+            </DisclosureButton>
           )}
         </ReakitDisclosure>
-        <DisclosureContent {...disclosure}>{children}</DisclosureContent>
+        <DisclosureContent {...disclosure} className={styles['mt-half-gap']}>
+          {children}
+        </DisclosureContent>
       </div>
       <DisclosureContent {...disclosure2}>{renderRightCol()}</DisclosureContent>
     </div>

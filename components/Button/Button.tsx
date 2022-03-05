@@ -1,5 +1,6 @@
 import React, { ButtonHTMLAttributes, ComponentProps } from 'react';
 import { DialogDisclosure } from 'reakit/Dialog';
+import { Disclosure } from 'reakit/Disclosure';
 import styles from './Button.module.css';
 
 export type ButtonKind =
@@ -37,5 +38,21 @@ export function DialogDisclosureButton({
     <DialogDisclosure {...props} className={styles[kind]}>
       {children}
     </DialogDisclosure>
+  );
+}
+
+interface DisclosureButtonProps extends ComponentProps<typeof Disclosure> {
+  kind?: ButtonKind;
+}
+
+export function DisclosureButton({
+  children,
+  kind = 'primary',
+  ...rest
+}: DisclosureButtonProps) {
+  return (
+    <Disclosure as={'button'} className={styles[kind]} {...rest}>
+      {children}
+    </Disclosure>
   );
 }
