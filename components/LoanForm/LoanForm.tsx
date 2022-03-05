@@ -102,30 +102,26 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
 
   if (viewerIsBorrower) {
     return (
-      <>
-        <div className={styles['mt-gap']}>
-          <LoanFormRepay
-            loan={loan}
-            balance={balance}
-            needsAllowance={needsAllowance}
-            setNeedsAllowance={setNeedsAllowance}
-            refresh={refresh}
-          />
-        </div>
-      </>
-    );
-  }
-
-  return (
-    <>
       <div className={styles['mt-gap']}>
-        <LoanFormBetterTerms
+        <LoanFormRepay
           loan={loan}
+          balance={balance}
           needsAllowance={needsAllowance}
           setNeedsAllowance={setNeedsAllowance}
           refresh={refresh}
         />
       </div>
-    </>
+    );
+  }
+
+  return (
+    <div className={styles['mt-gap']}>
+      <LoanFormBetterTerms
+        loan={loan}
+        needsAllowance={needsAllowance}
+        setNeedsAllowance={setNeedsAllowance}
+        refresh={refresh}
+      />
+    </div>
   );
 }
