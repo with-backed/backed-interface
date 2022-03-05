@@ -20,7 +20,6 @@ import { formattedAnnualRate } from 'lib/interest';
 import { secondsBigNumToDays } from 'lib/duration';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { LoanFormDisclosure } from '../LoanFormDisclosure';
-import styles from '../LoanForm.module.css';
 
 type LoanFormAwaitingProps = {
   loan: Loan;
@@ -117,75 +116,69 @@ export function LoanFormAwaiting({
   );
 
   return (
-    <div className={styles.marginTop}>
-      <LoanFormDisclosure title={'Loan'} rightColContent={FormExplainer}>
-        {/* `underwrite` is any due to some automatic conversion of number values, which contradict the types */}
-        <Form
-          onSubmit={handleSubmit(underwrite as any)}
-          autoComplete="off"
-          // TODO: fix this style
-          style={{ marginTop: 'calc(var(--gap) / 2)' }}>
-          <label htmlFor="amount">
-            <span>Amount</span>
-            <Input
-              id="loanAmount"
-              placeholder="0"
-              type="text"
-              color="dark"
-              unit={loan.loanAssetSymbol}
-              aria-invalid={!!errors.loanAmount}
-              onFocus={() => send('LOAN_AMOUNT')}
-              {...register('loanAmount', {
-                onBlur: handleBlur,
-              })}
-            />
-          </label>
-
-          <label htmlFor="duration">
-            <span>Duration</span>
-            <Input
-              id="duration"
-              placeholder="0"
-              type="text"
-              color="dark"
-              unit="Days"
-              aria-invalid={!!errors.duration}
-              onFocus={() => send('DURATION')}
-              {...register('duration', { onBlur: handleBlur })}
-            />
-          </label>
-
-          <label htmlFor="interestRate">
-            <span>Interest Rate</span>
-            <Input
-              id="interestRate"
-              placeholder="0"
-              type="text"
-              color="dark"
-              unit="%"
-              aria-invalid={!!errors.interestRate}
-              onFocus={() => send('INTEREST_RATE')}
-              {...register('interestRate', { onBlur: handleBlur })}
-            />
-          </label>
-
-          <AllowButton
-            contractAddress={loan.loanAssetContractAddress}
-            symbol={loan.loanAssetSymbol}
-            callback={() => setNeedsAllowance(false)}
-            done={!needsAllowance}
+    <LoanFormDisclosure title={'Loan'} rightColContent={FormExplainer}>
+      {/* `underwrite` is any due to some automatic conversion of number values, which contradict the types */}
+      <Form onSubmit={handleSubmit(underwrite as any)} autoComplete="off">
+        <label htmlFor="amount">
+          <span>Amount</span>
+          <Input
+            id="loanAmount"
+            placeholder="0"
+            type="text"
+            color="dark"
+            unit={loan.loanAssetSymbol}
+            aria-invalid={!!errors.loanAmount}
+            onFocus={() => send('LOAN_AMOUNT')}
+            {...register('loanAmount', {
+              onBlur: handleBlur,
+            })}
           />
-          <TransactionButton
-            id="Lend"
-            text="Mint Lending Ticket"
-            type="submit"
-            txHash={txHash}
-            isPending={transactionPending}
-            disabled={needsAllowance || Object.keys(errors).length > 0}
-            onMouseEnter={() => send('LEND_HOVER')}
+        </label>
+
+        <label htmlFor="duration">
+          <span>Duration</span>
+          <Input
+            id="duration"
+            placeholder="0"
+            type="text"
+            color="dark"
+            unit="Days"
+            aria-invalid={!!errors.duration}
+            onFocus={() => send('DURATION')}
+            {...register('duration', { onBlur: handleBlur })}
           />
-        </Form>
-      </LoanFormDisclosure>
-    </div>
+        </label>
+
+        <label htmlFor="interestRate">
+          <span>Interest Rate</span>
+          <Input
+            id="interestRate"
+            placeholder="0"
+            type="text"
+            color="dark"
+            unit="%"
+            aria-invalid={!!errors.interestRate}
+            onFocus={() => send('INTEREST_RATE')}
+            {...register('interestRate', { onBlur: handleBlur })}
+          />
+        </label>
+
+        <AllowButton
+          contractAddress={loan.loanAssetContractAddress}
+          symbol={loan.loanAssetSymbol}
+          callback={() => setNeedsAllowance(false)}
+          done={!needsAllowance}
+        />
+        <TransactionButton
+          id="Lend"
+          text="Mint Lending Ticket"
+          type="submit"
+          txHash={txHash}
+          isPending={transactionPending}
+          disabled={needsAllowance || Object.keys(errors).length > 0}
+          onMouseEnter={() => send('LEND_HOVER')}
+        />
+      </Form>
+    </LoanFormDisclosure>
   );
 }

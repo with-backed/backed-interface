@@ -1,0 +1,10 @@
+@value wrapper as LoanFormWrapper from "../LoanForm.module.css";
+@value form from "../../Form/Form.module.css";
+
+.left-col-wrapper {
+  composes: form;
+}
+
+.wrapper {
+  composes: LoanFormWrapper;
+}

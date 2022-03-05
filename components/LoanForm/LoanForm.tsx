@@ -13,7 +13,7 @@ import { LoanFormRepay } from './LoanFormRepay';
 import { LoanFormEarlyClosure } from './LoanFormEarlyClosure';
 import { LoanFormSeizeCollateral } from './LoanFormSeizeCollateral';
 import styles from './LoanForm.module.css';
-import { Button, CompletedButton } from '../Button';
+import { Button } from '../Button';
 import { useLoanViewerRole } from '../../hooks/useLoanViewerRole';
 
 type LoanFormProps = {
@@ -55,8 +55,6 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
   }
 
   if (!account) {
-    // TODO: what about the case of "Past Due" here
-    console.log('not logged in');
     return (
       <div className={styles.wrapper}>
         <Button disabled>{loan.lender ? 'Offer better terms' : 'Lend'}</Button>
@@ -72,7 +70,6 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
     viewerIsLender
   ) {
     if (viewerIsLender) {
-      console.log('loan form sieze collateral');
       return (
         <div className={styles.wrapper}>
           <LoanFormSeizeCollateral loan={loan} refresh={refresh} />
@@ -83,7 +80,6 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
   }
 
   if (loan.lastAccumulatedTimestamp.eq(0) && viewerIsBorrower) {
-    console.log('loan form early closure');
     return (
       <div className={styles.wrapper}>
         <LoanFormEarlyClosure loan={loan} refresh={refresh} />
@@ -91,7 +87,6 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
     );
   }
 
-  // TODO: is this the same check as loan.lender?
   if (loan.lastAccumulatedTimestamp.eq(0)) {
     return (
       <div className={styles['mt-gap']}>
@@ -106,7 +101,6 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
   }
 
   if (viewerIsBorrower) {
-    console.log('loan form repay');
     return (
       <>
         <div className={styles['mt-gap']}>
@@ -126,7 +120,6 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
     // TODO: if viewer is the lender do we want to do anything else here?
     <>
       <div className={styles['mt-gap']}>
-        {() => console.log('offer better terms')}
         <LoanFormBetterTerms
           loan={loan}
           needsAllowance={needsAllowance}
