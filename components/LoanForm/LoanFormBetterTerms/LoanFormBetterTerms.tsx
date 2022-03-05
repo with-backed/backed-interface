@@ -196,7 +196,7 @@ export function LoanFormBetterTerms({
         />
         <TransactionButton
           id="Lend"
-          text="Offer Better Terms"
+          text="Mint Lending Ticket"
           type="submit"
           txHash={txHash}
           isPending={transactionPending}
