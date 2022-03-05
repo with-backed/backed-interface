@@ -3,12 +3,12 @@ import { useMemo } from 'react';
 
 export const useLoanViewerRole = (loan: Loan, account?: string | null) =>
   useMemo(() => {
-    switch (account?.toUpperCase()) {
-      case loan.borrower.toUpperCase():
-        return 'borrower';
-      case loan.lender?.toUpperCase():
-        return 'lender';
-      default:
-        return null;
+    if (!account) {
+      return null;
+    } else if (account.toUpperCase() === loan.lender?.toUpperCase()) {
+      return 'lender';
+    } else if (account.toUpperCase() === loan.borrower.toUpperCase()) {
+      return 'borrower';
     }
+    return null;
   }, [account, loan.lender, loan.borrower]);
