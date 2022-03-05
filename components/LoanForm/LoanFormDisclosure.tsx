@@ -1,4 +1,7 @@
-import { Disclosure as ReakitDisclosure, DisclosureContent } from 'reakit';
+import {
+  Disclosure as ReakitDisclosure,
+  DisclosureContent,
+} from 'reakit/Disclosure';
 import { useDisclosureState } from 'reakit/Disclosure';
 import buttonStyles from '../Button/Button.module.css';
 import formStyles from '../Form/Form.module.css';
