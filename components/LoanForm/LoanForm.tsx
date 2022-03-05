@@ -13,8 +13,8 @@ import { LoanFormRepay } from './LoanFormRepay';
 import { LoanFormEarlyClosure } from './LoanFormEarlyClosure';
 import { LoanFormSeizeCollateral } from './LoanFormSeizeCollateral';
 import styles from './LoanForm.module.css';
-import { Button } from '../Button';
-import { useLoanViewerRole } from '../../hooks/useLoanViewerRole';
+import { Button } from 'components/Button';
+import { useLoanViewerRole } from 'hooks/useLoanViewerRole';
 
 type LoanFormProps = {
   loan: Loan;
