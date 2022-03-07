@@ -24,13 +24,21 @@ export default async function handler(
     const { liquidationOccurringLoans, liquidationOccurredLoans } =
       await getLiquidatedLoansForTimestamp(currentTimestamp);
 
-    for (let i = 0; i < liquidationOccurringLoans.length; i++) {
-      const loan = liquidationOccurringLoans[i];
+    for (
+      let loanIndex = 0;
+      loanIndex < liquidationOccurringLoans.length;
+      loanIndex++
+    ) {
+      const loan = liquidationOccurringLoans[loanIndex];
       const notificationRequestsBorrower =
         await getNotificationRequestsForAddress(loan.borrowTicketHolder);
-      for (let i = 0; i < notificationRequestsBorrower.length; i++) {
+      for (
+        let notificationIndex = 0;
+        notificationIndex < notificationRequestsBorrower.length;
+        notificationIndex++
+      ) {
         await sendEmail(
-          notificationRequestsBorrower[i].deliveryDestination,
+          notificationRequestsBorrower[notificationIndex].deliveryDestination,
           'LiquidationOccurringBorrower',
           loan,
         );
@@ -38,22 +46,34 @@ export default async function handler(
 
       const notificationRequestsLender =
         await getNotificationRequestsForAddress(loan.lendTicketHolder);
-      for (let i = 0; i < notificationRequestsBorrower.length; i++) {
+      for (
+        let notificationIndex = 0;
+        notificationIndex < notificationRequestsBorrower.length;
+        notificationIndex++
+      ) {
         await sendEmail(
-          notificationRequestsLender[i].deliveryDestination,
+          notificationRequestsLender[notificationIndex].deliveryDestination,
           'LiquidationOccurringLender',
           loan,
         );
       }
     }
 
-    for (let i = 0; i < liquidationOccurredLoans.length; i++) {
-      const loan = liquidationOccurredLoans[i];
+    for (
+      let loanIndex = 0;
+      loanIndex < liquidationOccurredLoans.length;
+      loanIndex++
+    ) {
+      const loan = liquidationOccurredLoans[loanIndex];
       const notificationRequestsBorrower =
         await getNotificationRequestsForAddress(loan.borrowTicketHolder);
-      for (let i = 0; i < notificationRequestsBorrower.length; i++) {
+      for (
+        let notificationIndex = 0;
+        notificationIndex < notificationRequestsBorrower.length;
+        notificationIndex++
+      ) {
         await sendEmail(
-          notificationRequestsBorrower[i].deliveryDestination,
+          notificationRequestsBorrower[notificationIndex].deliveryDestination,
           'LiquidationOccurredBorrower',
           loan,
         );
@@ -61,9 +81,13 @@ export default async function handler(
 
       const notificationRequestsLender =
         await getNotificationRequestsForAddress(loan.lendTicketHolder);
-      for (let i = 0; i < notificationRequestsBorrower.length; i++) {
+      for (
+        let notificationIndex = 0;
+        notificationIndex < notificationRequestsBorrower.length;
+        notificationIndex++
+      ) {
         await sendEmail(
-          notificationRequestsLender[i].deliveryDestination,
+          notificationRequestsLender[notificationIndex].deliveryDestination,
           'LiquidationOccurredLender',
           loan,
         );
