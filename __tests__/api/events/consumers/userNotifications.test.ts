@@ -7,10 +7,14 @@ import {
   NotificationTriggerType,
   NotificationMethod,
 } from 'lib/notifications/shared';
+import { nftBackedLoansClient } from 'lib/urql';
 import { createMocks } from 'node-mocks-http';
-import handler from 'pages/api/events/cron/[event]';
+import handler from 'pages/api/events/consumers/userNotifications';
 
-const subgraphLoanCopy = Object.assign({}, subgraphLoan);
+const subgraphLoanCopy = {
+  ...subgraphLoan,
+  lendTicketHolder: ethers.Wallet.createRandom().address.toLowerCase(),
+};
 subgraphLoanCopy.lendTicketHolder =
   ethers.Wallet.createRandom().address.toLowerCase();
 
@@ -18,21 +22,25 @@ const event: NotificationTriggerType = 'All';
 const notificationMethod = NotificationMethod.EMAIL;
 const notificationDestination = 'adamgobes@gmail.com';
 
-const notificationReqBorrower: NotificationRequest = {
+const returnedNotificationRequest: NotificationRequest = {
   id: 1,
-  ethAddress: subgraphLoanCopy.borrowTicketHolder,
+  ethAddress: '', // we don't care what this is for these tests
   deliveryDestination: notificationDestination,
   deliveryMethod: notificationMethod,
   event,
 };
 
-const notificationReqLender: NotificationRequest = {
-  id: 1,
-  ethAddress: subgraphLoanCopy.lendTicketHolder,
-  deliveryDestination: notificationDestination,
-  deliveryMethod: notificationMethod,
-  event,
-};
+jest.mock('lib/urql', () => ({
+  ...jest.requireActual('lib/urql'),
+  nftBackedLoansClient: {
+    query: jest.fn(),
+  },
+}));
+
+const mockedNftBackedLoansClientQuery =
+  nftBackedLoansClient.query as jest.MockedFunction<
+    typeof nftBackedLoansClient.query
+  >;
 
 jest.mock('lib/notifications/emails', () => ({
   sendEmail: jest.fn(),
@@ -49,55 +57,20 @@ const mockedGetNotificationsCall =
 
 const mockedSendEmailCall = sendEmail as jest.MockedFunction<typeof sendEmail>;
 
-describe('/api/events/cron/[event]', () => {
+describe('/api/events/[event]', () => {
   beforeEach(async () => {
     jest.clearAllMocks();
-    mockedGetNotificationsCall.mockResolvedValueOnce([notificationReqBorrower]);
-    mockedGetNotificationsCall.mockResolvedValueOnce([notificationReqLender]);
+    mockedGetNotificationsCall.mockResolvedValue([returnedNotificationRequest]);
     mockedSendEmailCall.mockResolvedValue();
   });
 
-  describe('LiquidationOccurringBorrower', () => {
-    it('makes call to the graph, gets notifications associated with address, and sends email', async () => {
+  describe('BuyoutEvent', () => {
+    it('gets notifications associated with address, and sends email', async () => {
       const { req, res } = createMocks({
         method: 'POST',
-        query: {
-          event: 'LiquidationOccurringBorrower',
-        },
         body: {
-          loan: subgraphLoanCopy,
-        },
-      });
-
-      await handler(req, res);
-
-      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
-      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
-        subgraphLoanCopy.borrowTicketHolder,
-      );
-
-      expect(sendEmail).toHaveBeenCalledTimes(1);
-      expect(sendEmail).toHaveBeenCalledWith(
-        notificationDestination,
-        'LiquidationOccurringBorrower',
-        subgraphLoanCopy,
-      );
-
-      expect(res._getStatusCode()).toBe(200);
-      expect(JSON.parse(res._getData())).toEqual(
-        `notifications successfully sent`,
-      );
-    });
-  });
-
-  describe('LiquidationOccurringLender', () => {
-    it('makes call to the graph, gets notifications associated with address, and sends email', async () => {
-      const { req, res } = createMocks({
-        method: 'POST',
-        query: {
-          event: 'LiquidationOccurringLender',
-        },
-        body: {
+          event: 'BuyoutEvent',
+          involvedAddress: subgraphLoanCopy.lendTicketHolder,
           loan: subgraphLoanCopy,
         },
       });
@@ -112,25 +85,32 @@ describe('/api/events/cron/[event]', () => {
       expect(sendEmail).toHaveBeenCalledTimes(1);
       expect(sendEmail).toHaveBeenCalledWith(
         notificationDestination,
-        'LiquidationOccurringLender',
+        'BuyoutEvent',
         subgraphLoanCopy,
+        false,
       );
 
       expect(res._getStatusCode()).toBe(200);
       expect(JSON.parse(res._getData())).toEqual(
-        `notifications successfully sent`,
+        `notifications successfully sent to ${subgraphLoanCopy.lendTicketHolder}`,
       );
     });
   });
 
-  describe('LiquidationOccurredBorrower', () => {
-    it('makes call to the graph, gets notifications associated with address, and sends email', async () => {
+  describe('LendEvent', () => {
+    it('gets notifications associated with address, and sends email when loan does not have previous lender', async () => {
+      mockedNftBackedLoansClientQuery.mockReturnValueOnce({
+        toPromise: async () => ({
+          data: {
+            buyoutEvent: null,
+          },
+        }),
+      } as any);
       const { req, res } = createMocks({
         method: 'POST',
-        query: {
-          event: 'LiquidationOccurredBorrower',
-        },
         body: {
+          event: 'LendEvent',
+          involvedAddress: subgraphLoanCopy.borrowTicketHolder,
           loan: subgraphLoanCopy,
         },
       });
@@ -145,25 +125,66 @@ describe('/api/events/cron/[event]', () => {
       expect(sendEmail).toHaveBeenCalledTimes(1);
       expect(sendEmail).toHaveBeenCalledWith(
         notificationDestination,
-        'LiquidationOccurredBorrower',
+        'LendEvent',
         subgraphLoanCopy,
+        false,
       );
 
       expect(res._getStatusCode()).toBe(200);
       expect(JSON.parse(res._getData())).toEqual(
-        `notifications successfully sent`,
+        `notifications successfully sent to ${subgraphLoanCopy.borrowTicketHolder}`,
+      );
+    });
+
+    it('gets notifications associated with address, and sends email when loan does previous lender', async () => {
+      mockedNftBackedLoansClientQuery.mockReturnValueOnce({
+        toPromise: async () => ({
+          data: {
+            buyoutEvent: {
+              lendTicketHolder: subgraphLoanCopy.lendTicketHolder,
+              loan: subgraphLoanCopy,
+            },
+          },
+        }),
+      } as any);
+      const { req, res } = createMocks({
+        method: 'POST',
+        body: {
+          event: 'LendEvent',
+          involvedAddress: subgraphLoanCopy.borrowTicketHolder,
+          loan: subgraphLoanCopy,
+        },
+      });
+
+      await handler(req, res);
+
+      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
+      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
+        subgraphLoanCopy.borrowTicketHolder,
+      );
+
+      expect(sendEmail).toHaveBeenCalledTimes(1);
+      expect(sendEmail).toHaveBeenCalledWith(
+        notificationDestination,
+        'LendEvent',
+        subgraphLoanCopy,
+        true,
+      );
+
+      expect(res._getStatusCode()).toBe(200);
+      expect(JSON.parse(res._getData())).toEqual(
+        `notifications successfully sent to ${subgraphLoanCopy.borrowTicketHolder}`,
       );
     });
   });
 
-  describe('LiquidationOccurredLender', () => {
-    it('makes call to the graph, gets notifications associated with address, and sends email', async () => {
+  describe('RepaymentEvent', () => {
+    it('gets notifications associated with address, and sends email', async () => {
       const { req, res } = createMocks({
         method: 'POST',
-        query: {
-          event: 'LiquidationOccurredLender',
-        },
         body: {
+          event: 'RepaymentEvent',
+          involvedAddress: subgraphLoanCopy.lendTicketHolder,
           loan: subgraphLoanCopy,
         },
       });
@@ -178,13 +199,47 @@ describe('/api/events/cron/[event]', () => {
       expect(sendEmail).toHaveBeenCalledTimes(1);
       expect(sendEmail).toHaveBeenCalledWith(
         notificationDestination,
-        'LiquidationOccurredLender',
+        'RepaymentEvent',
         subgraphLoanCopy,
+        false,
       );
 
       expect(res._getStatusCode()).toBe(200);
       expect(JSON.parse(res._getData())).toEqual(
-        `notifications successfully sent`,
+        `notifications successfully sent to ${subgraphLoanCopy.lendTicketHolder}`,
+      );
+    });
+  });
+
+  describe('CollateralSeizureEvent', () => {
+    it('gets notifications associated with address, and sends email', async () => {
+      const { req, res } = createMocks({
+        method: 'POST',
+        body: {
+          event: 'CollateralSeizureEvent',
+          involvedAddress: subgraphLoanCopy.borrowTicketHolder,
+          loan: subgraphLoanCopy,
+        },
+      });
+
+      await handler(req, res);
+
+      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
+      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
+        subgraphLoanCopy.borrowTicketHolder,
+      );
+
+      expect(sendEmail).toHaveBeenCalledTimes(1);
+      expect(sendEmail).toHaveBeenCalledWith(
+        notificationDestination,
+        'CollateralSeizureEvent',
+        subgraphLoanCopy,
+        false,
+      );
+
+      expect(res._getStatusCode()).toBe(200);
+      expect(JSON.parse(res._getData())).toEqual(
+        `notifications successfully sent to ${subgraphLoanCopy.borrowTicketHolder}`,
       );
     });
   });
