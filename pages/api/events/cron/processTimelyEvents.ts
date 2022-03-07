@@ -6,7 +6,6 @@ import { Loan } from 'types/generated/graphql/nftLoans';
 import { NotificationRequest } from '@prisma/client';
 import { getLiquidatedLoansForTimestamp } from 'lib/events/cron/timely';
 
-// TODO(adamgobes): Rename this API route to be more specific to liquidations
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<string>,
