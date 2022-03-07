@@ -1,4 +1,4 @@
-name: sqs-consumer-cron
+name: process-on-chain-events-cron
 on:
   schedule:
     - cron: "*/5 * * * *" # every 5 minutes
@@ -6,8 +6,8 @@ jobs:
   cron:
     runs-on: ubuntu-latest
     steps:
-      - name: Call our notifications sqs consumer api
+      - name: Call our sqs consumer api to process new on chain events
         run: |
           curl --request POST \
-          --url 'https://nft-pawn-shop-rinkeby.vercel.app/api/cron/sqsConsumer' \
+          --url 'https://nft-pawn-shop-rinkeby.vercel.app/api/cron/processNewOnchainEvents' \
           --header 'Authorization: Bearer ${{ secrets.NOTIFICATIONS_CRON_API_SECRET_KEY }}'

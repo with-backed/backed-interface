@@ -19,8 +19,8 @@ export default async function handler(
   }
 
   try {
-    const { event } = req.query as { event: EventAsStringType };
-    const { involvedAddress, loan, txHash } = req.body as {
+    const { involvedAddress, loan, txHash, event } = req.body as {
+      event: EventAsStringType;
       involvedAddress: string;
       loan: Loan;
       txHash: string;

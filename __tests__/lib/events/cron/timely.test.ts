@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { getLoansExpiringWithin } from 'lib/loans/subgraph/subgraphLoans';
 import { subgraphLoan } from 'lib/mockData';
-import { main } from 'lib/notifications/cron/dailyCron';
+import { getLiquidatedLoansForTimestamp } from 'lib/events/cron/timely';
 import fetchMock from 'jest-fetch-mock';
 import {
   getLastWrittenTimestamp,
@@ -15,14 +15,17 @@ let now =
 const future =
   now + parseInt(process.env.NEXT_PUBLIC_NOTIFICATIONS_FREQUENCY_HOURS!) * 3600;
 
-const aboutToExpireLoan = Object.assign({}, subgraphLoan);
+const aboutToExpireLoan = {
+  ...subgraphLoan,
+  borrowTicketHolder: ethers.Wallet.createRandom().address.toLowerCase(),
+  lendTicketHolder: ethers.Wallet.createRandom().address.toLowerCase(),
+};
 
-aboutToExpireLoan.borrowTicketHolder =
-  ethers.Wallet.createRandom().address.toLowerCase();
-aboutToExpireLoan.lendTicketHolder =
-  ethers.Wallet.createRandom().address.toLowerCase();
-
-const alreadyExpiredLoan = Object.assign({}, subgraphLoan);
+const alreadyExpiredLoan = {
+  ...subgraphLoan,
+  borrowTicketHolder: ethers.Wallet.createRandom().address.toLowerCase(),
+  lendTicketHolder: ethers.Wallet.createRandom().address.toLowerCase(),
+};
 
 alreadyExpiredLoan.borrowTicketHolder =
   ethers.Wallet.createRandom().address.toLowerCase();
@@ -50,7 +53,7 @@ const mockedGetLastWrittenTimestampCall =
     typeof getLastWrittenTimestamp
   >;
 
-describe('daily cron job', () => {
+describe('getLiquidatedLoansForTimestamp', () => {
   beforeEach(async () => {
     jest.clearAllMocks();
     mockedGetExpiringLoansCall.mockResolvedValueOnce([aboutToExpireLoan]);
@@ -59,48 +62,17 @@ describe('daily cron job', () => {
     mockedGetLastWrittenTimestampCall.mockResolvedValue(lastRun);
   });
 
-  it('makes call to get expiring loans with correct params and then calls /LiquidationOccurring and /LiquidationOccurred', async () => {
+  it('makes call to get expiring loans with correct params', async () => {
     fetchMock.mockResponse('success');
-    await main(now);
+
+    const { liquidationOccurringLoans, liquidationOccurredLoans } =
+      await getLiquidatedLoansForTimestamp(now);
 
     expect(mockedGetExpiringLoansCall).toHaveBeenCalledTimes(2);
     expect(mockedGetExpiringLoansCall).toHaveBeenCalledWith(now, future);
     expect(mockedGetExpiringLoansCall).toHaveBeenCalledWith(lastRun, now);
 
-    expect(fetchMock).toHaveBeenCalledTimes(4);
-
-    expect(fetchMock).toHaveBeenCalledWith(
-      `${process.env
-        .NEXT_PUBLIC_PAWN_SHOP_API_URL!}/api/events/cron/LiquidationOccurringBorrower`,
-      {
-        body: JSON.stringify({ loan: aboutToExpireLoan }),
-        method: 'POST',
-      },
-    );
-    expect(fetchMock).toHaveBeenCalledWith(
-      `${process.env
-        .NEXT_PUBLIC_PAWN_SHOP_API_URL!}/api/events/cron/LiquidationOccurringLender`,
-      {
-        body: JSON.stringify({ loan: aboutToExpireLoan }),
-        method: 'POST',
-      },
-    );
-
-    expect(fetchMock).toHaveBeenCalledWith(
-      `${process.env
-        .NEXT_PUBLIC_PAWN_SHOP_API_URL!}/api/events/cron/LiquidationOccurredBorrower`,
-      {
-        body: JSON.stringify({ loan: alreadyExpiredLoan }),
-        method: 'POST',
-      },
-    );
-    expect(fetchMock).toHaveBeenCalledWith(
-      `${process.env
-        .NEXT_PUBLIC_PAWN_SHOP_API_URL!}/api/events/cron/LiquidationOccurredLender`,
-      {
-        body: JSON.stringify({ loan: alreadyExpiredLoan }),
-        method: 'POST',
-      },
-    );
+    expect(liquidationOccurringLoans).toEqual([aboutToExpireLoan]);
+    expect(liquidationOccurredLoans).toEqual([alreadyExpiredLoan]);
   });
 });
