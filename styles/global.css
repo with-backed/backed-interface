@@ -1,16 +1,21 @@
 :root {
   /* colors */
   --highlight-clickable-100: #0000ee;
+  --highlight-clickable-50: #adadff;
   --highlight-clickable-20: #d6d6ff;
   --highlight-clickable-10: #e8e5f1;
   --highlight-clickable-5: #f0f0fe;
   --highlight-visited-100: #75187c;
   --highlight-visited-10: #eadbeb;
   --highlight-visited-5: #f7f1f7;
+  --highlight-active-50: #ff7a00;
   --highlight-active-20: #fffb58;
   --highlight-active-10: #fffdba;
-  --highlight-alert-100: #ff4545;
-  --highlight-alert-10: #ffd1d1;
+  --highlight-active-5: #fffbd3;
+  --highlight-alert-100: #ff659c;
+  --highlight-alert-10: #ffeff5;
+  --highlight-success-100: #317049;
+  --highlight-success-10: #e1ffef;
   --neutral-100: #111111;
   --neutral-50: #ab9b96;
   --neutral-30: #ebf9ff;
