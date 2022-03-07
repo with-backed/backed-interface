@@ -14,7 +14,6 @@ import { ethers } from 'ethers';
 import { annualRateToPerSecond, formattedAnnualRate } from 'lib/interest';
 import { daysToSecondsBigNum, secondsBigNumToDays } from 'lib/duration';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { LoanFormDisclosure } from 'components/LoanForm/LoanFormDisclosure';
 
 type LoanFormBetterTermsProps = {
   loan: Loan;
@@ -120,23 +119,8 @@ export function LoanFormBetterTerms({
     }
   }, [send, transactionPending, txHash]);
 
-  const explainerState = current.toStrings()[0];
-  const renderFormExplainer = useCallback(
-    () => (
-      <Explainer
-        form={form}
-        state={explainerState}
-        top={explainerTop}
-        loan={loan}
-      />
-    ),
-    [form, explainerState, explainerTop, loan],
-  );
-
   return (
-    <LoanFormDisclosure
-      title={'Offer better terms'}
-      renderRightCol={renderFormExplainer}>
+    <>
       {/* `underwrite` is any due to some automatic conversion of number values, which contradict the types */}
       <Form onSubmit={handleSubmit(underwrite as any)} autoComplete="off">
         <label htmlFor="amount">
@@ -203,6 +187,12 @@ export function LoanFormBetterTerms({
           onMouseEnter={() => send('LEND_HOVER')}
         />
       </Form>
-    </LoanFormDisclosure>
+      <Explainer
+        form={form}
+        state={current.toStrings()[0]}
+        top={explainerTop}
+        loan={loan}
+      />
+    </>
   );
 }

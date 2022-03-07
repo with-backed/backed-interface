@@ -15,6 +15,7 @@ import { LoanFormSeizeCollateral } from './LoanFormSeizeCollateral';
 import styles from './LoanForm.module.css';
 import { Button } from 'components/Button';
 import { useLoanViewerRole } from 'hooks/useLoanViewerRole';
+import { LoanFormDisclosure } from './LoanFormDisclosure';
 
 type LoanFormProps = {
   loan: Loan;
@@ -89,39 +90,47 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
 
   if (loan.lastAccumulatedTimestamp.eq(0)) {
     return (
-      <div className={styles['mt-gap']}>
-        <LoanFormAwaiting
-          loan={loan}
-          needsAllowance={needsAllowance}
-          setNeedsAllowance={setNeedsAllowance}
-          refresh={refresh}
-        />
-      </div>
+      <LoanFormDisclosure title={'Lend'} className={styles.wrapper}>
+        <div className={styles['form-wrapper']}>
+          <LoanFormAwaiting
+            loan={loan}
+            needsAllowance={needsAllowance}
+            setNeedsAllowance={setNeedsAllowance}
+            refresh={refresh}
+          />
+        </div>
+      </LoanFormDisclosure>
     );
   }
 
   if (viewerIsBorrower) {
     return (
-      <div className={styles['mt-gap']}>
-        <LoanFormRepay
+      <LoanFormDisclosure
+        title={'Repay loan & Claim NFT'}
+        className={styles.wrapper}>
+        <div className={styles['form-wrapper']}>
+          <LoanFormRepay
+            loan={loan}
+            balance={balance}
+            needsAllowance={needsAllowance}
+            setNeedsAllowance={setNeedsAllowance}
+            refresh={refresh}
+          />
+        </div>
+      </LoanFormDisclosure>
+    );
+  }
+
+  return (
+    <LoanFormDisclosure title={'Offer better terms'} className={styles.wrapper}>
+      <div className={styles['form-wrapper']}>
+        <LoanFormBetterTerms
           loan={loan}
-          balance={balance}
           needsAllowance={needsAllowance}
           setNeedsAllowance={setNeedsAllowance}
           refresh={refresh}
         />
       </div>
-    );
-  }
-
-  return (
-    <div className={styles['mt-gap']}>
-      <LoanFormBetterTerms
-        loan={loan}
-        needsAllowance={needsAllowance}
-        setNeedsAllowance={setNeedsAllowance}
-        refresh={refresh}
-      />
-    </div>
+    </LoanFormDisclosure>
   );
 }

@@ -48,10 +48,15 @@ interface DisclosureButtonProps extends ComponentProps<typeof Disclosure> {
 export function DisclosureButton({
   children,
   kind = 'primary',
+  visible,
   ...rest
 }: DisclosureButtonProps) {
   return (
-    <Disclosure as={'button'} className={styles[kind]} {...rest}>
+    <Disclosure
+      as={'button'}
+      role={'disclosure'}
+      className={styles[visible ? 'secondary' : 'primary']}
+      {...rest}>
       {children}
     </Disclosure>
   );

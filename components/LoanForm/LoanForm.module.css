@@ -1,10 +1,15 @@
-.wrapper {
+.base-wrapper {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--gap);
+}
+
+.wrapper {
+  composes: base-wrapper;
   margin-top: var(--gap);
 }
 
-.mt-gap {
-  margin-top: var(--gap);
+.form-wrapper {
+  composes: base-wrapper;
+  margin-top: calc(var(--gap) / 2);
 }

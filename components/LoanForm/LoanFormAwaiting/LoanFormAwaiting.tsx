@@ -14,7 +14,6 @@ import { ethers } from 'ethers';
 import { formattedAnnualRate } from 'lib/interest';
 import { secondsBigNumToDays } from 'lib/duration';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { LoanFormDisclosure } from 'components/LoanForm/LoanFormDisclosure';
 
 type LoanFormAwaitingProps = {
   loan: Loan;
@@ -67,10 +66,12 @@ export function LoanFormAwaiting({
   const [current, send] = useMachine(loanFormAwaitingMachine);
 
   const [explainerTop, setExplainerTop] = useState(0);
+
   useEffect(() => {
     // when there's a form error, the explainer should float by the input with an error.
     const errorTarget = Object.keys(errors)[0];
     const stateTarget = current.toStrings()[0];
+
     const targetID = errorTarget || stateTarget;
     const target = document.getElementById(targetID);
     const container = document.getElementById('container');
@@ -104,14 +105,8 @@ export function LoanFormAwaiting({
     }
   }, [send, transactionPending, txHash]);
 
-  const explainerState = current.toStrings()[0];
-  const renderFormExplainer = useCallback(
-    () => <Explainer form={form} state={explainerState} top={explainerTop} />,
-    [form, explainerState, explainerTop],
-  );
-
   return (
-    <LoanFormDisclosure title={'Loan'} renderRightCol={renderFormExplainer}>
+    <>
       {/* `underwrite` is any due to some automatic conversion of number values, which contradict the types */}
       <Form onSubmit={handleSubmit(underwrite as any)} autoComplete="off">
         <label htmlFor="amount">
@@ -174,6 +169,11 @@ export function LoanFormAwaiting({
           onMouseEnter={() => send('LEND_HOVER')}
         />
       </Form>
-    </LoanFormDisclosure>
+      <Explainer
+        form={form}
+        state={current.toStrings()[0]}
+        top={explainerTop}
+      />
+    </>
   );
 }
