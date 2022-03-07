@@ -41,13 +41,10 @@ export function DialogDisclosureButton({
   );
 }
 
-interface DisclosureButtonProps extends ComponentProps<typeof Disclosure> {
-  kind?: ButtonKind;
-}
+interface DisclosureButtonProps extends ComponentProps<typeof Disclosure> {}
 
 export function DisclosureButton({
   children,
-  kind = 'primary',
   visible,
   ...rest
 }: DisclosureButtonProps) {
@@ -56,6 +53,7 @@ export function DisclosureButton({
       as={'button'}
       role={'disclosure'}
       className={styles[visible ? 'secondary' : 'primary']}
+      visible={visible}
       {...rest}>
       {children}
     </Disclosure>
