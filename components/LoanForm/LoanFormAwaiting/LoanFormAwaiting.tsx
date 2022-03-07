@@ -1,8 +1,4 @@
-import {
-  AllowButton,
-  CompletedButton,
-  TransactionButton,
-} from 'components/Button';
+import { AllowButton, TransactionButton } from 'components/Button';
 import { useLoanUnderwriter } from 'hooks/useLoanUnderwriter';
 import { Loan } from 'types/Loan';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -70,10 +66,12 @@ export function LoanFormAwaiting({
   const [current, send] = useMachine(loanFormAwaitingMachine);
 
   const [explainerTop, setExplainerTop] = useState(0);
+
   useEffect(() => {
     // when there's a form error, the explainer should float by the input with an error.
     const errorTarget = Object.keys(errors)[0];
     const stateTarget = current.toStrings()[0];
+
     const targetID = errorTarget || stateTarget;
     const target = document.getElementById(targetID);
     const container = document.getElementById('container');
@@ -111,8 +109,6 @@ export function LoanFormAwaiting({
     <>
       {/* `underwrite` is any due to some automatic conversion of number values, which contradict the types */}
       <Form onSubmit={handleSubmit(underwrite as any)} autoComplete="off">
-        <CompletedButton buttonText="Lend" />
-
         <label htmlFor="amount">
           <span>Amount</span>
           <Input
@@ -165,7 +161,7 @@ export function LoanFormAwaiting({
         />
         <TransactionButton
           id="Lend"
-          text="Lend"
+          text="Mint Lending Ticket"
           type="submit"
           txHash={txHash}
           isPending={transactionPending}

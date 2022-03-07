@@ -1,8 +1,4 @@
-import {
-  AllowButton,
-  CompletedButton,
-  TransactionButton,
-} from 'components/Button';
+import { AllowButton, TransactionButton } from 'components/Button';
 import { Loan } from 'types/Loan';
 import React, { useCallback, useState } from 'react';
 import { useLoanDetails } from 'hooks/useLoanDetails';
@@ -49,7 +45,6 @@ export function LoanFormRepay({
   return (
     <>
       <Form onSubmit={(e) => e.preventDefault()}>
-        <CompletedButton buttonText="Repay loan & claim NFT" />
         <p>
           The current Payback amount is:
           <br />

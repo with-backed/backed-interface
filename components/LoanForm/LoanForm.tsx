@@ -1,8 +1,7 @@
 import { ethers } from 'ethers';
 import { Loan } from 'types/Loan';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useWeb3 } from 'hooks/useWeb3';
-import { ConnectWallet } from 'components/ConnectWallet';
 import {
   getAccountLoanAssetAllowance,
   getAccountLoanAssetBalance,
@@ -14,6 +13,9 @@ import { LoanFormRepay } from './LoanFormRepay';
 import { LoanFormEarlyClosure } from './LoanFormEarlyClosure';
 import { LoanFormSeizeCollateral } from './LoanFormSeizeCollateral';
 import styles from './LoanForm.module.css';
+import { Button } from 'components/Button';
+import { useLoanViewerRole } from 'hooks/useLoanViewerRole';
+import { LoanFormDisclosure } from './LoanFormDisclosure';
 
 type LoanFormProps = {
   loan: Loan;
@@ -24,10 +26,9 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
   const timestamp = useTimestamp();
   const [balance, setBalance] = useState(0);
   const [needsAllowance, setNeedsAllowance] = useState(true);
-  const viewerIsBorrower = useMemo(
-    () => account?.toUpperCase() === loan.borrower.toUpperCase(),
-    [account, loan.borrower],
-  );
+  const role = useLoanViewerRole(loan, account);
+  const viewerIsBorrower = role === 'borrower';
+  const viewerIsLender = role === 'lender';
 
   useEffect(() => {
     if (account) {
@@ -57,7 +58,7 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
   if (!account) {
     return (
       <div className={styles.wrapper}>
-        <ConnectWallet />
+        <Button disabled>{loan.lender ? 'Offer better terms' : 'Lend'}</Button>
       </div>
     );
   }
@@ -67,9 +68,9 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
     loan.lastAccumulatedTimestamp
       .add(loan.durationSeconds)
       .lte(timestamp || 0) &&
-    account === loan.lender
+    viewerIsLender
   ) {
-    if (account.toUpperCase() === loan.lender?.toUpperCase()) {
+    if (viewerIsLender) {
       return (
         <div className={styles.wrapper}>
           <LoanFormSeizeCollateral loan={loan} refresh={refresh} />
@@ -79,10 +80,7 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
     return null;
   }
 
-  if (
-    loan.lastAccumulatedTimestamp.eq(0) &&
-    account.toUpperCase() === loan.borrower.toUpperCase()
-  ) {
+  if (loan.lastAccumulatedTimestamp.eq(0) && viewerIsBorrower) {
     return (
       <div className={styles.wrapper}>
         <LoanFormEarlyClosure loan={loan} refresh={refresh} />
@@ -92,39 +90,47 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
 
   if (loan.lastAccumulatedTimestamp.eq(0)) {
     return (
-      <div className={styles.wrapper}>
-        <LoanFormAwaiting
-          loan={loan}
-          needsAllowance={needsAllowance}
-          setNeedsAllowance={setNeedsAllowance}
-          refresh={refresh}
-        />
-      </div>
+      <LoanFormDisclosure title={'Lend'} className={styles.wrapper}>
+        <div className={styles['form-wrapper']}>
+          <LoanFormAwaiting
+            loan={loan}
+            needsAllowance={needsAllowance}
+            setNeedsAllowance={setNeedsAllowance}
+            refresh={refresh}
+          />
+        </div>
+      </LoanFormDisclosure>
     );
   }
 
   if (viewerIsBorrower) {
     return (
-      <div className={styles.wrapper}>
-        <LoanFormRepay
+      <LoanFormDisclosure
+        title={'Repay loan & Claim NFT'}
+        className={styles.wrapper}>
+        <div className={styles['form-wrapper']}>
+          <LoanFormRepay
+            loan={loan}
+            balance={balance}
+            needsAllowance={needsAllowance}
+            setNeedsAllowance={setNeedsAllowance}
+            refresh={refresh}
+          />
+        </div>
+      </LoanFormDisclosure>
+    );
+  }
+
+  return (
+    <LoanFormDisclosure title={'Offer better terms'} className={styles.wrapper}>
+      <div className={styles['form-wrapper']}>
+        <LoanFormBetterTerms
           loan={loan}
-          balance={balance}
           needsAllowance={needsAllowance}
           setNeedsAllowance={setNeedsAllowance}
           refresh={refresh}
         />
       </div>
-    );
-  }
-
-  return (
-    <div className={styles.wrapper}>
-      <LoanFormBetterTerms
-        loan={loan}
-        needsAllowance={needsAllowance}
-        setNeedsAllowance={setNeedsAllowance}
-        refresh={refresh}
-      />
-    </div>
+    </LoanFormDisclosure>
   );
 }

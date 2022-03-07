@@ -1,4 +1,4 @@
-export { Button, DialogDisclosureButton } from './Button';
+export { Button, DialogDisclosureButton, DisclosureButton } from './Button';
 export { WalletButton } from './WalletButton';
 export { CompletedButton } from './CompletedButton';
 export { ButtonLink } from './ButtonLink';

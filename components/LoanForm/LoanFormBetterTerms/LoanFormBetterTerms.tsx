@@ -1,8 +1,4 @@
-import {
-  AllowButton,
-  CompletedButton,
-  TransactionButton,
-} from 'components/Button';
+import { AllowButton, TransactionButton } from 'components/Button';
 import { useLoanUnderwriter } from 'hooks/useLoanUnderwriter';
 import { Loan } from 'types/Loan';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -127,8 +123,6 @@ export function LoanFormBetterTerms({
     <>
       {/* `underwrite` is any due to some automatic conversion of number values, which contradict the types */}
       <Form onSubmit={handleSubmit(underwrite as any)} autoComplete="off">
-        <CompletedButton buttonText="Lend" />
-
         <label htmlFor="amount">
           <span>Amount</span>
           <Input
@@ -181,7 +175,7 @@ export function LoanFormBetterTerms({
         />
         <TransactionButton
           id="Lend"
-          text="Lend"
+          text="Mint Lending Ticket"
           type="submit"
           txHash={txHash}
           isPending={transactionPending}
