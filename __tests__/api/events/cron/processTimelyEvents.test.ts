@@ -1,13 +1,13 @@
 import { NotificationRequest } from '@prisma/client';
 import { ethers } from 'ethers';
 import { subgraphLoan } from 'lib/mockData';
-import { getLiquidatedLoansForTimestamp } from 'lib/events/cron/timely';
-import { sendEmail } from 'lib/notifications/emails';
-import { getNotificationRequestsForAddress } from 'lib/notifications/repository';
+import { getLiquidatedLoansForTimestamp } from 'lib/events/timely/timely';
+import { sendEmail } from 'lib/events/consumers/userNotifications/emails';
+import { getNotificationRequestsForAddress } from 'lib/events/consumers/userNotifications/repository';
 import {
   NotificationTriggerType,
   NotificationMethod,
-} from 'lib/notifications/shared';
+} from 'lib/events/consumers/userNotifications/shared';
 import { createMocks } from 'node-mocks-http';
 import handler from 'pages/api/events/cron/processTimelyEvents';
 
@@ -59,15 +59,15 @@ const notificationReqOccurredLender: NotificationRequest = {
   event,
 };
 
-jest.mock('lib/notifications/emails', () => ({
+jest.mock('lib/events/consumers/userNotifications/emails', () => ({
   sendEmail: jest.fn(),
 }));
 
-jest.mock('lib/notifications/repository', () => ({
+jest.mock('lib/events/consumers/userNotifications/repository', () => ({
   getNotificationRequestsForAddress: jest.fn(),
 }));
 
-jest.mock('lib/events/cron/timely', () => ({
+jest.mock('lib/events/timely/timely', () => ({
   getLiquidatedLoansForTimestamp: jest.fn(),
 }));
 

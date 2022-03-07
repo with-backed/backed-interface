@@ -3,7 +3,7 @@ import { Loan } from 'types/generated/graphql/nftLoans';
 import {
   getLastWrittenTimestamp,
   overrideLastWrittenTimestamp,
-} from '../../notifications/repository';
+} from '../consumers/userNotifications/repository';
 
 type LiquidatedLoans = {
   liquidationOccurringLoans: Loan[];

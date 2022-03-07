@@ -1,12 +1,12 @@
 import { NotificationRequest } from '@prisma/client';
 import { ethers } from 'ethers';
 import { subgraphLoan } from 'lib/mockData';
-import { sendEmail } from 'lib/notifications/emails';
-import { getNotificationRequestsForAddress } from 'lib/notifications/repository';
+import { sendEmail } from 'lib/events/consumers/userNotifications/emails';
+import { getNotificationRequestsForAddress } from 'lib/events/consumers/userNotifications/repository';
 import {
   NotificationTriggerType,
   NotificationMethod,
-} from 'lib/notifications/shared';
+} from 'lib/events/consumers/userNotifications/shared';
 import { nftBackedLoansClient } from 'lib/urql';
 import { createMocks } from 'node-mocks-http';
 import handler from 'pages/api/events/consumers/userNotifications';
@@ -42,11 +42,11 @@ const mockedNftBackedLoansClientQuery =
     typeof nftBackedLoansClient.query
   >;
 
-jest.mock('lib/notifications/emails', () => ({
+jest.mock('lib/events/consumers/userNotifications/emails', () => ({
   sendEmail: jest.fn(),
 }));
 
-jest.mock('lib/notifications/repository', () => ({
+jest.mock('lib/events/consumers/userNotifications/repository', () => ({
   getNotificationRequestsForAddress: jest.fn(),
 }));
 

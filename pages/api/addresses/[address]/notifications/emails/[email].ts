@@ -3,13 +3,13 @@ import {
   createNotificationRequestForAddress,
   deleteAllNotificationRequestsForAddress,
   getNumberOfRequestsForNotificationDestination,
-} from 'lib/notifications/repository';
+} from 'lib/events/consumers/userNotifications/repository';
 import { NotificationRequest } from '@prisma/client';
 import {
   NotificationReqBody,
   NotificationMethod,
   NotificationTriggerType,
-} from 'lib/notifications/shared';
+} from 'lib/events/consumers/userNotifications/shared';
 import { generateAddressFromSignedMessage } from 'lib/signedMessages';
 import { ethers } from 'ethers';
 

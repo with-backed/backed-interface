@@ -1,10 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getNotificationRequestsForAddress } from 'lib/notifications/repository';
-import { sendEmail } from 'lib/notifications/emails';
-import { NotificationTriggerType } from 'lib/notifications/shared';
+import { getNotificationRequestsForAddress } from 'lib/events/consumers/userNotifications/repository';
+import { sendEmail } from 'lib/events/consumers/userNotifications/emails';
+import { NotificationTriggerType } from 'lib/events/consumers/userNotifications/shared';
 import { Loan } from 'types/generated/graphql/nftLoans';
 import { NotificationRequest } from '@prisma/client';
-import { getLiquidatedLoansForTimestamp } from 'lib/events/cron/timely';
+import { getLiquidatedLoansForTimestamp } from 'lib/events/timely/timely';
 
 export default async function handler(
   req: NextApiRequest,
