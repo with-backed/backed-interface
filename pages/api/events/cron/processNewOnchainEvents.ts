@@ -1,4 +1,4 @@
-import { main } from 'lib/notifications/cron/sqsConsumer';
+import { main } from 'lib/events/sqs/consumer';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(

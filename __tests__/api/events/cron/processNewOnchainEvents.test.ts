@@ -1,8 +1,8 @@
-import { main } from 'lib/notifications/cron/sqsConsumer';
+import { main } from 'lib/events/sqs/consumer';
 import { createMocks } from 'node-mocks-http';
 import handler from 'pages/api/events/cron/processNewOnchainEvents';
 
-jest.mock('lib/notifications/cron/sqsConsumer', () => ({
+jest.mock('lib/events/sqs/consumer', () => ({
   main: jest.fn(),
 }));
 

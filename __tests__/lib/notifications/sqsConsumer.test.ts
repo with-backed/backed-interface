@@ -1,9 +1,9 @@
 import { ethers } from 'ethers';
 import { subgraphLoan } from 'lib/mockData';
-import { main } from 'lib/notifications/cron/sqsConsumer';
-import { NotificationTriggerType } from 'lib/notifications/shared';
-import { pushEventForProcessing } from 'lib/notifications/sns';
-import { deleteMessage, receiveMessages } from 'lib/notifications/sqs';
+import { main } from 'lib/events/sqs/consumer';
+import { NotificationTriggerType } from 'lib/events/consumers/userNotifications/shared';
+import { pushEventForProcessing } from 'lib/events/sns/helpers';
+import { deleteMessage, receiveMessages } from 'lib/events/sqs/helpers';
 import { nftBackedLoansClient } from 'lib/urql';
 
 const subgraphLoanCopy = {
@@ -13,12 +13,12 @@ const subgraphLoanCopy = {
 subgraphLoanCopy.lendTicketHolder =
   ethers.Wallet.createRandom().address.toLowerCase();
 
-jest.mock('lib/notifications/sqs', () => ({
+jest.mock('lib/events/sqs/helpers', () => ({
   receiveMessages: jest.fn(),
   deleteMessage: jest.fn(),
 }));
 
-jest.mock('lib/notifications/sns', () => ({
+jest.mock('lib/events/sns/helpers', () => ({
   pushEventForProcessing: jest.fn(),
 }));
 

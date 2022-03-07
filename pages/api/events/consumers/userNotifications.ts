@@ -4,8 +4,8 @@ import {
   BuyoutByTransactionHashQuery,
   Loan,
 } from 'types/generated/graphql/nftLoans';
-import { getNotificationRequestsForAddress } from 'lib/notifications/repository';
-import { sendEmail } from 'lib/notifications/emails';
+import { getNotificationRequestsForAddress } from 'lib/events/consumers/userNotifications/repository';
+import { sendEmail } from 'lib/events/consumers/userNotifications/emails';
 import { EventAsStringType } from 'types/Event';
 import { nftBackedLoansClient } from 'lib/urql';
 

@@ -1,6 +1,6 @@
 import { subgraphEventFromTxHash } from 'lib/eventsHelpers';
-import { pushEventForProcessing } from '../sns';
-import { deleteMessage, receiveMessages } from '../sqs';
+import { pushEventForProcessing } from '../sns/helpers';
+import { deleteMessage, receiveMessages } from './helpers';
 
 export async function main() {
   let notificationEventMessages = await receiveMessages();

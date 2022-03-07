@@ -5,11 +5,11 @@ import {
   getLastWrittenTimestamp,
   getNotificationRequestsForAddress,
   overrideLastWrittenTimestamp,
-} from 'lib/notifications/repository';
+} from 'lib/events/consumers/userNotifications/repository';
 import {
   NotificationTriggerType,
   NotificationMethod,
-} from 'lib/notifications/shared';
+} from 'lib/events/consumers/userNotifications/shared';
 
 const address = '0x7e6463782b87c57cffa6af66e7c2de64e97d1866';
 const event: NotificationTriggerType = 'All';

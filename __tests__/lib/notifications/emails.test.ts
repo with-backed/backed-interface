@@ -1,7 +1,7 @@
 import { subgraphLoan } from 'lib/mockData';
-import { sendEmail } from 'lib/notifications/emails';
-import { executeEmailSendWithSes } from 'lib/notifications/ses';
-import { NotificationTriggerType } from 'lib/notifications/shared';
+import { sendEmail } from 'lib/events/consumers/userNotifications/emails';
+import { executeEmailSendWithSes } from 'lib/events/consumers/userNotifications/ses';
+import { NotificationTriggerType } from 'lib/events/consumers/userNotifications/shared';
 import { nftBackedLoansClient } from 'lib/urql';
 
 jest.mock('lib/urql', () => ({
@@ -16,7 +16,7 @@ const mockedNftBackedLoansClientQuery =
     typeof nftBackedLoansClient.query
   >;
 
-jest.mock('lib/notifications/ses', () => ({
+jest.mock('lib/events/consumers/userNotifications/ses', () => ({
   executeEmailSendWithSes: jest.fn(),
 }));
 

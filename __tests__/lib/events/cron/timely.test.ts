@@ -1,12 +1,12 @@
 import { ethers } from 'ethers';
 import { getLoansExpiringWithin } from 'lib/loans/subgraph/subgraphLoans';
 import { subgraphLoan } from 'lib/mockData';
-import { getLiquidatedLoansForTimestamp } from 'lib/events/cron/timely';
+import { getLiquidatedLoansForTimestamp } from 'lib/events/timely/timely';
 import fetchMock from 'jest-fetch-mock';
 import {
   getLastWrittenTimestamp,
   overrideLastWrittenTimestamp,
-} from 'lib/notifications/repository';
+} from 'lib/events/consumers/userNotifications/repository';
 
 let lastRun = 1645155901;
 let now =
@@ -36,7 +36,7 @@ jest.mock('lib/loans/subgraph/subgraphLoans', () => ({
   getLoansExpiringWithin: jest.fn(),
 }));
 
-jest.mock('lib/notifications/repository', () => ({
+jest.mock('lib/events/consumers/userNotifications/repository', () => ({
   overrideLastWrittenTimestamp: jest.fn(),
   getLastWrittenTimestamp: jest.fn(),
 }));
