@@ -20,6 +20,8 @@ export default async function handler(
   try {
     const { eventName, event, txHash } = req.body as EventsSNSMessage;
 
+    console.log({ eventName, event, txHash });
+
     let hasPreviousLender = false;
     if (eventName === 'LendEvent') {
       const { data } = await nftBackedLoansClient
