@@ -95,7 +95,11 @@ describe('SQS consumer', () => {
         } as any);
         await main();
         expect(mockedSnsPushCall).toHaveBeenCalledTimes(1);
-        expect(mockedSnsPushCall).toHaveBeenCalledWith(subgraphLoanCopy);
+        expect(mockedSnsPushCall).toHaveBeenCalledWith(
+          'BuyoutEvent',
+          subgraphLoanCopy,
+          'random-tx-hash',
+        );
 
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledTimes(1);
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledWith(
@@ -140,7 +144,11 @@ describe('SQS consumer', () => {
         } as any);
         await main();
         expect(mockedSnsPushCall).toHaveBeenCalledTimes(1);
-        expect(mockedSnsPushCall).toHaveBeenCalledWith(subgraphLoanCopy);
+        expect(mockedSnsPushCall).toHaveBeenCalledWith(
+          'LendEvent',
+          subgraphLoanCopy,
+          'random-tx-hash',
+        );
 
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledTimes(1);
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledWith(
@@ -184,7 +192,11 @@ describe('SQS consumer', () => {
         } as any);
         await main();
         expect(mockedSnsPushCall).toHaveBeenCalledTimes(1);
-        expect(mockedSnsPushCall).toHaveBeenCalledWith(subgraphLoanCopy);
+        expect(mockedSnsPushCall).toHaveBeenCalledWith(
+          'RepaymentEvent',
+          subgraphLoanCopy,
+          'random-tx-hash',
+        );
 
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledTimes(1);
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledWith(
@@ -228,7 +240,11 @@ describe('SQS consumer', () => {
         } as any);
         await main();
         expect(mockedSnsPushCall).toHaveBeenCalledTimes(1);
-        expect(mockedSnsPushCall).toHaveBeenCalledWith(subgraphLoanCopy);
+        expect(mockedSnsPushCall).toHaveBeenCalledWith(
+          'CollateralSeizureEvent',
+          subgraphLoanCopy,
+          'random-tx-hash',
+        );
 
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledTimes(1);
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledWith(

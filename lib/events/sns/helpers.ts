@@ -10,4 +10,18 @@ const snsConfig = {
 };
 
 //TODO(adamgobes): fill this out with actual pushing of message to SNS -- to be implemented in follow up PR
-export function pushEventForProcessing(_loan: Loan) {}
+export async function pushEventForProcessing(
+  eventName: string,
+  loan: Loan,
+  txHash: string,
+) {
+  const sns = new SNS(snsConfig);
+
+  await sns.publish({
+    Message: JSON.stringify({
+      eventName,
+      txHash,
+      loan,
+    }),
+  });
+}
