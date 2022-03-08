@@ -18,7 +18,7 @@ export type FormattedNotificationEventMessageType = {
 export async function receiveMessages(): Promise<
   FormattedNotificationEventMessageType[] | undefined
 > {
-  const queueUrl = process.env.SQS_NOTIFICATIONS_EVENTS_URL!;
+  const queueUrl = process.env.EVENTS_SQS_URL!;
   const sqs = new SQS(sqsConfig);
 
   const response = await sqs.receiveMessage({ QueueUrl: queueUrl }).promise();
@@ -33,7 +33,7 @@ export async function receiveMessages(): Promise<
 }
 
 export function deleteMessage(receiptHandle: string) {
-  const queueUrl = process.env.SQS_NOTIFICATIONS_EVENTS_URL!;
+  const queueUrl = process.env.EVENTS_SQS_URL!;
   const sqs = new SQS(sqsConfig);
 
   sqs.deleteMessage(

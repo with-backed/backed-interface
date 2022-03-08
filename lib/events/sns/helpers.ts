@@ -17,11 +17,13 @@ export async function pushEventForProcessing(
 ) {
   const sns = new SNS(snsConfig);
 
-  await sns.publish({
+  const res = await sns.publish({
+    TopicArn: process.env.EVENTS_SNS_ARN!,
     Message: JSON.stringify({
       eventName,
       txHash,
       loan,
     }),
   });
+  console.log({ res });
 }

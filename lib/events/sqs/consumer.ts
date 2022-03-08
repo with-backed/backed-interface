@@ -16,7 +16,11 @@ export async function main() {
         message.txHash,
       );
       if (!!event) {
-        pushEventForProcessing(message.eventName, event.loan, message.txHash);
+        await pushEventForProcessing(
+          message.eventName,
+          event.loan,
+          message.txHash,
+        );
         deleteMessage(message.receiptHandle);
       }
     }
