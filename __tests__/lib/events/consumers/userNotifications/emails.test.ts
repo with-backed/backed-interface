@@ -1,8 +1,13 @@
 import { subgraphLoan } from 'lib/mockData';
-import { sendEmail } from 'lib/events/consumers/userNotifications/emails';
+import { sendEmailsForTriggerAndLoan } from 'lib/events/consumers/userNotifications/emails';
 import { executeEmailSendWithSes } from 'lib/events/consumers/userNotifications/ses';
-import { NotificationTriggerType } from 'lib/events/consumers/userNotifications/shared';
 import { nftBackedLoansClient } from 'lib/urql';
+import { getNotificationRequestsForAddress } from 'lib/events/consumers/userNotifications/repository';
+import { NotificationRequest } from '@prisma/client';
+import {
+  NotificationMethod,
+  NotificationTriggerType,
+} from 'lib/events/consumers/userNotifications/shared';
 
 jest.mock('lib/urql', () => ({
   ...jest.requireActual('lib/urql'),
@@ -10,11 +15,6 @@ jest.mock('lib/urql', () => ({
     query: jest.fn(),
   },
 }));
-
-const mockedNftBackedLoansClientQuery =
-  nftBackedLoansClient.query as jest.MockedFunction<
-    typeof nftBackedLoansClient.query
-  >;
 
 jest.mock('lib/events/consumers/userNotifications/ses', () => ({
   executeEmailSendWithSes: jest.fn(),
@@ -24,14 +24,42 @@ const mockedSesEmailCall = executeEmailSendWithSes as jest.MockedFunction<
   typeof executeEmailSendWithSes
 >;
 
-const testRecipient = 'adamgobes@gmail.com';
+jest.mock('lib/events/consumers/userNotifications/repository', () => ({
+  getNotificationRequestsForAddress: jest.fn(),
+}));
+
+const mockedGetNotificationsCall =
+  getNotificationRequestsForAddress as jest.MockedFunction<
+    typeof getNotificationRequestsForAddress
+  >;
+
+const event: NotificationTriggerType = 'All';
+const notificationMethod = NotificationMethod.EMAIL;
+const testRecipientOne = 'adamgobes@gmail.com';
+const testRecipientTwo = 'anotherEmail@gmail.com';
+
+const notificationReqOne: NotificationRequest = {
+  id: 1,
+  ethAddress: '', // we don't care what this is for these tests
+  deliveryDestination: testRecipientOne,
+  deliveryMethod: notificationMethod,
+  event,
+};
+
+const notificationReqTwo: NotificationRequest = {
+  id: 1,
+  ethAddress: '', // we don't care what this is for these tests
+  deliveryDestination: testRecipientTwo,
+  deliveryMethod: notificationMethod,
+  event,
+};
 
 let loan = subgraphLoan;
 
 const emailParamsMatchingObject = (text: string) => ({
   Source: process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_EMAIL!,
   Destination: {
-    ToAddresses: [testRecipient],
+    ToAddresses: [testRecipientOne, testRecipientTwo],
   },
   ReplyToAddresses: [process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_EMAIL!],
   Message: expect.objectContaining({
@@ -46,12 +74,21 @@ const emailParamsMatchingObject = (text: string) => ({
 describe('Sending emails with Amazon SES', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockedGetNotificationsCall.mockResolvedValue([
+      notificationReqOne,
+      notificationReqTwo,
+    ]); // two email addresses are subscribed to a particular eth addresses on-chain activity
     mockedSesEmailCall.mockResolvedValue();
   });
+
   describe('BuyoutEvent', () => {
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmail(testRecipient, 'BuyoutEvent', loan);
+      await sendEmailsForTriggerAndLoan('BuyoutEvent', loan);
 
+      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
+      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
+        loan.lendTicketHolder,
+      );
       expect(mockedSesEmailCall).toBeCalledTimes(1);
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
         expect.objectContaining(
@@ -62,8 +99,12 @@ describe('Sending emails with Amazon SES', () => {
   });
   describe('LendEvent', () => {
     it('successfully calls SES send email method with correct params when there was no previous lender', async () => {
-      await sendEmail(testRecipient, 'LendEvent', loan, false);
+      await sendEmailsForTriggerAndLoan('LendEvent', loan, false);
 
+      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
+      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
+        loan.borrowTicketHolder,
+      );
       expect(mockedSesEmailCall).toBeCalledTimes(1);
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
         expect.objectContaining(
@@ -73,8 +114,12 @@ describe('Sending emails with Amazon SES', () => {
     });
 
     it('successfully calls SES send email method with correct params when there was a previous lender', async () => {
-      await sendEmail(testRecipient, 'LendEvent', loan, true);
+      await sendEmailsForTriggerAndLoan('LendEvent', loan, true);
 
+      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
+      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
+        loan.borrowTicketHolder,
+      );
       expect(mockedSesEmailCall).toBeCalledTimes(1);
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
         expect.objectContaining(
@@ -87,8 +132,12 @@ describe('Sending emails with Amazon SES', () => {
   });
   describe('RepaymentEvent', () => {
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmail(testRecipient, 'RepaymentEvent', loan);
+      await sendEmailsForTriggerAndLoan('RepaymentEvent', loan);
 
+      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
+      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
+        loan.lendTicketHolder,
+      );
       expect(mockedSesEmailCall).toBeCalledTimes(1);
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
         expect.objectContaining(
@@ -99,8 +148,12 @@ describe('Sending emails with Amazon SES', () => {
   });
   describe('CollateralSeizureEvent', () => {
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmail(testRecipient, 'CollateralSeizureEvent', loan);
+      await sendEmailsForTriggerAndLoan('CollateralSeizureEvent', loan);
 
+      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
+      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
+        loan.borrowTicketHolder,
+      );
       expect(mockedSesEmailCall).toBeCalledTimes(1);
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
         expect.objectContaining(
@@ -111,8 +164,12 @@ describe('Sending emails with Amazon SES', () => {
   });
   describe('LiquidationOccuringBorrower', () => {
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmail(testRecipient, 'LiquidationOccurringBorrower', loan);
+      await sendEmailsForTriggerAndLoan('LiquidationOccurringBorrower', loan);
 
+      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
+      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
+        loan.borrowTicketHolder,
+      );
       expect(mockedSesEmailCall).toBeCalledTimes(1);
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
         expect.objectContaining(
@@ -125,8 +182,12 @@ describe('Sending emails with Amazon SES', () => {
   });
   describe('LiquidationOccuringLender', () => {
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmail(testRecipient, 'LiquidationOccurringLender', loan);
+      await sendEmailsForTriggerAndLoan('LiquidationOccurringLender', loan);
 
+      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
+      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
+        loan.lendTicketHolder,
+      );
       expect(mockedSesEmailCall).toBeCalledTimes(1);
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
         expect.objectContaining(
@@ -139,8 +200,12 @@ describe('Sending emails with Amazon SES', () => {
   });
   describe('LiquidationOccurredBorrower', () => {
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmail(testRecipient, 'LiquidationOccurredBorrower', loan);
+      await sendEmailsForTriggerAndLoan('LiquidationOccurredBorrower', loan);
 
+      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
+      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
+        loan.borrowTicketHolder,
+      );
       expect(mockedSesEmailCall).toBeCalledTimes(1);
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
         expect.objectContaining(
@@ -151,8 +216,12 @@ describe('Sending emails with Amazon SES', () => {
   });
   describe('LiquidationOccurredLender', () => {
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmail(testRecipient, 'LiquidationOccurredLender', loan);
+      await sendEmailsForTriggerAndLoan('LiquidationOccurredLender', loan);
 
+      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
+      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
+        loan.lendTicketHolder,
+      );
       expect(mockedSesEmailCall).toBeCalledTimes(1);
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
         expect.objectContaining(

@@ -13,10 +13,10 @@ import {
   RepaymentEventByTransactionHashDocument,
   RepaymentEventByTransactionHashQuery,
 } from 'types/generated/graphql/nftLoans';
-import { EventAsStringType } from 'types/Event';
+import { RawEventNameType } from 'types/RawEvent';
 
 export async function subgraphEventFromTxHash(
-  eventName: EventAsStringType,
+  eventName: RawEventNameType,
   txHash: string,
 ): Promise<
   | BuyoutEvent

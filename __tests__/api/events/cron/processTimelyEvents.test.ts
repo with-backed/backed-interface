@@ -1,13 +1,7 @@
-import { NotificationRequest } from '@prisma/client';
 import { ethers } from 'ethers';
 import { subgraphLoan } from 'lib/mockData';
 import { getLiquidatedLoansForTimestamp } from 'lib/events/timely/timely';
-import { sendEmail } from 'lib/events/consumers/userNotifications/emails';
-import { getNotificationRequestsForAddress } from 'lib/events/consumers/userNotifications/repository';
-import {
-  NotificationTriggerType,
-  NotificationMethod,
-} from 'lib/events/consumers/userNotifications/shared';
+import { sendEmailsForTriggerAndLoan } from 'lib/events/consumers/userNotifications/emails';
 import { createMocks } from 'node-mocks-http';
 import handler from 'pages/api/events/cron/processTimelyEvents';
 
@@ -23,48 +17,8 @@ const alreadyExpiredLoan = {
   lendTicketHolder: ethers.Wallet.createRandom().address.toLowerCase(),
 };
 
-const event: NotificationTriggerType = 'All';
-const notificationMethod = NotificationMethod.EMAIL;
-const notificationDestination = 'adamgobes@gmail.com';
-
-const notificationReqOccurringBorrower: NotificationRequest = {
-  id: 1,
-  ethAddress: aboutToExpireLoan.borrowTicketHolder,
-  deliveryDestination: notificationDestination,
-  deliveryMethod: notificationMethod,
-  event,
-};
-
-const notificationReqOccurringLender: NotificationRequest = {
-  id: 1,
-  ethAddress: aboutToExpireLoan.borrowTicketHolder,
-  deliveryDestination: notificationDestination,
-  deliveryMethod: notificationMethod,
-  event,
-};
-
-const notificationReqOccurredBorrower: NotificationRequest = {
-  id: 1,
-  ethAddress: alreadyExpiredLoan.borrowTicketHolder,
-  deliveryDestination: notificationDestination,
-  deliveryMethod: notificationMethod,
-  event,
-};
-
-const notificationReqOccurredLender: NotificationRequest = {
-  id: 1,
-  ethAddress: alreadyExpiredLoan.borrowTicketHolder,
-  deliveryDestination: notificationDestination,
-  deliveryMethod: notificationMethod,
-  event,
-};
-
 jest.mock('lib/events/consumers/userNotifications/emails', () => ({
-  sendEmail: jest.fn(),
-}));
-
-jest.mock('lib/events/consumers/userNotifications/repository', () => ({
-  getNotificationRequestsForAddress: jest.fn(),
+  sendEmailsForTriggerAndLoan: jest.fn(),
 }));
 
 jest.mock('lib/events/timely/timely', () => ({
@@ -76,12 +30,9 @@ const mockedGetLiquidatedLoansCall =
     typeof getLiquidatedLoansForTimestamp
   >;
 
-const mockedGetNotificationsCall =
-  getNotificationRequestsForAddress as jest.MockedFunction<
-    typeof getNotificationRequestsForAddress
-  >;
-
-const mockedSendEmailCall = sendEmail as jest.MockedFunction<typeof sendEmail>;
+const mockedSendEmailCall = sendEmailsForTriggerAndLoan as jest.MockedFunction<
+  typeof sendEmailsForTriggerAndLoan
+>;
 
 describe('/api/events/cron/processTimelyEvents', () => {
   beforeEach(async () => {
@@ -90,18 +41,6 @@ describe('/api/events/cron/processTimelyEvents', () => {
       liquidationOccurringLoans: [aboutToExpireLoan],
       liquidationOccurredLoans: [alreadyExpiredLoan],
     });
-    mockedGetNotificationsCall.mockResolvedValueOnce([
-      notificationReqOccurringBorrower,
-    ]);
-    mockedGetNotificationsCall.mockResolvedValueOnce([
-      notificationReqOccurringLender,
-    ]);
-    mockedGetNotificationsCall.mockResolvedValueOnce([
-      notificationReqOccurredBorrower,
-    ]);
-    mockedGetNotificationsCall.mockResolvedValueOnce([
-      notificationReqOccurredLender,
-    ]);
     mockedSendEmailCall.mockResolvedValue();
   });
 
@@ -112,38 +51,20 @@ describe('/api/events/cron/processTimelyEvents', () => {
 
     await handler(req, res);
 
-    expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(4);
-    expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
-      aboutToExpireLoan.borrowTicketHolder,
-    );
-    expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
-      aboutToExpireLoan.lendTicketHolder,
-    );
-    expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
-      alreadyExpiredLoan.borrowTicketHolder,
-    );
-    expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
-      alreadyExpiredLoan.lendTicketHolder,
-    );
-
-    expect(sendEmail).toHaveBeenCalledTimes(4);
-    expect(sendEmail).toHaveBeenCalledWith(
-      notificationDestination,
+    expect(sendEmailsForTriggerAndLoan).toHaveBeenCalledTimes(4);
+    expect(sendEmailsForTriggerAndLoan).toHaveBeenCalledWith(
       'LiquidationOccurringBorrower',
       aboutToExpireLoan,
     );
-    expect(sendEmail).toHaveBeenCalledWith(
-      notificationDestination,
+    expect(sendEmailsForTriggerAndLoan).toHaveBeenCalledWith(
       'LiquidationOccurringLender',
       aboutToExpireLoan,
     );
-    expect(sendEmail).toHaveBeenCalledWith(
-      notificationDestination,
+    expect(sendEmailsForTriggerAndLoan).toHaveBeenCalledWith(
       'LiquidationOccurredBorrower',
       alreadyExpiredLoan,
     );
-    expect(sendEmail).toHaveBeenCalledWith(
-      notificationDestination,
+    expect(sendEmailsForTriggerAndLoan).toHaveBeenCalledWith(
       'LiquidationOccurredLender',
       alreadyExpiredLoan,
     );
