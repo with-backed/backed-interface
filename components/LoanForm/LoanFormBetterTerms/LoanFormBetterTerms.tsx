@@ -14,14 +14,17 @@ import { ethers } from 'ethers';
 import { annualRateToPerSecond, formattedAnnualRate } from 'lib/interest';
 import { daysToSecondsBigNum, secondsBigNumToDays } from 'lib/duration';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Balance } from '../Balance';
 
 type LoanFormBetterTermsProps = {
+  balance: number;
   loan: Loan;
   needsAllowance: boolean;
   refresh: () => void;
   setNeedsAllowance: (value: boolean) => void;
 };
 export function LoanFormBetterTerms({
+  balance,
   loan,
   needsAllowance,
   setNeedsAllowance,
@@ -172,6 +175,11 @@ export function LoanFormBetterTerms({
           symbol={loan.loanAssetSymbol}
           callback={() => setNeedsAllowance(false)}
           done={!needsAllowance}
+        />
+        <Balance
+          balance={balance}
+          loanAmount={parseFloat(loanAmount)}
+          symbol={loan.loanAssetSymbol}
         />
         <TransactionButton
           id="Lend"

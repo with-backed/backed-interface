@@ -13,3 +13,7 @@
   composes: base-wrapper;
   margin-top: calc(var(--gap) / 2);
 }
+
+.insufficient-funds {
+  color: var(--highlight-alert-100);
+}

@@ -14,14 +14,17 @@ import { ethers } from 'ethers';
 import { formattedAnnualRate } from 'lib/interest';
 import { secondsBigNumToDays } from 'lib/duration';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Balance } from '../Balance';
 
 type LoanFormAwaitingProps = {
+  balance: number;
   loan: Loan;
   needsAllowance: boolean;
   refresh: () => void;
   setNeedsAllowance: (value: boolean) => void;
 };
 export function LoanFormAwaiting({
+  balance,
   loan,
   needsAllowance,
   setNeedsAllowance,
@@ -61,7 +64,9 @@ export function LoanFormAwaiting({
     formState: { errors },
     handleSubmit,
     register,
+    watch,
   } = form;
+  const loanAmount = watch('loanAmount');
 
   const [current, send] = useMachine(loanFormAwaitingMachine);
 
@@ -158,6 +163,11 @@ export function LoanFormAwaiting({
           symbol={loan.loanAssetSymbol}
           callback={() => setNeedsAllowance(false)}
           done={!needsAllowance}
+        />
+        <Balance
+          balance={balance}
+          loanAmount={parseFloat(loanAmount)}
+          symbol={loan.loanAssetSymbol}
         />
         <TransactionButton
           id="Lend"
