@@ -176,7 +176,11 @@ export function LoanFormBetterTerms({
           callback={() => setNeedsAllowance(false)}
           done={!needsAllowance}
         />
-        <Balance balance={balance} symbol={loan.loanAssetSymbol} />
+        <Balance
+          balance={balance}
+          loanAmount={parseFloat(loanAmount)}
+          symbol={loan.loanAssetSymbol}
+        />
         <TransactionButton
           id="Lend"
           text="Mint Lending Ticket"
