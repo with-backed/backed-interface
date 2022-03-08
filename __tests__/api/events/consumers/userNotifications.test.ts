@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { subgraphLoan } from 'lib/mockData';
-import { sendEmailsForTriggerAndLoan } from 'lib/events/consumers/userNotifications/emails';
+import { sendEmailsForTriggerAndEntity } from 'lib/events/consumers/userNotifications/emails';
 import { nftBackedLoansClient } from 'lib/urql';
 import { createMocks } from 'node-mocks-http';
 import handler from 'pages/api/events/consumers/userNotifications';
@@ -25,12 +25,13 @@ const mockedNftBackedLoansClientQuery =
   >;
 
 jest.mock('lib/events/consumers/userNotifications/emails', () => ({
-  sendEmailsForTriggerAndLoan: jest.fn(),
+  sendEmailsForTriggerAndEntity: jest.fn(),
 }));
 
-const mockedSendEmailCall = sendEmailsForTriggerAndLoan as jest.MockedFunction<
-  typeof sendEmailsForTriggerAndLoan
->;
+const mockedSendEmailCall =
+  sendEmailsForTriggerAndEntity as jest.MockedFunction<
+    typeof sendEmailsForTriggerAndEntity
+  >;
 
 describe('/api/events/[event]', () => {
   beforeEach(async () => {
@@ -44,16 +45,22 @@ describe('/api/events/[event]', () => {
         method: 'POST',
         body: {
           eventName: 'BuyoutEvent',
-          loan: subgraphLoanCopy,
+          event: {
+            lendTicketHolder: subgraphLoanCopy.lendTicketHolder,
+            loan: subgraphLoanCopy,
+          },
         },
       });
 
       await handler(req, res);
 
-      expect(sendEmailsForTriggerAndLoan).toHaveBeenCalledTimes(1);
-      expect(sendEmailsForTriggerAndLoan).toHaveBeenCalledWith(
+      expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledTimes(1);
+      expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledWith(
         'BuyoutEvent',
-        subgraphLoanCopy,
+        expect.objectContaining({
+          lendTicketHolder: subgraphLoanCopy.lendTicketHolder,
+          loan: subgraphLoanCopy,
+        }),
         false,
       );
 
@@ -77,16 +84,22 @@ describe('/api/events/[event]', () => {
         method: 'POST',
         body: {
           eventName: 'LendEvent',
-          loan: subgraphLoanCopy,
+          event: {
+            borrowTicketHolder: subgraphLoanCopy.borrowTicketHolder,
+            loan: subgraphLoanCopy,
+          },
         },
       });
 
       await handler(req, res);
 
-      expect(sendEmailsForTriggerAndLoan).toHaveBeenCalledTimes(1);
-      expect(sendEmailsForTriggerAndLoan).toHaveBeenCalledWith(
+      expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledTimes(1);
+      expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledWith(
         'LendEvent',
-        subgraphLoanCopy,
+        expect.objectContaining({
+          borrowTicketHolder: subgraphLoanCopy.borrowTicketHolder,
+          loan: subgraphLoanCopy,
+        }),
         false,
       );
 
@@ -111,16 +124,22 @@ describe('/api/events/[event]', () => {
         method: 'POST',
         body: {
           eventName: 'LendEvent',
-          loan: subgraphLoanCopy,
+          event: {
+            lendTicketHolder: subgraphLoanCopy.borrowTicketHolder,
+            loan: subgraphLoanCopy,
+          },
         },
       });
 
       await handler(req, res);
 
-      expect(sendEmailsForTriggerAndLoan).toHaveBeenCalledTimes(1);
-      expect(sendEmailsForTriggerAndLoan).toHaveBeenCalledWith(
+      expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledTimes(1);
+      expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledWith(
         'LendEvent',
-        subgraphLoanCopy,
+        expect.objectContaining({
+          lendTicketHolder: subgraphLoanCopy.borrowTicketHolder,
+          loan: subgraphLoanCopy,
+        }),
         true,
       );
 
@@ -137,16 +156,22 @@ describe('/api/events/[event]', () => {
         method: 'POST',
         body: {
           eventName: 'RepaymentEvent',
-          loan: subgraphLoanCopy,
+          event: {
+            lendTicketHolder: subgraphLoanCopy.lendTicketHolder,
+            loan: subgraphLoanCopy,
+          },
         },
       });
 
       await handler(req, res);
 
-      expect(sendEmailsForTriggerAndLoan).toHaveBeenCalledTimes(1);
-      expect(sendEmailsForTriggerAndLoan).toHaveBeenCalledWith(
+      expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledTimes(1);
+      expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledWith(
         'RepaymentEvent',
-        subgraphLoanCopy,
+        expect.objectContaining({
+          lendTicketHolder: subgraphLoanCopy.lendTicketHolder,
+          loan: subgraphLoanCopy,
+        }),
         false,
       );
 
@@ -163,16 +188,22 @@ describe('/api/events/[event]', () => {
         method: 'POST',
         body: {
           eventName: 'CollateralSeizureEvent',
-          loan: subgraphLoanCopy,
+          event: {
+            lendTicketHolder: subgraphLoanCopy.borrowTicketHolder,
+            loan: subgraphLoanCopy,
+          },
         },
       });
 
       await handler(req, res);
 
-      expect(sendEmailsForTriggerAndLoan).toHaveBeenCalledTimes(1);
-      expect(sendEmailsForTriggerAndLoan).toHaveBeenCalledWith(
+      expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledTimes(1);
+      expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledWith(
         'CollateralSeizureEvent',
-        subgraphLoanCopy,
+        expect.objectContaining({
+          lendTicketHolder: subgraphLoanCopy.borrowTicketHolder,
+          loan: subgraphLoanCopy,
+        }),
         false,
       );
 

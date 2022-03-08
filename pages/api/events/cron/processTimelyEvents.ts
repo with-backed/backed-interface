@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getNotificationRequestsForAddress } from 'lib/events/consumers/userNotifications/repository';
-import { sendEmailsForTriggerAndLoan } from 'lib/events/consumers/userNotifications/emails';
+import { sendEmailsForTriggerAndEntity } from 'lib/events/consumers/userNotifications/emails';
 import { NotificationTriggerType } from 'lib/events/consumers/userNotifications/shared';
 import { Loan } from 'types/generated/graphql/nftLoans';
 import { NotificationRequest } from '@prisma/client';
@@ -31,9 +31,9 @@ export default async function handler(
     ) {
       const loan = liquidationOccurringLoans[loanIndex];
 
-      await sendEmailsForTriggerAndLoan('LiquidationOccurringBorrower', loan);
+      await sendEmailsForTriggerAndEntity('LiquidationOccurringBorrower', loan);
 
-      await sendEmailsForTriggerAndLoan('LiquidationOccurringLender', loan);
+      await sendEmailsForTriggerAndEntity('LiquidationOccurringLender', loan);
     }
 
     for (
@@ -43,9 +43,9 @@ export default async function handler(
     ) {
       const loan = liquidationOccurredLoans[loanIndex];
 
-      await sendEmailsForTriggerAndLoan('LiquidationOccurredBorrower', loan);
+      await sendEmailsForTriggerAndEntity('LiquidationOccurredBorrower', loan);
 
-      await sendEmailsForTriggerAndLoan('LiquidationOccurredLender', loan);
+      await sendEmailsForTriggerAndEntity('LiquidationOccurredLender', loan);
     }
 
     res.status(200).json(`notifications successfully sent`);

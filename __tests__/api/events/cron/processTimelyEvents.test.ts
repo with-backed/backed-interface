@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { subgraphLoan } from 'lib/mockData';
 import { getLiquidatedLoansForTimestamp } from 'lib/events/timely/timely';
-import { sendEmailsForTriggerAndLoan } from 'lib/events/consumers/userNotifications/emails';
+import { sendEmailsForTriggerAndEntity } from 'lib/events/consumers/userNotifications/emails';
 import { createMocks } from 'node-mocks-http';
 import handler from 'pages/api/events/cron/processTimelyEvents';
 
@@ -18,7 +18,7 @@ const alreadyExpiredLoan = {
 };
 
 jest.mock('lib/events/consumers/userNotifications/emails', () => ({
-  sendEmailsForTriggerAndLoan: jest.fn(),
+  sendEmailsForTriggerAndEntity: jest.fn(),
 }));
 
 jest.mock('lib/events/timely/timely', () => ({
@@ -30,9 +30,10 @@ const mockedGetLiquidatedLoansCall =
     typeof getLiquidatedLoansForTimestamp
   >;
 
-const mockedSendEmailCall = sendEmailsForTriggerAndLoan as jest.MockedFunction<
-  typeof sendEmailsForTriggerAndLoan
->;
+const mockedSendEmailCall =
+  sendEmailsForTriggerAndEntity as jest.MockedFunction<
+    typeof sendEmailsForTriggerAndEntity
+  >;
 
 describe('/api/events/cron/processTimelyEvents', () => {
   beforeEach(async () => {
@@ -51,20 +52,20 @@ describe('/api/events/cron/processTimelyEvents', () => {
 
     await handler(req, res);
 
-    expect(sendEmailsForTriggerAndLoan).toHaveBeenCalledTimes(4);
-    expect(sendEmailsForTriggerAndLoan).toHaveBeenCalledWith(
+    expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledTimes(4);
+    expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledWith(
       'LiquidationOccurringBorrower',
       aboutToExpireLoan,
     );
-    expect(sendEmailsForTriggerAndLoan).toHaveBeenCalledWith(
+    expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledWith(
       'LiquidationOccurringLender',
       aboutToExpireLoan,
     );
-    expect(sendEmailsForTriggerAndLoan).toHaveBeenCalledWith(
+    expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledWith(
       'LiquidationOccurredBorrower',
       alreadyExpiredLoan,
     );
-    expect(sendEmailsForTriggerAndLoan).toHaveBeenCalledWith(
+    expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledWith(
       'LiquidationOccurredLender',
       alreadyExpiredLoan,
     );

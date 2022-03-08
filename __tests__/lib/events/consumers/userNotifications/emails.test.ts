@@ -1,5 +1,5 @@
 import { subgraphLoan } from 'lib/mockData';
-import { sendEmailsForTriggerAndLoan } from 'lib/events/consumers/userNotifications/emails';
+import { sendEmailsForTriggerAndEntity } from 'lib/events/consumers/userNotifications/emails';
 import { executeEmailSendWithSes } from 'lib/events/consumers/userNotifications/ses';
 import { nftBackedLoansClient } from 'lib/urql';
 import { getNotificationRequestsForAddress } from 'lib/events/consumers/userNotifications/repository';
@@ -83,7 +83,7 @@ describe('Sending emails with Amazon SES', () => {
 
   describe('BuyoutEvent', () => {
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmailsForTriggerAndLoan('BuyoutEvent', loan);
+      await sendEmailsForTriggerAndEntity('BuyoutEvent', loan);
 
       expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
@@ -99,7 +99,7 @@ describe('Sending emails with Amazon SES', () => {
   });
   describe('LendEvent', () => {
     it('successfully calls SES send email method with correct params when there was no previous lender', async () => {
-      await sendEmailsForTriggerAndLoan('LendEvent', loan, false);
+      await sendEmailsForTriggerAndEntity('LendEvent', loan, false);
 
       expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
@@ -114,7 +114,7 @@ describe('Sending emails with Amazon SES', () => {
     });
 
     it('successfully calls SES send email method with correct params when there was a previous lender', async () => {
-      await sendEmailsForTriggerAndLoan('LendEvent', loan, true);
+      await sendEmailsForTriggerAndEntity('LendEvent', loan, true);
 
       expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
@@ -132,7 +132,7 @@ describe('Sending emails with Amazon SES', () => {
   });
   describe('RepaymentEvent', () => {
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmailsForTriggerAndLoan('RepaymentEvent', loan);
+      await sendEmailsForTriggerAndEntity('RepaymentEvent', loan);
 
       expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
@@ -148,7 +148,7 @@ describe('Sending emails with Amazon SES', () => {
   });
   describe('CollateralSeizureEvent', () => {
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmailsForTriggerAndLoan('CollateralSeizureEvent', loan);
+      await sendEmailsForTriggerAndEntity('CollateralSeizureEvent', loan);
 
       expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
@@ -164,7 +164,7 @@ describe('Sending emails with Amazon SES', () => {
   });
   describe('LiquidationOccuringBorrower', () => {
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmailsForTriggerAndLoan('LiquidationOccurringBorrower', loan);
+      await sendEmailsForTriggerAndEntity('LiquidationOccurringBorrower', loan);
 
       expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
@@ -182,7 +182,7 @@ describe('Sending emails with Amazon SES', () => {
   });
   describe('LiquidationOccuringLender', () => {
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmailsForTriggerAndLoan('LiquidationOccurringLender', loan);
+      await sendEmailsForTriggerAndEntity('LiquidationOccurringLender', loan);
 
       expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
@@ -200,7 +200,7 @@ describe('Sending emails with Amazon SES', () => {
   });
   describe('LiquidationOccurredBorrower', () => {
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmailsForTriggerAndLoan('LiquidationOccurredBorrower', loan);
+      await sendEmailsForTriggerAndEntity('LiquidationOccurredBorrower', loan);
 
       expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
@@ -216,7 +216,7 @@ describe('Sending emails with Amazon SES', () => {
   });
   describe('LiquidationOccurredLender', () => {
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmailsForTriggerAndLoan('LiquidationOccurredLender', loan);
+      await sendEmailsForTriggerAndEntity('LiquidationOccurredLender', loan);
 
       expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(

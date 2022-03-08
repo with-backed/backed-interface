@@ -14,7 +14,10 @@ import { getNotificationRequestsForAddress } from './repository';
 
 type EmailMetadataType = {
   subject: string;
-  getTextFromLoan: (loan: Loan, hasPreviousLender?: boolean) => string;
+  getTextFromEntity: (
+    entity: RawSubgraphEvent | Loan,
+    hasPreviousLender?: boolean,
+  ) => string;
 };
 
 const notificationEventToEmailMetadata: {
@@ -22,78 +25,85 @@ const notificationEventToEmailMetadata: {
 } = {
   BuyoutEvent: {
     subject: 'Your loan was bought out',
-    getTextFromLoan: (_loan: Loan) => 'Your loan was bought out',
+    getTextFromEntity: (_entity: RawSubgraphEvent | Loan) =>
+      'Your loan was bought out',
   },
   LendEvent: {
     subject: 'Your loan was fulfilled',
-    getTextFromLoan: (_loan: Loan, hasPreviousLender?: boolean) =>
+    getTextFromEntity: (
+      _entity: RawSubgraphEvent | Loan,
+      hasPreviousLender?: boolean,
+    ) =>
       hasPreviousLender
         ? 'The terms for one of your loans has been improved'
         : 'Your loan was fulfilled',
   },
   RepaymentEvent: {
     subject: 'Your loan was repaid',
-    getTextFromLoan: (_loan: Loan) => 'Your loan was repaid',
+    getTextFromEntity: (_entity: RawSubgraphEvent | Loan) =>
+      'Your loan was repaid',
   },
   CollateralSeizureEvent: {
     subject: 'Your collateral was seized',
-    getTextFromLoan: (_loan: Loan) => 'Your collateral was seized',
+    getTextFromEntity: (_entity: RawSubgraphEvent | Loan) =>
+      'Your collateral was seized',
   },
   LiquidationOccurringBorrower: {
     subject: 'Your NFT collateral is approaching liquidation',
-    getTextFromLoan: (_loan: Loan) =>
+    getTextFromEntity: (_entity: RawSubgraphEvent | Loan) =>
       'Your NFT collateral is approaching liquidation',
   },
   LiquidationOccurringLender: {
     subject: 'Your NFT collateral is approaching liquidation',
-    getTextFromLoan: (_loan: Loan) =>
+    getTextFromEntity: (_entity: RawSubgraphEvent | Loan) =>
       'An NFT you have lent against can be seized soon',
   },
   LiquidationOccurredBorrower: {
     subject: 'Your NFT collateral can be liquidated',
-    getTextFromLoan: (_loan: Loan) => 'Your NFT collateral can be liquidated',
+    getTextFromEntity: (_entity: RawSubgraphEvent | Loan) =>
+      'Your NFT collateral can be liquidated',
   },
   LiquidationOccurredLender: {
     subject: 'Your NFT collateral can be liquidated',
-    getTextFromLoan: (_loan: Loan) =>
+    getTextFromEntity: (_entity: RawSubgraphEvent | Loan) =>
       'An NFT you have lent against can be seized',
   },
 };
 
-function getRelevantEthAddressFromTriggerAndLoan(
+function getRelevantEthAddressFromTriggerAndEntity(
   emailTrigger: NotificationTriggerType,
-  loan: Loan,
+  entity: RawSubgraphEvent | Loan,
 ) {
   switch (emailTrigger) {
     case 'BuyoutEvent':
-      return loan.lendTicketHolder;
+      return (entity as BuyoutEvent).lendTicketHolder;
     case 'LendEvent':
-      return loan.borrowTicketHolder;
+      return (entity as LendEvent).borrowTicketHolder;
     case 'RepaymentEvent':
-      return loan.lendTicketHolder;
+      return (entity as RepaymentEvent).lendTicketHolder;
     case 'CollateralSeizureEvent':
-      return loan.borrowTicketHolder;
+      return (entity as CollateralSeizureEvent).borrowTicketHolder;
     case 'LiquidationOccurringBorrower':
-      return loan.borrowTicketHolder;
+      return (entity as Loan).borrowTicketHolder;
     case 'LiquidationOccurringLender':
-      return loan.lendTicketHolder;
+      return (entity as Loan).lendTicketHolder;
     case 'LiquidationOccurredBorrower':
-      return loan.borrowTicketHolder;
+      return (entity as Loan).borrowTicketHolder;
     case 'LiquidationOccurredLender':
-      return loan.lendTicketHolder;
+      return (entity as Loan).lendTicketHolder;
     default:
       return '';
   }
 }
 
-export async function sendEmailsForTriggerAndLoan(
+export async function sendEmailsForTriggerAndEntity(
   emailTrigger: NotificationTriggerType,
-  loan: Loan,
+  entity: RawSubgraphEvent | Loan,
   hasPreviousLender: boolean = false,
 ) {
-  const ethAddress = getRelevantEthAddressFromTriggerAndLoan(
+  const ethAddress = getRelevantEthAddressFromTriggerAndEntity(
     emailTrigger,
-    loan,
+    entity,
   );
   const notificationRequestsForEthAddress =
     await getNotificationRequestsForAddress(ethAddress);
@@ -116,8 +126,8 @@ export async function sendEmailsForTriggerAndLoan(
         Html: {
           Charset: 'UTF-8',
           Data: generateHTMLForEmail(
-            notificationEventToEmailMetadata[emailTrigger]!.getTextFromLoan(
-              loan,
+            notificationEventToEmailMetadata[emailTrigger]!.getTextFromEntity(
+              entity,
               hasPreviousLender,
             ),
           ),
