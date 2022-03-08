@@ -93,6 +93,7 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
       <LoanFormDisclosure title={'Lend'} className={styles.wrapper}>
         <div className={styles['form-wrapper']}>
           <LoanFormAwaiting
+            balance={balance}
             loan={loan}
             needsAllowance={needsAllowance}
             setNeedsAllowance={setNeedsAllowance}
@@ -125,6 +126,7 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
     <LoanFormDisclosure title={'Offer better terms'} className={styles.wrapper}>
       <div className={styles['form-wrapper']}>
         <LoanFormBetterTerms
+          balance={balance}
           loan={loan}
           needsAllowance={needsAllowance}
           setNeedsAllowance={setNeedsAllowance}
