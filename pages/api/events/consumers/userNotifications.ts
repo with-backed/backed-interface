@@ -18,7 +18,9 @@ export default async function handler(
   }
 
   try {
-    const { eventName, event, txHash } = req.body as EventsSNSMessage;
+    const { eventName, event, txHash } = req.body[
+      'Message'
+    ] as EventsSNSMessage;
 
     console.log({ eventName, event, txHash });
 
