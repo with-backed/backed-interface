@@ -48,7 +48,6 @@ export function resolveEns(address: string) {
   return provider.resolveName(address);
 }
 
-export function addressToENS(address: string) {
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
+export function addressToENS(address: string, provider: Web3Provider) {
   return provider.lookupAddress(address);
 }
