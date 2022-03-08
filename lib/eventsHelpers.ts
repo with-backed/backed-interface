@@ -13,19 +13,12 @@ import {
   RepaymentEventByTransactionHashDocument,
   RepaymentEventByTransactionHashQuery,
 } from 'types/generated/graphql/nftLoans';
-import { RawEventNameType } from 'types/RawEvent';
+import { RawEventNameType, RawSubgraphEvent } from 'types/RawEvent';
 
 export async function subgraphEventFromTxHash(
   eventName: RawEventNameType,
   txHash: string,
-): Promise<
-  | BuyoutEvent
-  | LendEvent
-  | RepaymentEvent
-  | CollateralSeizureEvent
-  | undefined
-  | null
-> {
+): Promise<RawSubgraphEvent | undefined | null> {
   switch (eventName) {
     case 'BuyoutEvent':
       const { data: buyoutEventData } = await nftBackedLoansClient

@@ -98,7 +98,10 @@ describe('SQS consumer', () => {
         expect(mockedSnsPushCall).toHaveBeenCalledTimes(1);
         expect(mockedSnsPushCall).toHaveBeenCalledWith(
           'BuyoutEvent',
-          subgraphLoanCopy,
+          expect.objectContaining({
+            lendTicketHolder: subgraphLoanCopy.lendTicketHolder,
+            loan: subgraphLoanCopy,
+          }),
           'random-tx-hash',
         );
 
@@ -165,7 +168,10 @@ describe('SQS consumer', () => {
         expect(mockedSnsPushCall).toHaveBeenCalledTimes(1);
         expect(mockedSnsPushCall).toHaveBeenCalledWith(
           'LendEvent',
-          subgraphLoanCopy,
+          expect.objectContaining({
+            borrowTicketHolder: subgraphLoanCopy.borrowTicketHolder,
+            loan: subgraphLoanCopy,
+          }),
           'random-tx-hash',
         );
 
@@ -213,7 +219,10 @@ describe('SQS consumer', () => {
         expect(mockedSnsPushCall).toHaveBeenCalledTimes(1);
         expect(mockedSnsPushCall).toHaveBeenCalledWith(
           'RepaymentEvent',
-          subgraphLoanCopy,
+          expect.objectContaining({
+            lendTicketHolder: subgraphLoanCopy.lendTicketHolder,
+            loan: subgraphLoanCopy,
+          }),
           'random-tx-hash',
         );
 
@@ -261,7 +270,10 @@ describe('SQS consumer', () => {
         expect(mockedSnsPushCall).toHaveBeenCalledTimes(1);
         expect(mockedSnsPushCall).toHaveBeenCalledWith(
           'CollateralSeizureEvent',
-          subgraphLoanCopy,
+          expect.objectContaining({
+            borrowTicketHolder: subgraphLoanCopy.borrowTicketHolder,
+            loan: subgraphLoanCopy,
+          }),
           'random-tx-hash',
         );
 

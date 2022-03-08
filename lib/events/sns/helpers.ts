@@ -1,5 +1,5 @@
 import { SNS } from 'aws-sdk';
-import { Loan } from 'types/generated/graphql/nftLoans';
+import { RawSubgraphEvent } from 'types/RawEvent';
 
 const snsConfig = {
   region: 'us-east-1',
@@ -12,7 +12,7 @@ const snsConfig = {
 //TODO(adamgobes): fill this out with actual pushing of message to SNS -- to be implemented in follow up PR
 export async function pushEventForProcessing(
   eventName: string,
-  loan: Loan,
+  event: RawSubgraphEvent,
   txHash: string,
 ): Promise<boolean> {
   const sns = new SNS(snsConfig);
@@ -23,7 +23,7 @@ export async function pushEventForProcessing(
       Message: JSON.stringify({
         eventName,
         txHash,
-        loan,
+        event,
       }),
     })
     .promise();

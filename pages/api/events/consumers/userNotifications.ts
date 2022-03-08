@@ -4,9 +4,9 @@ import {
   BuyoutByTransactionHashQuery,
   Loan,
 } from 'types/generated/graphql/nftLoans';
-import { RawEventNameType } from 'types/RawEvent';
+import { RawEventNameType, RawSubgraphEvent } from 'types/RawEvent';
 import { nftBackedLoansClient } from 'lib/urql';
-import { sendEmailsForTriggerAndLoan } from 'lib/events/consumers/userNotifications/emails';
+import { sendEmailsForTriggerAndEntity } from 'lib/events/consumers/userNotifications/emails';
 
 export default async function handler(
   req: NextApiRequest,
@@ -18,9 +18,9 @@ export default async function handler(
   }
 
   try {
-    const { eventName, loan, txHash } = req.body as {
+    const { eventName, event, txHash } = req.body as {
       eventName: RawEventNameType;
-      loan: Loan;
+      event: RawSubgraphEvent;
       txHash: string;
     };
 
@@ -37,7 +37,7 @@ export default async function handler(
       }
     }
 
-    await sendEmailsForTriggerAndLoan(eventName, loan, hasPreviousLender);
+    await sendEmailsForTriggerAndEntity(eventName, event, hasPreviousLender);
 
     res.status(200).json(`notifications successfully sent`);
   } catch (e) {
