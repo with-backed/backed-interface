@@ -47,6 +47,7 @@ const mockedSnsPushCall = pushEventForProcessing as jest.MockedFunction<
 describe('SQS consumer', () => {
   beforeEach(async () => {
     jest.clearAllMocks();
+    mockedSnsPushCall.mockResolvedValue(true);
   });
 
   describe('SQS queue empty', () => {
@@ -105,6 +106,24 @@ describe('SQS consumer', () => {
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledWith(
           'random-receipt-handle',
         );
+      });
+
+      it('does not make call to deleteMessage if push to SNS failed', async () => {
+        mockedNftBackedLoansClientQuery.mockReturnValueOnce({
+          toPromise: async () => ({
+            data: {
+              buyoutEvent: {
+                lendTicketHolder: subgraphLoanCopy.lendTicketHolder,
+                loan: subgraphLoanCopy,
+              },
+            },
+          }),
+        } as any);
+        mockedSnsPushCall.mockResolvedValueOnce(false);
+
+        await main();
+        expect(mockedSnsPushCall).toHaveBeenCalledTimes(1);
+        expect(mockedSqsDeleteMessageCall).not.toHaveBeenCalled;
       });
     });
 
