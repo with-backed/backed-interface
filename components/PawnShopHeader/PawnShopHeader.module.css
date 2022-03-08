@@ -31,4 +31,5 @@
 .connect-wallet {
   grid-column: col-start 10 / span 3;
   align-self: center;
+  max-width: 100%;
 }
