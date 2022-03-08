@@ -4,7 +4,12 @@ query allLoans(
   $orderBy: Loan_orderBy
   $orderDirection: OrderDirection
 ) {
-  loans(where: $where, orderBy: $orderBy, orderDirection: $orderDirection) {
+  loans(
+    where: $where
+    orderBy: $orderBy
+    orderDirection: $orderDirection
+    first: $first
+  ) {
     ...allLoanProperties
   }
 }
