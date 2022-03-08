@@ -2,9 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import {
   BuyoutByTransactionHashDocument,
   BuyoutByTransactionHashQuery,
-  Loan,
 } from 'types/generated/graphql/nftLoans';
-import { RawEventNameType, RawSubgraphEvent } from 'types/RawEvent';
 import { nftBackedLoansClient } from 'lib/urql';
 import { sendEmailsForTriggerAndEntity } from 'lib/events/consumers/userNotifications/emails';
 import { EventsSNSMessage } from 'lib/events/sns/helpers';
@@ -17,6 +15,8 @@ export default async function handler(
     res.status(405).send('Only POST requests allowed');
     return;
   }
+
+  console.log({ req });
 
   try {
     const { eventName, event, txHash } = req.body as EventsSNSMessage;
