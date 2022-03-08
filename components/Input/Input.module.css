@@ -17,6 +17,7 @@
 
 .light {
   composes: input;
+  background: linear-gradient(180deg, var(--neutral-5) 5%, #ffffff 100%);
 }
 
 .light-unit {
@@ -27,7 +28,11 @@
 
 .dark {
   composes: input;
-  background: var(--background-radial-gradient);
+  background: linear-gradient(
+    180deg,
+    var(--neutral-10) 5%,
+    var(--neutral-5) 100%
+  );
 }
 
 .dark-unit {
@@ -52,11 +57,15 @@
 }
 
 .dark + .unit {
-  background: var(--background-radial-gradient);
+  background: linear-gradient(
+    180deg,
+    var(--neutral-10) 5%,
+    var(--neutral-5) 100%
+  );
 }
 
 .light + .unit {
-  background: var(--background-white);
+  background: linear-gradient(180deg, var(--neutral-5) 5%, #ffffff 100%);
 }
 
 .light-unit:focus + .unit,
