@@ -85,7 +85,6 @@ function MintDAI() {
 
   const mint = async () => {
     const provider = library!;
-    console.log({ provider });
     const signer = provider.getSigner(0);
     const dai = MockDAI__factory.connect(mockDAIContract, signer);
     const t = await dai.mint(ethers.BigNumber.from(10000), account as string);
