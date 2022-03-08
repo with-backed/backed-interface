@@ -10,7 +10,11 @@
 
 .primary {
   composes: button;
-  background: var(--highlight-clickable-5);
+  background: linear-gradient(
+    180deg,
+    var(--highlight-clickable-5) 50%,
+    var(--highlight-clickable-7) 100%
+  );
   color: var(--highlight-clickable-100);
 }
 
@@ -21,7 +25,11 @@
 
 .primary-dark-bg {
   composes: button;
-  background: var(--highlight-clickable-10);
+  background: linear-gradient(
+    180deg,
+    var(--highlight-clickable-7) 50%,
+    var(--highlight-clickable-10) 100%
+  );
   color: var(--highlight-clickable-100);
 }
 
@@ -31,7 +39,11 @@
 }
 .secondary {
   composes: button;
-  background: var(--highlight-visited-5);
+  background: linear-gradient(
+    180deg,
+    var(--highlight-visited-5) 50%,
+    var(--highlight-visited-7) 100%
+  );
   color: var(--highlight-visited-100);
 }
 
@@ -42,7 +54,11 @@
 
 .tertiary {
   composes: button;
-  background: var(--neutral-5);
+  background: linear-gradient(
+    180deg,
+    var(--neutral-5) 50%,
+    var(--neutral-10) 100%
+  );
   color: var(--neutral-100);
 }
 
@@ -63,6 +79,11 @@
 
 .highlight {
   composes: button;
+  background: linear-gradient(
+    180deg,
+    var(--highlight-active-5) 50%,
+    var(--highlight-active-10) 100%
+  );
   background: var(--highlight-active-10);
 }
 
