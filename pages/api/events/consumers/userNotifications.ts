@@ -7,6 +7,7 @@ import {
 import { RawEventNameType, RawSubgraphEvent } from 'types/RawEvent';
 import { nftBackedLoansClient } from 'lib/urql';
 import { sendEmailsForTriggerAndEntity } from 'lib/events/consumers/userNotifications/emails';
+import { EventsSNSMessage } from 'lib/events/sns/helpers';
 
 export default async function handler(
   req: NextApiRequest,
@@ -18,11 +19,7 @@ export default async function handler(
   }
 
   try {
-    const { eventName, event, txHash } = req.body as {
-      eventName: RawEventNameType;
-      event: RawSubgraphEvent;
-      txHash: string;
-    };
+    const { eventName, event, txHash } = req.body as EventsSNSMessage;
 
     let hasPreviousLender = false;
     if (eventName === 'LendEvent') {

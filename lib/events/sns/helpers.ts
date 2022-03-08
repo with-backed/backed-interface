@@ -1,5 +1,5 @@
 import { SNS } from 'aws-sdk';
-import { RawSubgraphEvent } from 'types/RawEvent';
+import { RawEventNameType, RawSubgraphEvent } from 'types/RawEvent';
 
 const snsConfig = {
   region: 'us-east-1',
@@ -9,12 +9,18 @@ const snsConfig = {
   },
 };
 
+export type EventsSNSMessage = {
+  eventName: RawEventNameType;
+  event: RawSubgraphEvent;
+  txHash: string;
+};
+
 //TODO(adamgobes): fill this out with actual pushing of message to SNS -- to be implemented in follow up PR
-export async function pushEventForProcessing(
-  eventName: string,
-  event: RawSubgraphEvent,
-  txHash: string,
-): Promise<boolean> {
+export async function pushEventForProcessing({
+  eventName,
+  event,
+  txHash,
+}: EventsSNSMessage): Promise<boolean> {
   const sns = new SNS(snsConfig);
 
   const res = await sns

@@ -96,14 +96,14 @@ describe('SQS consumer', () => {
         } as any);
         await main();
         expect(mockedSnsPushCall).toHaveBeenCalledTimes(1);
-        expect(mockedSnsPushCall).toHaveBeenCalledWith(
-          'BuyoutEvent',
-          expect.objectContaining({
+        expect(mockedSnsPushCall).toHaveBeenCalledWith({
+          eventName: 'BuyoutEvent',
+          event: expect.objectContaining({
             lendTicketHolder: subgraphLoanCopy.lendTicketHolder,
             loan: subgraphLoanCopy,
           }),
-          'random-tx-hash',
-        );
+          txHash: 'random-tx-hash',
+        });
 
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledTimes(1);
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledWith(
@@ -166,14 +166,14 @@ describe('SQS consumer', () => {
         } as any);
         await main();
         expect(mockedSnsPushCall).toHaveBeenCalledTimes(1);
-        expect(mockedSnsPushCall).toHaveBeenCalledWith(
-          'LendEvent',
-          expect.objectContaining({
+        expect(mockedSnsPushCall).toHaveBeenCalledWith({
+          eventName: 'LendEvent',
+          event: expect.objectContaining({
             borrowTicketHolder: subgraphLoanCopy.borrowTicketHolder,
             loan: subgraphLoanCopy,
           }),
-          'random-tx-hash',
-        );
+          txHash: 'random-tx-hash',
+        });
 
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledTimes(1);
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledWith(
@@ -217,14 +217,14 @@ describe('SQS consumer', () => {
         } as any);
         await main();
         expect(mockedSnsPushCall).toHaveBeenCalledTimes(1);
-        expect(mockedSnsPushCall).toHaveBeenCalledWith(
-          'RepaymentEvent',
-          expect.objectContaining({
+        expect(mockedSnsPushCall).toHaveBeenCalledWith({
+          eventName: 'RepaymentEvent',
+          event: expect.objectContaining({
             lendTicketHolder: subgraphLoanCopy.lendTicketHolder,
             loan: subgraphLoanCopy,
           }),
-          'random-tx-hash',
-        );
+          txHash: 'random-tx-hash',
+        });
 
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledTimes(1);
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledWith(
@@ -268,14 +268,14 @@ describe('SQS consumer', () => {
         } as any);
         await main();
         expect(mockedSnsPushCall).toHaveBeenCalledTimes(1);
-        expect(mockedSnsPushCall).toHaveBeenCalledWith(
-          'CollateralSeizureEvent',
-          expect.objectContaining({
+        expect(mockedSnsPushCall).toHaveBeenCalledWith({
+          eventName: 'CollateralSeizureEvent',
+          event: expect.objectContaining({
             borrowTicketHolder: subgraphLoanCopy.borrowTicketHolder,
             loan: subgraphLoanCopy,
           }),
-          'random-tx-hash',
-        );
+          txHash: 'random-tx-hash',
+        });
 
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledTimes(1);
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledWith(

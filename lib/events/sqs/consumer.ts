@@ -17,11 +17,11 @@ export async function main() {
       );
       if (!!event) {
         // if push to SNS succeeded, delete from SQS queue, if push to SNS failed, do nothing, and we will process this message again on next run
-        const pushToSnsSuccess = await pushEventForProcessing(
-          message.eventName,
+        const pushToSnsSuccess = await pushEventForProcessing({
+          eventName: message.eventName,
           event,
-          message.txHash,
-        );
+          txHash: message.txHash,
+        });
         if (pushToSnsSuccess) deleteMessage(message.receiptHandle);
       }
     }
