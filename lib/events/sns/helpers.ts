@@ -14,7 +14,7 @@ export async function pushEventForProcessing(
   eventName: string,
   loan: Loan,
   txHash: string,
-) {
+): Promise<boolean> {
   const sns = new SNS(snsConfig);
 
   const res = await sns
@@ -28,7 +28,5 @@ export async function pushEventForProcessing(
     })
     .promise();
 
-  if (!!res.$response.error) {
-    return false;
-  }
+  return !res.$response.error;
 }
