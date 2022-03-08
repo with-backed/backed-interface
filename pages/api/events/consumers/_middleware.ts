@@ -1,6 +1,7 @@
 import { NextFetchEvent, NextRequest, NextResponse } from 'next/server';
 
 export default function middleware(req: NextRequest, _ev?: NextFetchEvent) {
+  console.log({ req });
   return NextResponse.next();
   // try {
   //     const isSubscriptionConfirmationRequest = 'SubscribeURL' in req.body!;
