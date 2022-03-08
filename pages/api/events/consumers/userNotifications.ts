@@ -11,12 +11,11 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<string>,
 ) {
+  console.log({ req });
   if (req.method != 'POST') {
     res.status(405).send('Only POST requests allowed');
     return;
   }
-
-  console.log({ req });
 
   try {
     const { eventName, event, txHash } = req.body as EventsSNSMessage;
