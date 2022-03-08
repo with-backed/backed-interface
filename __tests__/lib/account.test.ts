@@ -1,6 +1,5 @@
 import { ethers } from 'ethers';
 import {
-  allowSpendingAsset,
   getAccountLoanAssetAllowance,
   getAccountLoanAssetBalance,
   resolveEns,
@@ -47,13 +46,6 @@ describe('account utilities', () => {
         '0xcontract',
       );
       expect(value).toEqual(10000000000);
-    });
-  });
-
-  describe('allowSpendingAsset', () => {
-    it('returns the hash from the contract method', async () => {
-      const value = await allowSpendingAsset('0xaddress');
-      expect(value).toEqual('0xhash');
     });
   });
 

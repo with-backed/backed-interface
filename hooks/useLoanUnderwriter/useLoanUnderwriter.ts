@@ -18,13 +18,13 @@ export function useLoanUnderwriter(
 ) {
   const [txHash, setTxHash] = useState('');
   const [transactionPending, setTransactionPending] = useState(false);
-  const { account } = useWeb3();
+  const { account, library } = useWeb3();
   const underwrite = useCallback(
     async ({ interestRate, duration, loanAmount }: Values) => {
       if (!account) {
         throw new Error('Cannot underwrite a loan without a connected account');
       }
-      const loanFacilitator = web3LoanFacilitator();
+      const loanFacilitator = web3LoanFacilitator(library!);
       const interestRatePerSecond = ethers.BigNumber.from(
         Math.floor(interestRate * 10 ** INTEREST_RATE_PERCENT_DECIMALS),
       ).div(SECONDS_IN_A_YEAR);
@@ -49,7 +49,7 @@ export function useLoanUnderwriter(
           console.error(err);
         });
     },
-    [account, id, loanAssetDecimals, refresh],
+    [account, id, library, loanAssetDecimals, refresh],
   );
 
   return {

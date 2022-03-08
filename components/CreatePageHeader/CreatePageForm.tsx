@@ -57,7 +57,7 @@ export function CreatePageForm({
     watch,
     formState: { errors },
   } = form;
-  const { account } = useWeb3();
+  const { account, library } = useWeb3();
   const buttonText = useMemo(() => 'Mint Borrower Ticket', []);
   const [txHash, setTxHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
@@ -91,7 +91,7 @@ export function CreatePageForm({
         Math.floor(parsedInterestRate * 10 ** INTEREST_RATE_PERCENT_DECIMALS),
       ).div(SECONDS_IN_A_YEAR);
 
-      const contract = web3LoanFacilitator();
+      const contract = web3LoanFacilitator(library!);
       onSubmit();
       const t = await contract.createLoan(
         collateralTokenID,
