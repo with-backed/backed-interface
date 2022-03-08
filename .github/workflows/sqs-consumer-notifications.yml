@@ -9,5 +9,5 @@ jobs:
       - name: Call our sqs consumer api to process new on chain events
         run: |
           curl --request POST \
-          --url 'https://nft-pawn-shop-rinkeby.vercel.app/api/cron/processNewOnchainEvents' \
-          --header 'Authorization: Bearer ${{ secrets.NOTIFICATIONS_CRON_API_SECRET_KEY }}'
+          --url 'http://localhost:3000/api/events/cron/processNewOnchainEvents' \
+          --header "Authorization: Basic $(echo -n username:${{ secrets.EVENTS_API_SECRET_KEY }} | base64)"
