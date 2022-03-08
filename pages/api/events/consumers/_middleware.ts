@@ -1,13 +1,15 @@
-import { authenticateRequest, AUTH_STATUS } from 'lib/authentication';
 import { NextFetchEvent, NextRequest, NextResponse } from 'next/server';
 
 export default function middleware(req: NextRequest, _ev?: NextFetchEvent) {
   try {
-    const authStatus = authenticateRequest(req);
-    if (authStatus == AUTH_STATUS.ok) {
+    const isSubscriptionConfirmationRequest = 'SubscribeURL' in req.body!;
+    if (!isSubscriptionConfirmationRequest) {
       return NextResponse.next();
     } else {
-      return new NextResponse(undefined, { status: authStatus });
+      fetch(req.body['SubscribeURL'], {
+        method: 'GET',
+      });
+      return new NextResponse(undefined, { status: 200 });
     }
   } catch (e) {
     console.error(e);
