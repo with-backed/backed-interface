@@ -4,10 +4,9 @@ import {
   BuyoutByTransactionHashQuery,
   Loan,
 } from 'types/generated/graphql/nftLoans';
-import { getNotificationRequestsForAddress } from 'lib/events/consumers/userNotifications/repository';
-import { sendEmail } from 'lib/events/consumers/userNotifications/emails';
-import { EventAsStringType } from 'types/Event';
+import { RawEventNameType } from 'types/RawEvent';
 import { nftBackedLoansClient } from 'lib/urql';
+import { sendEmailsForTriggerAndLoan } from 'lib/events/consumers/userNotifications/emails';
 
 export default async function handler(
   req: NextApiRequest,
@@ -19,15 +18,14 @@ export default async function handler(
   }
 
   try {
-    const { involvedAddress, loan, txHash, event } = req.body as {
-      event: EventAsStringType;
-      involvedAddress: string;
+    const { eventName, loan, txHash } = req.body as {
+      eventName: RawEventNameType;
       loan: Loan;
       txHash: string;
     };
 
     let hasPreviousLender = false;
-    if (event === 'LendEvent') {
+    if (eventName === 'LendEvent') {
       const { data } = await nftBackedLoansClient
         .query<BuyoutByTransactionHashQuery>(BuyoutByTransactionHashDocument, {
           id: txHash,
@@ -39,22 +37,9 @@ export default async function handler(
       }
     }
 
-    const notificationRequests = await getNotificationRequestsForAddress(
-      involvedAddress,
-    );
+    await sendEmailsForTriggerAndLoan(eventName, loan, hasPreviousLender);
 
-    for (let i = 0; i < notificationRequests.length; i++) {
-      sendEmail(
-        notificationRequests[i].deliveryDestination,
-        event,
-        loan,
-        hasPreviousLender,
-      );
-    }
-
-    res
-      .status(200)
-      .json(`notifications successfully sent to ${involvedAddress}`);
+    res.status(200).json(`notifications successfully sent`);
   } catch (e) {
     // TODO: bugsnag
     console.error(e);

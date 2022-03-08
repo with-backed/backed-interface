@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getNotificationRequestsForAddress } from 'lib/events/consumers/userNotifications/repository';
-import { sendEmail } from 'lib/events/consumers/userNotifications/emails';
+import { sendEmailsForTriggerAndLoan } from 'lib/events/consumers/userNotifications/emails';
 import { NotificationTriggerType } from 'lib/events/consumers/userNotifications/shared';
 import { Loan } from 'types/generated/graphql/nftLoans';
 import { NotificationRequest } from '@prisma/client';
@@ -30,33 +30,10 @@ export default async function handler(
       loanIndex++
     ) {
       const loan = liquidationOccurringLoans[loanIndex];
-      const notificationRequestsBorrower =
-        await getNotificationRequestsForAddress(loan.borrowTicketHolder);
-      for (
-        let notificationIndex = 0;
-        notificationIndex < notificationRequestsBorrower.length;
-        notificationIndex++
-      ) {
-        await sendEmail(
-          notificationRequestsBorrower[notificationIndex].deliveryDestination,
-          'LiquidationOccurringBorrower',
-          loan,
-        );
-      }
 
-      const notificationRequestsLender =
-        await getNotificationRequestsForAddress(loan.lendTicketHolder);
-      for (
-        let notificationIndex = 0;
-        notificationIndex < notificationRequestsBorrower.length;
-        notificationIndex++
-      ) {
-        await sendEmail(
-          notificationRequestsLender[notificationIndex].deliveryDestination,
-          'LiquidationOccurringLender',
-          loan,
-        );
-      }
+      await sendEmailsForTriggerAndLoan('LiquidationOccurringBorrower', loan);
+
+      await sendEmailsForTriggerAndLoan('LiquidationOccurringLender', loan);
     }
 
     for (
@@ -65,33 +42,10 @@ export default async function handler(
       loanIndex++
     ) {
       const loan = liquidationOccurredLoans[loanIndex];
-      const notificationRequestsBorrower =
-        await getNotificationRequestsForAddress(loan.borrowTicketHolder);
-      for (
-        let notificationIndex = 0;
-        notificationIndex < notificationRequestsBorrower.length;
-        notificationIndex++
-      ) {
-        await sendEmail(
-          notificationRequestsBorrower[notificationIndex].deliveryDestination,
-          'LiquidationOccurredBorrower',
-          loan,
-        );
-      }
 
-      const notificationRequestsLender =
-        await getNotificationRequestsForAddress(loan.lendTicketHolder);
-      for (
-        let notificationIndex = 0;
-        notificationIndex < notificationRequestsBorrower.length;
-        notificationIndex++
-      ) {
-        await sendEmail(
-          notificationRequestsLender[notificationIndex].deliveryDestination,
-          'LiquidationOccurredLender',
-          loan,
-        );
-      }
+      await sendEmailsForTriggerAndLoan('LiquidationOccurredBorrower', loan);
+
+      await sendEmailsForTriggerAndLoan('LiquidationOccurredLender', loan);
     }
 
     res.status(200).json(`notifications successfully sent`);

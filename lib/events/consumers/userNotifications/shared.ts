@@ -1,11 +1,11 @@
-import { EventAsStringType } from 'types/Event';
+import { RawEventNameType } from 'types/RawEvent';
 
 export enum NotificationMethod {
   EMAIL = 'email',
 }
 
 export type NotificationTriggerType =
-  | EventAsStringType
+  | RawEventNameType
   | 'LiquidationOccurringBorrower'
   | 'LiquidationOccurringLender'
   | 'LiquidationOccurredBorrower'

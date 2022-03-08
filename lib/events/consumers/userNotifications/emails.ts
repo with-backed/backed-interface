@@ -1,8 +1,16 @@
 import mjml2html from 'mjml';
 
 import { executeEmailSendWithSes } from './ses';
-import { Loan } from 'types/generated/graphql/nftLoans';
-import { NotificationTriggerType } from './shared';
+import {
+  BuyoutEvent,
+  CollateralSeizureEvent,
+  LendEvent,
+  Loan,
+  RepaymentEvent,
+} from 'types/generated/graphql/nftLoans';
+import { NotificationMethod, NotificationTriggerType } from './shared';
+import { RawSubgraphEvent } from 'types/RawEvent';
+import { getNotificationRequestsForAddress } from './repository';
 
 type EmailMetadataType = {
   subject: string;
@@ -52,16 +60,55 @@ const notificationEventToEmailMetadata: {
   },
 };
 
-export async function sendEmail(
-  emailAddress: string,
+function getRelevantEthAddressFromTriggerAndLoan(
+  emailTrigger: NotificationTriggerType,
+  loan: Loan,
+) {
+  switch (emailTrigger) {
+    case 'BuyoutEvent':
+      return loan.lendTicketHolder;
+    case 'LendEvent':
+      return loan.borrowTicketHolder;
+    case 'RepaymentEvent':
+      return loan.lendTicketHolder;
+    case 'CollateralSeizureEvent':
+      return loan.borrowTicketHolder;
+    case 'LiquidationOccurringBorrower':
+      return loan.borrowTicketHolder;
+    case 'LiquidationOccurringLender':
+      return loan.lendTicketHolder;
+    case 'LiquidationOccurredBorrower':
+      return loan.borrowTicketHolder;
+    case 'LiquidationOccurredLender':
+      return loan.lendTicketHolder;
+    default:
+      return '';
+  }
+}
+
+export async function sendEmailsForTriggerAndLoan(
   emailTrigger: NotificationTriggerType,
   loan: Loan,
   hasPreviousLender: boolean = false,
 ) {
+  const ethAddress = getRelevantEthAddressFromTriggerAndLoan(
+    emailTrigger,
+    loan,
+  );
+  const notificationRequestsForEthAddress =
+    await getNotificationRequestsForAddress(ethAddress);
+  const emailAddresses = notificationRequestsForEthAddress
+    .filter((req) => req.deliveryMethod === NotificationMethod.EMAIL)
+    .map((req) => req.deliveryDestination);
+
+  if (emailAddresses.length === 0) {
+    return;
+  }
+
   const params = {
     Source: process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_EMAIL!,
     Destination: {
-      ToAddresses: [emailAddress],
+      ToAddresses: emailAddresses,
     },
     ReplyToAddresses: [process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_EMAIL!],
     Message: {

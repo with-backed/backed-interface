@@ -1,5 +1,5 @@
 import { SQS } from 'aws-sdk';
-import { EventAsStringType } from 'types/Event';
+import { RawEventNameType } from 'types/RawEvent';
 
 const sqsConfig = {
   region: 'us-east-1',
@@ -10,7 +10,7 @@ const sqsConfig = {
 };
 
 export type FormattedNotificationEventMessageType = {
-  eventName: EventAsStringType;
+  eventName: RawEventNameType;
   txHash: string;
   receiptHandle: string;
 };
@@ -23,7 +23,7 @@ export async function receiveMessages(): Promise<
 
   const response = await sqs.receiveMessage({ QueueUrl: queueUrl }).promise();
   return response.Messages?.map((message) => {
-    const messageBody: { txHash: string; eventName: EventAsStringType } =
+    const messageBody: { txHash: string; eventName: RawEventNameType } =
       JSON.parse(message.Body!);
     return {
       ...messageBody,
