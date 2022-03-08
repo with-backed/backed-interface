@@ -1,4 +1,34 @@
-query allEventsForAddress(
+query createAndClose(
+  $first: Int
+  $orderDirection: OrderDirection
+  $createWhere: CreateEvent_filter
+  $createOrderBy: CreateEvent_orderBy
+  $closeWhere: CloseEvent_filter
+  $closeOrderBy: CloseEvent_orderBy
+) {
+  createEvents(
+    where: $createWhere
+    orderBy: $createOrderBy
+    orderDirection: $orderDirection
+  ) {
+    ...createEventProperties
+    loan {
+      id
+    }
+  }
+  closeEvents(
+    where: $closeWhere
+    orderBy: $closeOrderBy
+    orderDirection: $orderDirection
+  ) {
+    ...closeEventProperties
+    loan {
+      id
+    }
+  }
+}
+
+query mostEvents(
   $first: Int
   $orderDirection: OrderDirection
   $buyoutWhere: BuyoutEvent_filter
@@ -9,10 +39,6 @@ query allEventsForAddress(
   $repaymentOrderBy: RepaymentEvent_orderBy
   $lendWhere: LendEvent_filter
   $lendOrderBy: LendEvent_orderBy
-  $createWhere: CreateEvent_filter
-  $createOrderBy: CreateEvent_orderBy
-  $closeWhere: CloseEvent_filter
-  $closeOrderBy: CloseEvent_orderBy
 ) {
   buyoutEvents(
     where: $buyoutWhere
@@ -51,26 +77,6 @@ query allEventsForAddress(
     orderDirection: $orderDirection
   ) {
     ...lendEventProperties
-    loan {
-      id
-    }
-  }
-  createEvents(
-    where: $createWhere
-    orderBy: $createOrderBy
-    orderDirection: $orderDirection
-  ) {
-    ...createEventProperties
-    loan {
-      id
-    }
-  }
-  closeEvents(
-    where: $closeWhere
-    orderBy: $closeOrderBy
-    orderDirection: $orderDirection
-  ) {
-    ...closeEventProperties
     loan {
       id
     }
