@@ -78,6 +78,7 @@ export async function getAllEventsForAddress(
   const whereBorrower = { borrowTicketHolder: address };
   const whereLender = { lendTicketHolder: address };
   const queries = await Promise.all([
+    // Events where I have created or closed a loan.
     c
       .query<CreateAndCloseQuery>(CreateAndCloseDocument, {
         orderDirection: OrderDirection.Desc,
@@ -87,6 +88,7 @@ export async function getAllEventsForAddress(
         closeOrderBy: CloseEvent_OrderBy.Timestamp,
       })
       .toPromise(),
+    // Events where I am the lender.
     c
       .query<MostEventsQuery>(MostEventsDocument, {
         orderDirection: OrderDirection.Desc,
@@ -100,6 +102,7 @@ export async function getAllEventsForAddress(
         lendOrderBy: LendEvent_OrderBy.Timestamp,
       })
       .toPromise(),
+    // Events where I am the borrower.
     c
       .query<MostEventsQuery>(MostEventsDocument, {
         orderDirection: OrderDirection.Desc,
