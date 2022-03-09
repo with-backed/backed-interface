@@ -25,12 +25,15 @@ import { ethers } from 'ethers';
  * @returns a list of all events associated with a loan in the subgraph, ordered by blockNumber ascending.
  */
 export async function subgraphLoanHistoryById(id: string): Promise<Event[]> {
-  const { data } = await nftBackedLoansClient
+  const { data, error } = await nftBackedLoansClient
     .query<EventsForLoanQuery>(EventsForLoanDocument, { id })
     .toPromise();
 
   const events: Event[] = [];
 
+  if (error) {
+    // TODO: bugsnag
+  }
   if (!data?.loan) {
     return events;
   }
