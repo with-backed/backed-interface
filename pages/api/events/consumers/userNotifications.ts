@@ -17,12 +17,12 @@ export default async function handler(
     return;
   }
 
+  console.log({ parsed: JSON.parse(req.body) });
+
   try {
     const { eventName, event, txHash } = req.body[
       'Message'
     ] as EventsSNSMessage;
-
-    console.log({ eventName, event, txHash });
 
     let hasPreviousLender = false;
     if (eventName === 'LendEvent') {
@@ -46,9 +46,3 @@ export default async function handler(
     res.status(404);
   }
 }
-
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
