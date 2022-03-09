@@ -46,3 +46,9 @@ export default async function handler(
     res.status(404);
   }
 }
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
