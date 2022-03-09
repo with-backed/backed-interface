@@ -7,7 +7,7 @@ import React, {
 
 export type MessageKind = 'error' | 'info' | 'success';
 
-type Message = {
+export type Message = {
   kind: MessageKind;
   message: React.ReactNode | string;
 };
@@ -31,7 +31,7 @@ function messageReducer(
     }
     case 'delete': {
       return {
-        messages: state.messages.filter((m) => m.message !== action.message),
+        messages: state.messages.filter((m) => m !== action.message),
       };
     }
   }
@@ -73,7 +73,7 @@ export function useGlobalMessages() {
 
   return {
     addMessage,
-    messages: state,
+    messages: state.messages,
     removeMessage,
   };
 }
