@@ -32,10 +32,12 @@ export default async function subgraphLoans(
     orderDirection: sortDirection,
   };
 
-  const { data } = await nftBackedLoansClient
+  const { data, error } = await nftBackedLoansClient
     .query<AllLoansQuery>(AllLoansDocument, queryArgs)
     .toPromise();
-
+  if (error) {
+    // TODO: bugsnag
+  }
   return data?.loans || [];
 }
 
@@ -62,7 +64,7 @@ export async function searchLoans(
   first: number,
   page: number = 1,
 ): Promise<Loan[]> {
-  const { data } = await nftBackedLoansClient
+  const { data, error } = await nftBackedLoansClient
     .query<HomepageSearchQuery>(HomepageSearchDocument, {
       statuses,
       collateralContractAddress,
@@ -82,7 +84,9 @@ export async function searchLoans(
       skip: (page - 1) * first,
     })
     .toPromise();
-
+  if (error) {
+    // TODO: bugsnag
+  }
   return data?.loans || [];
 }
 
@@ -101,11 +105,13 @@ export async function getLoansExpiringWithin(
     endDateTimestamp_lt: timeTwo,
   };
 
-  const { data } = await nftBackedLoansClient
+  const { data, error } = await nftBackedLoansClient
     .query<AllLoansQuery>(AllLoansDocument, {
       where,
     })
     .toPromise();
-
+  if (error) {
+    // TODO: bugsnag
+  }
   return data?.loans || [];
 }

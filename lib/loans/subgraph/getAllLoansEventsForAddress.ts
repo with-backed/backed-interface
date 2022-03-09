@@ -57,7 +57,7 @@ export async function getAllActiveLoansForAddress(
     where: whereFilterAsLender,
   };
 
-  const resultArray: { data?: { loans: Loan[] } }[] = await Promise.all([
+  const results = await Promise.all([
     nftBackedLoansClient
       .query<AllLoansQuery>(AllLoansDocument, queryArgsAsBorrower)
       .toPromise(),
@@ -66,8 +66,13 @@ export async function getAllActiveLoansForAddress(
       .toPromise(),
   ]);
 
-  return resultArray
-    .map((result) => (result.data ? result.data.loans : []))
+  return results
+    .map((result) => {
+      if (result.error) {
+        // TODO: bugsnag
+      }
+      return result.data ? result.data.loans : [];
+    })
     .flat();
 }
 

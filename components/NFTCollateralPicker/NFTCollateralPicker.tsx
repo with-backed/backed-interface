@@ -61,6 +61,7 @@ export function NFTCollateralPicker({
   }
 
   if (error) {
+    // TODO: bugsnag
     return (
       <Modal dialog={dialog} heading="✨ 🔍 Select an NFT 🖼 ✨">
         <div className={styles.nftPicker}>
