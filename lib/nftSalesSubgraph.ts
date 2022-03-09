@@ -12,7 +12,7 @@ export async function queryMostRecentSaleForNFT(
   nftContractAddress: string,
   nftTokenId: string,
 ): Promise<NFTSale | null> {
-  const { data } = await nftSalesClient
+  const { data, error } = await nftSalesClient
     .query<SalesByAddressQuery>(SalesByAddressDocument, {
       nftContractAddress,
       nftTokenId,
@@ -22,11 +22,15 @@ export async function queryMostRecentSaleForNFT(
     })
     .toPromise();
 
+  if (error) {
+    // TODO: bugsnag
+  }
+
   if (data?.sales && data.sales.length > 0) {
     return data.sales[0];
   }
 
-  // TODO: bugsnag? is this case exceptional or just something that happens?
+  // TODO: bugsnag? is not finding any sales exceptional or just something that happens?
   return null;
 }
 
