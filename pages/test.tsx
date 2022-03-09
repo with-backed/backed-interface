@@ -26,13 +26,13 @@ export default function Test() {
 }
 
 function MintPunk() {
-  const { account } = useWeb3();
+  const { account, library } = useWeb3();
   const [txHash, setTxHash] = useState('');
   const [txPending, setTxPending] = useState(false);
   const [id, setId] = useState<ethers.BigNumber | null>(null);
   const mockPunkContract = process.env.NEXT_PUBLIC_MOCK_PUNK_CONTRACT || '';
   const mintPunk = async () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const provider = library!;
     const signer = provider.getSigner(0);
     const punk = MockPUNK__factory.connect(mockPunkContract, signer);
     const t = await punk.mint();
@@ -55,7 +55,6 @@ function MintPunk() {
     const punk = MockPUNK__factory.connect(mockPunkContract, provider);
     const filter = punk.filters.Transfer(null, account, null);
     punk.once(filter, (from, to, tokenId) => {
-      console.log(`token id ${tokenId}`);
       setTxPending(false);
       setId(tokenId);
     });
@@ -79,13 +78,13 @@ function MintPunk() {
 }
 
 function MintDAI() {
-  const { account } = useWeb3();
+  const { account, library } = useWeb3();
   const [txHash, setTxHash] = useState('');
   const [txPending, setTxPending] = useState(false);
   const mockDAIContract = process.env.NEXT_PUBLIC_MOCK_DAI_CONTRACT || '';
 
   const mint = async () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const provider = library!;
     const signer = provider.getSigner(0);
     const dai = MockDAI__factory.connect(mockDAIContract, signer);
     const t = await dai.mint(ethers.BigNumber.from(10000), account as string);

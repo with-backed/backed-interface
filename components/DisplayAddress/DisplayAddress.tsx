@@ -1,3 +1,4 @@
+import { useWeb3 } from 'hooks/useWeb3';
 import { addressToENS } from 'lib/account';
 import React, { useEffect, useState } from 'react';
 import styles from './Address.module.css';
@@ -11,13 +12,14 @@ export function DisplayAddress({
   address,
   useEns = true,
 }: DisplayAddressProps) {
+  const { library } = useWeb3();
   const [gotResponse, setGotResponse] = useState(false);
   const [addr, setAddr] = useState<string>(address);
 
   useEffect(() => {
     async function getEnsName() {
       try {
-        let name = await addressToENS(address);
+        let name = await addressToENS(address, library!);
 
         setGotResponse(true);
         if (name) {
@@ -30,7 +32,7 @@ export function DisplayAddress({
     }
 
     if (useEns) getEnsName();
-  }, [address, useEns]);
+  }, [address, library, useEns]);
 
   if (!useEns) {
     return (

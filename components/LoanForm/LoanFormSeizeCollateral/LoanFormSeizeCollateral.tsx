@@ -1,4 +1,5 @@
 import { TransactionButton } from 'components/Button';
+import { useWeb3 } from 'hooks/useWeb3';
 import { web3LoanFacilitator } from 'lib/contracts';
 import React, { useCallback, useState } from 'react';
 import { Loan } from 'types/Loan';
@@ -12,11 +13,12 @@ export function LoanFormSeizeCollateral({
   loan,
   refresh,
 }: LoanFormSeizeCollateralProps) {
+  const { library } = useWeb3();
   const [txHash, setTxHash] = useState('');
   const [isPending, setIsPending] = useState(false);
 
   const seize = useCallback(async () => {
-    const loanFacilitator = web3LoanFacilitator();
+    const loanFacilitator = web3LoanFacilitator(library!);
     const t = await loanFacilitator.seizeCollateral(loan.id, loan.lender!);
     setIsPending(true);
     setTxHash(t.hash);
@@ -30,7 +32,7 @@ export function LoanFormSeizeCollateral({
         setIsPending(false);
         console.error(err);
       });
-  }, [loan.id, loan.lender, refresh]);
+  }, [library, loan.id, loan.lender, refresh]);
 
   return (
     <>

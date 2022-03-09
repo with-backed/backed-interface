@@ -15,7 +15,7 @@ export default function SeizeCollateralCard({
   loanInfo,
   seizeCollateralSuccessCallback,
 }: SeizeCollateralCardProps) {
-  const { account } = useWeb3();
+  const { account, library } = useWeb3();
   const [amountOwed] = useState(
     ethers.utils.formatUnits(
       loanInfo.interestOwed.add(loanInfo.loanAmount).toString(),
@@ -31,7 +31,7 @@ export default function SeizeCollateralCard({
     setTxHash('');
     setWaitingForTx(false);
 
-    const t = await web3LoanFacilitator().seizeCollateral(
+    const t = await web3LoanFacilitator(library!).seizeCollateral(
       loanInfo.id,
       // If they've gotten this far, they have an account.
       account as string,

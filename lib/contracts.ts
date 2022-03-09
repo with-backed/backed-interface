@@ -1,3 +1,4 @@
+import { Web3Provider } from '@ethersproject/providers';
 import { ethers } from 'ethers';
 import {
   ERC20__factory,
@@ -10,8 +11,7 @@ const jsonRpcProvider = new ethers.providers.JsonRpcProvider(
   process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
 );
 
-export function web3LoanFacilitator() {
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
+export function web3LoanFacilitator(provider: Web3Provider) {
   const signer = provider.getSigner(0);
   return loanFacilitator(signer);
 }
@@ -20,14 +20,12 @@ export function jsonRpcLoanFacilitator() {
   return loanFacilitator(jsonRpcProvider);
 }
 
-export function web3Erc20Contract(address: string) {
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
+export function web3Erc20Contract(address: string, provider: Web3Provider) {
   const signer = provider.getSigner(0);
   return erc20Contract(address, signer);
 }
 
-export function web3Erc721Contract(address: string) {
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
+export function web3Erc721Contract(address: string, provider: Web3Provider) {
   const signer = provider.getSigner(0);
   return erc721Contract(address, signer);
 }

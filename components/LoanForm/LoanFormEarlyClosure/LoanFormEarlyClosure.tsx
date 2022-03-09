@@ -1,4 +1,5 @@
 import { TransactionButton } from 'components/Button';
+import { useWeb3 } from 'hooks/useWeb3';
 import { web3LoanFacilitator } from 'lib/contracts';
 import React, { useCallback, useState } from 'react';
 import { Loan } from 'types/Loan';
@@ -11,11 +12,12 @@ export function LoanFormEarlyClosure({
   loan,
   refresh,
 }: LoanFormEarlyClosureProps) {
+  const { library } = useWeb3();
   const [txHash, setTxHash] = useState('');
   const [isPending, setIsPending] = useState(false);
 
   const close = useCallback(async () => {
-    const loanFacilitator = web3LoanFacilitator();
+    const loanFacilitator = web3LoanFacilitator(library!);
     const t = await loanFacilitator.closeLoan(loan.id, loan.borrower);
     setIsPending(true);
     setTxHash(t.hash);
@@ -29,7 +31,7 @@ export function LoanFormEarlyClosure({
         setIsPending(false);
         console.error(err);
       });
-  }, [loan.id, loan.borrower, refresh]);
+  }, [library, loan.id, loan.borrower, refresh]);
 
   return (
     <>
