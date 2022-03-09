@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { getByText, render } from '@testing-library/react';
 import { useTokenMetadata } from 'hooks/useTokenMetadata';
 import { LoanCard } from 'components/LoanCard';
 import { GetNFTInfoResponse } from 'lib/getNFTInfo';
@@ -39,14 +39,13 @@ describe('LoanCard', () => {
     getByText('loading name');
   });
 
-  it('renders null when metadata cannot be fetched', () => {
-    expect.assertions(2);
+  it('renders what it can when metadata cannot be fetched', () => {
     mockedUseTokenMetadata.mockReturnValue({
       isLoading: false,
       metadata: null,
     });
-    const { container } = render(<LoanCard loan={loan} />);
-    expect(container.children).toHaveLength(0);
+    const { getByText } = render(<LoanCard loan={loan} />);
+    getByText('--');
     expect(console.error).toHaveBeenCalled();
   });
 
