@@ -27,6 +27,8 @@ export default async function handler(
     return;
   }
 
+  console.log({ parsedBody });
+
   try {
     const { eventName, event, txHash } = parsedBody[
       'Message'
