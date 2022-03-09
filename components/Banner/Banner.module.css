@@ -8,6 +8,9 @@
   gap: 1ch;
   padding: var(--padding-button);
   transition: opacity 200ms ease;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .banner-enter {

@@ -8,6 +8,7 @@ import { PawnShopHeader } from 'components/PawnShopHeader';
 import { AppWrapper } from 'components/layouts/AppWrapper';
 import { TimestampProvider } from 'hooks/useTimestamp/useTimestamp';
 import { useEffect, useState } from 'react';
+import { GlobalMessagingProvider } from 'hooks/useGlobalMessages';
 
 const getLibrary: React.ComponentProps<typeof Web3ReactProvider>['getLibrary'] =
   (provider) => {
@@ -52,13 +53,15 @@ export default function App({ Component, pageProps }: AppProps) {
   }, []);
 
   return (
-    <Web3ReactProvider getLibrary={getLibrary}>
-      <TimestampProvider>
-        <AppWrapper>
-          <PawnShopHeader prawn={showVariant} />
-          <Component {...pageProps} />
-        </AppWrapper>
-      </TimestampProvider>
-    </Web3ReactProvider>
+    <GlobalMessagingProvider>
+      <Web3ReactProvider getLibrary={getLibrary}>
+        <TimestampProvider>
+          <AppWrapper>
+            <PawnShopHeader prawn={showVariant} />
+            <Component {...pageProps} />
+          </AppWrapper>
+        </TimestampProvider>
+      </Web3ReactProvider>
+    </GlobalMessagingProvider>
   );
 }
