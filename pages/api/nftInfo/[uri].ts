@@ -35,7 +35,6 @@ export default async function handler(
   } catch (e) {
     // TODO: bugsnag
     if ((e as any).name === 'AbortError') {
-      console.log(e);
       return res.status(408).json(null);
     }
     return res.status(404).json(null);
