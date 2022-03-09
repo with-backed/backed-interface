@@ -27,12 +27,10 @@ export default async function handler(
     return;
   }
 
-  console.log({ parsedBody });
-
   try {
-    const { eventName, event, txHash } = parsedBody[
-      'Message'
-    ] as EventsSNSMessage;
+    const { eventName, event, txHash } = JSON.parse(
+      parsedBody['Message'],
+    ) as EventsSNSMessage;
 
     console.log({ eventName, event, txHash });
 
