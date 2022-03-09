@@ -2,7 +2,7 @@ import { DescriptionList } from 'components/DescriptionList';
 import { Fieldset } from 'components/Fieldset';
 import { Fallback } from 'components/Media/Fallback';
 import { OpenSeaAddressLink } from 'components/OpenSeaLink';
-import { PawnLoanArt, PawnTicketArt } from 'components/ticketPage/PawnArt';
+import { PawnLoanArt, PawnTicketArt } from 'components/PawnArt';
 import { DisplayAddress } from 'components/DisplayAddress';
 import { useLoanDetails } from 'hooks/useLoanDetails';
 import { jsonRpcERC721Contract } from 'lib/contracts';
