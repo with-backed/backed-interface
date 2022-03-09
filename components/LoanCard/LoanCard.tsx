@@ -62,7 +62,17 @@ export function LoanCard({
         `Failed to fetch metadata at ${collateralTokenURI} for loan #${id}`,
       ),
     );
-    return null;
+    return (
+      <LoanCardNoMetadata
+        id={id.toString()}
+        title={title}
+        formattedLoanAmount={formattedLoanAmount}
+        perSecondInterestRate={perSecondInterestRate}
+        selectedAddress={selectedAddress}
+        isBorrower={selectedAddress === borrower}
+        isLender={selectedAddress === lender}
+      />
+    );
   } else {
     return (
       <LoanCardLoaded
@@ -77,6 +87,53 @@ export function LoanCard({
       />
     );
   }
+}
+
+type LoanCardNoMetadataProps = {
+  id: string;
+  title: string;
+  formattedLoanAmount: string;
+  perSecondInterestRate: ethers.BigNumber;
+  selectedAddress?: string;
+  isBorrower?: boolean;
+  isLender?: boolean;
+};
+function LoanCardNoMetadata({
+  id,
+  title,
+  formattedLoanAmount,
+  perSecondInterestRate,
+  selectedAddress,
+  isBorrower,
+  isLender,
+}: LoanCardNoMetadataProps) {
+  return (
+    <Link href={`/loans/${id}`}>
+      <a className={styles.link} aria-label={title} title={title}>
+        <div className={styles.card}>
+          <Fallback animated={false} />
+          <span>--</span>
+          <Attributes>
+            <span>{formattedLoanAmount}</span>
+            <span>{formattedAnnualRate(perSecondInterestRate)}% interest</span>
+          </Attributes>
+          {!!selectedAddress && (
+            <Attributes>
+              {isBorrower && (
+                <BorrowerLenderBubble address={selectedAddress} borrower />
+              )}
+              {isLender && (
+                <BorrowerLenderBubble
+                  address={selectedAddress}
+                  borrower={false}
+                />
+              )}
+            </Attributes>
+          )}
+        </div>
+      </a>
+    </Link>
+  );
 }
 
 type LoanCardLoadedProps = {
