@@ -10,7 +10,7 @@ export default function middleware(req: NextRequest, _ev?: NextFetchEvent) {
       return new NextResponse(undefined, {
         status: authStatus,
         headers: {
-          'WWW-Authenticate': 'realm',
+          'WWW-Authenticate': 'Basic realm',
         },
       });
     }
