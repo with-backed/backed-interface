@@ -1,1 +1,0 @@
-export { MessageWithTooltip } from './MessageWithTooltip';
