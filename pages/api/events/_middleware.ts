@@ -5,7 +5,6 @@ export default function middleware(req: NextRequest, _ev?: NextFetchEvent) {
   try {
     const authStatus = authenticateRequest(req);
     if (authStatus == AUTH_STATUS.ok) {
-      console.log('ran next on auth middleware');
       return NextResponse.next();
     } else {
       return new NextResponse(undefined, {

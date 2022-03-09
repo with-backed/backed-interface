@@ -14,13 +14,13 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<string>,
 ) {
-  console.log({ req });
   if (req.method != 'POST') {
     res.status(405).send('Only POST requests allowed');
     return;
   }
 
   const parsedBody = JSON.parse(req.body);
+
   if ('SubscribeURL' in parsedBody) {
     await confirmTopicSubscription(parsedBody['SubscribeURL']);
     res.status(200).send('subscription successful');
@@ -31,8 +31,6 @@ export default async function handler(
     const { eventName, event, txHash } = JSON.parse(
       parsedBody['Message'],
     ) as EventsSNSMessage;
-
-    console.log({ eventName, event, txHash });
 
     let hasPreviousLender = false;
     if (eventName === 'LendEvent') {

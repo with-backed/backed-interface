@@ -28,11 +28,12 @@ describe('/api/events/_middleware', () => {
     expect(res.status).toBe(401);
   });
 
-  it('should return 401 for missing header', () => {
+  it('should return 401 for missing header with WWW-authenticate', () => {
     const req = new NextRequest('http://example.com');
 
     const res = middleware(req);
     expect(res.status).toBe(401);
+    expect(res.headers.get('WWW-Authenticate')).toBe('Basic realm');
   });
 
   it('should return 500 for unassigned secret', () => {

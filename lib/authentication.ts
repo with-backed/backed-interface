@@ -29,8 +29,6 @@ export function authenticateRequest(req: NextApiRequest | NextRequest) {
       authorization = headers['authorization'];
     }
 
-    console.log({ authorization });
-
     if (!authorization) {
       return AUTH_STATUS.unauthorized;
     }

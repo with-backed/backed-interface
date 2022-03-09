@@ -105,7 +105,7 @@ export async function sendEmailsForTriggerAndEntity(
     emailTrigger,
     entity,
   );
-  console.log('would have sent emails for users subscribed to ', ethAddress);
+
   const notificationRequestsForEthAddress =
     await getNotificationRequestsForAddress(ethAddress);
   const emailAddresses = notificationRequestsForEthAddress
