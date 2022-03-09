@@ -5,22 +5,29 @@ import {
 } from 'types/generated/graphql/nftLoans';
 import { nftBackedLoansClient } from 'lib/urql';
 import { sendEmailsForTriggerAndEntity } from 'lib/events/consumers/userNotifications/emails';
-import { EventsSNSMessage } from 'lib/events/sns/helpers';
+import {
+  confirmTopicSubscription,
+  EventsSNSMessage,
+} from 'lib/events/sns/helpers';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<string>,
 ) {
-  console.log({ req });
   if (req.method != 'POST') {
     res.status(405).send('Only POST requests allowed');
     return;
   }
 
-  console.log({ parsed: JSON.parse(req.body) });
+  const parsedBody = JSON.parse(req.body);
+  if ('SubscribeURL' in parsedBody) {
+    await confirmTopicSubscription(parsedBody['SubscribeURL']);
+    res.status(200).send('subscription successful');
+    return;
+  }
 
   try {
-    const { eventName, event, txHash } = req.body[
+    const { eventName, event, txHash } = parsedBody[
       'Message'
     ] as EventsSNSMessage;
 

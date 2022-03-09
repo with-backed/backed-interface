@@ -36,3 +36,9 @@ export async function pushEventForProcessing({
 
   return !res.$response.error;
 }
+
+export async function confirmTopicSubscription(subscribeUrl: string) {
+  await fetch(subscribeUrl, {
+    method: 'GET',
+  });
+}
