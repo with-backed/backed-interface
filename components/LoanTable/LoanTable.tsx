@@ -1,3 +1,4 @@
+import { DisplayCurrency } from 'components/DisplayCurrency';
 import { NFTMedia } from 'components/Media/NFTMedia';
 import { ethers } from 'ethers';
 import { useLoanDetails } from 'hooks/useLoanDetails';
@@ -95,7 +96,21 @@ function Loan({ loan }: LoanProps) {
         </Link>
       </td>
       <td className={styles.right}>
-        {loanAmount} {loan.loanAssetSymbol}
+        <div className={styles['field-and-subfield']}>
+          <span>
+            {loanAmount} {loan.loanAssetSymbol}
+          </span>
+          <span>
+            <DisplayCurrency
+              amount={{
+                nominal: loanAmount,
+                symbol: loan.loanAssetSymbol,
+                address: loan.loanAssetContractAddress,
+              }}
+              currency="usd"
+            />
+          </span>
+        </div>
       </td>
       <td className={styles.right}>
         <div className={styles['field-and-subfield']}>
