@@ -38,7 +38,6 @@ export async function pushEventForProcessing({
   return !res.$response.error;
 }
 
-// first bool returned is whether a confirmation subscription url was even found in body, second is whether the confirmation was successful
 export async function confirmTopicSubscription(
   body: any,
   res: NextApiResponse<string>,
