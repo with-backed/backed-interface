@@ -60,7 +60,7 @@ describe('Banner', () => {
           <WrongNetwork expectedChainId={1} currentChainId={4} />,
         );
         getByText(
-          "You're viewing data from the Mainnet network, but your wallet is connected to the Rinkeby network.",
+          "You're viewing data from the Homestead network, but your wallet is connected to the Rinkeby network.",
         );
       });
 
@@ -68,7 +68,7 @@ describe('Banner', () => {
         const { getByText } = render(
           <WrongNetwork expectedChainId={1} currentChainId={4} />,
         );
-        const button = getByText('Switch to Mainnet');
+        const button = getByText('Switch to Homestead');
         expect(jsonRpcFetchFunc).not.toHaveBeenCalled();
         userEvent.click(button);
         expect(jsonRpcFetchFunc).toHaveBeenCalledWith(
@@ -82,7 +82,7 @@ describe('Banner', () => {
         const { getByText } = render(
           <WrongNetwork expectedChainId={1} currentChainId={4} />,
         );
-        const button = getByText('Switch to Mainnet');
+        const button = getByText('Switch to Homestead');
         expect(addMessage).not.toHaveBeenCalled();
         userEvent.click(button);
         await waitFor(() => expect(addMessage).toHaveBeenCalled());

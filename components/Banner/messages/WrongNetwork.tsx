@@ -1,13 +1,7 @@
+import { ethers } from 'ethers';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import { useWeb3 } from 'hooks/useWeb3';
-import React, { useCallback } from 'react';
-
-const idToName: { [key: number]: string } = {
-  1: 'Mainnet',
-  3: 'Ropsten',
-  4: 'Rinkeby',
-  5: 'Goerli',
-};
+import React, { useCallback, useMemo } from 'react';
 
 type WrongNetworkProps = {
   currentChainId: number;
@@ -34,13 +28,21 @@ export const WrongNetwork = ({
     }
   }, [addMessage, expectedChainId, library]);
 
+  const currentChainName = useMemo(() => {
+    const rawName = ethers.providers.getNetwork(currentChainId).name;
+    return rawName[0].toUpperCase() + rawName.slice(1);
+  }, [currentChainId]);
+
+  const expectedChainName = useMemo(() => {
+    const rawName = ethers.providers.getNetwork(expectedChainId).name;
+    return rawName[0].toUpperCase() + rawName.slice(1);
+  }, [expectedChainId]);
+
   return (
     <span>
-      You&apos;re viewing data from the {idToName[expectedChainId]} network, but
-      your wallet is connected to the {idToName[currentChainId]} network.{' '}
-      <button onClick={handleClick}>
-        Switch to {idToName[expectedChainId]}
-      </button>
+      You&apos;re viewing data from the {expectedChainName} network, but your
+      wallet is connected to the {currentChainName} network.{' '}
+      <button onClick={handleClick}>Switch to {expectedChainName}</button>
     </span>
   );
 };
