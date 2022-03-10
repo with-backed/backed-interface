@@ -27,6 +27,15 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
   const kind = pathname === CREATE_PATH ? 'secondary' : 'primary';
   return (
     <>
+      {messages.map((m) => {
+        const close = () => removeMessage(m);
+        return (
+          // It's possible for a ReactNode to be null, but `message` shouldn't be on a banner.
+          <Banner key={m.message as any} kind={m.kind} close={close}>
+            {m.message}
+          </Banner>
+        );
+      })}
       <header className={styles.header}>
         <TwelveColumn>
           <div className={styles.pawn}>
@@ -50,15 +59,6 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
           </div>
         </TwelveColumn>
       </header>
-      {messages.map((m) => {
-        const close = () => removeMessage(m);
-        return (
-          // It's possible for a ReactNode to be null, but `message` shouldn't be on a banner.
-          <Banner key={m.message as any} kind={m.kind} close={close}>
-            {m.message}
-          </Banner>
-        );
-      })}
     </>
   );
 };
