@@ -45,6 +45,7 @@ export function useLoanUnderwriter(
           refresh();
         })
         .catch((err) => {
+          // TODO: bugsnag
           setTransactionPending(false);
           console.error(err);
         });
