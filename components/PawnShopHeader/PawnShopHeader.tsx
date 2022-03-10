@@ -10,6 +10,7 @@ import betterLogo from './prawnshop.png';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import { Banner } from 'components/Banner';
+import { useNetworkMonitor } from 'hooks/useNetworkMonitor';
 
 type PawnShopHeaderProps = {
   prawn?: boolean;
@@ -21,6 +22,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
   prawn,
 }) => {
   const { messages, removeMessage } = useGlobalMessages();
+  useNetworkMonitor();
   const { pathname } = useRouter();
   const kind = pathname === CREATE_PATH ? 'secondary' : 'primary';
   return (
