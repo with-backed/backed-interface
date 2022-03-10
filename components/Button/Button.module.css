@@ -211,3 +211,40 @@
 .primary.button-link:visited {
   color: var(--highlight-clickable-100);
 }
+
+.text-button {
+  border: none;
+  background: none;
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+}
+
+.text-button-neutral {
+  composes: text-button;
+  color: var(--neutral-100);
+}
+
+.text-button-clickable {
+  composes: text-button;
+  color: var(--highlight-clickable-100);
+}
+
+.text-button-visited {
+  composes: text-button;
+  color: var(--highlight-visited-100);
+}
+
+.text-button-active {
+  composes: text-button;
+  color: var(--highlight-active-50);
+}
+
+.text-button-alert {
+  composes: text-button;
+  color: var(--highlight-alert-100);
+}
+
+.text-button-success {
+  composes: text-button;
+  color: var(--highlight-success-100);
+}
