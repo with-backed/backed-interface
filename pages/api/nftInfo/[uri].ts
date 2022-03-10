@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import IPFSGatewayTools from '@pinata/ipfs-gateway-tools/dist/node';
+import { fetchWithTimeout } from 'lib/fetchWithTimeout';
 
 const ipfsGatewayTools = new IPFSGatewayTools();
 
@@ -20,7 +21,7 @@ export default async function handler(
     const { uri } = req.query;
     const decodedUri = decodeURIComponent(uri as string);
     const resolvedUri = convertIPFS(decodedUri);
-    const tokenURIRes = await fetch(resolvedUri);
+    const tokenURIRes = await fetchWithTimeout(resolvedUri);
     const { name, description, tokenId, image, animation_url, external_url } =
       await tokenURIRes.json();
     res.status(200).json({
@@ -33,8 +34,10 @@ export default async function handler(
     });
   } catch (e) {
     // TODO: bugsnag
-    console.error(e);
-    res.status(404);
+    if ((e as any).name === 'AbortError') {
+      return res.status(408).json(null);
+    }
+    return res.status(404).json(null);
   }
 }
 
