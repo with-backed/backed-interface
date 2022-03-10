@@ -1,3 +1,4 @@
+import { TextButton } from 'components/Button';
 import { ethers } from 'ethers';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import { useWeb3 } from 'hooks/useWeb3';
@@ -42,7 +43,9 @@ export const WrongNetwork = ({
     <span>
       You&apos;re viewing data from the {expectedChainName} network, but your
       wallet is connected to the {currentChainName} network.{' '}
-      <button onClick={handleClick}>Switch to {expectedChainName}</button>
+      <TextButton kind="alert" onClick={handleClick}>
+        Switch to {expectedChainName}
+      </TextButton>
     </span>
   );
 };
