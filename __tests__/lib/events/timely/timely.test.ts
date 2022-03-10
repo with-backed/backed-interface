@@ -9,11 +9,7 @@ import {
 } from 'lib/events/consumers/userNotifications/repository';
 
 let lastRun = 1645155901;
-let now =
-  lastRun +
-  parseInt(process.env.NEXT_PUBLIC_NOTIFICATIONS_FREQUENCY_HOURS!) * 3600;
-const future =
-  now + parseInt(process.env.NEXT_PUBLIC_NOTIFICATIONS_FREQUENCY_HOURS!) * 3600;
+let now = lastRun + 3600;
 
 const aboutToExpireLoan = {
   ...subgraphLoan,
@@ -69,8 +65,11 @@ describe('getLiquidatedLoansForTimestamp', () => {
       await getLiquidatedLoansForTimestamp(now);
 
     expect(mockedGetExpiringLoansCall).toHaveBeenCalledTimes(2);
-    expect(mockedGetExpiringLoansCall).toHaveBeenCalledWith(now, future);
-    expect(mockedGetExpiringLoansCall).toHaveBeenCalledWith(lastRun, now);
+    expect(mockedGetExpiringLoansCall).toHaveBeenCalledWith(
+      now + 25 * 3600,
+      now + 24 * 3600,
+    );
+    expect(mockedGetExpiringLoansCall).toHaveBeenCalledWith(now - 3600, now);
 
     expect(liquidationOccurringLoans).toEqual([aboutToExpireLoan]);
     expect(liquidationOccurredLoans).toEqual([alreadyExpiredLoan]);
