@@ -61,6 +61,9 @@ describe('/api/events/consumers/userNotifications', () => {
         method: 'GET',
       });
       expect(sendEmailsForTriggerAndEntity).not.toHaveBeenCalled;
+
+      expect(res._getStatusCode()).toBe(200);
+      expect(res._getData()).toEqual(`subscription successful`);
     });
   });
 

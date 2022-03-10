@@ -1,4 +1,5 @@
 import { SNS } from 'aws-sdk';
+import { NextApiResponse } from 'next';
 import { RawEventNameType, RawSubgraphEvent } from 'types/RawEvent';
 
 const snsConfig = {
@@ -37,8 +38,22 @@ export async function pushEventForProcessing({
   return !res.$response.error;
 }
 
-export async function confirmTopicSubscription(subscribeUrl: string) {
-  await fetch(subscribeUrl, {
-    method: 'GET',
-  });
+// first bool returned is whether a confirmation subscription url was even found in body, second is whether the confirmation was successful
+export async function confirmTopicSubscription(
+  body: any,
+  res: NextApiResponse<string>,
+): Promise<boolean> {
+  if ('SubscribeURL' in body) {
+    try {
+      await fetch(body['SubscribeURL'], {
+        method: 'GET',
+      });
+      res.status(200).send('subscription successful');
+    } catch (e) {
+      res.status(400).send('subscription unsuccessful');
+    }
+    return true;
+  } else {
+    return false;
+  }
 }

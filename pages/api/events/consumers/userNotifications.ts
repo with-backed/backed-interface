@@ -21,9 +21,8 @@ export default async function handler(
 
   const parsedBody = JSON.parse(req.body);
 
-  if ('SubscribeURL' in parsedBody) {
-    await confirmTopicSubscription(parsedBody['SubscribeURL']);
-    res.status(200).send('subscription successful');
+  const isConfirmingSubscribe = await confirmTopicSubscription(parsedBody, res);
+  if (isConfirmingSubscribe) {
     return;
   }
 
