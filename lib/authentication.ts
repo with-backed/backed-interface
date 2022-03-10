@@ -29,14 +29,28 @@ export function authenticateRequest(req: NextApiRequest | NextRequest) {
       authorization = headers['authorization'];
     }
 
-    const secret = process.env.NOTIFICATIONS_CRON_API_SECRET_KEY;
+    if (!authorization) {
+      return AUTH_STATUS.unauthorized;
+    }
 
+    const secret = process.env.EVENTS_API_SECRET_KEY;
     if (!secret) {
       console.error('Authentication secret is not set');
       return AUTH_STATUS.internalError;
     }
 
-    if (authorization === `Bearer ${secret}`) {
+    const usernameAndPasswordEncoded = authorization.substring(
+      authorization.indexOf(' ') + 1,
+    );
+    const usernameAndPasswordDecoded = Buffer.from(
+      usernameAndPasswordEncoded,
+      'base64',
+    ).toString('ascii');
+    const password = usernameAndPasswordDecoded.substring(
+      usernameAndPasswordDecoded.indexOf(':') + 1,
+    );
+
+    if (password === secret) {
       return AUTH_STATUS.ok;
     } else {
       return AUTH_STATUS.unauthorized;

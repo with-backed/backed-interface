@@ -4,6 +4,7 @@ import { sendEmailsForTriggerAndEntity } from 'lib/events/consumers/userNotifica
 import { nftBackedLoansClient } from 'lib/urql';
 import { createMocks } from 'node-mocks-http';
 import handler from 'pages/api/events/consumers/userNotifications';
+import fetchMock from 'jest-fetch-mock';
 
 const subgraphLoanCopy = {
   ...subgraphLoan,
@@ -19,6 +20,8 @@ jest.mock('lib/urql', () => ({
   },
 }));
 
+const txHash = 'random-tx-hash';
+
 const mockedNftBackedLoansClientQuery =
   nftBackedLoansClient.query as jest.MockedFunction<
     typeof nftBackedLoansClient.query
@@ -33,10 +36,35 @@ const mockedSendEmailCall =
     typeof sendEmailsForTriggerAndEntity
   >;
 
-describe('/api/events/[event]', () => {
+describe('/api/events/consumers/userNotifications', () => {
   beforeEach(async () => {
     jest.clearAllMocks();
     mockedSendEmailCall.mockResolvedValue();
+  });
+
+  describe('SNS subscription confirmation', () => {
+    beforeEach(() => {});
+    it('successfully makes a GET request to the subscribe url passed when SubscribeURL is passed to body', async () => {
+      const { req, res } = createMocks({
+        method: 'POST',
+        body: {
+          SubscribeURL: 'https://example.com',
+        },
+      });
+      req.body = JSON.stringify(req.body);
+
+      fetchMock.mockResponse('success');
+      await handler(req, res);
+
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      expect(fetchMock).toHaveBeenCalledWith('https://example.com', {
+        method: 'GET',
+      });
+      expect(sendEmailsForTriggerAndEntity).not.toHaveBeenCalled;
+
+      expect(res._getStatusCode()).toBe(200);
+      expect(res._getData()).toEqual(`subscription successful`);
+    });
   });
 
   describe('BuyoutEvent', () => {
@@ -44,13 +72,17 @@ describe('/api/events/[event]', () => {
       const { req, res } = createMocks({
         method: 'POST',
         body: {
-          eventName: 'BuyoutEvent',
-          event: {
-            lendTicketHolder: subgraphLoanCopy.lendTicketHolder,
-            loan: subgraphLoanCopy,
-          },
+          Message: JSON.stringify({
+            eventName: 'BuyoutEvent',
+            event: {
+              lendTicketHolder: subgraphLoanCopy.lendTicketHolder,
+              loan: subgraphLoanCopy,
+            },
+            txHash,
+          }),
         },
       });
+      req.body = JSON.stringify(req.body);
 
       await handler(req, res);
 
@@ -83,13 +115,17 @@ describe('/api/events/[event]', () => {
       const { req, res } = createMocks({
         method: 'POST',
         body: {
-          eventName: 'LendEvent',
-          event: {
-            borrowTicketHolder: subgraphLoanCopy.borrowTicketHolder,
-            loan: subgraphLoanCopy,
-          },
+          Message: JSON.stringify({
+            eventName: 'LendEvent',
+            event: {
+              borrowTicketHolder: subgraphLoanCopy.borrowTicketHolder,
+              loan: subgraphLoanCopy,
+            },
+            txHash,
+          }),
         },
       });
+      req.body = JSON.stringify(req.body);
 
       await handler(req, res);
 
@@ -123,13 +159,17 @@ describe('/api/events/[event]', () => {
       const { req, res } = createMocks({
         method: 'POST',
         body: {
-          eventName: 'LendEvent',
-          event: {
-            lendTicketHolder: subgraphLoanCopy.borrowTicketHolder,
-            loan: subgraphLoanCopy,
-          },
+          Message: JSON.stringify({
+            eventName: 'LendEvent',
+            event: {
+              lendTicketHolder: subgraphLoanCopy.borrowTicketHolder,
+              loan: subgraphLoanCopy,
+            },
+            txHash,
+          }),
         },
       });
+      req.body = JSON.stringify(req.body);
 
       await handler(req, res);
 
@@ -155,13 +195,17 @@ describe('/api/events/[event]', () => {
       const { req, res } = createMocks({
         method: 'POST',
         body: {
-          eventName: 'RepaymentEvent',
-          event: {
-            lendTicketHolder: subgraphLoanCopy.lendTicketHolder,
-            loan: subgraphLoanCopy,
-          },
+          Message: JSON.stringify({
+            eventName: 'RepaymentEvent',
+            event: {
+              lendTicketHolder: subgraphLoanCopy.lendTicketHolder,
+              loan: subgraphLoanCopy,
+            },
+            txHash,
+          }),
         },
       });
+      req.body = JSON.stringify(req.body);
 
       await handler(req, res);
 
@@ -187,13 +231,17 @@ describe('/api/events/[event]', () => {
       const { req, res } = createMocks({
         method: 'POST',
         body: {
-          eventName: 'CollateralSeizureEvent',
-          event: {
-            lendTicketHolder: subgraphLoanCopy.borrowTicketHolder,
-            loan: subgraphLoanCopy,
-          },
+          Message: JSON.stringify({
+            eventName: 'CollateralSeizureEvent',
+            event: {
+              lendTicketHolder: subgraphLoanCopy.borrowTicketHolder,
+              loan: subgraphLoanCopy,
+            },
+            txHash,
+          }),
         },
       });
+      req.body = JSON.stringify(req.body);
 
       await handler(req, res);
 

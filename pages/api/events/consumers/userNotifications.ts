@@ -5,7 +5,10 @@ import {
 } from 'types/generated/graphql/nftLoans';
 import { nftBackedLoansClient } from 'lib/urql';
 import { sendEmailsForTriggerAndEntity } from 'lib/events/consumers/userNotifications/emails';
-import { EventsSNSMessage } from 'lib/events/sns/helpers';
+import {
+  confirmTopicSubscription,
+  EventsSNSMessage,
+} from 'lib/events/sns/helpers';
 
 export default async function handler(
   req: NextApiRequest,
@@ -16,8 +19,17 @@ export default async function handler(
     return;
   }
 
+  const parsedBody = JSON.parse(req.body);
+
+  const isConfirmingSubscribe = await confirmTopicSubscription(parsedBody, res);
+  if (isConfirmingSubscribe) {
+    return;
+  }
+
   try {
-    const { eventName, event, txHash } = req.body as EventsSNSMessage;
+    const { eventName, event, txHash } = JSON.parse(
+      parsedBody['Message'],
+    ) as EventsSNSMessage;
 
     let hasPreviousLender = false;
     if (eventName === 'LendEvent') {

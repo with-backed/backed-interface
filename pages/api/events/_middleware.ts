@@ -7,7 +7,12 @@ export default function middleware(req: NextRequest, _ev?: NextFetchEvent) {
     if (authStatus == AUTH_STATUS.ok) {
       return NextResponse.next();
     } else {
-      return new NextResponse(undefined, { status: authStatus });
+      return new NextResponse(undefined, {
+        status: authStatus,
+        headers: {
+          'WWW-Authenticate': 'Basic realm',
+        },
+      });
     }
   } catch (e) {
     console.error(e);

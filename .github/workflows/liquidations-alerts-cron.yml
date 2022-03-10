@@ -10,4 +10,4 @@ jobs:
         run: |
           curl --request POST \
           --url 'https://nft-pawn-shop-rinkeby.vercel.app/api/cron/notifications' \
-          --header 'Authorization: Bearer ${{ secrets.NOTIFICATIONS_CRON_API_SECRET_KEY }}'
+          --header "Authorization: Basic $(echo -n username:${{ secrets.EVENTS_API_SECRET_KEY }} | base64)"

@@ -14,26 +14,10 @@ describe('/api/events/cron/processNewOnchainEvents', () => {
     mockedSqsConsumerRun.mockResolvedValue();
   });
 
-  describe('Returns 401 if caller is not authenitcated', () => {
+  describe('Calls main notification script and returns 200', () => {
     it('Returns 401 if caller is not authenitcated', async () => {
       const { req, res } = createMocks({
         method: 'POST',
-      });
-
-      await handler(req, res);
-
-      expect(mockedSqsConsumerRun).not.toHaveBeenCalled;
-      expect(res._getStatusCode()).toBe(401);
-    });
-  });
-
-  describe('Calls main notification script and returns 200 if authenticated', () => {
-    it('Returns 401 if caller is not authenitcated', async () => {
-      const { req, res } = createMocks({
-        method: 'POST',
-        headers: {
-          authorization: `Bearer ${process.env.NOTIFICATIONS_CRON_API_SECRET_KEY}`,
-        },
       });
 
       await handler(req, res);

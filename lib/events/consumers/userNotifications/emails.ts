@@ -105,6 +105,7 @@ export async function sendEmailsForTriggerAndEntity(
     emailTrigger,
     entity,
   );
+
   const notificationRequestsForEthAddress =
     await getNotificationRequestsForAddress(ethAddress);
   const emailAddresses = notificationRequestsForEthAddress

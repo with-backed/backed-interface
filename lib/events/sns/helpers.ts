@@ -1,13 +1,7 @@
 import { SNS } from 'aws-sdk';
+import { awsConfig } from 'lib/aws/config';
+import { NextApiResponse } from 'next';
 import { RawEventNameType, RawSubgraphEvent } from 'types/RawEvent';
-
-const snsConfig = {
-  region: 'us-east-1',
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY!,
-    secretAccessKey: process.env.AWS_SECRET_KEY!,
-  },
-};
 
 export type EventsSNSMessage = {
   eventName: RawEventNameType;
@@ -21,7 +15,7 @@ export async function pushEventForProcessing({
   event,
   txHash,
 }: EventsSNSMessage): Promise<boolean> {
-  const sns = new SNS(snsConfig);
+  const sns = new SNS(awsConfig);
 
   const res = await sns
     .publish({
@@ -35,4 +29,23 @@ export async function pushEventForProcessing({
     .promise();
 
   return !res.$response.error;
+}
+
+export async function confirmTopicSubscription(
+  body: any,
+  res: NextApiResponse<string>,
+): Promise<boolean> {
+  if ('SubscribeURL' in body) {
+    try {
+      await fetch(body['SubscribeURL'], {
+        method: 'GET',
+      });
+      res.status(200).send('subscription successful');
+    } catch (e) {
+      res.status(400).send('subscription unsuccessful');
+    }
+    return true;
+  } else {
+    return false;
+  }
 }

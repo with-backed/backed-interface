@@ -11,17 +11,8 @@ export default async function handler(
   }
 
   try {
-    const { authorization } = req.headers;
-
-    if (
-      authorization ===
-      `Bearer ${process.env.NOTIFICATIONS_CRON_API_SECRET_KEY}`
-    ) {
-      await main();
-      res.status(200).json({ success: true });
-    } else {
-      res.status(401).json({ success: false });
-    }
+    await main();
+    res.status(200).json({ success: true });
   } catch (e) {
     // TODO: bugsnag
     console.error(e);
