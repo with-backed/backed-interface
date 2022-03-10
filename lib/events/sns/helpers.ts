@@ -1,14 +1,7 @@
 import { SNS } from 'aws-sdk';
+import { awsConfig } from 'lib/aws/config';
 import { NextApiResponse } from 'next';
 import { RawEventNameType, RawSubgraphEvent } from 'types/RawEvent';
-
-const snsConfig = {
-  region: 'us-east-1',
-  credentials: {
-    accessKeyId: process.env.AMAZON_WEB_SERVICES_ACCESS_KEY!,
-    secretAccessKey: process.env.AMAZON_WEB_SERVICES_SECRET_KEY!,
-  },
-};
 
 export type EventsSNSMessage = {
   eventName: RawEventNameType;
@@ -22,7 +15,7 @@ export async function pushEventForProcessing({
   event,
   txHash,
 }: EventsSNSMessage): Promise<boolean> {
-  const sns = new SNS(snsConfig);
+  const sns = new SNS(awsConfig);
 
   const res = await sns
     .publish({
