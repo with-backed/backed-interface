@@ -47,17 +47,24 @@ export async function getNFTInfoFromTokenInfo(
       return null;
     }
 
+    if ((NFTInfo as any).message) {
+      console.error({ NFTInfo });
+      return null;
+    }
+
+    const info = NFTInfo as any;
+
     const mediaUrl =
-      NFTInfo.animation_url == null || forceImage
-        ? NFTInfo.image
-        : NFTInfo.animation_url;
+      info.animation_url == null || forceImage
+        ? info.image
+        : info.animation_url;
 
     const mediaMimeType = await getMimeType(mediaUrl);
 
     return {
       id: tokenId,
-      name: NFTInfo?.name,
-      description: NFTInfo?.description,
+      name: info?.name,
+      description: info?.description,
       mediaUrl,
       mediaMimeType,
     };

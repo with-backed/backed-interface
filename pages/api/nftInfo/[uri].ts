@@ -4,14 +4,16 @@ import { fetchWithTimeout } from 'lib/fetchWithTimeout';
 
 const ipfsGatewayTools = new IPFSGatewayTools();
 
-export type NFTResponseData = {
-  name: string;
-  description: string;
-  tokenId: number;
-  image: string;
-  animation_url: string;
-  external_url: string;
-} | null;
+export type NFTResponseData =
+  | {
+      name: string;
+      description: string;
+      tokenId: number;
+      image: string;
+      animation_url: string;
+      external_url: string;
+    }
+  | Error;
 
 export default async function handler(
   req: NextApiRequest,
@@ -35,9 +37,9 @@ export default async function handler(
   } catch (e) {
     // TODO: bugsnag
     if ((e as any).name === 'AbortError') {
-      return res.status(408).json(null);
+      return res.status(408).json(e as Error);
     }
-    return res.status(404).json(null);
+    return res.status(404).json(e as Error);
   }
 }
 
