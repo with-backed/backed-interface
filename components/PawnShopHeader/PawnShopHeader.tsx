@@ -10,6 +10,7 @@ import betterLogo from './prawnshop.png';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import { Banner } from 'components/Banner';
+import { useNetworkMonitor } from 'hooks/useNetworkMonitor';
 
 type PawnShopHeaderProps = {
   prawn?: boolean;
@@ -21,10 +22,20 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
   prawn,
 }) => {
   const { messages, removeMessage } = useGlobalMessages();
+  useNetworkMonitor();
   const { pathname } = useRouter();
   const kind = pathname === CREATE_PATH ? 'secondary' : 'primary';
   return (
     <>
+      {messages.map((m) => {
+        const close = () => removeMessage(m);
+        return (
+          // It's possible for a ReactNode to be null, but `message` shouldn't be on a banner.
+          <Banner key={m.message as any} kind={m.kind} close={close}>
+            {m.message}
+          </Banner>
+        );
+      })}
       <header className={styles.header}>
         <TwelveColumn>
           <div className={styles.pawn}>
@@ -48,15 +59,6 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
           </div>
         </TwelveColumn>
       </header>
-      {messages.map((m) => {
-        const close = () => removeMessage(m);
-        return (
-          // It's possible for a ReactNode to be null, but `message` shouldn't be on a banner.
-          <Banner key={m.message as any} kind={m.kind} close={close}>
-            {m.message}
-          </Banner>
-        );
-      })}
     </>
   );
 };

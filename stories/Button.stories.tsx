@@ -4,6 +4,7 @@ import {
   ButtonLink,
   CompletedButton,
   DialogDisclosureButton,
+  TextButton,
   WalletButton,
 } from 'components/Button';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
@@ -58,6 +59,16 @@ export const InputStyles = () => {
           <WalletButton wallet="MetaMask" />
           <WalletButton wallet="Coinbase Wallet" />
           <WalletButton wallet="Wallet Connect" />
+        </FormWrapper>
+      </Fieldset>
+      <Fieldset legend="📚 Text buttons">
+        <FormWrapper>
+          <TextButton>Neutral</TextButton>
+          <TextButton kind="clickable">Clickable</TextButton>
+          <TextButton kind="visited">Visited</TextButton>
+          <TextButton kind="active">Active</TextButton>
+          <TextButton kind="alert">Alert</TextButton>
+          <TextButton kind="success">Success</TextButton>
         </FormWrapper>
       </Fieldset>
     </ThreeColumn>
