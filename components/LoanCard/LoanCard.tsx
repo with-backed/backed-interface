@@ -8,7 +8,6 @@ import { Media } from 'components/Media';
 import { GetNFTInfoResponse } from 'lib/getNFTInfo';
 import { Fallback } from 'components/Media/Fallback';
 import { Loan } from 'types/Loan';
-import { BorrowerLenderBubble } from 'components/Profile/BorrowerLenderBubble';
 
 const Attributes: FunctionComponent = ({ children }) => {
   return <div className={styles.attributes}>{children}</div>;
