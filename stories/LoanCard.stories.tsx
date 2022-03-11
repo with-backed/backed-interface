@@ -1,9 +1,14 @@
 import React from 'react';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
-import { LoanCard } from 'components/LoanCard';
+import { LoanCard, ProfileLoanCard } from 'components/LoanCard';
 import { LoanCardLoaded, LoanCardLoading } from 'components/LoanCard/LoanCard';
+import {
+  ProfileLoanCardLoading,
+  Attributes,
+} from 'components/LoanCard/ProfileLoanCard';
 import { GetNFTInfoResponse } from 'lib/getNFTInfo';
 import { ethers } from 'ethers';
+import { baseLoan } from 'lib/mockData';
 
 export default {
   title: 'components/LoanCard',
@@ -45,3 +50,14 @@ export const LoanCards = () => (
     />
   </TwelveColumn>
 );
+
+export const ProfileLoanCards = () => {
+  return (
+    <TwelveColumn>
+      <ProfileLoanCardLoading relationship="borrower">
+        <Attributes loan={baseLoan} />
+      </ProfileLoanCardLoading>
+      <ProfileLoanCard loan={baseLoan} selectedAddress="0xwhatever" />
+    </TwelveColumn>
+  );
+};
