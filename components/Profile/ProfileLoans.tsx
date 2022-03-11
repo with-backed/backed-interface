@@ -7,15 +7,11 @@ type ProfileLoansProps = {
   loans: Loan[];
 };
 
-export function ProfileLoans({ address, loans }: ProfileLoansProps) {
+export function ProfileLoans({ loans }: ProfileLoansProps) {
   return (
     <TwelveColumn padded>
       {loans.map((loan) => (
-        <LoanCard
-          key={loan.id.toString()}
-          loan={loan}
-          selectedAddress={address}
-        />
+        <LoanCard key={loan.id.toString()} loan={loan} />
       ))}
     </TwelveColumn>
   );

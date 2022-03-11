@@ -16,7 +16,6 @@ const Attributes: FunctionComponent = ({ children }) => {
 
 type LoanCardProps = {
   loan: Loan;
-  selectedAddress?: string;
 };
 
 export function LoanCard({
@@ -28,10 +27,7 @@ export function LoanCard({
     perSecondInterestRate,
     collateralTokenURI,
     collateralTokenId,
-    borrower,
-    lender,
   },
-  selectedAddress = '',
 }: LoanCardProps) {
   const title = `View loan #${id}`;
   const formattedLoanAmount = useMemo(
@@ -68,9 +64,6 @@ export function LoanCard({
         title={title}
         formattedLoanAmount={formattedLoanAmount}
         perSecondInterestRate={perSecondInterestRate}
-        selectedAddress={selectedAddress}
-        isBorrower={selectedAddress === borrower}
-        isLender={selectedAddress === lender}
       />
     );
   } else {
@@ -81,9 +74,6 @@ export function LoanCard({
         formattedLoanAmount={formattedLoanAmount}
         perSecondInterestRate={perSecondInterestRate}
         metadata={maybeMetadata.metadata}
-        selectedAddress={selectedAddress}
-        isBorrower={selectedAddress === borrower}
-        isLender={selectedAddress === lender}
       />
     );
   }
@@ -94,18 +84,12 @@ type LoanCardNoMetadataProps = {
   title: string;
   formattedLoanAmount: string;
   perSecondInterestRate: ethers.BigNumber;
-  selectedAddress?: string;
-  isBorrower?: boolean;
-  isLender?: boolean;
 };
 function LoanCardNoMetadata({
   id,
   title,
   formattedLoanAmount,
   perSecondInterestRate,
-  selectedAddress,
-  isBorrower,
-  isLender,
 }: LoanCardNoMetadataProps) {
   return (
     <Link href={`/loans/${id}`}>
@@ -117,19 +101,6 @@ function LoanCardNoMetadata({
             <span>{formattedLoanAmount}</span>
             <span>{formattedAnnualRate(perSecondInterestRate)}% interest</span>
           </Attributes>
-          {!!selectedAddress && (
-            <Attributes>
-              {isBorrower && (
-                <BorrowerLenderBubble address={selectedAddress} borrower />
-              )}
-              {isLender && (
-                <BorrowerLenderBubble
-                  address={selectedAddress}
-                  borrower={false}
-                />
-              )}
-            </Attributes>
-          )}
         </div>
       </a>
     </Link>
@@ -142,9 +113,6 @@ type LoanCardLoadedProps = {
   formattedLoanAmount: string;
   perSecondInterestRate: ethers.BigNumber;
   metadata: GetNFTInfoResponse;
-  selectedAddress?: string;
-  isBorrower?: boolean;
-  isLender?: boolean;
 };
 /**
  * Only exported for the Storybook. Please use top-level LoanCard.
@@ -155,9 +123,6 @@ export function LoanCardLoaded({
   formattedLoanAmount,
   perSecondInterestRate,
   metadata: { mediaMimeType, mediaUrl, name },
-  selectedAddress,
-  isBorrower,
-  isLender,
 }: LoanCardLoadedProps) {
   return (
     <Link href={`/loans/${id}`}>
@@ -173,19 +138,6 @@ export function LoanCardLoaded({
             <span>{formattedLoanAmount}</span>
             <span>{formattedAnnualRate(perSecondInterestRate)}% interest</span>
           </Attributes>
-          {!!selectedAddress && (
-            <Attributes>
-              {isBorrower && (
-                <BorrowerLenderBubble address={selectedAddress} borrower />
-              )}
-              {isLender && (
-                <BorrowerLenderBubble
-                  address={selectedAddress}
-                  borrower={false}
-                />
-              )}
-            </Attributes>
-          )}
         </div>
       </a>
     </Link>
