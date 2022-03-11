@@ -106,8 +106,6 @@ export function ProfileLoanCardLoading({
   relationship,
 }: React.PropsWithChildren<ProfileLoanCardLoadingProps>) {
   return (
-    // This wrapping div simulates the presence of the <a> element in the
-    // loaded one. Safari renders weirdly without it.
     <a className={styles.link}>
       <div className={styles['profile-card']}>
         <Fallback />
