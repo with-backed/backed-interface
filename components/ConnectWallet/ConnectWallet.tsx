@@ -16,7 +16,6 @@ declare global {
 }
 
 const chainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || '0x4', 16);
-const supportedChainIds = [1, 4];
 
 const visitMetaMask = () => {
   window.open('https://metamask.io', '_blank');
@@ -28,7 +27,7 @@ export const ConnectWallet = () => {
   const dialog = useDialogState();
 
   const activateInjectedProvider = useCallback(async () => {
-    const injectedConnector = new InjectedConnector({ supportedChainIds });
+    const injectedConnector = new InjectedConnector({});
     activate(injectedConnector);
   }, [activate]);
 
@@ -45,7 +44,6 @@ export const ConnectWallet = () => {
     const walletLinkConnector = new WalletLinkConnector({
       appName: '💸✨🎸 NFT Pawn Shop 💍✨💸',
       url: 'https://nft-pawn-shop-rinkeby.vercel.app/',
-      supportedChainIds,
     });
     activate(walletLinkConnector);
   }, [activate]);
