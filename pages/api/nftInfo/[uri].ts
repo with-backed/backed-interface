@@ -21,7 +21,7 @@ export default async function handler(
     const { uri } = req.query;
     const decodedUri = decodeURIComponent(uri as string);
     const resolvedUri = convertIPFS(decodedUri);
-    const tokenURIRes = await fetchWithTimeout(resolvedUri);
+    const tokenURIRes = await fetch(resolvedUri);
     const { name, description, tokenId, image, animation_url, external_url } =
       await tokenURIRes.json();
     res.status(200).json({
