@@ -61,7 +61,10 @@ type ProfileLoanCardLoadedProps = {
   relationship: string;
 };
 
-function ProfileLoanCardLoaded({
+/**
+ * Only exported for the Storybook. Please use top-level ProfileLoanCard.
+ */
+export function ProfileLoanCardLoaded({
   id,
   title,
   metadata,

@@ -1,8 +1,9 @@
 import React from 'react';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
-import { LoanCard, ProfileLoanCard } from 'components/LoanCard';
+import { LoanCard } from 'components/LoanCard';
 import { LoanCardLoaded, LoanCardLoading } from 'components/LoanCard/LoanCard';
 import {
+  ProfileLoanCardLoaded,
   ProfileLoanCardLoading,
   Attributes,
 } from 'components/LoanCard/ProfileLoanCard';
@@ -57,7 +58,20 @@ export const ProfileLoanCards = () => {
       <ProfileLoanCardLoading relationship="borrower">
         <Attributes loan={baseLoan} />
       </ProfileLoanCardLoading>
-      <ProfileLoanCard loan={baseLoan} selectedAddress="0xwhatever" />
+      <ProfileLoanCardLoaded
+        id={baseLoan.id.toString()}
+        relationship="lender"
+        title="View Loan #8"
+        metadata={
+          {
+            name: 'Monarch #7',
+            mediaMimeType: 'video/mp4',
+            mediaUrl:
+              'https://gateway.pinata.cloud/ipfs/QmPtmDDobXCjEACE4ftjprJn995pP2iiwHwtXwxbgX8W8z',
+          } as GetNFTInfoResponse
+        }>
+        <Attributes loan={baseLoan} />
+      </ProfileLoanCardLoaded>
     </TwelveColumn>
   );
 };
