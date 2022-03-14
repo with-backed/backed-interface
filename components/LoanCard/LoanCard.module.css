@@ -69,3 +69,7 @@
 .link {
   grid-column: span 3;
 }
+
+.profile-link {
+  grid-column: span 4;
+}

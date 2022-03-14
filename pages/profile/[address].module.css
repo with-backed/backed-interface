@@ -1,0 +1,12 @@
+.wrapper {
+  margin-top: var(--gap);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  width: 100%;
+  max-width: var(--max-width);
+}
+
+.wrapper > div[role='checkbox'] {
+  align-self: flex-start;
+}

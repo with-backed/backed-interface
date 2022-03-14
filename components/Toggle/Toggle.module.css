@@ -1,0 +1,50 @@
+.selector {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background: var(--background-white);
+  border-radius: var(--border-radius-large);
+  cursor: pointer;
+}
+
+.child {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius-large);
+  color: var(--neutral-50);
+}
+
+.left {
+  composes: child;
+}
+
+.right {
+  composes: child;
+}
+
+.selector[aria-checked='true'] > .left {
+  background-color: var(--highlight-active-10);
+  color: var(--neutral-100);
+}
+
+.selector[aria-checked='false'] > .right {
+  background-color: var(--highlight-active-10);
+  color: var(--neutral-100);
+}
+
+.selector[aria-checked='true'] > .left:hover,
+.selector[aria-checked='false'] > .right:hover {
+  background-color: var(--highlight-active-20);
+}
+
+.selector[aria-checked='true'] > .right:hover {
+  color: var(--neutral-100);
+}
+.selector[aria-checked='false'] > .left:hover {
+  color: var(--neutral-100);
+}

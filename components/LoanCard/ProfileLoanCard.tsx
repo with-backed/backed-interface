@@ -73,7 +73,7 @@ export function ProfileLoanCardLoaded({
 }: React.PropsWithChildren<ProfileLoanCardLoadedProps>) {
   return (
     <Link href={`/loans/${id}`}>
-      <a className={styles.link} aria-label={title} title={title}>
+      <a className={styles['profile-link']} aria-label={title} title={title}>
         <div className={styles['profile-card']}>
           {metadata && (
             <Media
@@ -106,7 +106,7 @@ export function ProfileLoanCardLoading({
   relationship,
 }: React.PropsWithChildren<ProfileLoanCardLoadingProps>) {
   return (
-    <a className={styles.link}>
+    <a className={styles['profile-link']}>
       <div className={styles['profile-card']}>
         <Fallback />
         <div className={styles['profile-card-attributes']}>
