@@ -1,5 +1,5 @@
 import { GetServerSideProps } from 'next';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   getAllActiveLoansForAddress,
   getAllEventsForAddress,
