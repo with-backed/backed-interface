@@ -8,6 +8,11 @@ type GridListSelectorProps = {
   handleChange: (checked: boolean) => void;
 };
 
+/**
+ * This toggle is very similar to components/Toggle. Right now it has some
+ * special-case CSS to handle the SVGs, but it may be worth consolidating
+ * these in the future.
+ */
 export const GridListSelector = ({ handleChange }: GridListSelectorProps) => {
   const [checked, setChecked] = React.useState(true);
   const toggle = useCallback(() => {
