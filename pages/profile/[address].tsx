@@ -57,18 +57,20 @@ export default function Profile({ address, loans, events }: ProfilePageProps) {
   return (
     <>
       <ProfileHeader address={address} loans={parsedLoans} />
-      <div className={styles.wrapper}>
-        <Toggle
-          handleChange={setShowingActivity}
-          left="Activity"
-          right="Loans"
-        />
-        {showingActivity ? (
-          <ProfileActivity events={parsedEvents} loans={parsedLoans} />
-        ) : (
-          <ProfileLoans address={address} loans={parsedLoans} />
-        )}
-      </div>
+      {parsedLoans.length > 0 && (
+        <div className={styles.wrapper}>
+          <Toggle
+            handleChange={setShowingActivity}
+            left="Activity"
+            right="Loans"
+          />
+          {showingActivity ? (
+            <ProfileActivity events={parsedEvents} loans={parsedLoans} />
+          ) : (
+            <ProfileLoans address={address} loans={parsedLoans} />
+          )}
+        </div>
+      )}
     </>
   );
 }
