@@ -1,5 +1,5 @@
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
-import { LoanCard } from 'components/LoanCard';
+import { ProfileLoanCard } from 'components/LoanCard';
 import { Loan } from 'types/Loan';
 
 type ProfileLoansProps = {
@@ -11,7 +11,7 @@ export function ProfileLoans({ address, loans }: ProfileLoansProps) {
   return (
     <TwelveColumn padded>
       {loans.map((loan) => (
-        <LoanCard
+        <ProfileLoanCard
           key={loan.id.toString()}
           loan={loan}
           selectedAddress={address}

@@ -10,6 +10,37 @@
   box-shadow: var(--box-shadow);
 }
 
+.profile-card {
+  composes: card;
+  padding: 0;
+}
+
+.profile-card dl {
+  color: var(--neutral-100);
+}
+
+.stacked-entry {
+  display: inline-block;
+  width: 50%;
+}
+
+.profile-card-attributes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: var(--padding-loan-card);
+  padding-top: 0;
+}
+
+.relationship {
+  background-color: var(--highlight-active-10);
+  padding: 0 0.5rem;
+  color: var(--neutral-100);
+  align-self: flex-start;
+  text-transform: uppercase;
+  font-size: var(--font-small);
+}
+
 .attributes {
   display: flex;
   flex-direction: row;

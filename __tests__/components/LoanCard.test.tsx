@@ -1,7 +1,7 @@
 import React from 'react';
-import { getByText, render } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { useTokenMetadata } from 'hooks/useTokenMetadata';
-import { LoanCard } from 'components/LoanCard';
+import { LoanCard, ProfileLoanCard } from 'components/LoanCard';
 import { GetNFTInfoResponse } from 'lib/getNFTInfo';
 import { ethers } from 'ethers';
 import { baseLoan } from 'lib/mockData';
@@ -24,34 +24,87 @@ const metadata: GetNFTInfoResponse = {
 };
 
 describe('LoanCard', () => {
-  const error = console.error;
-  beforeEach(() => {
-    console.error = jest.fn();
-    jest.clearAllMocks();
-  });
-  afterAll(() => {
-    console.error = error;
-  });
-
-  it('renders a loading state when metadata has not resolved yet', () => {
-    mockedUseTokenMetadata.mockReturnValue({ isLoading: true, metadata: null });
-    const { getByText } = render(<LoanCard loan={loan} />);
-    getByText('loading name');
-  });
-
-  it('renders what it can when metadata cannot be fetched', () => {
-    mockedUseTokenMetadata.mockReturnValue({
-      isLoading: false,
-      metadata: null,
+  describe('LoanCard', () => {
+    const error = console.error;
+    beforeEach(() => {
+      console.error = jest.fn();
+      jest.clearAllMocks();
     });
-    const { getByText } = render(<LoanCard loan={loan} />);
-    getByText('--');
-    expect(console.error).toHaveBeenCalled();
+    afterAll(() => {
+      console.error = error;
+    });
+
+    it('renders a loading state when metadata has not resolved yet', () => {
+      mockedUseTokenMetadata.mockReturnValue({
+        isLoading: true,
+        metadata: null,
+      });
+      const { getByText } = render(<LoanCard loan={loan} />);
+      getByText('loading name');
+    });
+
+    it('renders what it can when metadata cannot be fetched', () => {
+      mockedUseTokenMetadata.mockReturnValue({
+        isLoading: false,
+        metadata: null,
+      });
+      const { getByText } = render(<LoanCard loan={loan} />);
+      getByText('--');
+      expect(console.error).toHaveBeenCalled();
+    });
+
+    it('renders a LoanCard', () => {
+      mockedUseTokenMetadata.mockReturnValue({ isLoading: false, metadata });
+      const { getByText } = render(<LoanCard loan={loan} />);
+      getByText(metadata.name);
+    });
   });
 
-  it('renders a LoanCard', () => {
-    mockedUseTokenMetadata.mockReturnValue({ isLoading: false, metadata });
-    const { getByText } = render(<LoanCard loan={loan} />);
-    getByText(metadata.name);
+  describe('ProfileLoanCard', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('renders a loading state when metadata has not resolved yet', () => {
+      mockedUseTokenMetadata.mockReturnValue({
+        isLoading: true,
+        metadata: null,
+      });
+      const { getByText } = render(
+        <ProfileLoanCard loan={loan} selectedAddress="0xwhatever" />,
+      );
+      getByText('loading name');
+    });
+
+    it('renders what it can when metadata cannot be fetched', () => {
+      mockedUseTokenMetadata.mockReturnValue({
+        isLoading: false,
+        metadata: null,
+      });
+      const { getAllByText } = render(
+        <ProfileLoanCard loan={loan} selectedAddress="0xwhatever" />,
+      );
+      const placeholders = getAllByText('--');
+      // one for the name we couldn't fetch, one for the time remaining
+      expect(placeholders).toHaveLength(2);
+    });
+
+    it('renders a ProfileLoanCard', () => {
+      mockedUseTokenMetadata.mockReturnValue({ isLoading: false, metadata });
+      const { getByText } = render(
+        <ProfileLoanCard loan={loan} selectedAddress="0xwhatever" />,
+      );
+      getByText(metadata.name);
+      getByText('lender');
+    });
+
+    it('renders a ProfileLoanCard where the user is the borrower', () => {
+      mockedUseTokenMetadata.mockReturnValue({ isLoading: false, metadata });
+      const { getByText } = render(
+        <ProfileLoanCard loan={loan} selectedAddress={baseLoan.borrower} />,
+      );
+      getByText(metadata.name);
+      getByText('borrower');
+    });
   });
 });
