@@ -1,5 +1,5 @@
 import { GetServerSideProps } from 'next';
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   getAllActiveLoansForAddress,
   getAllEventsForAddress,
@@ -11,6 +11,9 @@ import { resolveEns } from 'lib/account';
 import { Event } from 'types/Event';
 import { parseSerializedResponse } from 'lib/parseSerializedResponse';
 import { ProfileActivity } from 'components/ProfileActivity';
+import { Toggle } from 'components/Toggle';
+import { ProfileLoans } from 'components/Profile/ProfileLoans';
+import styles from './[address].module.css';
 
 export type ProfilePageProps = {
   address: string;
@@ -44,6 +47,7 @@ export const getServerSideProps: GetServerSideProps<ProfilePageProps> = async (
 };
 
 export default function Profile({ address, loans, events }: ProfilePageProps) {
+  const [showingActivity, setShowingActivity] = useState(true);
   const parsedLoans = useMemo(() => loans.map(parseSubgraphLoan), [loans]);
   const parsedEvents = useMemo(
     () => parseSerializedResponse(events) as Event[],
@@ -53,7 +57,18 @@ export default function Profile({ address, loans, events }: ProfilePageProps) {
   return (
     <>
       <ProfileHeader address={address} loans={parsedLoans} />
-      <ProfileActivity events={parsedEvents} loans={parsedLoans} />
+      <div className={styles.wrapper}>
+        <Toggle
+          handleChange={setShowingActivity}
+          left="Activity"
+          right="Loans"
+        />
+        {showingActivity ? (
+          <ProfileActivity events={parsedEvents} loans={parsedLoans} />
+        ) : (
+          <ProfileLoans address={address} loans={parsedLoans} />
+        )}
+      </div>
     </>
   );
 }
