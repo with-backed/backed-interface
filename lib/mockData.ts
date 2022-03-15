@@ -13,6 +13,7 @@ import type {
   CollateralSeizureEvent,
   RepaymentEvent,
 } from 'types/Event';
+import { NFTEntity } from 'types/NFT';
 
 export const now = 1000000000;
 const durationSeconds = 259200;
@@ -180,3 +181,12 @@ export const events: Event[] = [
   ...lendEvents,
   ...buyoutEvents,
 ].sort((a, b) => b.blockNumber - a.blockNumber);
+
+export const nftEntity: NFTEntity = {
+  id: '0xhash',
+  identifier: ethers.BigNumber.from(1),
+  registry: {
+    symbol: 'BNNY',
+  },
+  approvals: [],
+};
