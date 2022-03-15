@@ -13,11 +13,13 @@ import { useLoanDetails } from 'hooks/useLoanDetails';
 type ProfileLoanCardProps = {
   loan: Loan;
   selectedAddress: string;
+  display?: 'expanded' | 'compact';
 };
 
 export function ProfileLoanCard({
   loan,
   selectedAddress,
+  display = 'expanded',
 }: ProfileLoanCardProps) {
   const title = `View loan #${loan.id}`;
 
@@ -33,7 +35,15 @@ export function ProfileLoanCard({
 
   const relationship =
     selectedAddress === loan.borrower ? 'borrower' : 'lender';
-  const attributes = useMemo(() => <Attributes loan={loan} />, [loan]);
+  const attributes = useMemo(
+    () =>
+      display === 'expanded' ? (
+        <ExpandedAttributes loan={loan} />
+      ) : (
+        <CompactAttributes loan={loan} />
+      ),
+    [display, loan],
+  );
 
   if (maybeMetadata.isLoading) {
     return (
@@ -122,7 +132,7 @@ export function ProfileLoanCardLoading({
 type AttributesProps = {
   loan: Loan;
 };
-export const Attributes = ({ loan }: AttributesProps) => {
+export const ExpandedAttributes = ({ loan }: AttributesProps) => {
   const {
     formattedPrincipal,
     formattedInterestRate,
@@ -149,6 +159,22 @@ export const Attributes = ({ loan }: AttributesProps) => {
       <div className={styles['stacked-entry']}>
         <dt>remaining</dt>
         <dd>{formattedTimeRemaining}</dd>
+      </div>
+    </DescriptionList>
+  );
+};
+
+export const CompactAttributes = ({ loan }: AttributesProps) => {
+  const { formattedPrincipal, formattedInterestRate } = useLoanDetails(loan);
+  return (
+    <DescriptionList>
+      <div className={styles['stacked-entry']}>
+        <dt>Loan Amount</dt>
+        <dd>{formattedPrincipal}</dd>
+      </div>
+      <div className={styles['stacked-entry']}>
+        <dt>interest</dt>
+        <dd>{formattedInterestRate}</dd>
       </div>
     </DescriptionList>
   );

@@ -5,7 +5,7 @@ import { LoanCardLoaded, LoanCardLoading } from 'components/LoanCard/LoanCard';
 import {
   ProfileLoanCardLoaded,
   ProfileLoanCardLoading,
-  Attributes,
+  ExpandedAttributes,
 } from 'components/LoanCard/ProfileLoanCard';
 import { GetNFTInfoResponse } from 'lib/getNFTInfo';
 import { ethers } from 'ethers';
@@ -56,7 +56,7 @@ export const ProfileLoanCards = () => {
   return (
     <TwelveColumn>
       <ProfileLoanCardLoading relationship="borrower">
-        <Attributes loan={baseLoan} />
+        <ExpandedAttributes loan={baseLoan} />
       </ProfileLoanCardLoading>
       <ProfileLoanCardLoaded
         id={baseLoan.id.toString()}
@@ -70,7 +70,7 @@ export const ProfileLoanCards = () => {
               'https://gateway.pinata.cloud/ipfs/QmPtmDDobXCjEACE4ftjprJn995pP2iiwHwtXwxbgX8W8z',
           } as GetNFTInfoResponse
         }>
-        <Attributes loan={baseLoan} />
+        <ExpandedAttributes loan={baseLoan} />
       </ProfileLoanCardLoaded>
     </TwelveColumn>
   );
