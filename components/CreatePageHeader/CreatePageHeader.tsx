@@ -20,6 +20,7 @@ import { Explainer } from './Explainer';
 import { SelectNFTButton } from './SelectNFTButton';
 import { createPageFormSchema } from './createPageFormSchema';
 import { NFTEntity } from 'types/NFT';
+import { useTokenMetadata } from 'hooks/useTokenMetadata';
 
 export function CreatePageHeader() {
   const form = useForm<CreateFormData>({
@@ -36,6 +37,23 @@ export function CreatePageHeader() {
     }
     return [getNftContractAddress(selectedNFT), selectedNFT.identifier];
   }, [selectedNFT]);
+
+  const tokenSpec = useMemo(
+    () =>
+      selectedNFT
+        ? {
+            tokenURI: selectedNFT.uri || '',
+            tokenID: ethers.BigNumber.from(selectedNFT.identifier),
+          }
+        : {
+            tokenURI: '',
+            tokenID: ethers.BigNumber.from('0'),
+          },
+    [selectedNFT],
+  );
+
+  const nftInfo = useTokenMetadata(tokenSpec);
+
   const dialog = useDialogState();
 
   const handleSetSelectedNFT = useCallback(
@@ -121,10 +139,7 @@ export function CreatePageHeader() {
   return (
     <div className={styles['create-page-header']}>
       <ThreeColumn>
-        <NFTMedia
-          collateralAddress={collateralAddress}
-          collateralTokenID={collateralTokenID}
-        />
+        <NFTMedia nftInfo={nftInfo} />
         <div className={styles['button-container']}>
           <SelectNFTButton
             dialog={dialog}

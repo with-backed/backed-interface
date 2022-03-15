@@ -1,12 +1,13 @@
 import { useCallback, useMemo, useState } from 'react';
 import styles from './NFTCollateralPicker.module.css';
-import { getNftContractAddress } from 'lib/eip721Subraph';
 import { NFTMedia } from 'components/Media/NFTMedia';
 import { Modal } from 'components/Modal';
 import { DialogStateReturn } from 'reakit/Dialog';
 import { Button } from 'reakit/Button';
 import { useNFTs } from 'hooks/useNFTs';
 import { NFTEntity } from 'types/NFT';
+import { useTokenMetadata } from 'hooks/useTokenMetadata';
+import { ethers } from 'ethers';
 
 interface NFTCollateralPickerProps {
   connectedWallet: string;
@@ -138,13 +139,21 @@ function NFT({ handleNFTClick, nft }: NFTProps) {
   const handleClick = useCallback(() => {
     handleNFTClick(nft);
   }, [handleNFTClick, nft]);
+
+  const tokenSpec = useMemo(
+    () => ({
+      tokenURI: nft.uri || '',
+      tokenID: ethers.BigNumber.from(nft.identifier),
+      forceImage: true,
+    }),
+    [nft],
+  );
+
+  const nftInfo = useTokenMetadata(tokenSpec);
+
   return (
     <Button as="div" className={styles.nft} onClick={handleClick}>
-      <NFTMedia
-        collateralAddress={getNftContractAddress(nft)}
-        collateralTokenID={nft.identifier}
-        forceImage
-      />
+      <NFTMedia nftInfo={nftInfo} />
     </Button>
   );
 }

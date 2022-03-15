@@ -3,7 +3,6 @@ import { NFTMedia } from 'components/Media/NFTMedia';
 import { ethers } from 'ethers';
 import { useLoanDetails } from 'hooks/useLoanDetails';
 import { useTokenMetadata } from 'hooks/useTokenMetadata';
-import { jsonRpcERC721Contract } from 'lib/contracts';
 import { secondsBigNumToDays } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
 import Link from 'next/link';
@@ -49,10 +48,12 @@ function Loan({ loan }: LoanProps) {
     () => ({
       tokenURI: loan.collateralTokenURI,
       tokenID: loan.collateralTokenId,
+      forceImage: true,
     }),
     [loan.collateralTokenURI, loan.collateralTokenId],
   );
-  const { metadata, isLoading } = useTokenMetadata(tokenSpec);
+  const nftInfo = useTokenMetadata(tokenSpec);
+  const { metadata, isLoading } = nftInfo;
 
   const { formattedEstimatedPaybackAtMaturity, formattedTimeRemaining } =
     useLoanDetails(loan);
@@ -82,12 +83,7 @@ function Loan({ loan }: LoanProps) {
       <td>
         <Link href={`/loans/${loan.id.toString()}`}>
           <a className={styles['name-container']}>
-            <NFTMedia
-              collateralAddress={loan.collateralContractAddress}
-              collateralTokenID={loan.collateralTokenId}
-              forceImage
-              small
-            />
+            <NFTMedia nftInfo={nftInfo} small />
             <div className={styles['field-and-subfield']}>
               <span>{isLoading ? '---' : metadata?.name}</span>
               <span>{loan.collateralName}</span>
