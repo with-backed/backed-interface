@@ -2,11 +2,11 @@ import React from 'react';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { ProfileLoanCard } from 'components/LoanCard';
 import {
-  ProfileLoanCardLoaded,
-  ProfileLoanCardLoading,
+  LoanCardLoaded,
+  LoanCardLoading,
   ExpandedAttributes,
   Relationship,
-} from 'components/LoanCard/ProfileLoanCard';
+} from 'components/LoanCard/LoanCard';
 import { GetNFTInfoResponse } from 'lib/getNFTInfo';
 import { baseLoan } from 'lib/mockData';
 
@@ -18,11 +18,11 @@ export default {
 export const LoanCards = () => {
   return (
     <TwelveColumn>
-      <ProfileLoanCardLoading>
+      <LoanCardLoading>
         <Relationship>borrower</Relationship>
         <ExpandedAttributes loan={baseLoan} />
-      </ProfileLoanCardLoading>
-      <ProfileLoanCardLoaded
+      </LoanCardLoading>
+      <LoanCardLoaded
         id={baseLoan.id.toString()}
         title="View Loan #8"
         metadata={
@@ -35,7 +35,7 @@ export const LoanCards = () => {
         }>
         <Relationship>borrower</Relationship>
         <ExpandedAttributes loan={baseLoan} />
-      </ProfileLoanCardLoaded>
+      </LoanCardLoaded>
     </TwelveColumn>
   );
 };

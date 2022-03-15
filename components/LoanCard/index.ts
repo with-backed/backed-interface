@@ -1,2 +1,1 @@
-export { LoanCard } from './LoanCard';
-export { ProfileLoanCard } from './ProfileLoanCard';
+export { LoanCard as ProfileLoanCard } from './LoanCard';
