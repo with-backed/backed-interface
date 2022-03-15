@@ -1,20 +1,31 @@
 .profile-header-wrapper {
   background: var(--background-white);
-  display: flex;
-  flex-direction: column;
   width: 100%;
+  display: flex;
   align-items: center;
-  gap: var(--gap);
+  justify-content: center;
   padding: var(--gap) 0;
 }
 
-/* Bit of a hack to make sure the 2 <dl>s line up nicely */
-.profile-header-wrapper dt,
-.profile-header-wrapper dd {
-  width: 500px;
+.profile-header-wrapper > div {
+  max-width: var(--max-width);
 }
 
-.profileHeaderRows {
-  width: 50%;
-  margin: 30px 0;
+.profile-header-wrapper fieldset {
+  grid-column: span 4;
+  max-width: 100%;
+  display: block;
+  overflow: hidden;
+  overflow-wrap: break-word;
+}
+
+.profile-header-wrapper fieldset button {
+  padding: 0;
+  text-align: left;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
 }
