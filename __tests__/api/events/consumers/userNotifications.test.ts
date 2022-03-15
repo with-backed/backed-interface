@@ -13,19 +13,7 @@ const subgraphLoanCopy = {
 subgraphLoanCopy.lendTicketHolder =
   ethers.Wallet.createRandom().address.toLowerCase();
 
-jest.mock('lib/urql', () => ({
-  ...jest.requireActual('lib/urql'),
-  nftBackedLoansClient: {
-    query: jest.fn(),
-  },
-}));
-
 const txHash = 'random-tx-hash';
-
-const mockedNftBackedLoansClientQuery =
-  nftBackedLoansClient.query as jest.MockedFunction<
-    typeof nftBackedLoansClient.query
-  >;
 
 jest.mock('lib/events/consumers/userNotifications/emails', () => ({
   sendEmailsForTriggerAndEntity: jest.fn(),
@@ -93,7 +81,7 @@ describe('/api/events/consumers/userNotifications', () => {
           lendTicketHolder: subgraphLoanCopy.lendTicketHolder,
           loan: subgraphLoanCopy,
         }),
-        false,
+        expect.anything(),
       );
 
       expect(res._getStatusCode()).toBe(200);
@@ -104,14 +92,7 @@ describe('/api/events/consumers/userNotifications', () => {
   });
 
   describe('LendEvent', () => {
-    it('gets notifications associated with address, and sends email when loan does not have previous lender', async () => {
-      mockedNftBackedLoansClientQuery.mockReturnValueOnce({
-        toPromise: async () => ({
-          data: {
-            buyoutEvent: null,
-          },
-        }),
-      } as any);
+    it('gets notifications associated with address, and sends email', async () => {
       const { req, res } = createMocks({
         method: 'POST',
         body: {
@@ -136,7 +117,7 @@ describe('/api/events/consumers/userNotifications', () => {
           borrowTicketHolder: subgraphLoanCopy.borrowTicketHolder,
           loan: subgraphLoanCopy,
         }),
-        false,
+        expect.anything(),
       );
 
       expect(res._getStatusCode()).toBe(200);
@@ -146,16 +127,6 @@ describe('/api/events/consumers/userNotifications', () => {
     });
 
     it('gets notifications associated with address, and sends email when loan does previous lender', async () => {
-      mockedNftBackedLoansClientQuery.mockReturnValueOnce({
-        toPromise: async () => ({
-          data: {
-            buyoutEvent: {
-              lendTicketHolder: subgraphLoanCopy.lendTicketHolder,
-              loan: subgraphLoanCopy,
-            },
-          },
-        }),
-      } as any);
       const { req, res } = createMocks({
         method: 'POST',
         body: {
@@ -180,7 +151,7 @@ describe('/api/events/consumers/userNotifications', () => {
           lendTicketHolder: subgraphLoanCopy.borrowTicketHolder,
           loan: subgraphLoanCopy,
         }),
-        true,
+        expect.anything(),
       );
 
       expect(res._getStatusCode()).toBe(200);
@@ -216,7 +187,7 @@ describe('/api/events/consumers/userNotifications', () => {
           lendTicketHolder: subgraphLoanCopy.lendTicketHolder,
           loan: subgraphLoanCopy,
         }),
-        false,
+        expect.anything(),
       );
 
       expect(res._getStatusCode()).toBe(200);
@@ -252,7 +223,7 @@ describe('/api/events/consumers/userNotifications', () => {
           lendTicketHolder: subgraphLoanCopy.borrowTicketHolder,
           loan: subgraphLoanCopy,
         }),
-        false,
+        expect.anything(),
       );
 
       expect(res._getStatusCode()).toBe(200);

@@ -1,4 +1,3 @@
-import { executeEmailSendWithSes } from './ses';
 import {
   BuyoutEvent,
   CollateralSeizureEvent,
@@ -15,8 +14,9 @@ import dayjs from 'dayjs';
 import { getMostRecentTermsForLoan } from 'lib/loans/subgraph/subgraphLoans';
 import { Loan as ParsedLoan } from 'types/Loan';
 import { parseSubgraphLoan } from 'lib/loans/utils';
+import { NotificationTriggerType } from './shared';
 
-type EmailComponents = {
+export type EmailComponents = {
   header: string;
   mainMessage: string;
   loanDetails: string[];
@@ -28,7 +28,7 @@ type EmailMetadataType = {
   subject: string;
   getComponentsFromEntity: (
     entity: RawSubgraphEvent | Loan,
-    hasPreviousLender?: boolean,
+    now: number,
   ) => Promise<EmailComponents>;
 };
 
@@ -89,16 +89,56 @@ const getEstimatedRepaymentAndMaturity = (
   return [estimatedRepayment, dateOfMaturity];
 };
 
-const durationToDays = (duration: number): number => {
-  return dayjs.duration({ seconds: duration }).asDays();
+const formattedDuration = (duration: number): string => {
+  const days = Math.floor(dayjs.duration({ seconds: duration }).asDays());
+  if (days != 0) {
+    return `${days} days`;
+  }
+
+  const hours = Math.floor(dayjs.duration({ seconds: duration }).asHours());
+  if (hours != 0) {
+    return `${hours} hours`;
+  }
+
+  const minutes = Math.floor(dayjs.duration({ seconds: duration }).asMinutes());
+  return `${minutes} minutes`;
 };
 
-export const notificationEventToEmailMetadata: {
+export async function getEmailSubject(
+  emailTrigger: NotificationTriggerType,
+  entity: RawSubgraphEvent | Loan,
+): Promise<string> {
+  const emailMetadata = notificationEventToEmailMetadata[emailTrigger];
+  if (!emailMetadata) {
+    // fatal bugsnag, invalid email trigger was passed from SNS push
+    return '';
+  }
+  return emailMetadata.subject;
+}
+
+export async function getEmailComponents(
+  emailTrigger: NotificationTriggerType,
+  entity: RawSubgraphEvent | Loan,
+  now: number,
+): Promise<EmailComponents | null> {
+  const emailMetadata = notificationEventToEmailMetadata[emailTrigger];
+  if (!emailMetadata) {
+    // fatal bugsnag, invalid email trigger was passed from SNS push
+    return null;
+  }
+
+  return await emailMetadata.getComponentsFromEntity(entity, now);
+}
+
+const notificationEventToEmailMetadata: {
   [key: string]: EmailMetadataType;
 } = {
   BuyoutEvent: {
     subject: 'Loan # has a new lender',
-    getComponentsFromEntity: async (entity: RawSubgraphEvent | Loan) => {
+    getComponentsFromEntity: async (
+      entity: RawSubgraphEvent | Loan,
+      _now: number,
+    ) => {
       const event = entity as BuyoutEvent;
       const oldLender = await ensOrAddr(event.lendTicketHolder);
       const newLender = await ensOrAddr(event.newLender);
@@ -120,9 +160,9 @@ export const notificationEventToEmailMetadata: {
         header: emailHeader(event.loan),
         mainMessage: `${newLender} replaced ${oldLender} as lender`,
         loanDetails: [
-          `${oldLender} held the loan for ${durationToDays(
+          `${oldLender} held the loan for ${formattedDuration(
             event.timestamp - oldTermsEvent!.timestamp,
-          )} days and accrued ${formattedInterestEarned} ${
+          )} and accrued ${formattedInterestEarned} ${
             event.loan.loanAssetSymbol
           } in interest over that period.`,
           `Their loan terms were ${formattedTermsFromEvent(
@@ -144,7 +184,10 @@ export const notificationEventToEmailMetadata: {
   },
   LendEvent: {
     subject: 'Loan # has been fulfilled',
-    getComponentsFromEntity: async (entity: RawSubgraphEvent | Loan) => {
+    getComponentsFromEntity: async (
+      entity: RawSubgraphEvent | Loan,
+      _now: number,
+    ) => {
       const event = entity as LendEvent;
       const borrower = await ensOrAddr(event.borrowTicketHolder);
       const lender = await ensOrAddr(event.lender);
@@ -169,7 +212,10 @@ export const notificationEventToEmailMetadata: {
   },
   RepaymentEvent: {
     subject: 'Loan # has been repaid',
-    getComponentsFromEntity: async (entity: RawSubgraphEvent | Loan) => {
+    getComponentsFromEntity: async (
+      entity: RawSubgraphEvent | Loan,
+      _now: number,
+    ) => {
       const event = entity as RepaymentEvent;
       const repayer = await ensOrAddr(event.repayer);
       const lender = await ensOrAddr(event.lendTicketHolder);
@@ -188,9 +234,9 @@ export const notificationEventToEmailMetadata: {
         header: emailHeader(event.loan),
         mainMessage: `${repayer} repaid the loan`,
         loanDetails: [
-          `${lender} held the loan for ${durationToDays(
+          `${lender} held the loan for ${formattedDuration(
             event.timestamp - event.loan.lastAccumulatedTimestamp,
-          )} days, with loan terms of ${formattedTermsFromLoan(
+          )}, with loan terms of ${formattedTermsFromLoan(
             event.loan,
           )}, and accrued ${formattedInterestEarned} ${
             event.loan.loanAssetSymbol
@@ -207,7 +253,10 @@ export const notificationEventToEmailMetadata: {
   },
   CollateralSeizureEvent: {
     subject: 'Loan # collateral has been seized',
-    getComponentsFromEntity: async (entity: RawSubgraphEvent | Loan) => {
+    getComponentsFromEntity: async (
+      entity: RawSubgraphEvent | Loan,
+      _now: number,
+    ) => {
       const event = entity as CollateralSeizureEvent;
       const borrower = await ensOrAddr(event.borrowTicketHolder);
       const lender = await ensOrAddr(event.lendTicketHolder);
@@ -219,7 +268,7 @@ export const notificationEventToEmailMetadata: {
         header: emailHeader(event.loan),
         mainMessage: `Lender ${lender} has seized the collateral NFT on Loan #${event.loan.id}`,
         loanDetails: [
-          `${lender} held the loan for ${durationToDays(
+          `${lender} held the loan for ${formattedDuration(
             event.timestamp - event.loan.lastAccumulatedTimestamp,
           )} at terms ${formattedTermsFromLoan(event.loan)}.`,
           `The loan became due on ${dayjs
@@ -241,11 +290,13 @@ export const notificationEventToEmailMetadata: {
   },
   LiquidationOccurring: {
     subject: 'Loan # is approaching due',
-    getComponentsFromEntity: async (entity: RawSubgraphEvent | Loan) => {
+    getComponentsFromEntity: async (
+      entity: RawSubgraphEvent | Loan,
+      now: number,
+    ) => {
       const loan = entity as Loan;
       const lender = await ensOrAddr(loan.lendTicketHolder);
 
-      const now = Math.floor(new Date().getTime() / 1000);
       const loanDuration = now - loan.lastAccumulatedTimestamp;
 
       const [interestAccruedSoFar, maturity] = getEstimatedRepaymentAndMaturity(
@@ -260,7 +311,7 @@ export const notificationEventToEmailMetadata: {
         header: emailHeader(loan),
         mainMessage: 'This loan will be due in 24 hours',
         loanDetails: [
-          `${lender} held the loan for ${durationToDays(
+          `${lender} held the loan for ${formattedDuration(
             loanDuration,
           )}, with loan terms ${formattedTermsFromLoan(
             loan,
@@ -276,7 +327,10 @@ export const notificationEventToEmailMetadata: {
   },
   LiquidationOccurred: {
     subject: 'Loan # is past due',
-    getComponentsFromEntity: async (entity: RawSubgraphEvent | Loan) => {
+    getComponentsFromEntity: async (
+      entity: RawSubgraphEvent | Loan,
+      _now: number,
+    ) => {
       const loan = entity as Loan;
       const lender = await ensOrAddr(loan.lendTicketHolder);
       const borrower = await ensOrAddr(loan.borrowTicketHolder);
@@ -298,7 +352,7 @@ export const notificationEventToEmailMetadata: {
         mainMessage:
           'The loan is past due, and its NFT collateral may be seized',
         loanDetails: [
-          `${lender} held the loan for ${durationToDays(
+          `${lender} held the loan for ${formattedDuration(
             loanDuration,
           )}, with loan terms ${formattedTermsFromLoan(
             loan,

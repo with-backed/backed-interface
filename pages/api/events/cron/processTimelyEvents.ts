@@ -32,6 +32,7 @@ export default async function handler(
       await sendEmailsForTriggerAndEntity(
         'LiquidationOccurring',
         liquidationOccurringLoans[loanIndex],
+        currentTimestamp,
       );
     }
 
@@ -43,6 +44,7 @@ export default async function handler(
       await sendEmailsForTriggerAndEntity(
         'LiquidationOccurred',
         liquidationOccurredLoans[loanIndex],
+        currentTimestamp,
       );
     }
 
