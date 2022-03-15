@@ -1,163 +1,180 @@
 import { ethers } from 'ethers';
-import { formattedAnnualRate } from 'lib/interest';
 import Link from 'next/link';
-import React, { FunctionComponent, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import styles from './LoanCard.module.css';
 import { useTokenMetadata } from 'hooks/useTokenMetadata';
 import { Media } from 'components/Media';
 import { GetNFTInfoResponse } from 'lib/getNFTInfo';
 import { Fallback } from 'components/Media/Fallback';
 import { Loan } from 'types/Loan';
-
-const Attributes: FunctionComponent = ({ children }) => {
-  return <div className={styles.attributes}>{children}</div>;
-};
+import { DescriptionList } from 'components/DescriptionList';
+import { useLoanDetails } from 'hooks/useLoanDetails';
 
 type LoanCardProps = {
   loan: Loan;
+  selectedAddress?: string;
+  display?: 'expanded' | 'compact';
 };
 
 export function LoanCard({
-  loan: {
-    id,
-    loanAmount,
-    loanAssetDecimals,
-    loanAssetSymbol,
-    perSecondInterestRate,
-    collateralTokenURI,
-    collateralTokenId,
-  },
+  loan,
+  selectedAddress,
+  display = 'expanded',
 }: LoanCardProps) {
-  const title = `View loan #${id}`;
-  const formattedLoanAmount = useMemo(
-    () =>
-      `${ethers.utils.formatUnits(
-        loanAmount,
-        loanAssetDecimals,
-      )} ${loanAssetSymbol}`,
-    [loanAmount, loanAssetDecimals, loanAssetSymbol],
-  );
+  const title = `View loan #${loan.id}`;
 
   const tokenSpec = useMemo(
     () => ({
-      tokenURI: collateralTokenURI,
-      tokenID: ethers.BigNumber.from(collateralTokenId),
+      tokenURI: loan.collateralTokenURI,
+      tokenID: ethers.BigNumber.from(loan.collateralTokenId),
     }),
-    [collateralTokenId, collateralTokenURI],
+    [loan.collateralTokenId, loan.collateralTokenURI],
   );
 
   const maybeMetadata = useTokenMetadata(tokenSpec);
 
-  if (maybeMetadata.isLoading) {
-    return <LoanCardLoading />;
-  } else if (!maybeMetadata.metadata) {
-    // TODO: bugsnag?
-    console.error(
-      new Error(
-        `Failed to fetch metadata at ${collateralTokenURI} for loan #${id}`,
+  const relationship =
+    selectedAddress === loan.borrower ? 'borrower' : 'lender';
+  const attributes = useMemo(
+    () =>
+      display === 'expanded' ? (
+        <ExpandedAttributes loan={loan} />
+      ) : (
+        <CompactAttributes loan={loan} />
       ),
-    );
+    [display, loan],
+  );
+
+  if (maybeMetadata.isLoading) {
     return (
-      <LoanCardNoMetadata
-        id={id.toString()}
-        title={title}
-        formattedLoanAmount={formattedLoanAmount}
-        perSecondInterestRate={perSecondInterestRate}
-      />
+      <LoanCardLoading>
+        {selectedAddress && <Relationship>{relationship}</Relationship>}
+        {attributes}
+      </LoanCardLoading>
     );
   } else {
     return (
       <LoanCardLoaded
-        id={id.toString()}
+        id={loan.id.toString()}
         title={title}
-        formattedLoanAmount={formattedLoanAmount}
-        perSecondInterestRate={perSecondInterestRate}
-        metadata={maybeMetadata.metadata}
-      />
+        metadata={maybeMetadata.metadata}>
+        {selectedAddress && <Relationship>{relationship}</Relationship>}
+        {attributes}
+      </LoanCardLoaded>
     );
   }
-}
-
-type LoanCardNoMetadataProps = {
-  id: string;
-  title: string;
-  formattedLoanAmount: string;
-  perSecondInterestRate: ethers.BigNumber;
-};
-function LoanCardNoMetadata({
-  id,
-  title,
-  formattedLoanAmount,
-  perSecondInterestRate,
-}: LoanCardNoMetadataProps) {
-  return (
-    <Link href={`/loans/${id}`}>
-      <a className={styles.link} aria-label={title} title={title}>
-        <div className={styles.card}>
-          <Fallback animated={false} />
-          <span>--</span>
-          <Attributes>
-            <span>{formattedLoanAmount}</span>
-            <span>{formattedAnnualRate(perSecondInterestRate)}% interest</span>
-          </Attributes>
-        </div>
-      </a>
-    </Link>
-  );
 }
 
 type LoanCardLoadedProps = {
   id: string;
   title: string;
-  formattedLoanAmount: string;
-  perSecondInterestRate: ethers.BigNumber;
-  metadata: GetNFTInfoResponse;
+  metadata: GetNFTInfoResponse | null;
 };
+
 /**
  * Only exported for the Storybook. Please use top-level LoanCard.
  */
 export function LoanCardLoaded({
   id,
   title,
-  formattedLoanAmount,
-  perSecondInterestRate,
-  metadata: { mediaMimeType, mediaUrl, name },
-}: LoanCardLoadedProps) {
+  metadata,
+  children,
+}: React.PropsWithChildren<LoanCardLoadedProps>) {
   return (
     <Link href={`/loans/${id}`}>
-      <a className={styles.link} aria-label={title} title={title}>
-        <div className={styles.card}>
-          <Media
-            media={mediaUrl}
-            mediaMimeType={mediaMimeType}
-            autoPlay={false}
-          />
-          <span>{name}</span>
-          <Attributes>
-            <span>{formattedLoanAmount}</span>
-            <span>{formattedAnnualRate(perSecondInterestRate)}% interest</span>
-          </Attributes>
+      <a className={styles['profile-link']} aria-label={title} title={title}>
+        <div className={styles['profile-card']}>
+          {metadata && (
+            <Media
+              media={metadata.mediaUrl}
+              mediaMimeType={metadata.mediaMimeType}
+              autoPlay={false}
+            />
+          )}
+          {!metadata && <Fallback animated={false} />}
+          <div className={styles['profile-card-attributes']}>
+            <span>{metadata ? metadata.name : '--'}</span>
+            {children}
+          </div>
         </div>
       </a>
     </Link>
   );
 }
 
+type LoanCardLoadingProps = {};
+
 /**
  * Only exported for the Storybook. Please use top-level LoanCard.
  */
-export function LoanCardLoading() {
+export function LoanCardLoading({
+  children,
+}: React.PropsWithChildren<LoanCardLoadingProps>) {
   return (
-    // This wrapping div simulates the presence of the <a> element in the
-    // loaded one. Safari renders weirdly without it.
-    <a className={styles.link}>
-      <div className={styles.card}>
+    <a className={styles['profile-link']}>
+      <div className={styles['profile-card']}>
         <Fallback />
-        <span>loading name</span>
-        <Attributes>
-          <span>loading attributes</span>
-        </Attributes>
+        <div className={styles['profile-card-attributes']}>
+          <span>loading name</span>
+
+          {children}
+        </div>
       </div>
     </a>
   );
 }
+
+type AttributesProps = {
+  loan: Loan;
+};
+export const ExpandedAttributes = ({ loan }: AttributesProps) => {
+  const {
+    formattedPrincipal,
+    formattedInterestRate,
+    formattedInterestAccrued,
+    formattedTotalDuration,
+    formattedTimeRemaining,
+  } = useLoanDetails(loan);
+  return (
+    <DescriptionList>
+      <dt>Loan Amount</dt>
+      <dd>{formattedPrincipal}</dd>
+      <div className={styles['stacked-entry']}>
+        <dt>interest</dt>
+        <dd>{formattedInterestRate}</dd>
+      </div>
+      <div className={styles['stacked-entry']}>
+        <dt>accrued</dt>
+        <dd>{formattedInterestAccrued}</dd>
+      </div>
+      <div className={styles['stacked-entry']}>
+        <dt>duration</dt>
+        <dd>{formattedTotalDuration}</dd>
+      </div>
+      <div className={styles['stacked-entry']}>
+        <dt>remaining</dt>
+        <dd>{formattedTimeRemaining}</dd>
+      </div>
+    </DescriptionList>
+  );
+};
+
+export const CompactAttributes = ({ loan }: AttributesProps) => {
+  const { formattedPrincipal, formattedInterestRate } = useLoanDetails(loan);
+  return (
+    <DescriptionList>
+      <div className={styles['stacked-entry']}>
+        <dt>Loan Amount</dt>
+        <dd>{formattedPrincipal}</dd>
+      </div>
+      <div className={styles['stacked-entry']}>
+        <dt>interest</dt>
+        <dd>{formattedInterestRate}</dd>
+      </div>
+    </DescriptionList>
+  );
+};
+
+export const Relationship: React.FunctionComponent = ({ children }) => {
+  return <span className={styles.relationship}>{children}</span>;
+};

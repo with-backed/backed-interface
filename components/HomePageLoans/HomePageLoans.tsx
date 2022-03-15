@@ -13,7 +13,7 @@ export function HomePageLoans({ loans, view }: HomePageLoansProps) {
     return (
       <>
         {loans.map((l) => (
-          <LoanCard key={l.id.toString()} loan={l} />
+          <LoanCard key={l.id.toString()} loan={l} display="compact" />
         ))}
       </>
     );
