@@ -29,7 +29,7 @@ type ResolvedNFTMetadata = {
   isLoading: false;
 };
 
-type MaybeNFTMetadata = LoadingNFTMetadata | ResolvedNFTMetadata;
+export type MaybeNFTMetadata = LoadingNFTMetadata | ResolvedNFTMetadata;
 
 export function useTokenMetadata(spec: GetNFTInfoArgs): MaybeNFTMetadata;
 export function useTokenMetadata(spec: TokenURIAndID): MaybeNFTMetadata;
