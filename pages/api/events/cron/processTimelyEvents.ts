@@ -29,11 +29,10 @@ export default async function handler(
       loanIndex < liquidationOccurringLoans.length;
       loanIndex++
     ) {
-      const loan = liquidationOccurringLoans[loanIndex];
-
-      await sendEmailsForTriggerAndEntity('LiquidationOccurringBorrower', loan);
-
-      await sendEmailsForTriggerAndEntity('LiquidationOccurringLender', loan);
+      await sendEmailsForTriggerAndEntity(
+        'LiquidationOccurring',
+        liquidationOccurringLoans[loanIndex],
+      );
     }
 
     for (
@@ -41,11 +40,10 @@ export default async function handler(
       loanIndex < liquidationOccurredLoans.length;
       loanIndex++
     ) {
-      const loan = liquidationOccurredLoans[loanIndex];
-
-      await sendEmailsForTriggerAndEntity('LiquidationOccurredBorrower', loan);
-
-      await sendEmailsForTriggerAndEntity('LiquidationOccurredLender', loan);
+      await sendEmailsForTriggerAndEntity(
+        'LiquidationOccurred',
+        liquidationOccurredLoans[loanIndex],
+      );
     }
 
     res.status(200).json(`notifications successfully sent`);

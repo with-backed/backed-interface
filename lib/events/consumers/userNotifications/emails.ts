@@ -11,88 +11,28 @@ import {
 import { NotificationMethod, NotificationTriggerType } from './shared';
 import { RawSubgraphEvent } from 'types/RawEvent';
 import { getNotificationRequestsForAddress } from './repository';
+import fs from 'fs';
+import { notificationEventToEmailMetadata } from './formatter';
 
-type EmailMetadataType = {
-  subject: string;
-  getTextFromEntity: (
-    entity: RawSubgraphEvent | Loan,
-    hasPreviousLender?: boolean,
-  ) => string;
-};
-
-const notificationEventToEmailMetadata: {
-  [key: string]: EmailMetadataType;
-} = {
-  BuyoutEvent: {
-    subject: 'Your loan was bought out',
-    getTextFromEntity: (_entity: RawSubgraphEvent | Loan) =>
-      'Your loan was bought out',
-  },
-  LendEvent: {
-    subject: 'Your loan was fulfilled',
-    getTextFromEntity: (
-      _entity: RawSubgraphEvent | Loan,
-      hasPreviousLender?: boolean,
-    ) =>
-      hasPreviousLender
-        ? 'The terms for one of your loans has been improved'
-        : 'Your loan was fulfilled',
-  },
-  RepaymentEvent: {
-    subject: 'Your loan was repaid',
-    getTextFromEntity: (_entity: RawSubgraphEvent | Loan) =>
-      'Your loan was repaid',
-  },
-  CollateralSeizureEvent: {
-    subject: 'Your collateral was seized',
-    getTextFromEntity: (_entity: RawSubgraphEvent | Loan) =>
-      'Your collateral was seized',
-  },
-  LiquidationOccurringBorrower: {
-    subject: 'Your NFT collateral is approaching liquidation',
-    getTextFromEntity: (_entity: RawSubgraphEvent | Loan) =>
-      'Your NFT collateral is approaching liquidation',
-  },
-  LiquidationOccurringLender: {
-    subject: 'Your NFT collateral is approaching liquidation',
-    getTextFromEntity: (_entity: RawSubgraphEvent | Loan) =>
-      'An NFT you have lent against can be seized soon',
-  },
-  LiquidationOccurredBorrower: {
-    subject: 'Your NFT collateral can be liquidated',
-    getTextFromEntity: (_entity: RawSubgraphEvent | Loan) =>
-      'Your NFT collateral can be liquidated',
-  },
-  LiquidationOccurredLender: {
-    subject: 'Your NFT collateral can be liquidated',
-    getTextFromEntity: (_entity: RawSubgraphEvent | Loan) =>
-      'An NFT you have lent against can be seized',
-  },
-};
-
-function getRelevantEthAddressFromTriggerAndEntity(
+function getRelevantEthAddressesFromTriggerAndEntity(
   emailTrigger: NotificationTriggerType,
   entity: RawSubgraphEvent | Loan,
-) {
+): string[] {
   switch (emailTrigger) {
     case 'BuyoutEvent':
-      return (entity as BuyoutEvent).lendTicketHolder;
+      return [(entity as BuyoutEvent).lendTicketHolder];
     case 'LendEvent':
-      return (entity as LendEvent).borrowTicketHolder;
+      return [(entity as LendEvent).borrowTicketHolder];
     case 'RepaymentEvent':
-      return (entity as RepaymentEvent).lendTicketHolder;
+      return [(entity as RepaymentEvent).lendTicketHolder];
     case 'CollateralSeizureEvent':
-      return (entity as CollateralSeizureEvent).borrowTicketHolder;
-    case 'LiquidationOccurringBorrower':
-      return (entity as Loan).borrowTicketHolder;
-    case 'LiquidationOccurringLender':
-      return (entity as Loan).lendTicketHolder;
-    case 'LiquidationOccurredBorrower':
-      return (entity as Loan).borrowTicketHolder;
-    case 'LiquidationOccurredLender':
-      return (entity as Loan).lendTicketHolder;
+      return [(entity as CollateralSeizureEvent).borrowTicketHolder];
+    case 'LiquidationOccurring':
+      return [(entity as Loan).borrowTicketHolder];
+    case 'LiquidationOccurred':
+      return [(entity as Loan).borrowTicketHolder];
     default:
-      return '';
+      return [];
   }
 }
 
@@ -101,14 +41,20 @@ export async function sendEmailsForTriggerAndEntity(
   entity: RawSubgraphEvent | Loan,
   hasPreviousLender: boolean = false,
 ) {
-  const ethAddress = getRelevantEthAddressFromTriggerAndEntity(
+  const ethAddresses = getRelevantEthAddressesFromTriggerAndEntity(
     emailTrigger,
     entity,
   );
 
-  const notificationRequestsForEthAddress =
-    await getNotificationRequestsForAddress(ethAddress);
-  const emailAddresses = notificationRequestsForEthAddress
+  const notificationRequestsForEthAddresses = (
+    await Promise.all(
+      ethAddresses.map((ethAddress) =>
+        getNotificationRequestsForAddress(ethAddress),
+      ),
+    )
+  ).flat();
+
+  const emailAddresses = notificationRequestsForEthAddresses
     .filter((req) => req.deliveryMethod === NotificationMethod.EMAIL)
     .map((req) => req.deliveryDestination);
 
@@ -127,10 +73,9 @@ export async function sendEmailsForTriggerAndEntity(
         Html: {
           Charset: 'UTF-8',
           Data: generateHTMLForEmail(
-            notificationEventToEmailMetadata[emailTrigger]!.getTextFromEntity(
-              entity,
-              hasPreviousLender,
-            ),
+            await notificationEventToEmailMetadata[
+              emailTrigger
+            ]!.getComponentsFromEntity(entity, hasPreviousLender),
           ),
         },
       },
@@ -140,20 +85,63 @@ export async function sendEmailsForTriggerAndEntity(
       },
     },
   };
+
+  await fs.writeFileSync('./html.txt', params.Message.Body.Html.Data);
+
+  console.log(params.Message.Body.Html);
   await executeEmailSendWithSes(params);
 }
 
 // todo(adamgobes); actually style these email tags to make them look good rather than just plain text
-function generateHTMLForEmail(text: string): string {
+function generateHTMLForEmail(components: EmailComponents): string {
+  const reusableTextStyles = `font-size="14px" color="black" font-family="lato" align="left"`;
+
   return mjml2html(
     `
-  <mjml>
+    <mjml>
+    <mj-head>
+      <mj-font name="lato" href="https://fonts.googleapis.com/css2?family=Lato" />
+    </mj-head>
     <mj-body>
       <mj-section>
         <mj-column>
-          <mj-text>
-            ${text}
+          <mj-text ${reusableTextStyles}>&#128184; NFT Pawn Shop</mj-text>
+  
+          <mj-divider border-width="1px"></mj-divider>
+  
+          <mj-text ${reusableTextStyles}>${components.header}</mj-text>
+  
+          <mj-divider border-style="dashed" border-width="1px"></mj-divider>
+  
+          <mj-text ${reusableTextStyles}>${components.mainMessage}</mj-text>
+  
+          <mj-divider border-style="dashed" border-width="1px"></mj-divider>
+  
+          ${components.loanDetails.map(
+            (detail) => `
+          <mj-text ${reusableTextStyles}>${detail}</mj-text>
+          `,
+          )}
+  
+          <mj-divider border-style="dashed" border-width="1px"></mj-divider>
+  
+          <mj-text ${reusableTextStyles}>View the loan at 
+            <a href="https://example.com" padding="0px" style="color: #0000EE;">
+              ${components.viewLinks[0]}
+            </a>
           </mj-text>
+
+          <mj-text ${reusableTextStyles}>View the loan at
+            <a href="https://example.com" style="color: #0000EE;">
+              ${components.viewLinks[1]}
+            </a>
+          </mj-text>
+  
+          <mj-divider border-style="dashed" border-width="1px"></mj-divider>
+  
+          <mj-text ${reusableTextStyles}>This is an automatically generated email. To stop notifications, visit ${
+      components.footer
+    }</mj-text>
         </mj-column>
       </mj-section>
     </mj-body>

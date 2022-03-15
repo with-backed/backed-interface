@@ -54,19 +54,11 @@ describe('/api/events/cron/processTimelyEvents', () => {
 
     expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledTimes(4);
     expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledWith(
-      'LiquidationOccurringBorrower',
+      'LiquidationOccurring',
       aboutToExpireLoan,
     );
     expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledWith(
-      'LiquidationOccurringLender',
-      aboutToExpireLoan,
-    );
-    expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledWith(
-      'LiquidationOccurredBorrower',
-      alreadyExpiredLoan,
-    );
-    expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledWith(
-      'LiquidationOccurredLender',
+      'LiquidationOccurred',
       alreadyExpiredLoan,
     );
 

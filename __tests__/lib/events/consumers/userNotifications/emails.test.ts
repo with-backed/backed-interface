@@ -1,20 +1,11 @@
-import { subgraphLoan } from 'lib/mockData';
 import { sendEmailsForTriggerAndEntity } from 'lib/events/consumers/userNotifications/emails';
 import { executeEmailSendWithSes } from 'lib/events/consumers/userNotifications/ses';
-import { nftBackedLoansClient } from 'lib/urql';
 import { getNotificationRequestsForAddress } from 'lib/events/consumers/userNotifications/repository';
 import { NotificationRequest } from '@prisma/client';
 import {
   NotificationMethod,
   NotificationTriggerType,
 } from 'lib/events/consumers/userNotifications/shared';
-
-jest.mock('lib/urql', () => ({
-  ...jest.requireActual('lib/urql'),
-  nftBackedLoansClient: {
-    query: jest.fn(),
-  },
-}));
 
 jest.mock('lib/events/consumers/userNotifications/ses', () => ({
   executeEmailSendWithSes: jest.fn(),
@@ -54,8 +45,6 @@ const notificationReqTwo: NotificationRequest = {
   event,
 };
 
-let loan = subgraphLoan;
-
 const emailParamsMatchingObject = (text: string) => ({
   Source: process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_EMAIL!,
   Destination: {
@@ -82,12 +71,26 @@ describe('Sending emails with Amazon SES', () => {
   });
 
   describe('BuyoutEvent', () => {
+    it.only('returns correct email components and subject for email', async () => {
+      const subject = notificationEventToEmailMetadata['BuyoutEvent'].subject;
+      const emailComponents = await notificationEventToEmailMetadata[
+        'BuyoutEvent'
+      ].getComponentsFromEntity(subgraphBuyoutEvent);
+
+      expect(subject).toEqual('Loan # has a new lender');
+
+      expect(emailComponents.header).toEqual('Loan #65: monarchs');
+      expect(emailComponents.mainMessage).toEqual(
+        '0x7e646 replaced 0x10359 as lender',
+      );
+    });
+
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmailsForTriggerAndEntity('BuyoutEvent', loan);
+      await sendEmailsForTriggerAndEntity('BuyoutEvent', subgraphBuyoutEvent);
 
       expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
-        loan.lendTicketHolder,
+        subgraphBuyoutEvent.lendTicketHolder,
       );
       expect(mockedSesEmailCall).toBeCalledTimes(1);
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
@@ -162,7 +165,7 @@ describe('Sending emails with Amazon SES', () => {
       );
     });
   });
-  describe('LiquidationOccuringBorrower', () => {
+  describe('LiquidationOccuring', () => {
     it('successfully calls SES send email method with correct params', async () => {
       await sendEmailsForTriggerAndEntity('LiquidationOccurringBorrower', loan);
 
@@ -180,27 +183,9 @@ describe('Sending emails with Amazon SES', () => {
       );
     });
   });
-  describe('LiquidationOccuringLender', () => {
+  describe('LiquidationOccurred', () => {
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmailsForTriggerAndEntity('LiquidationOccurringLender', loan);
-
-      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
-      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
-        loan.lendTicketHolder,
-      );
-      expect(mockedSesEmailCall).toBeCalledTimes(1);
-      expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(
-          emailParamsMatchingObject(
-            'An NFT you have lent against can be seized soon',
-          ),
-        ),
-      );
-    });
-  });
-  describe('LiquidationOccurredBorrower', () => {
-    it('successfully calls SES send email method with correct params', async () => {
-      await sendEmailsForTriggerAndEntity('LiquidationOccurredBorrower', loan);
+      await sendEmailsForTriggerAndEntity('LiquidationOccurred', loan);
 
       expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
@@ -210,24 +195,6 @@ describe('Sending emails with Amazon SES', () => {
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
         expect.objectContaining(
           emailParamsMatchingObject('Your NFT collateral can be liquidated'),
-        ),
-      );
-    });
-  });
-  describe('LiquidationOccurredLender', () => {
-    it('successfully calls SES send email method with correct params', async () => {
-      await sendEmailsForTriggerAndEntity('LiquidationOccurredLender', loan);
-
-      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
-      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
-        loan.lendTicketHolder,
-      );
-      expect(mockedSesEmailCall).toBeCalledTimes(1);
-      expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(
-          emailParamsMatchingObject(
-            'An NFT you have lent against can be seized',
-          ),
         ),
       );
     });
