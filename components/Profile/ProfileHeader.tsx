@@ -9,10 +9,13 @@ import {
 import { getInterestOwed } from 'lib/loans/utils';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Loan } from 'types/Loan';
-import { BorrowerLenderBubble } from './BorrowerLenderBubble';
 import { NextLoanDueCountdown } from './NextLoanDueCountdown';
 import styles from './profile.module.css';
 import { DisplayCurrency } from 'components/DisplayCurrency';
+import { Fieldset } from 'components/Fieldset';
+import { TwelveColumn } from 'components/layouts/TwelveColumn';
+import { EtherscanAddressLink } from 'components/EtherscanLink';
+import { TextButton } from 'components/Button';
 
 type ProfileHeaderProps = {
   address: string;
@@ -20,11 +23,10 @@ type ProfileHeaderProps = {
 };
 
 type LoanStatsProps = {
-  address: string;
   loans: Loan[];
   kind: 'borrower' | 'lender';
 };
-function LoanStats({ address, loans, kind }: LoanStatsProps) {
+function LoanStats({ loans, kind }: LoanStatsProps) {
   const numActiveLoans = useMemo(() => getActiveLoanCount(loans), [loans]);
   const numClosedLoans = useMemo(() => getClosedLoanCount(loans), [loans]);
   const lentToLoans = useMemo(
@@ -94,13 +96,8 @@ function LoanStats({ address, loans, kind }: LoanStatsProps) {
   }, [currentInterestAmounts, lentToLoans]);
 
   return (
-    <DescriptionList orientation="horizontal">
-      <dt>
-        <BorrowerLenderBubble
-          address={address}
-          borrower={kind === 'borrower'}
-        />
-      </dt>
+    <DescriptionList orientation="vertical">
+      <dt>Loans</dt>
       <dd>
         {numActiveLoans} Active; {numClosedLoans} Closed
       </dd>
@@ -132,8 +129,27 @@ export function ProfileHeader({ address, loans }: ProfileHeaderProps) {
 
   return (
     <div className={styles['profile-header-wrapper']}>
-      <LoanStats address={address} loans={loansAsBorrower} kind="borrower" />
-      <LoanStats address={address} loans={loansAsLender} kind="lender" />
+      <TwelveColumn>
+        <Fieldset legend="📭 Address">
+          <div className={styles.container}>
+            <span>{address}</span>
+            <EtherscanAddressLink address={address}>
+              View on Etherscan 🔗
+            </EtherscanAddressLink>
+            <TextButton>Subscribe to updates 🔔</TextButton>
+          </div>
+        </Fieldset>
+        <Fieldset legend="🖼 Borrowing">
+          <div className={styles.container}>
+            <LoanStats loans={loansAsBorrower} kind="borrower" />
+          </div>
+        </Fieldset>
+        <Fieldset legend="💸 Lending">
+          <div className={styles.container}>
+            <LoanStats loans={loansAsLender} kind="lender" />
+          </div>
+        </Fieldset>
+      </TwelveColumn>
     </div>
   );
 }
