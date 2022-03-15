@@ -127,6 +127,8 @@ export async function getEmailComponents(
     return null;
   }
 
+  console.log({ entity, now });
+
   return await emailMetadata.getComponentsFromEntity(entity, now);
 }
 

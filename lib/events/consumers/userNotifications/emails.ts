@@ -61,10 +61,14 @@ export async function sendEmailsForTriggerAndEntity(
     return;
   }
 
+  console.log({ entity, ethAddresses, emailAddresses });
+
   const emailComponents = await getEmailComponents(emailTrigger, entity, now);
   if (!emailComponents) {
     return;
   }
+
+  console.log({ emailComponents });
 
   const params = {
     Source: 'adamgobes@gmail.com', // TODO(adamgobes): change this, only using for tests
