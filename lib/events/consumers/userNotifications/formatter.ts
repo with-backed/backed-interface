@@ -141,7 +141,9 @@ const notificationEventToEmailMetadata: {
       entity: RawSubgraphEvent | Loan,
       _now: number,
     ) => {
+      console.log({ entityFromGet: entity });
       const event = entity as BuyoutEvent;
+      console.log({ eventFromGet: event });
       const oldLender = await ensOrAddr(event.lendTicketHolder);
       const newLender = await ensOrAddr(event.newLender);
       const formattedInterestEarned = ethers.utils.formatUnits(
