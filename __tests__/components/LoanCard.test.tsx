@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { useTokenMetadata } from 'hooks/useTokenMetadata';
-import { ProfileLoanCard } from 'components/LoanCard';
+import { LoanCard } from 'components/LoanCard';
 import { GetNFTInfoResponse } from 'lib/getNFTInfo';
 import { ethers } from 'ethers';
 import { baseLoan } from 'lib/mockData';
@@ -24,7 +24,7 @@ const metadata: GetNFTInfoResponse = {
 };
 
 describe('LoanCard', () => {
-  describe('ProfileLoanCard', () => {
+  describe('LoanCard', () => {
     beforeEach(() => {
       jest.clearAllMocks();
     });
@@ -35,7 +35,7 @@ describe('LoanCard', () => {
         metadata: null,
       });
       const { getByText } = render(
-        <ProfileLoanCard loan={loan} selectedAddress="0xwhatever" />,
+        <LoanCard loan={loan} selectedAddress="0xwhatever" />,
       );
       getByText('loading name');
     });
@@ -46,26 +46,26 @@ describe('LoanCard', () => {
         metadata: null,
       });
       const { getAllByText } = render(
-        <ProfileLoanCard loan={loan} selectedAddress="0xwhatever" />,
+        <LoanCard loan={loan} selectedAddress="0xwhatever" />,
       );
       const placeholders = getAllByText('--');
       // one for the name we couldn't fetch, one for the time remaining
       expect(placeholders).toHaveLength(2);
     });
 
-    it('renders a ProfileLoanCard', () => {
+    it('renders a LoanCard', () => {
       mockedUseTokenMetadata.mockReturnValue({ isLoading: false, metadata });
       const { getByText } = render(
-        <ProfileLoanCard loan={loan} selectedAddress="0xwhatever" />,
+        <LoanCard loan={loan} selectedAddress="0xwhatever" />,
       );
       getByText(metadata.name);
       getByText('lender');
     });
 
-    it('renders a ProfileLoanCard where the user is the borrower', () => {
+    it('renders a LoanCard where the user is the borrower', () => {
       mockedUseTokenMetadata.mockReturnValue({ isLoading: false, metadata });
       const { getByText } = render(
-        <ProfileLoanCard loan={loan} selectedAddress={baseLoan.borrower} />,
+        <LoanCard loan={loan} selectedAddress={baseLoan.borrower} />,
       );
       getByText(metadata.name);
       getByText('borrower');

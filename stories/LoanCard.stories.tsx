@@ -1,6 +1,6 @@
 import React from 'react';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
-import { ProfileLoanCard } from 'components/LoanCard';
+import { LoanCard } from 'components/LoanCard';
 import {
   LoanCardLoaded,
   LoanCardLoading,
@@ -12,7 +12,7 @@ import { baseLoan } from 'lib/mockData';
 
 export default {
   title: 'components/LoanCard',
-  component: ProfileLoanCard,
+  component: LoanCard,
 };
 
 export const LoanCards = () => {

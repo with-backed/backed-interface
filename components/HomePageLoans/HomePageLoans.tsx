@@ -1,4 +1,4 @@
-import { ProfileLoanCard } from 'components/LoanCard';
+import { LoanCard } from 'components/LoanCard';
 import { LoanTable } from 'components/LoanTable';
 import React from 'react';
 import { Loan } from 'types/Loan';
@@ -13,7 +13,7 @@ export function HomePageLoans({ loans, view }: HomePageLoansProps) {
     return (
       <>
         {loans.map((l) => (
-          <ProfileLoanCard key={l.id.toString()} loan={l} display="compact" />
+          <LoanCard key={l.id.toString()} loan={l} display="compact" />
         ))}
       </>
     );

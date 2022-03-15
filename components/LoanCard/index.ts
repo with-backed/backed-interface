@@ -1,1 +1,1 @@
-export { LoanCard as ProfileLoanCard } from './LoanCard';
+export { LoanCard } from './LoanCard';
