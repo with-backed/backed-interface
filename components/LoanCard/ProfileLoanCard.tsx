@@ -12,7 +12,7 @@ import { useLoanDetails } from 'hooks/useLoanDetails';
 
 type ProfileLoanCardProps = {
   loan: Loan;
-  selectedAddress: string;
+  selectedAddress?: string;
   display?: 'expanded' | 'compact';
 };
 
@@ -47,7 +47,8 @@ export function ProfileLoanCard({
 
   if (maybeMetadata.isLoading) {
     return (
-      <ProfileLoanCardLoading relationship={relationship}>
+      <ProfileLoanCardLoading>
+        {selectedAddress && <Relationship>{relationship}</Relationship>}
         {attributes}
       </ProfileLoanCardLoading>
     );
@@ -56,8 +57,8 @@ export function ProfileLoanCard({
       <ProfileLoanCardLoaded
         id={loan.id.toString()}
         title={title}
-        metadata={maybeMetadata.metadata}
-        relationship={relationship}>
+        metadata={maybeMetadata.metadata}>
+        {selectedAddress && <Relationship>{relationship}</Relationship>}
         {attributes}
       </ProfileLoanCardLoaded>
     );
@@ -68,7 +69,6 @@ type ProfileLoanCardLoadedProps = {
   id: string;
   title: string;
   metadata: GetNFTInfoResponse | null;
-  relationship: string;
 };
 
 /**
@@ -78,7 +78,6 @@ export function ProfileLoanCardLoaded({
   id,
   title,
   metadata,
-  relationship,
   children,
 }: React.PropsWithChildren<ProfileLoanCardLoadedProps>) {
   return (
@@ -95,7 +94,6 @@ export function ProfileLoanCardLoaded({
           {!metadata && <Fallback animated={false} />}
           <div className={styles['profile-card-attributes']}>
             <span>{metadata ? metadata.name : '--'}</span>
-            <Relationship>{relationship}</Relationship>
             {children}
           </div>
         </div>
@@ -104,16 +102,13 @@ export function ProfileLoanCardLoaded({
   );
 }
 
-type ProfileLoanCardLoadingProps = {
-  relationship: string;
-};
+type ProfileLoanCardLoadingProps = {};
 
 /**
  * Only exported for the Storybook. Please use top-level ProfileLoanCard.
  */
 export function ProfileLoanCardLoading({
   children,
-  relationship,
 }: React.PropsWithChildren<ProfileLoanCardLoadingProps>) {
   return (
     <a className={styles['profile-link']}>
@@ -121,7 +116,7 @@ export function ProfileLoanCardLoading({
         <Fallback />
         <div className={styles['profile-card-attributes']}>
           <span>loading name</span>
-          <Relationship>{relationship}</Relationship>
+
           {children}
         </div>
       </div>
@@ -180,6 +175,6 @@ export const CompactAttributes = ({ loan }: AttributesProps) => {
   );
 };
 
-const Relationship: React.FunctionComponent = ({ children }) => {
+export const Relationship: React.FunctionComponent = ({ children }) => {
   return <span className={styles.relationship}>{children}</span>;
 };
