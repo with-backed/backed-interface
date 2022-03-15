@@ -17,6 +17,8 @@
   display: block;
   overflow: hidden;
   overflow-wrap: break-word;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .profile-header-wrapper fieldset button {
