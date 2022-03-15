@@ -159,6 +159,7 @@ export async function getMostRecentTermsForLoan(
       where,
     })
     .toPromise();
+  console.log({ data });
   if (error) {
     // TODO: bugsnag
   }

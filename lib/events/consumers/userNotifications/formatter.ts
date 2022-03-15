@@ -60,7 +60,7 @@ const formattedTermsFromEvent = (
     event.loan.loanAssetDecimal,
   );
   const amount = `${parsedLoanAmount} ${loanAssetSymbol}`;
-  const days = secondsToDays(event.durationSeconds);
+  const days = secondsToDays(event.durationSeconds).toFixed(2);
   const interest = formattedAnnualRate(
     ethers.BigNumber.from(event.perSecondInterestRate),
   );
