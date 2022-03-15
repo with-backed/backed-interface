@@ -118,19 +118,16 @@ function EventCollateral({ loan }: EventCollateralProps) {
     () => ({
       tokenURI: loan.collateralTokenURI,
       tokenID: loan.collateralTokenId,
+      forceImage: true,
     }),
     [loan.collateralTokenURI, loan.collateralTokenId],
   );
-  const { metadata, isLoading } = useTokenMetadata(tokenSpec);
+  const nftInfo = useTokenMetadata(tokenSpec);
+  const { metadata, isLoading } = nftInfo;
   return (
     <Link href={`/loans/${loan.id.toString()}`}>
       <a className={styles.collateral}>
-        <NFTMedia
-          collateralAddress={loan.collateralContractAddress}
-          collateralTokenID={loan.collateralTokenId}
-          small
-          forceImage
-        />
+        <NFTMedia nftInfo={nftInfo} small />
         <div className={styles['name-and-collection']}>
           <span className={styles.name}>
             {isLoading ? '---' : metadata?.name}
