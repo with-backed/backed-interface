@@ -3,7 +3,6 @@
   background: var(--background-fieldset);
   width: 100%;
   padding: var(--padding-container);
-  box-shadow: var(--box-shadow);
 }
 
 .legend {
