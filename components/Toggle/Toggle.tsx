@@ -6,10 +6,16 @@ type ToggleProps = {
   handleChange: (checked: boolean) => void;
   left: React.ReactNode;
   right: React.ReactNode;
+  initialChecked?: boolean;
 };
 
-export const Toggle = ({ handleChange, left, right }: ToggleProps) => {
-  const [checked, setChecked] = React.useState(true);
+export const Toggle = ({
+  handleChange,
+  initialChecked = true,
+  left,
+  right,
+}: ToggleProps) => {
+  const [checked, setChecked] = React.useState(initialChecked);
   const toggle = useCallback(() => {
     setChecked(!checked);
     handleChange(!checked);
