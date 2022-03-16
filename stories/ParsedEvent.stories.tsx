@@ -1,5 +1,4 @@
 import React from 'react';
-import type { CreateEvent, Event, LendEvent } from 'types/Event';
 import { ParsedEvent } from 'components/TicketHistory/ParsedEvent';
 import { Fieldset } from 'components/Fieldset';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';

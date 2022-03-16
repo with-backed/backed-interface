@@ -1,7 +1,18 @@
 import { Event } from 'types/Event';
 
 type EventName = Pick<Event, 'typename'>['typename'];
+
+const eventNames: {
+  [key in EventName]: string;
+} = {
+  BuyoutEvent: 'Buyout Event',
+  CloseEvent: 'Close Loan',
+  CreateEvent: 'Create Loan',
+  RepaymentEvent: 'Repay Loan',
+  CollateralSeizureEvent: 'Seize Collateral',
+  LendEvent: 'Lend Event',
+};
+
 export function renderEventName(name: EventName) {
-  const result = name.replace(/([A-Z])/g, ' $1');
-  return result.charAt(0).toUpperCase() + result.slice(1);
+  return eventNames[name];
 }
