@@ -38,6 +38,11 @@ function loanStatus({
   return 'Accruing interest';
 }
 
+function truncate(numberString: string, maxDigits: number = 4) {
+  // TODO: handle very small numbers that may render as 0.0000
+  return parseFloat(numberString).toFixed(maxDigits);
+}
+
 export function useLoanDetails(loan: Loan) {
   const {
     id,
@@ -65,19 +70,19 @@ export function useLoanDetails(loan: Loan) {
   );
   const formattedPrincipal = useMemo(() => {
     return [
-      ethers.utils.formatUnits(loanAmount, loanAssetDecimals),
+      truncate(ethers.utils.formatUnits(loanAmount, loanAssetDecimals)),
       loanAssetSymbol,
     ].join(' ');
   }, [loanAmount, loanAssetDecimals, loanAssetSymbol]);
   const formattedInterestRate = useMemo(() => {
-    return [formattedAnnualRate(perSecondInterestRate), '%'].join('');
+    return [truncate(formattedAnnualRate(perSecondInterestRate)), '%'].join('');
   }, [perSecondInterestRate]);
   const formattedTotalDuration = useMemo(() => {
     return humanizedDuration(durationSeconds.toNumber());
   }, [durationSeconds]);
   const formattedInterestAccrued = useMemo(() => {
     return [
-      ethers.utils.formatUnits(interestOwed, loanAssetDecimals),
+      truncate(ethers.utils.formatUnits(interestOwed, loanAssetDecimals)),
       loanAssetSymbol,
     ].join(' ');
   }, [interestOwed, loanAssetDecimals, loanAssetSymbol]);
@@ -86,7 +91,12 @@ export function useLoanDetails(loan: Loan) {
   }, [id]);
   const formattedTotalPayback = useMemo(() => {
     return [
-      ethers.utils.formatUnits(loanAmount.add(interestOwed), loanAssetDecimals),
+      truncate(
+        ethers.utils.formatUnits(
+          loanAmount.add(interestOwed),
+          loanAssetDecimals,
+        ),
+      ),
       loanAssetSymbol,
     ].join(' ');
   }, [loanAmount, interestOwed, loanAssetDecimals, loanAssetSymbol]);
@@ -99,7 +109,7 @@ export function useLoanDetails(loan: Loan) {
     const estimate = accumulatedInterest.add(loanAmount).add(interestOverTerm);
 
     return [
-      ethers.utils.formatUnits(estimate, loanAssetDecimals),
+      truncate(ethers.utils.formatUnits(estimate, loanAssetDecimals)),
       loanAssetSymbol,
     ].join(' ');
   }, [
