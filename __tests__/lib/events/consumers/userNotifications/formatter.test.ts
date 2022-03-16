@@ -43,7 +43,7 @@ describe('Sending emails with Amazon SES', () => {
         now,
       );
 
-      expect(subject).toEqual('Loan # has a new lender');
+      expect(subject).toEqual('Loan #65 has a new lender');
 
       expect(emailComponents!.header).toEqual('Loan #65: monarchs');
       expect(emailComponents!.mainMessage).toEqual(
@@ -73,7 +73,7 @@ describe('Sending emails with Amazon SES', () => {
         now,
       );
 
-      expect(subject).toEqual('Loan # has been fulfilled');
+      expect(subject).toEqual('Loan #65 has been fulfilled');
 
       expect(emailComponents!.header).toEqual('Loan #65: monarchs');
       expect(emailComponents!.mainMessage).toEqual(
@@ -104,7 +104,7 @@ describe('Sending emails with Amazon SES', () => {
         now,
       );
 
-      expect(subject).toEqual('Loan # has been repaid');
+      expect(subject).toEqual('Loan #65 has been repaid');
 
       expect(emailComponents!.header).toEqual('Loan #65: monarchs');
       expect(emailComponents!.mainMessage).toEqual('0x0dd7d repaid the loan');
@@ -133,7 +133,7 @@ describe('Sending emails with Amazon SES', () => {
         now,
       );
 
-      expect(subject).toEqual('Loan # collateral has been seized');
+      expect(subject).toEqual('Loan #65 collateral has been seized');
 
       expect(emailComponents!.header).toEqual('Loan #65: monarchs');
       expect(emailComponents!.mainMessage).toEqual(
@@ -165,7 +165,7 @@ describe('Sending emails with Amazon SES', () => {
         now,
       );
 
-      expect(subject).toEqual('Loan # is approaching due');
+      expect(subject).toEqual('Loan #65 is approaching due');
 
       expect(emailComponents!.header).toEqual('Loan #65: monarchs');
       expect(emailComponents!.mainMessage).toEqual(
@@ -184,21 +184,19 @@ describe('Sending emails with Amazon SES', () => {
   });
   describe('LiquidationOccurred', () => {
     it('returns correct email components and subject for email', async () => {
-      const subject = await getEmailSubject(
-        'LiquidationOccurred',
-        subgraphBuyoutEvent,
-      );
+      const expiredLoan = {
+        ...subgraphLoanForEvents,
+        endDateTimestamp:
+          subgraphLoanForEvents.lastAccumulatedTimestamp + 7 * 86400,
+      };
+      const subject = await getEmailSubject('LiquidationOccurred', expiredLoan);
       const emailComponents = await getEmailComponents(
         'LiquidationOccurred',
-        {
-          ...subgraphLoanForEvents,
-          endDateTimestamp:
-            subgraphLoanForEvents.lastAccumulatedTimestamp + 7 * 86400,
-        },
+        expiredLoan,
         now,
       );
 
-      expect(subject).toEqual('Loan # is past due');
+      expect(subject).toEqual('Loan #65 is past due');
 
       expect(emailComponents!.header).toEqual('Loan #65: monarchs');
       expect(emailComponents!.mainMessage).toEqual(

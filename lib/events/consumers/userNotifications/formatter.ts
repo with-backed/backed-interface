@@ -25,7 +25,7 @@ export type EmailComponents = {
 };
 
 type EmailMetadataType = {
-  subject: string;
+  getSubjectFromEntity: (entity: RawSubgraphEvent | Loan) => string;
   getComponentsFromEntity: (
     entity: RawSubgraphEvent | Loan,
     now: number,
@@ -43,7 +43,9 @@ const formattedTermsFromLoan = (loan: Loan): string => {
     loan.loanAssetDecimal,
   );
   const amount = `${parsedLoanAmount} ${loan.loanAssetSymbol}`;
-  const days = secondsToDays(loan.durationSeconds);
+  const days = secondsToDays(loan.durationSeconds)
+    .toFixed(2)
+    .replace(/[.,]00$/, '');
   const interest = formattedAnnualRate(
     ethers.BigNumber.from(loan.perSecondInterestRate),
   );
@@ -60,7 +62,9 @@ const formattedTermsFromEvent = (
     event.loan.loanAssetDecimal,
   );
   const amount = `${parsedLoanAmount} ${loanAssetSymbol}`;
-  const days = secondsToDays(event.durationSeconds).toFixed(2);
+  const days = secondsToDays(event.durationSeconds)
+    .toFixed(2)
+    .replace(/[.,]00$/, '');
   const interest = formattedAnnualRate(
     ethers.BigNumber.from(event.perSecondInterestRate),
   );
@@ -113,7 +117,7 @@ export async function getEmailSubject(
     // fatal bugsnag, invalid email trigger was passed from SNS push
     return '';
   }
-  return emailMetadata.subject;
+  return emailMetadata.getSubjectFromEntity(entity);
 }
 
 export async function getEmailComponents(
@@ -136,7 +140,8 @@ const notificationEventToEmailMetadata: {
   [key: string]: EmailMetadataType;
 } = {
   BuyoutEvent: {
-    subject: 'Loan # has a new lender',
+    getSubjectFromEntity: (entity: RawSubgraphEvent | Loan) =>
+      `Loan #${(entity as BuyoutEvent).loan.id} has a new lender`,
     getComponentsFromEntity: async (
       entity: RawSubgraphEvent | Loan,
       _now: number,
@@ -187,7 +192,8 @@ const notificationEventToEmailMetadata: {
     },
   },
   LendEvent: {
-    subject: 'Loan # has been fulfilled',
+    getSubjectFromEntity: (entity: RawSubgraphEvent | Loan) =>
+      `Loan #${(entity as LendEvent).loan.id} has been fulfilled`,
     getComponentsFromEntity: async (
       entity: RawSubgraphEvent | Loan,
       _now: number,
@@ -215,7 +221,8 @@ const notificationEventToEmailMetadata: {
     },
   },
   RepaymentEvent: {
-    subject: 'Loan # has been repaid',
+    getSubjectFromEntity: (entity: RawSubgraphEvent | Loan) =>
+      `Loan #${(entity as RepaymentEvent).loan.id} has been repaid`,
     getComponentsFromEntity: async (
       entity: RawSubgraphEvent | Loan,
       _now: number,
@@ -256,7 +263,10 @@ const notificationEventToEmailMetadata: {
     },
   },
   CollateralSeizureEvent: {
-    subject: 'Loan # collateral has been seized',
+    getSubjectFromEntity: (entity: RawSubgraphEvent | Loan) =>
+      `Loan #${
+        (entity as CollateralSeizureEvent).loan.id
+      } collateral has been seized`,
     getComponentsFromEntity: async (
       entity: RawSubgraphEvent | Loan,
       _now: number,
@@ -293,7 +303,8 @@ const notificationEventToEmailMetadata: {
     },
   },
   LiquidationOccurring: {
-    subject: 'Loan # is approaching due',
+    getSubjectFromEntity: (entity: RawSubgraphEvent | Loan) =>
+      `Loan #${(entity as Loan).id} is approaching due`,
     getComponentsFromEntity: async (
       entity: RawSubgraphEvent | Loan,
       now: number,
@@ -330,7 +341,8 @@ const notificationEventToEmailMetadata: {
     },
   },
   LiquidationOccurred: {
-    subject: 'Loan # is past due',
+    getSubjectFromEntity: (entity: RawSubgraphEvent | Loan) =>
+      `Loan #${(entity as Loan).id} is past due`,
     getComponentsFromEntity: async (
       entity: RawSubgraphEvent | Loan,
       _now: number,
