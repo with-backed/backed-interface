@@ -1,4 +1,3 @@
-import { DisplayAddress } from 'components/DisplayAddress';
 import { EtherscanTransactionLink } from 'components/EtherscanLink';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { NFTMedia } from 'components/Media/NFTMedia';
@@ -13,12 +12,19 @@ import { Event } from 'types/Event';
 import { Loan } from 'types/Loan';
 import styles from './ProfileActivity.module.css';
 
+const MAX_CHARS = 6;
+
 type ProfileActivityProps = {
+  address: string;
   events: Event[];
   loans: Loan[];
 };
 
-export function ProfileActivity({ events, loans }: ProfileActivityProps) {
+export function ProfileActivity({
+  address,
+  events,
+  loans,
+}: ProfileActivityProps) {
   const loanLookup = useMemo(() => {
     const table: { [key: string]: Loan } = {};
     loans.forEach((l) => (table[l.id.toString()] = l));
@@ -38,7 +44,12 @@ export function ProfileActivity({ events, loans }: ProfileActivityProps) {
             return null;
           }
           return (
-            <EventEntry key={`${e.id}-${e.typename}`} loan={loan} event={e} />
+            <EventEntry
+              key={`${e.id}-${e.typename}`}
+              address={address}
+              loan={loan}
+              event={e}
+            />
           );
         })}
       </ul>
@@ -47,10 +58,11 @@ export function ProfileActivity({ events, loans }: ProfileActivityProps) {
 }
 
 type EventEntryProps = {
+  address: string;
   loan: Loan;
   event: Event;
 };
-function EventEntry({ event, loan }: EventEntryProps) {
+function EventEntry({ address, event, loan }: EventEntryProps) {
   const tokenSpec = useMemo(
     () => ({
       tokenURI: loan.collateralTokenURI,
@@ -69,7 +81,12 @@ function EventEntry({ event, loan }: EventEntryProps) {
         typename={event.typename}
       />
       <NFTMedia nftInfo={nftInfo} />
-      <EventDescription event={event} loan={loan} nftInfo={nftInfo} />
+      <EventDescription
+        address={address}
+        event={event}
+        loan={loan}
+        nftInfo={nftInfo}
+      />
     </li>
   );
 }
@@ -91,17 +108,28 @@ function EventLink({ id, timestamp, typename }: EventLinkProps) {
 }
 
 type EventDescriptionProps = {
+  address: string;
   loan: Loan;
   event: Event;
   nftInfo: MaybeNFTMetadata;
 };
-function EventDescription({ event, loan, nftInfo }: EventDescriptionProps) {
+function EventDescription({
+  address,
+  event,
+  loan,
+  nftInfo,
+}: EventDescriptionProps) {
   const description: JSX.Element = useMemo(() => {
     switch (event.typename) {
       case 'BuyoutEvent':
         return (
           <span>
-            {event.underwriter} paid {event.replacedLoanOwner}{' '}
+            <Address address={event.underwriter} highlightAddress={address} />{' '}
+            paid{' '}
+            <Address
+              address={event.replacedLoanOwner}
+              highlightAddress={address}
+            />{' '}
             {ethers.utils.formatUnits(
               event.interestEarned,
               loan.loanAssetDecimals,
@@ -114,7 +142,8 @@ function EventDescription({ event, loan, nftInfo }: EventDescriptionProps) {
       case 'CloseEvent':
         return (
           <span>
-            {loan.borrower} closed this loan before anyone underwrote it.
+            <Address address={loan.borrower} highlightAddress={address} />{' '}
+            closed this loan before anyone underwrote it.
           </span>
         );
       case 'CollateralSeizureEvent':
@@ -122,7 +151,8 @@ function EventDescription({ event, loan, nftInfo }: EventDescriptionProps) {
       case 'CreateEvent':
         return (
           <span>
-            {event.minter} requested{' '}
+            <Address address={event.minter} highlightAddress={address} />{' '}
+            requested{' '}
             {ethers.utils.formatUnits(
               event.minLoanAmount,
               loan.loanAssetDecimals,
@@ -135,7 +165,8 @@ function EventDescription({ event, loan, nftInfo }: EventDescriptionProps) {
       case 'LendEvent':
         return (
           <span>
-            {event.underwriter} lent{' '}
+            <Address address={event.underwriter} highlightAddress={address} />{' '}
+            lent{' '}
             {ethers.utils.formatUnits(event.loanAmount, loan.loanAssetDecimals)}{' '}
             {loan.loanAssetSymbol} for{' '}
             {secondsBigNumToDays(event.durationSeconds).toFixed(4)} days at{' '}
@@ -154,7 +185,7 @@ function EventDescription({ event, loan, nftInfo }: EventDescriptionProps) {
           </span>
         );
     }
-  }, [event, loan]);
+  }, [address, event, loan]);
   return (
     <div className={styles.description}>
       <Link href={`/loans/${loan.id.toString()}`}>
@@ -163,4 +194,14 @@ function EventDescription({ event, loan, nftInfo }: EventDescriptionProps) {
       {description}
     </div>
   );
+}
+
+type AddressProps = {
+  address: string;
+  highlightAddress: string;
+};
+function Address({ address, highlightAddress }: AddressProps) {
+  const className =
+    address === highlightAddress ? styles['highlight-address'] : styles.address;
+  return <span className={className}>{address.slice(0, MAX_CHARS)}</span>;
 }
