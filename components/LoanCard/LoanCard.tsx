@@ -152,7 +152,7 @@ export const ExpandedAttributes = ({ loan }: AttributesProps) => {
         <dd>{formattedTotalDuration}</dd>
       </div>
       <div className={styles['stacked-entry']}>
-        <dt>remaining</dt>
+        <dt>status</dt>
         <dd>{formattedTimeRemaining}</dd>
       </div>
     </DescriptionList>
