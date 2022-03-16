@@ -80,7 +80,7 @@ function EventEntry({ address, event, loan }: EventEntryProps) {
         timestamp={event.timestamp}
         typename={event.typename}
       />
-      <NFTMedia nftInfo={nftInfo} />
+      <NFTMedia nftInfo={nftInfo} small />
       <EventDescription
         address={address}
         event={event}
