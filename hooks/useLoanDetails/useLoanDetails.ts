@@ -39,6 +39,7 @@ function loanStatus({
 }
 
 function truncate(numberString: string, maxDigits: number = 4) {
+  // TODO: handle very small numbers that may render as 0.0000
   return parseFloat(numberString).toFixed(maxDigits);
 }
 
