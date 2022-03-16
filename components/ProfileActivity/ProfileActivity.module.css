@@ -1,36 +1,25 @@
-.table {
-  width: 100%;
-  background: var(--background-white);
-  border-collapse: collapse;
-  grid-column: 1 / -1;
-  box-shadow: var(--box-shadow);
+.event-list {
+  grid-column: span 12;
+  list-style-type: none;
+  background-color: var(--background-white);
+  padding: var(--padding-loan-card);
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding-loan-card);
 }
 
-.table th {
-  text-align: left;
-  font-weight: 400;
-  font-size: var(--font-small);
-  text-transform: uppercase;
+.event {
+  display: grid;
+  grid-template-columns: 0.35fr 70px 1fr;
+  gap: var(--gap);
+  align-items: center;
+  justify-content: space-between;
 }
 
-.table tr {
-  border: 10px solid #fff;
-}
-
-.bubble {
-  font-size: var(--font-small);
-  padding: 0.5rem 0.5rem;
-  text-transform: uppercase;
-}
-
-.Lender {
-  composes: bubble;
-  background-color: var(--neutral-30);
-}
-
-.Borrower {
-  composes: bubble;
-  background-color: var(--highlight-active-10);
+.description {
+  display: flex;
+  flex-direction: column;
 }
 
 .event-link {
@@ -39,34 +28,6 @@
   gap: 0.5rem;
 }
 
-.collateral {
-  display: grid;
-  grid-template-columns: 70px 1fr;
-  gap: 1rem;
-  align-items: center;
-  color: var(--neutral-100);
-}
-
-.collateral:hover {
-  background-color: var(--highlight-clickable-5);
-  cursor: pointer;
-}
-
-.collateral:hover .name {
-  color: var(--highlight-clickable-100);
-}
-
-.name-and-collection {
-  display: flex;
-  flex-direction: column;
-}
-
-.collection {
+.event-link > span {
   font-size: var(--font-small);
-  text-transform: uppercase;
-}
-
-.right,
-th.right {
-  text-align: right;
 }
