@@ -55,11 +55,12 @@ const formattedTermsFromLoan = (loan: Loan): string => {
 
 const formattedTermsFromEvent = (
   event: LendEvent,
+  loanAssetDecimal: number,
   loanAssetSymbol: string,
 ): string => {
   const parsedLoanAmount = ethers.utils.formatUnits(
     event.loanAmount.toString(),
-    event.loan.loanAssetDecimal,
+    loanAssetDecimal,
   );
   const amount = `${parsedLoanAmount} ${loanAssetSymbol}`;
   const days = secondsToDays(event.durationSeconds)
