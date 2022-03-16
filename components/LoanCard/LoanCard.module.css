@@ -39,6 +39,7 @@
   align-self: flex-start;
   text-transform: uppercase;
   font-size: var(--font-small);
+  letter-spacing: 0.125rem;
 }
 
 .attributes {
