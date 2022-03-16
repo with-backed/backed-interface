@@ -29,13 +29,23 @@ describe('ProfileActivity', () => {
   });
 
   it('renders', () => {
-    render(<ProfileActivity events={events} loans={[baseLoan]} />);
+    render(
+      <ProfileActivity
+        address="0xaddress"
+        events={events}
+        loans={[baseLoan]}
+      />,
+    );
   });
 
   it('handles loading state of token metadata', () => {
     mockedUseTokenMetadata.mockReturnValue({ isLoading: true, metadata: null });
     const { getAllByText } = render(
-      <ProfileActivity events={events} loans={[baseLoan]} />,
+      <ProfileActivity
+        address="0xaddress"
+        events={events}
+        loans={[baseLoan]}
+      />,
     );
 
     const placeholders = getAllByText('---');

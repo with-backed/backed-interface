@@ -189,7 +189,7 @@ function EventDescription({
   return (
     <div className={styles.description}>
       <Link href={`/loans/${loan.id.toString()}`}>
-        <a>{nftInfo.isLoading ? '--' : nftInfo.metadata?.name}</a>
+        <a>{nftInfo.isLoading ? '---' : nftInfo.metadata?.name}</a>
       </Link>
       {description}
     </div>
