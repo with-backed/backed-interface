@@ -186,10 +186,12 @@ function EventDescription({
         );
     }
   }, [address, event, loan]);
+  const name =
+    nftInfo.isLoading || !nftInfo.metadata ? '---' : nftInfo.metadata.name;
   return (
     <div className={styles.description}>
       <Link href={`/loans/${loan.id.toString()}`}>
-        <a>{nftInfo.isLoading ? '---' : nftInfo.metadata?.name}</a>
+        <a>{name}</a>
       </Link>
       {description}
     </div>
