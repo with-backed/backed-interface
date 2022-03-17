@@ -29,7 +29,6 @@
   flex-direction: column;
   gap: 0.4rem;
   padding: var(--padding-loan-card);
-  padding-top: 0;
 }
 
 .relationship {
