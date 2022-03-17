@@ -69,19 +69,11 @@ export function LoanFormBetterTerms({
 
   const { duration, interestRate, loanAmount } = watch();
 
-  const hasTenPercentImprovement = useMemo(() => {
-    const durationImproved = daysToSecondsBigNum(parseFloat(duration)).gte(
-      loan.durationSeconds.div(10).add(loan.durationSeconds),
-    );
-    const interestRateImproved = ethers.BigNumber.from(
-      annualRateToPerSecond(parseFloat(interestRate)),
-    ).lte(loan.perSecondInterestRate.sub(loan.perSecondInterestRate.div(10)));
-    const amountImproved = ethers.utils
-      .parseUnits(loanAmount, loan.loanAssetDecimals)
-      .gte(loan.loanAmount.div(10).add(loan.loanAmount));
-
-    return durationImproved || interestRateImproved || amountImproved;
-  }, [duration, interestRate, loanAmount, loan]);
+  const termsAreImproved = useMemo(
+    () =>
+      hasTenPercentImprovement({ duration, interestRate, loan, loanAmount }),
+    [duration, interestRate, loanAmount, loan],
+  );
 
   const [current, send] = useMachine(loanFormBetterTermsMachine);
 
@@ -190,7 +182,7 @@ export function LoanFormBetterTerms({
           disabled={
             needsAllowance ||
             Object.keys(errors).length > 0 ||
-            !hasTenPercentImprovement
+            !termsAreImproved
           }
           onMouseEnter={() => send('LEND_HOVER')}
         />
@@ -203,4 +195,34 @@ export function LoanFormBetterTerms({
       />
     </>
   );
+}
+
+type hasTenPercentImprovementParams = {
+  duration: string;
+  interestRate: string;
+  loan: Loan;
+  loanAmount: string;
+};
+export function hasTenPercentImprovement({
+  duration,
+  interestRate,
+  loan,
+  loanAmount,
+}: hasTenPercentImprovementParams) {
+  const parsedDuration = parseFloat(duration) || 0;
+  const parsedInterestRate =
+    parseFloat(interestRate) || Number.MAX_SAFE_INTEGER;
+  const parsedLoanAmount = isNaN(parseFloat(loanAmount)) ? '0' : loanAmount;
+
+  const durationImproved = daysToSecondsBigNum(parsedDuration).gte(
+    loan.durationSeconds.div(10).add(loan.durationSeconds),
+  );
+  const interestRateImproved = ethers.BigNumber.from(
+    annualRateToPerSecond(parsedInterestRate),
+  ).lte(loan.perSecondInterestRate.sub(loan.perSecondInterestRate.div(10)));
+  const amountImproved = ethers.utils
+    .parseUnits(parsedLoanAmount, loan.loanAssetDecimals)
+    .gte(loan.loanAmount.div(10).add(loan.loanAmount));
+
+  return durationImproved || interestRateImproved || amountImproved;
 }
