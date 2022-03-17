@@ -73,17 +73,27 @@ export async function searchLoans(
       borrowTicketHolder,
       lendTicketHolder,
       loanAmountMin: formatNumberForGraph(loanAmountMin),
-      loanAmountMax: formatNumberForGraph(loanAmountMax),
+      loanAmountMax:
+        loanAmountMax.nominal === 0
+          ? ethers.constants.MaxInt256.toString()
+          : formatNumberForGraph(loanAmountMax),
       perSecondInterestRateMin: annualRateToPerSecond(loanInterestMin),
-      perSecondInterestRateMax: annualRateToPerSecond(loanInterestMax),
+      perSecondInterestRateMax:
+        loanInterestMax === 0
+          ? ethers.constants.MaxInt256.toString()
+          : annualRateToPerSecond(loanInterestMax),
       durationSecondsMin: daysToSecondsBigNum(loanDurationMin).toString(),
-      durationSecondsMax: daysToSecondsBigNum(loanDurationMax).toString(),
+      durationSecondsMax:
+        loanDurationMax === 0
+          ? ethers.constants.MaxInt256.toString()
+          : daysToSecondsBigNum(loanDurationMax).toString(),
       selectedSort,
       sortDirection,
       first,
       skip: (page - 1) * first,
     })
     .toPromise();
+
   if (error) {
     // TODO: bugsnag
   }
