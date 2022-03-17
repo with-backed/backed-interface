@@ -22,6 +22,8 @@ type ProfileHeaderProps = {
   loans: Loan[];
 };
 
+const nothing = '—';
+
 type LoanStatsProps = {
   loans: Loan[];
   kind: 'borrower' | 'lender';
@@ -40,7 +42,11 @@ function LoanStats({ loans, kind }: LoanStatsProps) {
     [kind],
   );
   const principalAmounts = useMemo(() => {
-    return getAllPrincipalAmounts(lentToLoans).map((amount, i, arr) => (
+    const amounts = getAllPrincipalAmounts(lentToLoans);
+    if (amounts.length === 0) {
+      return nothing;
+    }
+    return amounts.map((amount, i, arr) => (
       <div key={amount.symbol} className={styles.amount}>
         {amount.nominal} {amount.symbol}
         {i !== arr.length - 1 && ';'}
@@ -84,6 +90,9 @@ function LoanStats({ loans, kind }: LoanStatsProps) {
   }, [refreshInterest]);
 
   const interestAmounts = useMemo(() => {
+    if (currentInterestAmounts.length === 0) {
+      return nothing;
+    }
     return currentInterestAmounts.map((amount, i, arr) => (
       <div key={amount.symbol} className={styles.amount}>
         {parseFloat(amount.nominal).toFixed(6)} {amount.symbol}
@@ -111,7 +120,11 @@ function LoanStats({ loans, kind }: LoanStatsProps) {
       <dd>{interestAmounts}</dd>
       <dt>{totalLabel}</dt>
       <dd>
-        <DisplayCurrency amounts={totalAmounts} currency="usd" />
+        {totalAmounts.length > 0 ? (
+          <DisplayCurrency amounts={totalAmounts} currency="usd" />
+        ) : (
+          nothing
+        )}
       </dd>
     </DescriptionList>
   );
