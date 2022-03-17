@@ -15,6 +15,7 @@ import { getMostRecentTermsForLoan } from 'lib/loans/subgraph/subgraphLoans';
 import { Loan as ParsedLoan } from 'types/Loan';
 import { parseSubgraphLoan } from 'lib/loans/utils';
 import { NotificationTriggerType } from './shared';
+import { addressToENS } from 'lib/account';
 
 export type EmailComponents = {
   header: string;
@@ -32,7 +33,8 @@ type EmailMetadataType = {
   ) => Promise<EmailComponents>;
 };
 
-const ensOrAddr = async (rawAddress: string) => rawAddress.substring(0, 7);
+const ensOrAddr = async (rawAddress: string) =>
+  addressToENS(rawAddress) || rawAddress.substring(0, 7);
 
 const emailHeader = (loan: Loan): string =>
   `Loan #${loan.id}: ${loan.collateralName}`;
