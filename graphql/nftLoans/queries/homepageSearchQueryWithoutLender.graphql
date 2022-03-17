@@ -1,10 +1,9 @@
-query homepageSearch(
+query homepageSearchWithoutLender(
   $statuses: [LoanStatus!]
   $collateralContractAddress: Bytes
   $collateralName: String
   $loanAssetSymbol: String
   $borrowTicketHolder: Bytes
-  $lendTicketHolder: Bytes
   $loanAmountMin: BigInt
   $loanAmountMax: BigInt
   $perSecondInterestRateMin: BigInt
@@ -23,7 +22,6 @@ query homepageSearch(
       collateralName_contains: $collateralName,
       loanAssetSymbol_contains: $loanAssetSymbol,
       borrowTicketHolder_contains: $borrowTicketHolder,
-      lendTicketHolder_contains: $lendTicketHolder,
       loanAmount_gte: $loanAmountMin,
       loanAmount_lt: $loanAmountMax,
       perSecondInterestRate_gte: $perSecondInterestRateMin,
