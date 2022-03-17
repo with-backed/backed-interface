@@ -33,8 +33,13 @@ type EmailMetadataType = {
   ) => Promise<EmailComponents>;
 };
 
-const ensOrAddr = async (rawAddress: string) =>
-  addressToENS(rawAddress) || rawAddress.substring(0, 7);
+const ensOrAddr = async (rawAddress: string): Promise<string> => {
+  const ens = await addressToENS(rawAddress);
+  if (ens === null) {
+    return rawAddress.substring(0, 7);
+  }
+  return ens;
+};
 
 const emailHeader = (loan: Loan): string =>
   `Loan #${loan.id}: ${loan.collateralName}`;
