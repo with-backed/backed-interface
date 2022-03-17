@@ -149,7 +149,7 @@ export async function getLoansExpiringWithin(
 
 export async function getMostRecentTermsForLoan(
   loanId: string,
-): Promise<LendEvent | null> {
+): Promise<LendEvent | undefined> {
   const { data, error } = await nftBackedLoansClient
     .query<EventsForLoanQuery>(EventsForLoanDocument, { id: loanId })
     .toPromise();
@@ -159,7 +159,7 @@ export async function getMostRecentTermsForLoan(
   }
 
   const lendEvents = (data?.loan?.lendEvents as LendEvent[]) || [];
-  if (lendEvents.length === 0) return null;
+  if (lendEvents.length === 0) return undefined;
 
-  return lendEvents.sort((a, b) => b.blockNumber - a.blockNumber)[0];
+  return lendEvents.sort((a, b) => b.blockNumber - a.blockNumber)[1];
 }
