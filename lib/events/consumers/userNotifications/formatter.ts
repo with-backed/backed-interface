@@ -37,37 +37,23 @@ const ensOrAddr = async (rawAddress: string) => rawAddress.substring(0, 7);
 const emailHeader = (loan: Loan): string =>
   `Loan #${loan.id}: ${loan.collateralName}`;
 
-const formattedTermsFromLoan = (loan: Loan): string => {
-  const parsedLoanAmount = ethers.utils.formatUnits(
-    loan.loanAmount.toString(),
-    loan.loanAssetDecimal,
-  );
-  const amount = `${parsedLoanAmount} ${loan.loanAssetSymbol}`;
-  const days = secondsToDays(loan.durationSeconds)
-    .toFixed(2)
-    .replace(/[.,]00$/, '');
-  const interest = formattedAnnualRate(
-    ethers.BigNumber.from(loan.perSecondInterestRate),
-  );
-
-  return `[${amount}, ${days} days, ${interest}%]`;
-};
-
-const formattedTermsFromEvent = (
-  event: LendEvent,
+const formattedLoanInfoFromParams = (
+  loanAmount: number,
   loanAssetDecimal: number,
+  perSecondInterestRate: number,
+  durationSeconds: number,
   loanAssetSymbol: string,
 ): string => {
   const parsedLoanAmount = ethers.utils.formatUnits(
-    event.loanAmount.toString(),
+    loanAmount.toString(),
     loanAssetDecimal,
   );
   const amount = `${parsedLoanAmount} ${loanAssetSymbol}`;
-  const days = secondsToDays(event.durationSeconds)
+  const days = secondsToDays(durationSeconds)
     .toFixed(2)
     .replace(/[.,]00$/, '');
   const interest = formattedAnnualRate(
-    ethers.BigNumber.from(event.perSecondInterestRate),
+    ethers.BigNumber.from(perSecondInterestRate),
   );
 
   return `[${amount}, ${days} days, ${interest}%]`;
@@ -132,8 +118,6 @@ export async function getEmailComponents(
     return null;
   }
 
-  console.log({ entity, now });
-
   return await emailMetadata.getComponentsFromEntity(entity, now);
 }
 
@@ -147,9 +131,7 @@ const notificationEventToEmailMetadata: {
       entity: RawSubgraphEvent | Loan,
       _now: number,
     ) => {
-      console.log({ entityFromGet: entity });
       const event = entity as BuyoutEvent;
-      console.log({ eventFromGet: event });
       const oldLender = await ensOrAddr(event.lendTicketHolder);
       const newLender = await ensOrAddr(event.newLender);
       const formattedInterestEarned = ethers.utils.formatUnits(
@@ -175,12 +157,19 @@ const notificationEventToEmailMetadata: {
           )} and accrued ${formattedInterestEarned} ${
             event.loan.loanAssetSymbol
           } in interest over that period.`,
-          `Their loan terms were ${formattedTermsFromEvent(
-            oldTermsEvent!,
+          `Their loan terms were ${formattedLoanInfoFromParams(
+            oldTermsEvent!.loanAmount,
+            event.loan.loanAssetDecimal,
+            oldTermsEvent!.perSecondInterestRate,
+            oldTermsEvent!.durationSeconds,
             event.loan.loanAssetSymbol,
           )}.`,
-          `The new terms set by ${newLender} are ${formattedTermsFromLoan(
-            event.loan,
+          `The new terms set by ${newLender} are ${formattedLoanInfoFromParams(
+            event.loan.loanAmount,
+            event.loan.loanAssetDecimal,
+            event.loan.perSecondInterestRate,
+            event.loan.durationSeconds,
+            event.loan.loanAssetSymbol,
           )}`,
           `At this rate, repayment of ${repayment} ${event.loan.loanAssetSymbol} will be due on ${maturity}`,
         ],
@@ -210,7 +199,13 @@ const notificationEventToEmailMetadata: {
         header: emailHeader(event.loan),
         mainMessage: `The loan created by ${borrower} has been lent to by ${lender}`,
         loanDetails: [
-          `${lender} lent at terms ${formattedTermsFromLoan(event.loan)}.`,
+          `${lender} lent at terms ${formattedLoanInfoFromParams(
+            event.loan.loanAmount,
+            event.loan.loanAssetDecimal,
+            event.loan.perSecondInterestRate,
+            event.loan.durationSeconds,
+            event.loan.loanAssetSymbol,
+          )}.`,
           `At this rate, repayment of ${repayment} ${event.loan.loanAssetSymbol} will be due on ${maturity}`,
         ],
         viewLinks: [
@@ -248,8 +243,12 @@ const notificationEventToEmailMetadata: {
         loanDetails: [
           `${lender} held the loan for ${formattedDuration(
             event.timestamp - event.loan.lastAccumulatedTimestamp,
-          )}, with loan terms of ${formattedTermsFromLoan(
-            event.loan,
+          )}, with loan terms of ${formattedLoanInfoFromParams(
+            event.loan.loanAmount,
+            event.loan.loanAssetDecimal,
+            event.loan.perSecondInterestRate,
+            event.loan.durationSeconds,
+            event.loan.loanAssetSymbol,
           )}, and accrued ${formattedInterestEarned} ${
             event.loan.loanAssetSymbol
           } over that period.`,
@@ -285,7 +284,13 @@ const notificationEventToEmailMetadata: {
         loanDetails: [
           `${lender} held the loan for ${formattedDuration(
             event.timestamp - event.loan.lastAccumulatedTimestamp,
-          )} at terms ${formattedTermsFromLoan(event.loan)}.`,
+          )} at terms ${formattedLoanInfoFromParams(
+            event.loan.loanAmount,
+            event.loan.loanAssetDecimal,
+            event.loan.perSecondInterestRate,
+            event.loan.durationSeconds,
+            event.loan.loanAssetSymbol,
+          )}.`,
           `The loan became due on ${dayjs
             .unix(event.loan.endDateTimestamp!)
             .format('DD/MM/YYYY')} with a repayment cost of ${repayment} ${
@@ -329,8 +334,12 @@ const notificationEventToEmailMetadata: {
         loanDetails: [
           `${lender} held the loan for ${formattedDuration(
             loanDuration,
-          )}, with loan terms ${formattedTermsFromLoan(
-            loan,
+          )}, with loan terms ${formattedLoanInfoFromParams(
+            loan.loanAmount,
+            loan.loanAssetDecimal,
+            loan.perSecondInterestRate,
+            loan.durationSeconds,
+            loan.loanAssetSymbol,
           )}, and accrued ${interestAccruedSoFar} ${
             loan.loanAssetSymbol
           } over that period.`,
@@ -371,8 +380,12 @@ const notificationEventToEmailMetadata: {
         loanDetails: [
           `${lender} held the loan for ${formattedDuration(
             loanDuration,
-          )}, with loan terms ${formattedTermsFromLoan(
-            loan,
+          )}, with loan terms ${formattedLoanInfoFromParams(
+            loan.loanAmount,
+            loan.loanAssetDecimal,
+            loan.perSecondInterestRate,
+            loan.durationSeconds,
+            loan.loanAssetSymbol,
           )}, and accrued ${formattedInterestAccrued} ${loan.loanAssetSymbol}`,
           `The loan became due on ${dayjs
             .unix(loan.endDateTimestamp!)
