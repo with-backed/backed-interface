@@ -17,6 +17,7 @@
   padding: 0.5rem 1rem;
   border-radius: var(--border-radius-large);
   color: var(--neutral-50);
+  font-size: var(--font-large);
 }
 
 .left {
