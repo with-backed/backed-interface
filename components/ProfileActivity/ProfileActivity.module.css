@@ -2,11 +2,11 @@
   grid-column: span 12;
   list-style-type: none;
   background-color: var(--background-white);
-  padding: var(--padding-loan-card) var(--padding-container);
+  padding: var(--padding-loan-card);
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--padding-loan-card);
+  gap: 1rem;
 }
 
 .event {
@@ -17,10 +17,9 @@
   justify-content: space-between;
 }
 
-.description {
+.description-wrapper {
   display: flex;
   flex-direction: column;
-  font-family: var(--sans);
 }
 
 .event-link {
@@ -37,4 +36,8 @@
   padding: 0.25rem;
   background-color: var(--highlight-active-10);
   letter-spacing: 0.125rem;
+}
+
+.description {
+  font-size: var(--font-small);
 }

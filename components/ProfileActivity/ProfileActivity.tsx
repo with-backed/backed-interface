@@ -123,7 +123,7 @@ function EventDescription({
     switch (event.typename) {
       case 'BuyoutEvent':
         return (
-          <span>
+          <span className={styles.description}>
             <Address address={event.underwriter} highlightAddress={address} />{' '}
             paid{' '}
             <Address
@@ -141,16 +141,18 @@ function EventDescription({
         );
       case 'CloseEvent':
         return (
-          <span>
+          <span className={styles.description}>
             <Address address={loan.borrower} highlightAddress={address} />{' '}
             closed this loan before anyone underwrote it.
           </span>
         );
       case 'CollateralSeizureEvent':
-        return <span>{loan.lender} seized NFT</span>;
+        return (
+          <span className={styles.description}>{loan.lender} seized NFT</span>
+        );
       case 'CreateEvent':
         return (
-          <span>
+          <span className={styles.description}>
             <Address address={event.minter} highlightAddress={address} />{' '}
             requested{' '}
             {ethers.utils.formatUnits(
@@ -164,7 +166,7 @@ function EventDescription({
         );
       case 'LendEvent':
         return (
-          <span>
+          <span className={styles.description}>
             <Address address={event.underwriter} highlightAddress={address} />{' '}
             lent{' '}
             {ethers.utils.formatUnits(event.loanAmount, loan.loanAssetDecimals)}{' '}
@@ -175,7 +177,7 @@ function EventDescription({
         );
       case 'RepaymentEvent':
         return (
-          <span>
+          <span className={styles.description}>
             {event.repayer} repaid{' '}
             {ethers.utils.formatUnits(
               event.loanAmount.add(event.interestEarned),
@@ -189,7 +191,7 @@ function EventDescription({
   const name =
     nftInfo.isLoading || !nftInfo.metadata ? '---' : nftInfo.metadata.name;
   return (
-    <div className={styles.description}>
+    <div className={styles['description-wrapper']}>
       <Link href={`/loans/${loan.id.toString()}`}>
         <a>{name}</a>
       </Link>
