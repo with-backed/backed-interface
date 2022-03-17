@@ -19,17 +19,39 @@ function getRelevantEthAddressesFromTriggerAndEntity(
 ): string[] {
   switch (emailTrigger) {
     case 'BuyoutEvent':
-      return [(entity as BuyoutEvent).lendTicketHolder];
+      const buyoutEvent = entity as BuyoutEvent;
+      return [
+        buyoutEvent.lendTicketHolder,
+        buyoutEvent.loan.borrowTicketHolder,
+        buyoutEvent.newLender,
+      ];
     case 'LendEvent':
-      return [(entity as LendEvent).borrowTicketHolder];
+      const lendEvent = entity as LendEvent;
+      return [lendEvent.borrowTicketHolder, lendEvent.lender];
     case 'RepaymentEvent':
-      return [(entity as RepaymentEvent).lendTicketHolder];
+      const repaymentEvent = entity as RepaymentEvent;
+      return [
+        repaymentEvent.borrowTicketHolder,
+        repaymentEvent.lendTicketHolder,
+      ];
     case 'CollateralSeizureEvent':
-      return [(entity as CollateralSeizureEvent).borrowTicketHolder];
+      const collateralSeizureEvent = entity as CollateralSeizureEvent;
+      return [
+        collateralSeizureEvent.borrowTicketHolder,
+        collateralSeizureEvent.lendTicketHolder,
+      ];
     case 'LiquidationOccurring':
-      return [(entity as Loan).borrowTicketHolder];
+      const liquidationOccurringLoan = entity as Loan;
+      return [
+        liquidationOccurringLoan.borrowTicketHolder,
+        liquidationOccurringLoan.lendTicketHolder,
+      ];
     case 'LiquidationOccurred':
-      return [(entity as Loan).borrowTicketHolder];
+      const liquidationOccurredLoan = entity as Loan;
+      return [
+        liquidationOccurredLoan.borrowTicketHolder,
+        liquidationOccurredLoan.lendTicketHolder,
+      ];
     default:
       return [];
   }

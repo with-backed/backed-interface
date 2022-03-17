@@ -48,6 +48,10 @@ export function resolveEns(address: string) {
   return provider.resolveName(address);
 }
 
-export function addressToENS(address: string, provider: Web3Provider) {
+export function addressToENS(address: string) {
+  const provider = new ethers.providers.JsonRpcProvider(
+    process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
+  );
+
   return provider.lookupAddress(address);
 }
