@@ -10,10 +10,13 @@ import {
   AllLoansDocument,
   HomepageSearchQuery,
   HomepageSearchDocument,
+  HomepageSearchWithoutLenderQuery,
+  HomepageSearchWithoutLenderDocument,
 } from 'types/generated/graphql/nftLoans';
 import { ethers } from 'ethers';
 import { annualRateToPerSecond } from 'lib/interest';
 import { daysToSecondsBigNum } from 'lib/duration';
+import { CombinedError } from 'urql';
 
 // TODO(Wilson): this is a temp fix just for this query. We should generalize this method to
 // take an arguments and return a cursor to return paginated results
@@ -64,35 +67,49 @@ export async function searchLoans(
   first: number,
   page: number = 1,
 ): Promise<Loan[]> {
-  const { data, error } = await nftBackedLoansClient
-    .query<HomepageSearchQuery>(HomepageSearchDocument, {
-      statuses,
-      collateralContractAddress,
-      collateralName,
-      loanAssetSymbol,
-      borrowTicketHolder,
-      lendTicketHolder,
-      loanAmountMin: formatNumberForGraph(loanAmountMin),
-      loanAmountMax:
-        loanAmountMax.nominal === 0
-          ? ethers.constants.MaxInt256.toString()
-          : formatNumberForGraph(loanAmountMax),
-      perSecondInterestRateMin: annualRateToPerSecond(loanInterestMin),
-      perSecondInterestRateMax:
-        loanInterestMax === 0
-          ? ethers.constants.MaxInt256.toString()
-          : annualRateToPerSecond(loanInterestMax),
-      durationSecondsMin: daysToSecondsBigNum(loanDurationMin).toString(),
-      durationSecondsMax:
-        loanDurationMax === 0
-          ? ethers.constants.MaxInt256.toString()
-          : daysToSecondsBigNum(loanDurationMax).toString(),
-      selectedSort,
-      sortDirection,
-      first,
-      skip: (page - 1) * first,
-    })
-    .toPromise();
+  const where = {
+    statuses,
+    collateralContractAddress,
+    collateralName,
+    loanAssetSymbol,
+    borrowTicketHolder,
+    lendTicketHolder: lendTicketHolder === '' ? undefined : lendTicketHolder,
+    loanAmountMin: formatNumberForGraph(loanAmountMin),
+    loanAmountMax:
+      loanAmountMax.nominal === 0
+        ? ethers.constants.MaxInt256.toString()
+        : formatNumberForGraph(loanAmountMax),
+    perSecondInterestRateMin: annualRateToPerSecond(loanInterestMin),
+    perSecondInterestRateMax:
+      loanInterestMax === 0
+        ? ethers.constants.MaxInt256.toString()
+        : annualRateToPerSecond(loanInterestMax),
+    durationSecondsMin: daysToSecondsBigNum(loanDurationMin).toString(),
+    durationSecondsMax:
+      loanDurationMax === 0
+        ? ethers.constants.MaxInt256.toString()
+        : daysToSecondsBigNum(loanDurationMax).toString(),
+    selectedSort,
+    sortDirection,
+    first,
+    skip: (page - 1) * first,
+  };
+
+  let data: HomepageSearchQuery | HomepageSearchWithoutLenderQuery | undefined;
+  let error: CombinedError | undefined;
+
+  if (lendTicketHolder === '') {
+    ({ data, error } = await nftBackedLoansClient
+      .query<HomepageSearchWithoutLenderQuery>(
+        HomepageSearchWithoutLenderDocument,
+        where,
+      )
+      .toPromise());
+  } else {
+    ({ data, error } = await nftBackedLoansClient
+      .query<HomepageSearchQuery>(HomepageSearchDocument, where)
+      .toPromise());
+  }
 
   if (error) {
     // TODO: bugsnag
