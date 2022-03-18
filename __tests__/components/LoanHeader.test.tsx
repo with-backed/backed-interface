@@ -58,7 +58,7 @@ describe('LoanHeader', () => {
     getByText('Loading...');
   });
 
-  it('renders an awaiting lender status for loans that have not started', () => {
+  it('renders an available status for loans that have not started', () => {
     const { getByText } = render(
       <LoanHeader
         collateralMedia={collateralMedia}
@@ -66,7 +66,7 @@ describe('LoanHeader', () => {
         refresh={noop}
       />,
     );
-    getByText('Awaiting lender');
+    getByText('Available');
   });
 
   it('renders an accruing status for accruing loans', () => {

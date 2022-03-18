@@ -24,7 +24,7 @@ function loanStatus({
   }
 
   if (lastAccumulatedTimestamp.eq(0)) {
-    return 'Awaiting lender';
+    return 'Available';
   }
 
   if (!timestamp) {
@@ -125,7 +125,7 @@ export function useLoanDetails(loan: Loan) {
       return '--';
     }
     if (endDateTimestamp === 0) {
-      return 'awaiting lender';
+      return 'available';
     }
     if (timestamp > endDateTimestamp) {
       return 'past due';

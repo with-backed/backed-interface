@@ -19,7 +19,7 @@ const listComponentLookup: {
   [key: string]: (props: ListProps) => JSX.Element;
 } = {
   Closed: LoanHeaderClosedList,
-  'Awaiting lender': LoanHeaderAwaitingList,
+  Available: LoanHeaderAwaitingList,
   'Loading...': LoanHeaderLoadingList,
   'Past due': LoanHeaderPastDueList,
   'Accruing interest': LoanHeaderAccruingList,
