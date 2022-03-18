@@ -66,7 +66,11 @@ export default function Profile({ address, loans, events }: ProfilePageProps) {
             initialChecked={false}
           />
           {showingActivity ? (
-            <ProfileActivity events={parsedEvents} loans={parsedLoans} />
+            <ProfileActivity
+              address={address}
+              events={parsedEvents}
+              loans={parsedLoans}
+            />
           ) : (
             <ProfileLoans address={address} loans={parsedLoans} />
           )}

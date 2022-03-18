@@ -34,7 +34,7 @@
   /* padding and gaps */
   --padding-button: 0.3rem 1.4rem;
   --padding-container: 2.5rem;
-  --padding-loan-card: 1.5rem;
+  --padding-loan-card: 7px 21px 14px 21px;
   --gap: 2.5rem;
 
   /* backgrounds */
@@ -58,7 +58,7 @@
   --weight-light: 300;
   --weight-regular: 400;
   --weight-semibold: 600;
-  --font-small: 12px;
+  --font-small: 11px;
   --font-medium: 15px;
   --font-large: 18px;
   --font-huge: 2.6rem;
