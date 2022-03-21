@@ -11,14 +11,6 @@ import {
   subgraphRepaymentEvent,
 } from 'lib/mockSubgraphEventsData';
 
-jest.mock('lib/loans/subgraph/subgraphLoans', () => ({
-  getMostRecentTermsForLoan: jest.fn(),
-}));
-
-const mockedRecentTermsEvent = getMostRecentTermsForLoan as jest.MockedFunction<
-  typeof getMostRecentTermsForLoan
->;
-
 const now = 1647357808;
 
 describe('Sending emails with Amazon SES', () => {
@@ -27,20 +19,17 @@ describe('Sending emails with Amazon SES', () => {
   });
 
   describe('BuyoutEvent', () => {
-    beforeEach(() => {
-      mockedRecentTermsEvent.mockResolvedValue({
-        ...subgraphLendEvent,
-        loanAmount: '8000000000000000000000',
-        timestamp: subgraphLendEvent.timestamp - 86400 * 2,
-      });
-    });
-
-    it.only('returns correct email components and subject for email', async () => {
+    it('returns correct email components and subject for email', async () => {
       const subject = await getEmailSubject('BuyoutEvent', subgraphBuyoutEvent);
       const emailComponentsMap = await getEmailComponentsMap(
         'BuyoutEvent',
         subgraphBuyoutEvent,
         now,
+        {
+          ...subgraphLendEvent,
+          loanAmount: '8000000000000000000000',
+          timestamp: subgraphLendEvent.timestamp - 86400 * 2,
+        },
       );
 
       expect(subject).toEqual('Loan #65 has a new lender');
@@ -206,7 +195,7 @@ describe('Sending emails with Amazon SES', () => {
     });
   });
   describe('RepaymentEvent', () => {
-    it.only('returns correct email components and subject for email', async () => {
+    it('returns correct email components and subject for email', async () => {
       const subject = await getEmailSubject(
         'RepaymentEvent',
         subgraphRepaymentEvent,

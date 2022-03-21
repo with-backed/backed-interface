@@ -171,6 +171,18 @@ describe('Sending emails with Amazon SES', () => {
         expect.objectContaining(emailParamsMatchingObject(testRecipientTwo)),
       );
     });
+
+    it('does nothing if method is called with LendEvent and a previous terms event (indicating we have a BuyoutEvent)', async () => {
+      await sendEmailsForTriggerAndEntity(
+        'LendEvent',
+        subgraphLendEvent,
+        0,
+        subgraphLendEvent,
+      );
+
+      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(0);
+      expect(mockedSesEmailCall).toBeCalledTimes(0);
+    });
   });
   describe('RepaymentEvent', () => {
     it('successfully calls SES send email method with correct params', async () => {

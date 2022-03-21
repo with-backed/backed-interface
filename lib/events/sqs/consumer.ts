@@ -1,4 +1,5 @@
 import { subgraphEventFromTxHash } from 'lib/eventsHelpers';
+import { getMostRecentTermsForLoan } from 'lib/loans/subgraph/subgraphLoans';
 import { pushEventForProcessing } from '../sns/helpers';
 import { deleteMessage, receiveMessages } from './helpers';
 
@@ -16,11 +17,16 @@ export async function main() {
         message.txHash,
       );
       if (!!event) {
+        // get most recent terms for BuyoutEvent consumers
+        const mostRecentTermsEvent = await getMostRecentTermsForLoan(
+          event.loan.id,
+        );
+
         // if push to SNS succeeded, delete from SQS queue, if push to SNS failed, do nothing, and we will process this message again on next run
         const pushToSnsSuccess = await pushEventForProcessing({
           eventName: message.eventName,
           event,
-          txHash: message.txHash,
+          mostRecentTermsEvent,
         });
         if (pushToSnsSuccess) deleteMessage(message.receiptHandle);
       }

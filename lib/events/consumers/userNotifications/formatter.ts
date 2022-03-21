@@ -43,6 +43,7 @@ type EmailMetadataType = {
   getComponentsFromEntity: (
     entity: RawSubgraphEvent | Loan,
     now: number,
+    mostRecentTermsEvent?: LendEvent,
   ) => Promise<AddressesToEmailComponent>;
 };
 
@@ -137,6 +138,7 @@ export async function getEmailComponentsMap(
   emailTrigger: NotificationTriggerType,
   entity: RawSubgraphEvent | Loan,
   now: number,
+  mostRecentTermsEvent?: LendEvent,
 ): Promise<AddressesToEmailComponent | null> {
   const emailMetadata = notificationEventToEmailMetadata[emailTrigger];
   if (!emailMetadata) {
@@ -144,7 +146,11 @@ export async function getEmailComponentsMap(
     return null;
   }
 
-  return await emailMetadata.getComponentsFromEntity(entity, now);
+  return await emailMetadata.getComponentsFromEntity(
+    entity,
+    now,
+    mostRecentTermsEvent,
+  );
 }
 
 const notificationEventToEmailMetadata: {
@@ -156,6 +162,7 @@ const notificationEventToEmailMetadata: {
     getComponentsFromEntity: async (
       entity: RawSubgraphEvent | Loan,
       _now: number,
+      mostRecentTermsEvent?: LendEvent,
     ) => {
       const event = entity as BuyoutEvent;
       const borrower = await ensOrAddr(event.loan.borrowTicketHolder);
@@ -166,11 +173,6 @@ const notificationEventToEmailMetadata: {
         event.loan.loanAssetDecimal,
       );
 
-      const oldTermsEvent = await getMostRecentTermsForLoan(event.loan.id);
-      if (!oldTermsEvent) {
-        // fatal bugsnag here, this will literally be impossible unless EVM breaks lol
-      }
-
       const [repayment, maturity] = getEstimatedRepaymentAndMaturity(
         parseSubgraphLoan(event.loan),
       );
@@ -179,7 +181,7 @@ const notificationEventToEmailMetadata: {
         header: emailHeader(event.loan),
         messageBeforeTerms: [
           `${oldLender} held the loan for ${formattedDuration(
-            event.timestamp - oldTermsEvent!.timestamp,
+            event.timestamp - mostRecentTermsEvent!.timestamp,
           )} and accrued ${formattedInterestEarned} ${
             event.loan.loanAssetSymbol
           } in interest over that period.`,
@@ -188,10 +190,10 @@ const notificationEventToEmailMetadata: {
           {
             prefix: 'Their loan terms were:',
             ...formattedLoanTerms(
-              oldTermsEvent!.loanAmount,
+              mostRecentTermsEvent!.loanAmount,
               event.loan.loanAssetDecimal,
-              oldTermsEvent!.perSecondInterestRate,
-              oldTermsEvent!.durationSeconds,
+              mostRecentTermsEvent!.perSecondInterestRate,
+              mostRecentTermsEvent!.durationSeconds,
               event.loan.loanAssetSymbol,
             ),
           },

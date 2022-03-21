@@ -83,18 +83,30 @@ export async function sendEmailsForTriggerAndEntity(
   emailTrigger: NotificationTriggerType,
   entity: RawSubgraphEvent | Loan,
   now: number,
+  mostRecentTermsEvent?: LendEvent,
 ) {
+  console.log({ mostRecentTermsEvent });
+
+  // we do not want to send LendEvent emails and BuyoutEvent emails
+  if (emailTrigger === 'LendEvent' && !!mostRecentTermsEvent) {
+    return;
+  }
+
   // this is a map of ethAddress -> EmailComponent indicating what email components each address should receive
   const addressToEmailComponents = await getEmailComponentsMap(
     emailTrigger,
     entity,
     now,
+    mostRecentTermsEvent,
   );
   if (!addressToEmailComponents) {
     return;
   }
 
+  console.log({ keyz: Object.keys(addressToEmailComponents) });
+
   for (const address in addressToEmailComponents) {
+    console.log({ address });
     const notificationRequestsForEthAddresses =
       await getNotificationRequestsForAddress(address);
 
@@ -102,9 +114,13 @@ export async function sendEmailsForTriggerAndEntity(
       .filter((req) => req.deliveryMethod === NotificationMethod.EMAIL)
       .map((req) => req.deliveryDestination);
 
+    console.log({ emailAddresses });
+
     if (emailAddresses.length === 0) {
       continue;
     }
+
+    console.log(addressToEmailComponents[address].mainMessage);
 
     const params = {
       ...baseParams,
@@ -119,7 +135,7 @@ export async function sendEmailsForTriggerAndEntity(
       return executeEmailSendWithSes(params);
     });
 
-    await fs.writeFileSync('./html.txt', params.Message.Body.Html?.Data!);
+    await fs.writeFileSync('./html.txt', params.Message.Body.Html!.Data);
 
     await Promise.all(allEmailSends);
   }

@@ -6,7 +6,7 @@ export function generateHTMLForEmail(components: EmailComponents): string {
   const reusableTextStyles = `font-size="14px" color="black" font-family="monospace" align="left" line-height="1.5em"`;
   const reusableAnchorStyles = `style="color: #0000EE; text-decoration:none"`;
 
-  const tableStyles = `style="margin-left: 20px; width: 40%; display: flex; flex-direction: row; flex-wrap: wrap"`;
+  const tableStyles = `style="margin-left: 20px; display: flex; flex-direction: row; flex-wrap: wrap"`;
 
   return mjml2html(
     `
@@ -40,16 +40,11 @@ export function generateHTMLForEmail(components: EmailComponents): string {
       (term) => `
     <mj-text ${reusableTextStyles}>
       ${term.prefix}
-    </mj-text>
-    <mj-text ${reusableTextStyles}>
-      <div ${tableStyles}>
-        <div style="width: 50%">Loan amount:</div>
-        <div style="width: 50%">${term.amount}</div>
-        <div style="width: 50%">Duration:</div>
-        <div style="width: 50%">${term.duration}</div>
-        <div style="width: 50%">Interest:</div>
-        <div style="width: 50%">${term.interest}</div>
-      </div>
+      <pre>
+    Loan amount:     ${term.amount}
+    Duration:        ${term.duration}
+    Interest:        ${term.interest}
+      </pre>
     </mj-text>
     `,
     )}

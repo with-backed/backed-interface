@@ -27,12 +27,17 @@ export default async function handler(
   }
 
   try {
-    const { eventName, event, txHash } = JSON.parse(
+    const { eventName, event, mostRecentTermsEvent } = JSON.parse(
       parsedBody['Message'],
     ) as EventsSNSMessage;
 
     const now = Math.floor(new Date().getTime() / 1000);
-    await sendEmailsForTriggerAndEntity(eventName, event, now);
+    await sendEmailsForTriggerAndEntity(
+      eventName,
+      event,
+      now,
+      mostRecentTermsEvent,
+    );
 
     res.status(200).json(`notifications successfully sent`);
   } catch (e) {
