@@ -12,7 +12,6 @@ import {
   HomepageSearchDocument,
   HomepageSearchWithoutLenderQuery,
   HomepageSearchWithoutLenderDocument,
-  BuyoutEvent,
   LendEvent,
   EventsForLoanQuery,
   EventsForLoanDocument,
