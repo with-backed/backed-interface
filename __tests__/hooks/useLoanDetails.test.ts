@@ -21,16 +21,14 @@ describe('useLoanDetails', () => {
     expect(result.result.current.formattedEstimatedPaybackAtMaturity).toEqual(
       '10.0039 DAI',
     );
-    expect(result.result.current.formattedInterestAccrued).toEqual(
-      '0.0000 DAI',
-    );
+    expect(result.result.current.formattedInterestAccrued).toEqual('0 DAI');
     expect(result.result.current.formattedInterestRate).toEqual('4.7304%');
     expect(result.result.current.formattedLoanID).toEqual('Loan #8');
-    expect(result.result.current.formattedPrincipal).toEqual('10.0000 DAI');
+    expect(result.result.current.formattedPrincipal).toEqual('10 DAI');
     expect(result.result.current.formattedStatus).toEqual('Available');
     expect(result.result.current.formattedTimeRemaining).toEqual('available');
     expect(result.result.current.formattedTotalDuration).toEqual('3 days');
-    expect(result.result.current.formattedTotalPayback).toEqual('10.0000 DAI');
+    expect(result.result.current.formattedTotalPayback).toEqual('10 DAI');
   });
   it('renders details with placeholder remaining time when timestamp is not available', () => {
     mockUseTimestamp.mockReturnValue(null);
