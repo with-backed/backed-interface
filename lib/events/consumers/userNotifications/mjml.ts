@@ -3,8 +3,10 @@ import { EmailComponents } from './formatter';
 
 // todo(adamgobes); actually style these email tags to make them look good rather than just plain text
 export function generateHTMLForEmail(components: EmailComponents): string {
-  const reusableTextStyles = `font-size="14px" color="black" font-family="monospace" align="left"`;
+  const reusableTextStyles = `font-size="14px" color="black" font-family="monospace" align="left" line-height="1.5em"`;
   const reusableAnchorStyles = `style="color: #0000EE; text-decoration:none"`;
+
+  const tableStyles = `style="margin-left: 20px; width: 40%; display: flex; flex-direction: row; flex-wrap: wrap"`;
 
   return mjml2html(
     `
@@ -28,11 +30,35 @@ export function generateHTMLForEmail(components: EmailComponents): string {
     
             <mj-divider border-style="dashed" border-width="1px"></mj-divider>
     
-        ${components.loanDetails.map(
-          (detail) => `
-            <mj-text ${reusableTextStyles}>${detail}</mj-text>
+        ${components.messageBeforeTerms.map(
+          (message) => `
+            <mj-text ${reusableTextStyles}>${message}</mj-text>
             `,
         )}
+
+    ${components.terms.map(
+      (term) => `
+    <mj-text ${reusableTextStyles}>
+      ${term.prefix}
+    </mj-text>
+    <mj-text ${reusableTextStyles}>
+      <div ${tableStyles}>
+        <div style="width: 50%">Loan amount:</div>
+        <div style="width: 50%">${term.amount}</div>
+        <div style="width: 50%">Duration:</div>
+        <div style="width: 50%">${term.duration}</div>
+        <div style="width: 50%">Interest:</div>
+        <div style="width: 50%">${term.interest}</div>
+      </div>
+    </mj-text>
+    `,
+    )}
+
+    ${components.messageAfterTerms.map(
+      (message) => `
+            <mj-text ${reusableTextStyles}>${message}</mj-text>
+            `,
+    )}
     
             <mj-divider border-style="dashed" border-width="1px"></mj-divider>
     

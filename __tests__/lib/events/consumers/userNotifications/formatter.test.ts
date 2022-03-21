@@ -35,7 +35,7 @@ describe('Sending emails with Amazon SES', () => {
       });
     });
 
-    it('returns correct email components and subject for email', async () => {
+    it.only('returns correct email components and subject for email', async () => {
       const subject = await getEmailSubject('BuyoutEvent', subgraphBuyoutEvent);
       const emailComponentsMap = await getEmailComponentsMap(
         'BuyoutEvent',
@@ -406,7 +406,7 @@ describe('Sending emails with Amazon SES', () => {
     });
   });
   describe('LiquidationOccurred', () => {
-    it.only('returns correct email components and subject for email', async () => {
+    it('returns correct email components and subject for email', async () => {
       const expiredLoan = {
         ...subgraphLoanForEvents,
         endDateTimestamp:

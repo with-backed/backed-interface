@@ -1,4 +1,5 @@
 import aws from 'aws-sdk';
+import fs from 'fs';
 
 import { executeEmailSendWithSes } from './ses';
 import {
@@ -108,12 +109,18 @@ export async function sendEmailsForTriggerAndEntity(
     const params = {
       ...baseParams,
     };
-    params.Destination.ToAddresses = emailAddresses;
     params.Message.Body.Html!.Data = generateHTMLForEmail(
       addressToEmailComponents[address],
     );
     params.Message.Subject.Data = await getEmailSubject(emailTrigger, entity);
 
-    await executeEmailSendWithSes(params);
+    const allEmailSends = emailAddresses.map((emailAddress) => {
+      params.Destination.ToAddresses = [emailAddress];
+      return executeEmailSendWithSes(params);
+    });
+
+    await fs.writeFileSync('./html.txt', params.Message.Body.Html?.Data!);
+
+    await Promise.all(allEmailSends);
   }
 }

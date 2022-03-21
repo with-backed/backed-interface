@@ -14,6 +14,7 @@ import {
   subgraphRepaymentEvent,
 } from 'lib/mockSubgraphEventsData';
 import {
+  EmailComponents,
   getEmailComponentsMap,
   getEmailSubject,
 } from 'lib/events/consumers/userNotifications/formatter';
@@ -37,7 +38,7 @@ const mockedGetNotificationsCall =
 
 jest.mock('lib/events/consumers/userNotifications/formatter', () => ({
   getEmailSubject: jest.fn(),
-  getEmailComponents: jest.fn(),
+  getEmailComponentsMap: jest.fn(),
 }));
 
 const mockGetSubjectCall = getEmailSubject as jest.MockedFunction<
@@ -68,14 +69,39 @@ const notificationReqTwo: NotificationRequest = {
   event,
 };
 
-const emailParamsMatchingObject = () => ({
+const emailParamsMatchingObject = (toAddress: string) => ({
   Source: process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_EMAIL!,
   Destination: {
-    ToAddresses: [testRecipientOne, testRecipientTwo],
+    ToAddresses: [toAddress],
   },
   ReplyToAddresses: [process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_EMAIL!],
   Message: expect.anything(),
 });
+
+const mockEmailComponents: EmailComponents = {
+  header: 'Loan #65: monarchs',
+  messageBeforeTerms: [
+    '0x10359 held the loan for 2 days and accrued 0.00000000000001 DAI in interest over that period.',
+  ],
+  terms: [
+    {
+      prefix: '0x7e646 held the loan for 7 days, with loan terms:',
+      amount: '8192.0 DAI',
+      duration: '120 days',
+      interest: '6.3072%',
+    },
+  ],
+  messageAfterTerms: [
+    'At this rate, repayment of 8361.869312 DAI will be due on 31/12/1969.',
+  ],
+  viewLinks: [
+    'https://nftpawnshop.xyz/loans/65',
+    'https://rinkeby.etherscan.io/tx/0x7685d19b85fb80c03ac0c117ea542b77a6c8ecebea56744b121183cfb614bce6',
+  ],
+  mainMessage: '0x10359 has been replaced as the lender on loan #65.',
+  footer:
+    'https://nftpawnshop.xyz/profile/0x10359616ab170c1bd6c478a40c6715a49ba25efc',
+};
 
 describe('Sending emails with Amazon SES', () => {
   beforeEach(() => {
@@ -87,24 +113,19 @@ describe('Sending emails with Amazon SES', () => {
     mockedSesEmailCall.mockResolvedValue();
     mockGetSubjectCall.mockResolvedValue('');
     mockGetComponentsCall.mockResolvedValue({
-      header: 'Loan #65: monarchs',
-      mainMessage: '0x7e646 replaced 0x10359 as lender',
-      loanDetails: [
-        '0x10359 held the loan for 2 days and accrued 0.00000000000001 DAI in interest over that period.',
-        'Their loan terms were [8000.0 DAI, 120 days, 6.3072%].',
-        'The new terms set by 0x7e646 are [8192.0 DAI, 120 days, 6.3072%]',
-        'At this rate, repayment of 8361.869312 DAI will be due on 31/12/1969',
-      ],
-      viewLinks: [
-        'https://nftpawnshop.xyz/loans/65',
-        'https://rinkeby.etherscan.io/tx/0x7685d19b85fb80c03ac0c117ea542b77a6c8ecebea56744b121183cfb614bce6',
-      ],
-      footer:
-        'https://nftpawnshop.xyz/profile/0x10359616ab170c1bd6c478a40c6715a49ba25efc',
+      [subgraphLoanForEvents.borrowTicketHolder]: mockEmailComponents,
+      [subgraphLoanForEvents.lendTicketHolder]: mockEmailComponents,
     });
   });
 
   describe('BuyoutEvent', () => {
+    beforeEach(() => {
+      mockGetComponentsCall.mockResolvedValue({
+        [subgraphLoanForEvents.borrowTicketHolder]: mockEmailComponents,
+        [subgraphBuyoutEvent.lendTicketHolder]: mockEmailComponents,
+        [subgraphBuyoutEvent.newLender]: mockEmailComponents,
+      });
+    });
     it('successfully calls SES send email method with correct params', async () => {
       await sendEmailsForTriggerAndEntity(
         'BuyoutEvent',
@@ -112,27 +133,42 @@ describe('Sending emails with Amazon SES', () => {
         0,
       );
 
-      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
+      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(3);
+      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
+        subgraphLoanForEvents.borrowTicketHolder,
+      );
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
         subgraphBuyoutEvent.lendTicketHolder,
       );
-      expect(mockedSesEmailCall).toBeCalledTimes(1);
+      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
+        subgraphBuyoutEvent.newLender,
+      );
+      expect(mockedSesEmailCall).toBeCalledTimes(6);
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(emailParamsMatchingObject()),
+        expect.objectContaining(emailParamsMatchingObject(testRecipientOne)),
+      );
+      expect(mockedSesEmailCall).toHaveBeenCalledWith(
+        expect.objectContaining(emailParamsMatchingObject(testRecipientTwo)),
       );
     });
   });
   describe('LendEvent', () => {
-    it('successfully calls SES send email method with correct params', async () => {
+    it.only('successfully calls SES send email method with correct params', async () => {
       await sendEmailsForTriggerAndEntity('LendEvent', subgraphLendEvent, 0);
 
-      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
+      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(2);
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
         subgraphLoanForEvents.borrowTicketHolder,
       );
-      expect(mockedSesEmailCall).toBeCalledTimes(1);
+      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
+        subgraphLoanForEvents.lendTicketHolder,
+      );
+      expect(mockedSesEmailCall).toBeCalledTimes(4);
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(emailParamsMatchingObject()),
+        expect.objectContaining(emailParamsMatchingObject(testRecipientOne)),
+      );
+      expect(mockedSesEmailCall).toHaveBeenCalledWith(
+        expect.objectContaining(emailParamsMatchingObject(testRecipientTwo)),
       );
     });
   });
@@ -144,13 +180,19 @@ describe('Sending emails with Amazon SES', () => {
         0,
       );
 
-      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
+      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(2);
+      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
+        subgraphLoanForEvents.borrowTicketHolder,
+      );
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
         subgraphLoanForEvents.lendTicketHolder,
       );
-      expect(mockedSesEmailCall).toBeCalledTimes(1);
+      expect(mockedSesEmailCall).toBeCalledTimes(4);
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(emailParamsMatchingObject()),
+        expect.objectContaining(emailParamsMatchingObject(testRecipientOne)),
+      );
+      expect(mockedSesEmailCall).toHaveBeenCalledWith(
+        expect.objectContaining(emailParamsMatchingObject(testRecipientTwo)),
       );
     });
   });
@@ -162,13 +204,19 @@ describe('Sending emails with Amazon SES', () => {
         0,
       );
 
-      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
+      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(2);
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
         subgraphLoanForEvents.borrowTicketHolder,
       );
-      expect(mockedSesEmailCall).toBeCalledTimes(1);
+      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
+        subgraphLoanForEvents.lendTicketHolder,
+      );
+      expect(mockedSesEmailCall).toBeCalledTimes(4);
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(emailParamsMatchingObject()),
+        expect.objectContaining(emailParamsMatchingObject(testRecipientOne)),
+      );
+      expect(mockedSesEmailCall).toHaveBeenCalledWith(
+        expect.objectContaining(emailParamsMatchingObject(testRecipientTwo)),
       );
     });
   });
@@ -180,13 +228,19 @@ describe('Sending emails with Amazon SES', () => {
         0,
       );
 
-      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
+      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(2);
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
         subgraphLoanForEvents.borrowTicketHolder,
       );
-      expect(mockedSesEmailCall).toBeCalledTimes(1);
+      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
+        subgraphLoanForEvents.lendTicketHolder,
+      );
+      expect(mockedSesEmailCall).toBeCalledTimes(4);
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(emailParamsMatchingObject()),
+        expect.objectContaining(emailParamsMatchingObject(testRecipientOne)),
+      );
+      expect(mockedSesEmailCall).toHaveBeenCalledWith(
+        expect.objectContaining(emailParamsMatchingObject(testRecipientTwo)),
       );
     });
   });
@@ -198,13 +252,19 @@ describe('Sending emails with Amazon SES', () => {
         0,
       );
 
-      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
+      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(2);
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
         subgraphLoanForEvents.borrowTicketHolder,
       );
-      expect(mockedSesEmailCall).toBeCalledTimes(1);
+      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
+        subgraphLoanForEvents.lendTicketHolder,
+      );
+      expect(mockedSesEmailCall).toBeCalledTimes(4);
       expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(emailParamsMatchingObject()),
+        expect.objectContaining(emailParamsMatchingObject(testRecipientOne)),
+      );
+      expect(mockedSesEmailCall).toHaveBeenCalledWith(
+        expect.objectContaining(emailParamsMatchingObject(testRecipientTwo)),
       );
     });
   });
