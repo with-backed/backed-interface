@@ -1,3 +1,8 @@
+import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import { ethers } from 'ethers';
+
 import {
   BuyoutEvent,
   CollateralSeizureEvent,
@@ -6,21 +11,29 @@ import {
   RepaymentEvent,
 } from 'types/generated/graphql/nftLoans';
 import { RawSubgraphEvent } from 'types/RawEvent';
-import { secondsToDays } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
-import { ethers } from 'ethers';
 import { SCALAR } from 'lib/constants';
-import dayjs from 'dayjs';
 import { getMostRecentTermsForLoan } from 'lib/loans/subgraph/subgraphLoans';
 import { Loan as ParsedLoan } from 'types/Loan';
 import { parseSubgraphLoan } from 'lib/loans/utils';
 import { NotificationTriggerType } from './shared';
 import { addressToENS } from 'lib/account';
 
+dayjs.extend(duration);
+dayjs.extend(relativeTime);
+
+type RenderedTerms = {
+  prefix?: string;
+  amount: string;
+  duration: string;
+  interest: string;
+};
 export type EmailComponents = {
   header: string;
   mainMessage: string;
-  loanDetails: string[];
+  messageBeforeTerms: string[];
+  terms: RenderedTerms[];
+  messageAfterTerms: string[];
   viewLinks: [string, string];
   footer: string;
 };
@@ -30,7 +43,7 @@ type EmailMetadataType = {
   getComponentsFromEntity: (
     entity: RawSubgraphEvent | Loan,
     now: number,
-  ) => Promise<EmailComponents>;
+  ) => Promise<AddressesToEmailComponent>;
 };
 
 const ensOrAddr = async (rawAddress: string): Promise<string> => {
@@ -44,26 +57,28 @@ const ensOrAddr = async (rawAddress: string): Promise<string> => {
 const emailHeader = (loan: Loan): string =>
   `Loan #${loan.id}: ${loan.collateralName}`;
 
-const formattedLoanInfoFromParams = (
+const formattedLoanTerms = (
   loanAmount: number,
   loanAssetDecimal: number,
   perSecondInterestRate: number,
   durationSeconds: number,
   loanAssetSymbol: string,
-): string => {
+) => {
   const parsedLoanAmount = ethers.utils.formatUnits(
     loanAmount.toString(),
     loanAssetDecimal,
   );
   const amount = `${parsedLoanAmount} ${loanAssetSymbol}`;
-  const days = secondsToDays(durationSeconds)
-    .toFixed(2)
-    .replace(/[.,]00$/, '');
+
   const interest = formattedAnnualRate(
     ethers.BigNumber.from(perSecondInterestRate),
   );
 
-  return `[${amount}, ${days} days, ${interest}%]`;
+  return {
+    amount,
+    duration: formattedDuration(durationSeconds),
+    interest: `${interest}%`,
+  };
 };
 
 const getEstimatedRepaymentAndMaturity = (
@@ -114,11 +129,15 @@ export async function getEmailSubject(
   return emailMetadata.getSubjectFromEntity(entity);
 }
 
-export async function getEmailComponents(
+type AddressesToEmailComponent = {
+  [key: string]: EmailComponents;
+};
+
+export async function getEmailComponentsMap(
   emailTrigger: NotificationTriggerType,
   entity: RawSubgraphEvent | Loan,
   now: number,
-): Promise<EmailComponents | null> {
+): Promise<AddressesToEmailComponent | null> {
   const emailMetadata = notificationEventToEmailMetadata[emailTrigger];
   if (!emailMetadata) {
     // fatal bugsnag, invalid email trigger was passed from SNS push
@@ -139,6 +158,7 @@ const notificationEventToEmailMetadata: {
       _now: number,
     ) => {
       const event = entity as BuyoutEvent;
+      const borrower = await ensOrAddr(event.loan.borrowTicketHolder);
       const oldLender = await ensOrAddr(event.lendTicketHolder);
       const newLender = await ensOrAddr(event.newLender);
       const formattedInterestEarned = ethers.utils.formatUnits(
@@ -155,36 +175,62 @@ const notificationEventToEmailMetadata: {
         parseSubgraphLoan(event.loan),
       );
 
-      return {
+      const sharedComponents: Partial<EmailComponents> = {
         header: emailHeader(event.loan),
-        mainMessage: `${newLender} replaced ${oldLender} as lender`,
-        loanDetails: [
+        messageBeforeTerms: [
           `${oldLender} held the loan for ${formattedDuration(
             event.timestamp - oldTermsEvent!.timestamp,
           )} and accrued ${formattedInterestEarned} ${
             event.loan.loanAssetSymbol
           } in interest over that period.`,
-          `Their loan terms were ${formattedLoanInfoFromParams(
-            oldTermsEvent!.loanAmount,
-            event.loan.loanAssetDecimal,
-            oldTermsEvent!.perSecondInterestRate,
-            oldTermsEvent!.durationSeconds,
-            event.loan.loanAssetSymbol,
-          )}.`,
-          `The new terms set by ${newLender} are ${formattedLoanInfoFromParams(
-            event.loan.loanAmount,
-            event.loan.loanAssetDecimal,
-            event.loan.perSecondInterestRate,
-            event.loan.durationSeconds,
-            event.loan.loanAssetSymbol,
-          )}`,
-          `At this rate, repayment of ${repayment} ${event.loan.loanAssetSymbol} will be due on ${maturity}`,
+        ],
+        terms: [
+          {
+            prefix: 'Their loan terms were:',
+            ...formattedLoanTerms(
+              oldTermsEvent!.loanAmount,
+              event.loan.loanAssetDecimal,
+              oldTermsEvent!.perSecondInterestRate,
+              oldTermsEvent!.durationSeconds,
+              event.loan.loanAssetSymbol,
+            ),
+          },
+          {
+            prefix: `The new terms set by ${newLender} are:`,
+            ...formattedLoanTerms(
+              event.loanAmount,
+              event.loan.loanAssetDecimal,
+              event.loan.perSecondInterestRate,
+              event.loan.durationSeconds,
+              event.loan.loanAssetSymbol,
+            ),
+          },
+        ],
+        messageAfterTerms: [
+          `At this rate, repayment of ${repayment} ${event.loan.loanAssetSymbol} will be due on ${maturity}.`,
         ],
         viewLinks: [
           `https://nftpawnshop.xyz/loans/${event.loan.id}`,
           `${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/tx/${event.id}`,
         ],
-        footer: `https://nftpawnshop.xyz/profile/${event.lendTicketHolder}`,
+      };
+
+      return {
+        [event.loan.borrowTicketHolder]: {
+          ...sharedComponents,
+          mainMessage: `The loan created by ${borrower} has been bought out with new terms.`,
+          footer: `https://nftpawnshop.xyz/profile/${event.loan.borrowTicketHolder}`,
+        } as EmailComponents,
+        [event.newLender]: {
+          ...sharedComponents,
+          mainMessage: `${newLender} replaced ${oldLender} as lender.`,
+          footer: `https://nftpawnshop.xyz/profile/${event.newLender}`,
+        } as EmailComponents,
+        [event.lendTicketHolder]: {
+          ...sharedComponents,
+          mainMessage: `${oldLender} has been replaced as the lender on loan #${event.loan.id}.`,
+          footer: `https://nftpawnshop.xyz/profile/${event.lendTicketHolder}`,
+        } as EmailComponents,
       };
     },
   },
@@ -202,24 +248,40 @@ const notificationEventToEmailMetadata: {
         parseSubgraphLoan(event.loan),
       );
 
-      return {
+      const sharedComponents: Partial<EmailComponents> = {
         header: emailHeader(event.loan),
         mainMessage: `The loan created by ${borrower} has been lent to by ${lender}`,
-        loanDetails: [
-          `${lender} lent at terms ${formattedLoanInfoFromParams(
-            event.loan.loanAmount,
-            event.loan.loanAssetDecimal,
-            event.loan.perSecondInterestRate,
-            event.loan.durationSeconds,
-            event.loan.loanAssetSymbol,
-          )}.`,
+        messageBeforeTerms: [],
+        terms: [
+          {
+            prefix: `${lender} lent at terms:`,
+            ...formattedLoanTerms(
+              event.loan.loanAmount,
+              event.loan.loanAssetDecimal,
+              event.loan.perSecondInterestRate,
+              event.loan.durationSeconds,
+              event.loan.loanAssetSymbol,
+            ),
+          },
+        ],
+        messageAfterTerms: [
           `At this rate, repayment of ${repayment} ${event.loan.loanAssetSymbol} will be due on ${maturity}`,
         ],
         viewLinks: [
           `https://nftpawnshop.xyz/loans/${event.loan.id}`,
           `${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/tx/${event.id}`,
         ],
-        footer: `https://nftpawnshop.xyz/profile/${event.borrowTicketHolder}`,
+      };
+
+      return {
+        [event.borrowTicketHolder]: {
+          ...sharedComponents,
+          footer: `https://nftpawnshop.xyz/profile/${event.borrowTicketHolder}`,
+        } as EmailComponents,
+        [event.lender]: {
+          ...sharedComponents,
+          footer: `https://nftpawnshop.xyz/profile/${event.lender}`,
+        } as EmailComponents,
       };
     },
   },
@@ -244,28 +306,43 @@ const notificationEventToEmailMetadata: {
         event.loan.loanAssetDecimal,
       );
 
-      return {
+      const sharedComponents: Partial<EmailComponents> = {
         header: emailHeader(event.loan),
         mainMessage: `${repayer} repaid the loan`,
-        loanDetails: [
-          `${lender} held the loan for ${formattedDuration(
-            event.timestamp - event.loan.lastAccumulatedTimestamp,
-          )}, with loan terms of ${formattedLoanInfoFromParams(
-            event.loan.loanAmount,
-            event.loan.loanAssetDecimal,
-            event.loan.perSecondInterestRate,
-            event.loan.durationSeconds,
-            event.loan.loanAssetSymbol,
-          )}, and accrued ${formattedInterestEarned} ${
-            event.loan.loanAssetSymbol
-          } over that period.`,
+        messageBeforeTerms: [],
+        terms: [
+          {
+            prefix: `${lender} held the loan for ${formattedDuration(
+              event.timestamp - event.loan.createdAtTimestamp,
+            )}, with loan terms:`,
+            ...formattedLoanTerms(
+              event.loan.loanAmount,
+              event.loan.loanAssetDecimal,
+              event.loan.perSecondInterestRate,
+              event.loan.durationSeconds,
+              event.loan.loanAssetSymbol,
+            ),
+          },
+        ],
+        messageAfterTerms: [
+          `They accrued ${formattedInterestEarned} ${event.loan.loanAssetSymbol} over that period.`,
           `The total cost to repay was ${formattedTotalRepay} ${event.loan.loanAssetSymbol}.`,
         ],
         viewLinks: [
           `https://nftpawnshop.xyz/loans/${event.loan.id}`,
           `${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/tx/${event.id}`,
         ],
-        footer: `https://nftpawnshop.xyz/profile/${event.lendTicketHolder}`,
+      };
+
+      return {
+        [event.repayer]: {
+          ...sharedComponents,
+          footer: `https://nftpawnshop.xyz/profile/${event.repayer}`,
+        } as EmailComponents,
+        [event.lendTicketHolder]: {
+          ...sharedComponents,
+          footer: `https://nftpawnshop.xyz/profile/${event.lendTicketHolder}`,
+        } as EmailComponents,
       };
     },
   },
@@ -285,19 +362,25 @@ const notificationEventToEmailMetadata: {
         parseSubgraphLoan(event.loan),
       );
 
-      return {
+      const sharedComponents: Partial<EmailComponents> = {
         header: emailHeader(event.loan),
         mainMessage: `Lender ${lender} has seized the collateral NFT on Loan #${event.loan.id}`,
-        loanDetails: [
-          `${lender} held the loan for ${formattedDuration(
-            event.timestamp - event.loan.lastAccumulatedTimestamp,
-          )} at terms ${formattedLoanInfoFromParams(
-            event.loan.loanAmount,
-            event.loan.loanAssetDecimal,
-            event.loan.perSecondInterestRate,
-            event.loan.durationSeconds,
-            event.loan.loanAssetSymbol,
-          )}.`,
+        messageBeforeTerms: [],
+        terms: [
+          {
+            prefix: `${lender} held the loan for ${formattedDuration(
+              event.timestamp - event.loan.createdAtTimestamp,
+            )} at terms:`,
+            ...formattedLoanTerms(
+              event.loan.loanAmount,
+              event.loan.loanAssetDecimal,
+              event.loan.perSecondInterestRate,
+              event.loan.durationSeconds,
+              event.loan.loanAssetSymbol,
+            ),
+          },
+        ],
+        messageAfterTerms: [
           `The loan became due on ${dayjs
             .unix(event.loan.endDateTimestamp!)
             .format('DD/MM/YYYY')} with a repayment cost of ${repayment} ${
@@ -313,6 +396,17 @@ const notificationEventToEmailMetadata: {
         ],
         footer: `https://nftpawnshop.xyz/profile/${event.borrowTicketHolder}`,
       };
+
+      return {
+        [event.borrowTicketHolder]: {
+          ...sharedComponents,
+          footer: `https://nftpawnshop.xyz/profile/${event.borrowTicketHolder}`,
+        } as EmailComponents,
+        [event.lendTicketHolder]: {
+          ...sharedComponents,
+          footer: `https://nftpawnshop.xyz/profile/${event.lendTicketHolder}`,
+        } as EmailComponents,
+      };
     },
   },
   LiquidationOccurring: {
@@ -323,6 +417,7 @@ const notificationEventToEmailMetadata: {
       now: number,
     ) => {
       const loan = entity as Loan;
+
       const lender = await ensOrAddr(loan.lendTicketHolder);
 
       const loanDuration = now - loan.lastAccumulatedTimestamp;
@@ -335,25 +430,41 @@ const notificationEventToEmailMetadata: {
         parseSubgraphLoan(loan),
       );
 
-      return {
+      const sharedComponents: Partial<EmailComponents> = {
         header: emailHeader(loan),
         mainMessage: 'This loan will be due in 24 hours',
-        loanDetails: [
-          `${lender} held the loan for ${formattedDuration(
-            loanDuration,
-          )}, with loan terms ${formattedLoanInfoFromParams(
-            loan.loanAmount,
-            loan.loanAssetDecimal,
-            loan.perSecondInterestRate,
-            loan.durationSeconds,
-            loan.loanAssetSymbol,
-          )}, and accrued ${interestAccruedSoFar} ${
-            loan.loanAssetSymbol
-          } over that period.`,
+        messageBeforeTerms: [],
+        terms: [
+          {
+            prefix: `${lender} held the loan for ${formattedDuration(
+              loanDuration,
+            )}, with loan terms:`,
+            ...formattedLoanTerms(
+              loan.loanAmount,
+              loan.loanAssetDecimal,
+              loan.perSecondInterestRate,
+              loan.durationSeconds,
+              loan.loanAssetSymbol,
+            ),
+          },
+        ],
+        messageAfterTerms: [
+          `They accrued ${interestAccruedSoFar} ${loan.loanAssetSymbol} over that period.`,
           `At this rate, repayment of ${repayment} ${loan.loanAssetSymbol} will be due on ${maturity}`,
         ],
         viewLinks: [`https://nftpawnshop.xyz/loans/${loan.id}`, ''],
         footer: `https://nftpawnshop.xyz`,
+      };
+
+      return {
+        [loan.borrowTicketHolder]: {
+          ...sharedComponents,
+          footer: `https://nftpawnshop.xyz/profile/${loan.borrowTicketHolder}`,
+        } as EmailComponents,
+        [loan.lendTicketHolder]: {
+          ...sharedComponents,
+          footer: `https://nftpawnshop.xyz/profile/${loan.lendTicketHolder}`,
+        } as EmailComponents,
       };
     },
   },
@@ -380,20 +491,27 @@ const notificationEventToEmailMetadata: {
         loan.loanAssetDecimal,
       );
 
-      return {
+      const sharedComponents: Partial<EmailComponents> = {
         header: emailHeader(loan),
         mainMessage:
-          'The loan is past due, and its NFT collateral may be seized',
-        loanDetails: [
-          `${lender} held the loan for ${formattedDuration(
-            loanDuration,
-          )}, with loan terms ${formattedLoanInfoFromParams(
-            loan.loanAmount,
-            loan.loanAssetDecimal,
-            loan.perSecondInterestRate,
-            loan.durationSeconds,
-            loan.loanAssetSymbol,
-          )}, and accrued ${formattedInterestAccrued} ${loan.loanAssetSymbol}`,
+          'The loan is past due, and its NFT collateral may be seized.',
+        messageBeforeTerms: [],
+        terms: [
+          {
+            prefix: `${lender} held the loan for ${formattedDuration(
+              loanDuration,
+            )}, with loan terms:`,
+            ...formattedLoanTerms(
+              loan.loanAmount,
+              loan.loanAssetDecimal,
+              loan.perSecondInterestRate,
+              loan.durationSeconds,
+              loan.loanAssetSymbol,
+            ),
+          },
+        ],
+        messageAfterTerms: [
+          `They accrued ${formattedInterestAccrued} ${loan.loanAssetSymbol}.`,
           `The loan became due on ${dayjs
             .unix(loan.endDateTimestamp!)
             .format('DD/MM/YYYY')} with a repayment cost of ${repayment} ${
@@ -403,6 +521,17 @@ const notificationEventToEmailMetadata: {
         ],
         viewLinks: [`https://nftpawnshop.xyz/loans/${loan.id}`, ''],
         footer: `https://nftpawnshop.xyz`,
+      };
+
+      return {
+        [loan.borrowTicketHolder]: {
+          ...sharedComponents,
+          footer: `https://nftpawnshop.xyz/profile/${loan.borrowTicketHolder}`,
+        } as EmailComponents,
+        [loan.lendTicketHolder]: {
+          ...sharedComponents,
+          footer: `https://nftpawnshop.xyz/profile/${loan.lendTicketHolder}`,
+        } as EmailComponents,
       };
     },
   },

@@ -1,3 +1,5 @@
+import aws from 'aws-sdk';
+
 import { executeEmailSendWithSes } from './ses';
 import {
   BuyoutEvent,
@@ -9,9 +11,8 @@ import {
 import { NotificationMethod, NotificationTriggerType } from './shared';
 import { RawSubgraphEvent } from 'types/RawEvent';
 import { getNotificationRequestsForAddress } from './repository';
-import fs from 'fs';
 import { generateHTMLForEmail } from './mjml';
-import { getEmailComponents, getEmailSubject } from './formatter';
+import { getEmailComponentsMap, getEmailSubject } from './formatter';
 
 function getRelevantEthAddressesFromTriggerAndEntity(
   emailTrigger: NotificationTriggerType,
@@ -57,56 +58,62 @@ function getRelevantEthAddressesFromTriggerAndEntity(
   }
 }
 
+const baseParams: aws.SES.Types.SendEmailRequest = {
+  Source: 'adamgobes@gmail.com', // TODO(adamgobes): change this, only using for tests
+  Destination: {
+    ToAddresses: [],
+  },
+  ReplyToAddresses: ['adamgobes@gmail.com'],
+  Message: {
+    Body: {
+      Html: {
+        Charset: 'UTF-8',
+        Data: '',
+      },
+    },
+    Subject: {
+      Charset: 'UTF-8',
+      Data: '',
+    },
+  },
+};
+
 export async function sendEmailsForTriggerAndEntity(
   emailTrigger: NotificationTriggerType,
   entity: RawSubgraphEvent | Loan,
   now: number,
 ) {
-  const ethAddresses = getRelevantEthAddressesFromTriggerAndEntity(
+  // this is a map of ethAddress -> EmailComponent indicating what email components each address should receive
+  const addressToEmailComponents = await getEmailComponentsMap(
     emailTrigger,
     entity,
+    now,
   );
-
-  const notificationRequestsForEthAddresses = (
-    await Promise.all(
-      ethAddresses.map((ethAddress) =>
-        getNotificationRequestsForAddress(ethAddress),
-      ),
-    )
-  ).flat();
-
-  const emailAddresses = notificationRequestsForEthAddresses
-    .filter((req) => req.deliveryMethod === NotificationMethod.EMAIL)
-    .map((req) => req.deliveryDestination);
-
-  if (emailAddresses.length === 0) {
+  if (!addressToEmailComponents) {
     return;
   }
 
-  const emailComponents = await getEmailComponents(emailTrigger, entity, now);
-  if (!emailComponents) {
-    return;
+  for (const address in addressToEmailComponents) {
+    const notificationRequestsForEthAddresses =
+      await getNotificationRequestsForAddress(address);
+
+    const emailAddresses = notificationRequestsForEthAddresses
+      .filter((req) => req.deliveryMethod === NotificationMethod.EMAIL)
+      .map((req) => req.deliveryDestination);
+
+    if (emailAddresses.length === 0) {
+      continue;
+    }
+
+    const params = {
+      ...baseParams,
+    };
+    params.Destination.ToAddresses = emailAddresses;
+    params.Message.Body.Html!.Data = generateHTMLForEmail(
+      addressToEmailComponents[address],
+    );
+    params.Message.Subject.Data = await getEmailSubject(emailTrigger, entity);
+
+    await executeEmailSendWithSes(params);
   }
-
-  const params = {
-    Source: 'adamgobes@gmail.com', // TODO(adamgobes): change this, only using for tests
-    Destination: {
-      ToAddresses: emailAddresses,
-    },
-    ReplyToAddresses: ['adamgobes@gmail.com'],
-    Message: {
-      Body: {
-        Html: {
-          Charset: 'UTF-8',
-          Data: generateHTMLForEmail(emailComponents),
-        },
-      },
-      Subject: {
-        Charset: 'UTF-8',
-        Data: await getEmailSubject(emailTrigger, entity),
-      },
-    },
-  };
-
-  await executeEmailSendWithSes(params);
 }

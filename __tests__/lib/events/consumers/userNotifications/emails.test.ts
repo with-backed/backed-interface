@@ -14,7 +14,7 @@ import {
   subgraphRepaymentEvent,
 } from 'lib/mockSubgraphEventsData';
 import {
-  getEmailComponents,
+  getEmailComponentsMap,
   getEmailSubject,
 } from 'lib/events/consumers/userNotifications/formatter';
 
@@ -43,8 +43,8 @@ jest.mock('lib/events/consumers/userNotifications/formatter', () => ({
 const mockGetSubjectCall = getEmailSubject as jest.MockedFunction<
   typeof getEmailSubject
 >;
-const mockGetComponentsCall = getEmailComponents as jest.MockedFunction<
-  typeof getEmailComponents
+const mockGetComponentsCall = getEmailComponentsMap as jest.MockedFunction<
+  typeof getEmailComponentsMap
 >;
 
 const event: NotificationTriggerType = 'All';
