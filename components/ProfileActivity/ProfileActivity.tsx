@@ -207,5 +207,9 @@ type AddressProps = {
 function Address({ address, highlightAddress }: AddressProps) {
   const className =
     address === highlightAddress ? styles['highlight-address'] : styles.address;
-  return <span className={className}>{address.slice(0, MAX_CHARS)}</span>;
+  return (
+    <Link href={`/profile/${address}`}>
+      <a className={className}>{address.slice(0, MAX_CHARS)}</a>
+    </Link>
+  );
 }
