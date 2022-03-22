@@ -46,21 +46,21 @@ describe('Sending emails with Amazon SES', () => {
       const oldLenderComponents =
         emailComponentsMap![subgraphBuyoutEvent.lendTicketHolder];
 
-      expect(borrowerComponents!.header).toEqual('Loan #65: monarchs');
-      expect([borrowerComponents!.header, borrowerComponents!.header]).toEqual([
-        newLenderComponents!.header,
-        oldLenderComponents!.header,
+      expect(borrowerComponents.header).toEqual('Loan #65: monarchs');
+      expect([borrowerComponents.header, borrowerComponents.header]).toEqual([
+        newLenderComponents.header,
+        oldLenderComponents.header,
       ]);
 
-      expect(borrowerComponents!.messageBeforeTerms).toEqual([
+      expect(borrowerComponents.messageBeforeTerms).toEqual([
         '0x10359 held the loan for 2 days and accrued 0.00000000000001 DAI in interest over that period.',
       ]);
       expect([
-        borrowerComponents!.messageBeforeTerms,
-        borrowerComponents!.messageBeforeTerms,
+        borrowerComponents.messageBeforeTerms,
+        borrowerComponents.messageBeforeTerms,
       ]).toEqual([
-        newLenderComponents!.messageBeforeTerms,
-        oldLenderComponents!.messageBeforeTerms,
+        newLenderComponents.messageBeforeTerms,
+        oldLenderComponents.messageBeforeTerms,
       ]);
 
       expect(borrowerComponents.terms).toEqual([
@@ -82,46 +82,46 @@ describe('Sending emails with Amazon SES', () => {
         oldLenderComponents.terms,
       ]);
 
-      expect(borrowerComponents!.messageAfterTerms).toEqual([
+      expect(borrowerComponents.messageAfterTerms).toEqual([
         'At this rate, repayment of 8362.890048 DAI will be due on 01/01/1970.',
       ]);
       expect([
-        borrowerComponents!.messageAfterTerms,
-        borrowerComponents!.messageAfterTerms,
+        borrowerComponents.messageAfterTerms,
+        borrowerComponents.messageAfterTerms,
       ]).toEqual([
-        newLenderComponents!.messageAfterTerms,
-        oldLenderComponents!.messageAfterTerms,
+        newLenderComponents.messageAfterTerms,
+        oldLenderComponents.messageAfterTerms,
       ]);
 
-      expect(borrowerComponents!.viewLinks).toEqual([
+      expect(borrowerComponents.viewLinks).toEqual([
         'https://nftpawnshop.xyz/loans/65',
         'https://rinkeby.etherscan.io/tx/0x7685d19b85fb80c03ac0c117ea542b77a6c8ecebea56744b121183cfb614bce6',
       ]);
       expect([
-        borrowerComponents!.viewLinks,
-        borrowerComponents!.viewLinks,
+        borrowerComponents.viewLinks,
+        borrowerComponents.viewLinks,
       ]).toEqual([
-        newLenderComponents!.viewLinks,
-        oldLenderComponents!.viewLinks,
+        newLenderComponents.viewLinks,
+        oldLenderComponents.viewLinks,
       ]);
 
-      expect(borrowerComponents!.mainMessage).toEqual(
+      expect(borrowerComponents.mainMessage).toEqual(
         'The loan created by 0x0dd7d has been bought out with new terms.',
       );
-      expect(oldLenderComponents!.mainMessage).toEqual(
+      expect(oldLenderComponents.mainMessage).toEqual(
         '0x10359 has been replaced as the lender on loan #65.',
       );
-      expect(newLenderComponents!.mainMessage).toEqual(
+      expect(newLenderComponents.mainMessage).toEqual(
         '0x7e646 replaced 0x10359 as lender.',
       );
 
-      expect(borrowerComponents!.footer).toEqual(
+      expect(borrowerComponents.footer).toEqual(
         'https://nftpawnshop.xyz/profile/0x0dd7d78ed27632839cd2a929ee570ead346c19fc',
       );
-      expect(oldLenderComponents!.footer).toEqual(
+      expect(oldLenderComponents.footer).toEqual(
         'https://nftpawnshop.xyz/profile/0x10359616ab170c1bd6c478a40c6715a49ba25efc',
       );
-      expect(newLenderComponents!.footer).toEqual(
+      expect(newLenderComponents.footer).toEqual(
         'https://nftpawnshop.xyz/profile/0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866',
       );
     });
@@ -145,22 +145,22 @@ describe('Sending emails with Amazon SES', () => {
         emailComponentsMap![subgraphLendEvent.borrowTicketHolder];
       const lenderComponents = emailComponentsMap![subgraphLendEvent.lender];
 
-      expect(borrowerComponents!.header).toEqual('Loan #65: monarchs');
-      expect(borrowerComponents!.header).toEqual(lenderComponents!.header);
+      expect(borrowerComponents.header).toEqual('Loan #65: monarchs');
+      expect(borrowerComponents.header).toEqual(lenderComponents.header);
 
-      expect(borrowerComponents!.mainMessage).toEqual(
+      expect(borrowerComponents.mainMessage).toEqual(
         'The loan created by 0x0dd7d has been lent to by 0x7e646',
       );
-      expect(borrowerComponents!.mainMessage).toEqual(
-        lenderComponents!.mainMessage,
+      expect(borrowerComponents.mainMessage).toEqual(
+        lenderComponents.mainMessage,
       );
 
-      expect(borrowerComponents!.messageBeforeTerms).toEqual([]);
-      expect(borrowerComponents!.messageBeforeTerms).toEqual(
-        lenderComponents!.messageBeforeTerms,
+      expect(borrowerComponents.messageBeforeTerms).toEqual([]);
+      expect(borrowerComponents.messageBeforeTerms).toEqual(
+        lenderComponents.messageBeforeTerms,
       );
 
-      expect(borrowerComponents!.terms).toEqual([
+      expect(borrowerComponents.terms).toEqual([
         {
           prefix: '0x7e646 lent at terms:',
           amount: '8192.0 DAI',
@@ -168,27 +168,25 @@ describe('Sending emails with Amazon SES', () => {
           interest: '6.3072%',
         },
       ]);
-      expect(borrowerComponents!.terms).toEqual(lenderComponents!.terms);
+      expect(borrowerComponents.terms).toEqual(lenderComponents.terms);
 
-      expect(borrowerComponents!.messageAfterTerms).toEqual([
+      expect(borrowerComponents.messageAfterTerms).toEqual([
         'At this rate, repayment of 8361.869312 DAI will be due on 01/01/1970',
       ]);
-      expect(borrowerComponents!.messageAfterTerms).toEqual(
-        lenderComponents!.messageAfterTerms,
+      expect(borrowerComponents.messageAfterTerms).toEqual(
+        lenderComponents.messageAfterTerms,
       );
 
-      expect(borrowerComponents!.viewLinks).toEqual([
+      expect(borrowerComponents.viewLinks).toEqual([
         'https://nftpawnshop.xyz/loans/65',
         'https://rinkeby.etherscan.io/tx/0x7685d19b85fb80c03ac0c117ea542b77a6c8ecebea56744b121183cfb614bce6',
       ]);
-      expect(borrowerComponents!.viewLinks).toEqual(
-        lenderComponents!.viewLinks,
-      );
+      expect(borrowerComponents.viewLinks).toEqual(lenderComponents.viewLinks);
 
-      expect(borrowerComponents!.footer).toEqual(
+      expect(borrowerComponents.footer).toEqual(
         'https://nftpawnshop.xyz/profile/0x0dd7d78ed27632839cd2a929ee570ead346c19fc',
       );
-      expect(lenderComponents!.footer).toEqual(
+      expect(lenderComponents.footer).toEqual(
         'https://nftpawnshop.xyz/profile/0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866',
       );
     });
@@ -243,16 +241,16 @@ describe('Sending emails with Amazon SES', () => {
         lenderComponents.messageAfterTerms,
       );
 
-      expect(borrowerComponents!.viewLinks).toEqual([
+      expect(borrowerComponents.viewLinks).toEqual([
         'https://nftpawnshop.xyz/loans/65',
         'https://rinkeby.etherscan.io/tx/0x7685d19b85fb80c03ac0c117ea542b77a6c8ecebea56744b121183cfb614bce6',
       ]);
       expect(borrowerComponents.viewLinks).toEqual(lenderComponents.viewLinks);
 
-      expect(borrowerComponents!.footer).toEqual(
+      expect(borrowerComponents.footer).toEqual(
         'https://nftpawnshop.xyz/profile/0x0dd7d78ed27632839cd2a929ee570ead346c19fc',
       );
-      expect(lenderComponents!.footer).toEqual(
+      expect(lenderComponents.footer).toEqual(
         'https://nftpawnshop.xyz/profile/0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866',
       );
     });
@@ -313,10 +311,10 @@ describe('Sending emails with Amazon SES', () => {
       ]);
       expect(borrowerComponents.viewLinks).toEqual(lenderComponents.viewLinks);
 
-      expect(borrowerComponents!.footer).toEqual(
+      expect(borrowerComponents.footer).toEqual(
         'https://nftpawnshop.xyz/profile/0x0dd7d78ed27632839cd2a929ee570ead346c19fc',
       );
-      expect(lenderComponents!.footer).toEqual(
+      expect(lenderComponents.footer).toEqual(
         'https://nftpawnshop.xyz/profile/0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866',
       );
     });
@@ -382,10 +380,10 @@ describe('Sending emails with Amazon SES', () => {
       ]);
       expect(borrowerComponents.viewLinks).toEqual(lenderComponents.viewLinks);
 
-      expect(borrowerComponents!.footer).toEqual(
+      expect(borrowerComponents.footer).toEqual(
         'https://nftpawnshop.xyz/profile/0x0dd7d78ed27632839cd2a929ee570ead346c19fc',
       );
-      expect(lenderComponents!.footer).toEqual(
+      expect(lenderComponents.footer).toEqual(
         'https://nftpawnshop.xyz/profile/0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866',
       );
     });
@@ -454,10 +452,10 @@ describe('Sending emails with Amazon SES', () => {
       ]);
       expect(borrowerComponents.viewLinks).toEqual(lenderComponents.viewLinks);
 
-      expect(borrowerComponents!.footer).toEqual(
+      expect(borrowerComponents.footer).toEqual(
         'https://nftpawnshop.xyz/profile/0x0dd7d78ed27632839cd2a929ee570ead346c19fc',
       );
-      expect(lenderComponents!.footer).toEqual(
+      expect(lenderComponents.footer).toEqual(
         'https://nftpawnshop.xyz/profile/0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866',
       );
     });

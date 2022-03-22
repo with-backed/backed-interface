@@ -1,7 +1,6 @@
 import mjml2html from 'mjml';
 import { EmailComponents } from './formatter';
 
-// todo(adamgobes); actually style these email tags to make them look good rather than just plain text
 export function generateHTMLForEmail(components: EmailComponents): string {
   const reusableTextStyles = `font-size="14px" color="black" font-family="monospace" align="left" line-height="1.5em"`;
   const reusableAnchorStyles = `style="color: #0000EE; text-decoration:none"`;
