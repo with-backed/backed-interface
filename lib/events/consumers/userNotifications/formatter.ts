@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-import relativeTime from 'dayjs/plugin/relativeTime';
 import { ethers } from 'ethers';
 
 import {
@@ -19,7 +18,6 @@ import { NotificationTriggerType } from './shared';
 import { addressToENS } from 'lib/account';
 
 dayjs.extend(duration);
-dayjs.extend(relativeTime);
 
 type RenderedTerms = {
   prefix?: string;
@@ -97,7 +95,7 @@ const getEstimatedRepaymentAndMaturity = (
 
   const dateOfMaturity = dayjs
     .unix(loan.endDateTimestamp!)
-    .format('DD/MM/YYYY');
+    .format('MM/DD/YYYY');
 
   return [estimatedRepayment, dateOfMaturity];
 };
@@ -384,12 +382,12 @@ const notificationEventToEmailMetadata: {
         messageAfterTerms: [
           `The loan became due on ${dayjs
             .unix(event.loan.endDateTimestamp!)
-            .format('DD/MM/YYYY')} with a repayment cost of ${repayment} ${
+            .format('MM/DD/YYYY')} with a repayment cost of ${repayment} ${
             event.loan.loanAssetSymbol
           }.`,
           `Borrower ${borrower} did not repay, so ${lender} was able to seize the collateral NFT on ${dayjs
             .unix(event.timestamp)
-            .format('DD/MM/YYYY')}.`,
+            .format('MM/DD/YYYY')}.`,
         ],
         viewLinks: [
           `https://nftpawnshop.xyz/loans/${event.loan.id}`,
@@ -515,7 +513,7 @@ const notificationEventToEmailMetadata: {
           `They accrued ${formattedInterestAccrued} ${loan.loanAssetSymbol}.`,
           `The loan became due on ${dayjs
             .unix(loan.endDateTimestamp!)
-            .format('DD/MM/YYYY')} with a repayment cost of ${repayment} ${
+            .format('MM/DD/YYYY')} with a repayment cost of ${repayment} ${
             loan.loanAssetSymbol
           }`,
           `Unless borrower ${borrower} repays, ${lender} may seize the collateral NFT.`,

@@ -304,7 +304,7 @@ describe('Sending emails with Amazon SES', () => {
       ]);
       expect(borrowerComponents.messageAfterTerms).toEqual([
         'The loan became due on 01/01/1970 with a repayment cost of 8361.869312 DAI.',
-        'Borrower 0x0dd7d did not repay, so 0x7e646 was able to seize the collateral NFT on 17/02/2022.',
+        'Borrower 0x0dd7d did not repay, so 0x7e646 was able to seize the collateral NFT on 02/17/2022.',
       ]);
 
       expect(borrowerComponents.viewLinks).toEqual([
@@ -441,7 +441,7 @@ describe('Sending emails with Amazon SES', () => {
 
       expect(borrowerComponents.messageAfterTerms).toEqual([
         'They accrued 169.869312 DAI.',
-        'The loan became due on 24/02/2022 with a repayment cost of 8361.869312 DAI',
+        'The loan became due on 02/24/2022 with a repayment cost of 8361.869312 DAI',
         'Unless borrower 0x0dd7d repays, 0x7e646 may seize the collateral NFT.',
       ]);
       expect(borrowerComponents.messageAfterTerms).toEqual(

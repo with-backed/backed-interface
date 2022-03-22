@@ -10,7 +10,7 @@ export const subgraphLoanForEvents = {
   ...subgraphLoan,
   lendTicketHolder: '0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866',
   lastAccumulatedTimestamp: subgraphLoan.createdAtTimestamp,
-  endDateTimestamp: 100000,
+  endDateTimestamp: 50000,
 };
 
 export const subgraphBuyoutEvent: BuyoutEvent = {
