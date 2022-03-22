@@ -1,5 +1,3 @@
-import dayjs from 'dayjs';
-import duration from 'dayjs/plugin/duration';
 import { ethers } from 'ethers';
 
 import {
@@ -10,14 +8,16 @@ import {
   RepaymentEvent,
 } from 'types/generated/graphql/nftLoans';
 import { RawSubgraphEvent } from 'types/RawEvent';
-import { formattedAnnualRate } from 'lib/interest';
-import { SCALAR } from 'lib/constants';
-import { Loan as ParsedLoan } from 'types/Loan';
 import { parseSubgraphLoan } from 'lib/loans/utils';
 import { NotificationTriggerType } from './shared';
-import { addressToENS } from 'lib/account';
-
-dayjs.extend(duration);
+import {
+  emailHeader,
+  ensOrAddr,
+  formattedDate,
+  formattedDuration,
+  formattedLoanTerms,
+  getEstimatedRepaymentAndMaturity,
+} from './helpers';
 
 type RenderedTerms = {
   prefix?: string;
@@ -42,77 +42,6 @@ type EmailMetadataType = {
     now: number,
     mostRecentTermsEvent?: LendEvent,
   ) => Promise<AddressesToEmailComponent>;
-};
-
-const ensOrAddr = async (rawAddress: string): Promise<string> => {
-  const ens = await addressToENS(rawAddress);
-  if (ens === null) {
-    return rawAddress.substring(0, 7);
-  }
-  return ens;
-};
-
-const emailHeader = (loan: Loan): string =>
-  `Loan #${loan.id}: ${loan.collateralName}`;
-
-const formattedLoanTerms = (
-  loanAmount: number,
-  loanAssetDecimal: number,
-  perSecondInterestRate: number,
-  durationSeconds: number,
-  loanAssetSymbol: string,
-) => {
-  const parsedLoanAmount = ethers.utils.formatUnits(
-    loanAmount.toString(),
-    loanAssetDecimal,
-  );
-  const amount = `${parsedLoanAmount} ${loanAssetSymbol}`;
-
-  const interest = formattedAnnualRate(
-    ethers.BigNumber.from(perSecondInterestRate),
-  );
-
-  return {
-    amount,
-    duration: formattedDuration(durationSeconds),
-    interest: `${interest}%`,
-  };
-};
-
-const getEstimatedRepaymentAndMaturity = (
-  loan: ParsedLoan,
-  duration: ethers.BigNumber = loan.durationSeconds,
-): [string, string] => {
-  const interestOverTerm = loan.perSecondInterestRate
-    .mul(duration)
-    .mul(loan.loanAmount)
-    .div(SCALAR);
-
-  const estimatedRepayment = ethers.utils.formatUnits(
-    loan.accumulatedInterest.add(interestOverTerm).add(loan.loanAmount),
-    loan.loanAssetDecimals,
-  );
-
-  const dateOfMaturity = dayjs
-    .unix(loan.endDateTimestamp!)
-    .format('MM/DD/YYYY');
-
-  return [estimatedRepayment, dateOfMaturity];
-};
-
-const formattedDuration = (duration: number): string => {
-  const days = Math.floor(dayjs.duration({ seconds: duration }).asDays());
-  if (days != 0) {
-    return `${days} days`;
-  }
-
-  const hours = Math.floor(dayjs.duration({ seconds: duration }).asHours());
-  if (hours != 0) {
-    return `${hours} hours`;
-  }
-
-  const minutes = Math.floor(dayjs.duration({ seconds: duration }).asMinutes());
-  return `${minutes} minutes`;
 };
 
 export function getEmailSubject(
@@ -380,14 +309,14 @@ const notificationEventToEmailMetadata: {
           },
         ],
         messageAfterTerms: [
-          `The loan became due on ${dayjs
-            .unix(event.loan.endDateTimestamp!)
-            .format('MM/DD/YYYY')} with a repayment cost of ${repayment} ${
+          `The loan became due on ${formattedDate(
+            event.loan.endDateTimestamp!,
+          )} with a repayment cost of ${repayment} ${
             event.loan.loanAssetSymbol
           }.`,
-          `Borrower ${borrower} did not repay, so ${lender} was able to seize the collateral NFT on ${dayjs
-            .unix(event.timestamp)
-            .format('MM/DD/YYYY')}.`,
+          `Borrower ${borrower} did not repay, so ${lender} was able to seize the collateral NFT on ${formattedDate(
+            event.timestamp,
+          )}.`,
         ],
         viewLinks: [
           `https://nftpawnshop.xyz/loans/${event.loan.id}`,
@@ -511,11 +440,9 @@ const notificationEventToEmailMetadata: {
         ],
         messageAfterTerms: [
           `They accrued ${formattedInterestAccrued} ${loan.loanAssetSymbol}.`,
-          `The loan became due on ${dayjs
-            .unix(loan.endDateTimestamp!)
-            .format('MM/DD/YYYY')} with a repayment cost of ${repayment} ${
-            loan.loanAssetSymbol
-          }`,
+          `The loan became due on ${formattedDate(
+            loan.endDateTimestamp!,
+          )} with a repayment cost of ${repayment} ${loan.loanAssetSymbol}`,
           `Unless borrower ${borrower} repays, ${lender} may seize the collateral NFT.`,
         ],
         viewLinks: [`https://nftpawnshop.xyz/loans/${loan.id}`, ''],
