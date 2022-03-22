@@ -38,11 +38,10 @@ export function generateHTMLForEmail(components: EmailComponents): string {
       (term) => `
     <mj-text ${reusableTextStyles}>
       ${term.prefix}
-      <pre>
+      <pre style="margin-bottom:0px">
     Loan amount:     ${term.amount}
     Duration:        ${term.duration}
-    Interest:        ${term.interest}
-      </pre>
+    Interest:        ${term.interest}</pre>
     </mj-text>
     `,
     )}
