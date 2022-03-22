@@ -5,7 +5,7 @@ export default function Page() {
   return (
     <>
       <Error404Header />
-      <Custom404></Custom404>
+      <Custom404 />
     </>
   );
 }

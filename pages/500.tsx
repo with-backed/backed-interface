@@ -5,7 +5,7 @@ export default function Page() {
   return (
     <>
       <Error500Header />
-      <Custom500></Custom500>;
+      <Custom500 />
     </>
   );
 }

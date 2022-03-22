@@ -6,7 +6,7 @@ export default function Create() {
   return (
     <>
       <MainHeader />
-      <CreatePageHeader />;
+      <CreatePageHeader />
     </>
   );
 }
