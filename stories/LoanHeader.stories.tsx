@@ -1,5 +1,5 @@
 import React from 'react';
-import { PawnShopHeader } from 'components/PawnShopHeader';
+import { MainHeader } from 'components/PawnShopHeader';
 import { LoanHeader } from 'components/LoanHeader';
 import {
   baseLoan,
@@ -32,7 +32,7 @@ const collateralMedia = {
 export function LoanHeaderAwaiting() {
   return (
     <>
-      <PawnShopHeader />
+      <MainHeader />
       <LoanHeader
         loan={baseLoan}
         collateralMedia={collateralMedia}
@@ -45,7 +45,7 @@ export function LoanHeaderAwaiting() {
 export function LoanHeaderWithLenderAccruing() {
   return (
     <>
-      <PawnShopHeader />
+      <MainHeader />
       <LoanHeader
         loan={loanWithLenderAccruing}
         collateralMedia={collateralMedia}
@@ -58,7 +58,7 @@ export function LoanHeaderWithLenderAccruing() {
 export function LoanHeaderWithLenderPastDue() {
   return (
     <>
-      <PawnShopHeader />
+      <MainHeader />
       <LoanHeader
         loan={loanWithLenderPastDue}
         collateralMedia={collateralMedia}
@@ -71,7 +71,7 @@ export function LoanHeaderWithLenderPastDue() {
 export function LoanHeaderClosed() {
   return (
     <>
-      <PawnShopHeader />
+      <MainHeader />
       <LoanHeader
         loan={closedLoan}
         collateralMedia={collateralMedia}

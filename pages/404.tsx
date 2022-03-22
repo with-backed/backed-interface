@@ -1,5 +1,11 @@
 import { Custom404 } from 'components/Custom404';
+import { Error404Header } from 'components/PawnShopHeader';
 
-export default function page() {
-  return <Custom404></Custom404>;
+export default function Page() {
+  return (
+    <>
+      <Error404Header />
+      <Custom404></Custom404>
+    </>
+  );
 }

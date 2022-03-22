@@ -6,6 +6,7 @@ import { ConnectWallet } from 'components/ConnectWallet';
 import { useWeb3 } from 'hooks/useWeb3';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { TransactionButton } from 'components/Button';
+import { MainHeader } from 'components/PawnShopHeader';
 
 export default function Test() {
   const { account } = useWeb3();
@@ -112,17 +113,20 @@ function MintDAI() {
   };
 
   return (
-    <div>
-      <TransactionButton
-        text="mint"
-        onClick={mint}
-        txHash={txHash}
-        isPending={txPending}
-      />
-      <p>
-        DAI contract address {mockDAIContract} (you will need this when creating
-        a loan)
-      </p>
-    </div>
+    <>
+      <MainHeader />
+      <div>
+        <TransactionButton
+          text="mint"
+          onClick={mint}
+          txHash={txHash}
+          isPending={txPending}
+        />
+        <p>
+          DAI contract address {mockDAIContract} (you will need this when
+          creating a loan)
+        </p>
+      </div>
+    </>
   );
 }

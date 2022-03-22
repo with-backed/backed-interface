@@ -1,4 +1,4 @@
-import { PawnShopHeader } from 'components/PawnShopHeader';
+import { PawnShopHeader } from 'components/PawnShopHeader/PawnShopHeader';
 import React from 'react';
 
 export default {

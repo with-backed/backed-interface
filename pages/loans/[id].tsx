@@ -14,6 +14,7 @@ import {
 } from 'lib/loans/collateralSaleInfo';
 import { SWRConfig, useSWRConfig } from 'swr';
 import { parseSerializedResponse } from 'lib/parseSerializedResponse';
+import { MainHeader } from 'components/PawnShopHeader';
 
 export type LoanPageProps = {
   loanInfoJson: string;
@@ -118,6 +119,7 @@ function LoansInner({
 
   return (
     <>
+      <MainHeader />
       <LoanHeader
         loan={loan}
         collateralMedia={collateralMedia}

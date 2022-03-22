@@ -14,6 +14,7 @@ import { ProfileActivity } from 'components/ProfileActivity';
 import { Toggle } from 'components/Toggle';
 import { ProfileLoans } from 'components/Profile/ProfileLoans';
 import styles from './[address].module.css';
+import { MainHeader } from 'components/PawnShopHeader';
 
 export type ProfilePageProps = {
   address: string;
@@ -56,6 +57,7 @@ export default function Profile({ address, loans, events }: ProfilePageProps) {
 
   return (
     <>
+      <MainHeader />
       <ProfileHeader address={address} loans={parsedLoans} />
       {parsedLoans.length > 0 && (
         <div className={styles.wrapper}>

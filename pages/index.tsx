@@ -10,6 +10,7 @@ import { usePaginatedLoans } from 'hooks/usePaginatedLoans';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { SortOptionValue } from 'components/AdvancedSearch/SortDropdown';
 import { HomePageLoans } from 'components/HomePageLoans';
+import { MainHeader } from 'components/PawnShopHeader';
 
 const PAGE_LIMIT = 20;
 
@@ -44,37 +45,40 @@ export default function Home({ loans }: HomeProps) {
   );
 
   return (
-    <TwelveColumn>
-      <div className={searchStyles.wrapper}>
-        <SearchHeader
-          setSelectedSort={setSelectedSort}
-          showSearch={showSearch}
-          setShowSearch={setShowSearch}
-          handleViewChange={setShowGrid}
-        />
-        <AdvancedSearch
-          showSearch={showSearch}
-          searchActive={searchActive}
-          setSearchActive={setSearchActive}
-          setSearchUrl={setSearchUrl}
-          loanAssetDecimalsForSearch={paginatedLoans[0]?.loanAssetDecimal}
-        />
-      </div>
+    <>
+      <MainHeader />
+      <TwelveColumn>
+        <div className={searchStyles.wrapper}>
+          <SearchHeader
+            setSelectedSort={setSelectedSort}
+            showSearch={showSearch}
+            setShowSearch={setShowSearch}
+            handleViewChange={setShowGrid}
+          />
+          <AdvancedSearch
+            showSearch={showSearch}
+            searchActive={searchActive}
+            setSearchActive={setSearchActive}
+            setSearchUrl={setSearchUrl}
+            loanAssetDecimalsForSearch={paginatedLoans[0]?.loanAssetDecimal}
+          />
+        </div>
 
-      <HomePageLoans
-        loans={paginatedLoans.map(parseSubgraphLoan)}
-        view={showGrid ? 'cards' : 'list'}
-      />
+        <HomePageLoans
+          loans={paginatedLoans.map(parseSubgraphLoan)}
+          view={showGrid ? 'cards' : 'list'}
+        />
 
-      <div ref={ref} style={{ gridColumn: 'span 12' }}>
-        <p>
-          Welcome! Homepage in progress, try{' '}
-          <Link href="/loans/create"> Creating a loan</Link>
-        </p>
-        {process.env.NEXT_PUBLIC_ENV === 'rinkeby' && (
-          <Link href="/test">Get Rinkeby DAI and an NFT!</Link>
-        )}
-      </div>
-    </TwelveColumn>
+        <div ref={ref} style={{ gridColumn: 'span 12' }}>
+          <p>
+            Welcome! Homepage in progress, try{' '}
+            <Link href="/loans/create"> Creating a loan</Link>
+          </p>
+          {process.env.NEXT_PUBLIC_ENV === 'rinkeby' && (
+            <Link href="/test">Get Rinkeby DAI and an NFT!</Link>
+          )}
+        </div>
+      </TwelveColumn>
+    </>
   );
 }
