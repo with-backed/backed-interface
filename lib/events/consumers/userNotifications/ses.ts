@@ -2,7 +2,7 @@ import aws from 'aws-sdk';
 import { awsConfig } from 'lib/aws/config';
 
 const baseParams: aws.SES.Types.SendEmailRequest = {
-  Source: process.env.BACKED_NOTIFICATIONS_EMAIL_ADDRESS!, // TODO(adamgobes): change this, only using for tests
+  Source: process.env.BACKED_NOTIFICATIONS_EMAIL_ADDRESS!,
   Destination: {
     ToAddresses: [],
   },

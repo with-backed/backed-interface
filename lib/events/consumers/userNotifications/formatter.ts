@@ -13,7 +13,6 @@ import {
 import { RawSubgraphEvent } from 'types/RawEvent';
 import { formattedAnnualRate } from 'lib/interest';
 import { SCALAR } from 'lib/constants';
-import { getMostRecentTermsForLoan } from 'lib/loans/subgraph/subgraphLoans';
 import { Loan as ParsedLoan } from 'types/Loan';
 import { parseSubgraphLoan } from 'lib/loans/utils';
 import { NotificationTriggerType } from './shared';

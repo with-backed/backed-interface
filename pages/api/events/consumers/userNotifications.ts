@@ -1,9 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import {
-  BuyoutByTransactionHashDocument,
-  BuyoutByTransactionHashQuery,
-} from 'types/generated/graphql/nftLoans';
-import { nftBackedLoansClient } from 'lib/urql';
 import { sendEmailsForTriggerAndEntity } from 'lib/events/consumers/userNotifications/emails';
 import {
   confirmTopicSubscription,

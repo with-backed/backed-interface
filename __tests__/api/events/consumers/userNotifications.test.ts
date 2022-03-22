@@ -1,7 +1,6 @@
 import { ethers } from 'ethers';
 import { subgraphLoan } from 'lib/mockData';
 import { sendEmailsForTriggerAndEntity } from 'lib/events/consumers/userNotifications/emails';
-import { nftBackedLoansClient } from 'lib/urql';
 import { createMocks } from 'node-mocks-http';
 import handler from 'pages/api/events/consumers/userNotifications';
 import fetchMock from 'jest-fetch-mock';
@@ -13,8 +12,6 @@ const subgraphLoanCopy = {
 };
 subgraphLoanCopy.lendTicketHolder =
   ethers.Wallet.createRandom().address.toLowerCase();
-
-const txHash = 'random-tx-hash';
 
 jest.mock('lib/events/consumers/userNotifications/emails', () => ({
   sendEmailsForTriggerAndEntity: jest.fn(),

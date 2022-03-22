@@ -83,7 +83,7 @@ describe('Sending emails with Amazon SES', () => {
       ]);
 
       expect(borrowerComponents!.messageAfterTerms).toEqual([
-        'At this rate, repayment of 8362.890048 DAI will be due on 31/12/1969.',
+        'At this rate, repayment of 8362.890048 DAI will be due on 01/01/1970.',
       ]);
       expect([
         borrowerComponents!.messageAfterTerms,
@@ -171,7 +171,7 @@ describe('Sending emails with Amazon SES', () => {
       expect(borrowerComponents!.terms).toEqual(lenderComponents!.terms);
 
       expect(borrowerComponents!.messageAfterTerms).toEqual([
-        'At this rate, repayment of 8361.869312 DAI will be due on 31/12/1969',
+        'At this rate, repayment of 8361.869312 DAI will be due on 01/01/1970',
       ]);
       expect(borrowerComponents!.messageAfterTerms).toEqual(
         lenderComponents!.messageAfterTerms,
@@ -276,9 +276,9 @@ describe('Sending emails with Amazon SES', () => {
       ]);
 
       const borrowerComponents =
-        emailComponentsMap![subgraphCollateralSeizureEvent.borrowTicketHolder];
+        emailComponentsMap![subgraphLoanForEvents.borrowTicketHolder];
       const lenderComponents =
-        emailComponentsMap![subgraphCollateralSeizureEvent.lendTicketHolder];
+        emailComponentsMap![subgraphLoanForEvents.lendTicketHolder];
 
       expect(borrowerComponents.header).toEqual('Loan #65: monarchs');
       expect(borrowerComponents.header).toEqual(lenderComponents.header);
@@ -303,7 +303,7 @@ describe('Sending emails with Amazon SES', () => {
         },
       ]);
       expect(borrowerComponents.messageAfterTerms).toEqual([
-        'The loan became due on 31/12/1969 with a repayment cost of 8361.869312 DAI.',
+        'The loan became due on 01/01/1970 with a repayment cost of 8361.869312 DAI.',
         'Borrower 0x0dd7d did not repay, so 0x7e646 was able to seize the collateral NFT on 17/02/2022.',
       ]);
 
@@ -340,9 +340,9 @@ describe('Sending emails with Amazon SES', () => {
       ]);
 
       const borrowerComponents =
-        emailComponentsMap![subgraphCollateralSeizureEvent.borrowTicketHolder];
+        emailComponentsMap![subgraphLoanForEvents.borrowTicketHolder];
       const lenderComponents =
-        emailComponentsMap![subgraphCollateralSeizureEvent.lendTicketHolder];
+        emailComponentsMap![subgraphLoanForEvents.lendTicketHolder];
 
       expect(borrowerComponents.header).toEqual('Loan #65: monarchs');
       expect(borrowerComponents.header).toEqual(lenderComponents.header);
@@ -370,7 +370,7 @@ describe('Sending emails with Amazon SES', () => {
 
       expect(borrowerComponents.messageAfterTerms).toEqual([
         'They accrued 8228.778934272 DAI over that period.',
-        'At this rate, repayment of 8361.869312 DAI will be due on 31/12/1969',
+        'At this rate, repayment of 8361.869312 DAI will be due on 01/01/1970',
       ]);
       expect(borrowerComponents.messageAfterTerms).toEqual(
         lenderComponents.messageAfterTerms,
