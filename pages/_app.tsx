@@ -6,7 +6,6 @@ import { Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { AppWrapper } from 'components/layouts/AppWrapper';
 import { TimestampProvider } from 'hooks/useTimestamp/useTimestamp';
-import { useEffect, useState } from 'react';
 import { GlobalMessagingProvider } from 'hooks/useGlobalMessages';
 
 const getLibrary: React.ComponentProps<typeof Web3ReactProvider>['getLibrary'] =
@@ -16,41 +15,7 @@ const getLibrary: React.ComponentProps<typeof Web3ReactProvider>['getLibrary'] =
     return library;
   };
 
-const konami = [
-  'ArrowUp',
-  'ArrowUp',
-  'ArrowDown',
-  'ArrowDown',
-  'ArrowLeft',
-  'ArrowRight',
-  'ArrowLeft',
-  'ArrowRight',
-  'KeyB',
-  'KeyA',
-  'Enter',
-];
-let konamiIndex = 0;
-
 export default function App({ Component, pageProps }: AppProps) {
-  const [showVariant, setShowVariant] = useState(false);
-  useEffect(() => {
-    function handleKeyDown(ev: KeyboardEvent) {
-      if (ev.code === konami[konamiIndex]) {
-        ++konamiIndex;
-      } else {
-        konamiIndex = 0;
-      }
-
-      if (konamiIndex >= konami.length) {
-        konamiIndex = 0;
-        setShowVariant((prev) => !prev);
-      }
-    }
-    document.addEventListener('keydown', handleKeyDown);
-
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
   return (
     <GlobalMessagingProvider>
       <Web3ReactProvider getLibrary={getLibrary}>
