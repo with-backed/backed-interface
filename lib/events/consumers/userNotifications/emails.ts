@@ -135,8 +135,6 @@ export async function sendEmailsForTriggerAndEntity(
       return executeEmailSendWithSes(params);
     });
 
-    await fs.writeFileSync('./html.txt', params.Message.Body.Html!.Data);
-
     await Promise.all(allEmailSends);
   }
 }

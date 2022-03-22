@@ -200,7 +200,7 @@ const notificationEventToEmailMetadata: {
           {
             prefix: `The new terms set by ${newLender} are:`,
             ...formattedLoanTerms(
-              event.loanAmount,
+              event.loan.loanAmount,
               event.loan.loanAssetDecimal,
               event.loan.perSecondInterestRate,
               event.loan.durationSeconds,
