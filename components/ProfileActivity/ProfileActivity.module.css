@@ -35,7 +35,6 @@
 .highlight-address {
   padding: 0.25rem;
   background-color: var(--highlight-active-10);
-  letter-spacing: 0.125rem;
 }
 
 .description {
