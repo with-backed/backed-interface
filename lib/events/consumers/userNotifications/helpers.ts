@@ -67,16 +67,16 @@ export const getEstimatedRepaymentAndMaturity = (
 export const formattedDuration = (duration: number): string => {
   const days = Math.floor(dayjs.duration({ seconds: duration }).asDays());
   if (days != 0) {
-    return `${days} days`;
+    return days === 1 ? `${days} day` : `${days} days`;
   }
 
   const hours = Math.floor(dayjs.duration({ seconds: duration }).asHours());
   if (hours != 0) {
-    return `${hours} hours`;
+    return hours === 1 ? `${hours} hour` : `${hours} hours`;
   }
 
   const minutes = Math.floor(dayjs.duration({ seconds: duration }).asMinutes());
-  return `${minutes} minutes`;
+  return minutes === 1 ? `${minutes} minute` : `${minutes} minutes`;
 };
 
 export const formattedDate = (timestamp: number): string =>

@@ -152,7 +152,7 @@ export async function getMostRecentTermsForLoan(
   const { data, error } = await nftBackedLoansClient
     .query<EventsForLoanQuery>(EventsForLoanDocument, { id: loanId })
     .toPromise();
-  console.log({ data });
+
   if (error) {
     // TODO: bugsnag
   }

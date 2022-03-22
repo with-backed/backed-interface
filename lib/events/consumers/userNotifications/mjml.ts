@@ -2,8 +2,8 @@ import mjml2html from 'mjml';
 import { EmailComponents } from './formatter';
 
 export function generateHTMLForEmail(components: EmailComponents): string {
-  const reusableTextStyles = `font-size="14px" color="black" font-family="monospace" align="left" line-height="1.5em"`;
-  const reusableAnchorStyles = `style="color: #0000EE; text-decoration:none"`;
+  const textStyles = `font-size="14px" color="black" font-family="monospace" align="left" line-height="1.5em"`;
+  const anchorStyles = `style="color: #0000EE; text-decoration:none"`;
 
   return mjml2html(
     `
@@ -11,31 +11,31 @@ export function generateHTMLForEmail(components: EmailComponents): string {
       <mj-body>
         <mj-section>
           <mj-column>
-            <mj-text ${reusableTextStyles}>&#128184; NFT Pawn Shop</mj-text>
+            <mj-text ${textStyles}>&#128184; NFT Pawn Shop</mj-text>
     
             <mj-divider border-width="1px"></mj-divider>
     
-            <mj-text ${reusableTextStyles}>
-            <a href="${components.viewLinks[0]}" ${reusableAnchorStyles};">
+            <mj-text ${textStyles}>
+            <a href="${components.viewLinks[0]}" ${anchorStyles};">
               &#128196; ${components.header}
             </a>
             </mj-text>
     
             <mj-divider border-style="dashed" border-width="1px"></mj-divider>
     
-            <mj-text ${reusableTextStyles}>${components.mainMessage}</mj-text>
+            <mj-text ${textStyles}>${components.mainMessage}</mj-text>
     
             <mj-divider border-style="dashed" border-width="1px"></mj-divider>
     
         ${components.messageBeforeTerms.map(
           (message) => `
-            <mj-text ${reusableTextStyles}>${message}</mj-text>
+            <mj-text ${textStyles}>${message}</mj-text>
             `,
         )}
 
     ${components.terms.map(
       (term) => `
-    <mj-text ${reusableTextStyles}>
+    <mj-text ${textStyles}>
       ${term.prefix}
       <pre style="margin-bottom:0px">
     Loan amount:     ${term.amount}
@@ -47,14 +47,14 @@ export function generateHTMLForEmail(components: EmailComponents): string {
 
     ${components.messageAfterTerms.map(
       (message) => `
-            <mj-text ${reusableTextStyles}>${message}</mj-text>
+            <mj-text ${textStyles}>${message}</mj-text>
             `,
     )}
     
             <mj-divider border-style="dashed" border-width="1px"></mj-divider>
     
-            <mj-text ${reusableTextStyles}>View the loan at
-              <a href="${components.viewLinks[0]}" ${reusableAnchorStyles};>
+            <mj-text ${textStyles}>View the loan at
+              <a href="${components.viewLinks[0]}" ${anchorStyles};>
                 ${components.viewLinks[0].substring(8)}
               </a>
             </mj-text>
@@ -62,8 +62,8 @@ export function generateHTMLForEmail(components: EmailComponents): string {
         ${
           !!components.viewLinks[1] &&
           `
-            <mj-text ${reusableTextStyles}>View transaction at
-                <a href="${components.viewLinks[1]}" ${reusableAnchorStyles};>
+            <mj-text ${textStyles}>View transaction at
+                <a href="${components.viewLinks[1]}" ${anchorStyles};>
                 ${components.viewLinks[1].substring(
                   8,
                   components.viewLinks[1].length - 60,
@@ -74,8 +74,8 @@ export function generateHTMLForEmail(components: EmailComponents): string {
         }
             <mj-divider border-style="dashed" border-width="1px"></mj-divider>
     
-            <mj-text ${reusableTextStyles}>This is an automatically generated email. To stop notifications, visit
-            <a href="${components.footer}" ${reusableAnchorStyles};>
+            <mj-text ${textStyles}>This is an automatically generated email. To stop notifications, visit
+            <a href="${components.footer}" ${anchorStyles};>
               ${components.footer.substring(
                 8,
                 components.footer.length - 36,

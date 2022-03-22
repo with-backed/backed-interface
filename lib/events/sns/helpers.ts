@@ -10,7 +10,6 @@ export type EventsSNSMessage = {
   mostRecentTermsEvent?: RawSubgraphLendEvent;
 };
 
-//TODO(adamgobes): fill this out with actual pushing of message to SNS -- to be implemented in follow up PR
 export async function pushEventForProcessing({
   eventName,
   event,
