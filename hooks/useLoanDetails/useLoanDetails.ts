@@ -24,7 +24,7 @@ function loanStatus({
   }
 
   if (lastAccumulatedTimestamp.eq(0)) {
-    return 'Available';
+    return 'No lender';
   }
 
   if (!timestamp) {
@@ -122,12 +122,14 @@ export function useLoanDetails(loan: Loan) {
     loanAssetDecimals,
     perSecondInterestRate,
   ]);
+
+  // TODO: don't conflate "status" with "time remaining"
   const formattedTimeRemaining = useMemo(() => {
     if (!timestamp) {
       return '--';
     }
     if (endDateTimestamp === 0) {
-      return 'available';
+      return 'no lender';
     }
     if (timestamp > endDateTimestamp) {
       return 'past due';
