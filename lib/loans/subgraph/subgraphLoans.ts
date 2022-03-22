@@ -12,6 +12,9 @@ import {
   HomepageSearchDocument,
   HomepageSearchWithoutLenderQuery,
   HomepageSearchWithoutLenderDocument,
+  LendEvent,
+  EventsForLoanQuery,
+  EventsForLoanDocument,
 } from 'types/generated/graphql/nftLoans';
 import { ethers } from 'ethers';
 import { annualRateToPerSecond } from 'lib/interest';
@@ -141,4 +144,21 @@ export async function getLoansExpiringWithin(
     // TODO: bugsnag
   }
   return data?.loans || [];
+}
+
+export async function getMostRecentTermsForLoan(
+  loanId: string,
+): Promise<LendEvent | undefined> {
+  const { data, error } = await nftBackedLoansClient
+    .query<EventsForLoanQuery>(EventsForLoanDocument, { id: loanId })
+    .toPromise();
+
+  if (error) {
+    // TODO: bugsnag
+  }
+
+  const lendEvents = (data?.loan?.lendEvents as LendEvent[]) || [];
+  if (lendEvents.length === 0) return undefined;
+
+  return lendEvents.sort((a, b) => b.blockNumber - a.blockNumber)[1];
 }

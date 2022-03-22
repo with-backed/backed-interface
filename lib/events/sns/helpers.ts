@@ -1,19 +1,19 @@
 import { SNS } from 'aws-sdk';
 import { awsConfig } from 'lib/aws/config';
 import { NextApiResponse } from 'next';
+import { LendEvent as RawSubgraphLendEvent } from 'types/generated/graphql/nftLoans';
 import { RawEventNameType, RawSubgraphEvent } from 'types/RawEvent';
 
 export type EventsSNSMessage = {
   eventName: RawEventNameType;
   event: RawSubgraphEvent;
-  txHash: string;
+  mostRecentTermsEvent?: RawSubgraphLendEvent;
 };
 
-//TODO(adamgobes): fill this out with actual pushing of message to SNS -- to be implemented in follow up PR
 export async function pushEventForProcessing({
   eventName,
   event,
-  txHash,
+  mostRecentTermsEvent,
 }: EventsSNSMessage): Promise<boolean> {
   const sns = new SNS(awsConfig);
 
@@ -22,8 +22,8 @@ export async function pushEventForProcessing({
       TopicArn: process.env.EVENTS_SNS_ARN!,
       Message: JSON.stringify({
         eventName,
-        txHash,
         event,
+        mostRecentTermsEvent,
       }),
     })
     .promise();

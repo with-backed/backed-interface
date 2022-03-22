@@ -12,14 +12,13 @@ export function DisplayAddress({
   address,
   useEns = true,
 }: DisplayAddressProps) {
-  const { library } = useWeb3();
   const [gotResponse, setGotResponse] = useState(false);
   const [addr, setAddr] = useState<string>(address);
 
   useEffect(() => {
     async function getEnsName() {
       try {
-        let name = await addressToENS(address, library!);
+        let name = await addressToENS(address);
 
         setGotResponse(true);
         if (name) {
@@ -32,7 +31,7 @@ export function DisplayAddress({
     }
 
     if (useEns) getEnsName();
-  }, [address, library, useEns]);
+  }, [address, useEns]);
 
   if (!useEns) {
     return (

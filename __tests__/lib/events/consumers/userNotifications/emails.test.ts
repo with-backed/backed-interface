@@ -1,20 +1,24 @@
-import { subgraphLoan } from 'lib/mockData';
 import { sendEmailsForTriggerAndEntity } from 'lib/events/consumers/userNotifications/emails';
 import { executeEmailSendWithSes } from 'lib/events/consumers/userNotifications/ses';
-import { nftBackedLoansClient } from 'lib/urql';
 import { getNotificationRequestsForAddress } from 'lib/events/consumers/userNotifications/repository';
 import { NotificationRequest } from '@prisma/client';
 import {
   NotificationMethod,
   NotificationTriggerType,
 } from 'lib/events/consumers/userNotifications/shared';
-
-jest.mock('lib/urql', () => ({
-  ...jest.requireActual('lib/urql'),
-  nftBackedLoansClient: {
-    query: jest.fn(),
-  },
-}));
+import {
+  subgraphBuyoutEvent,
+  subgraphCollateralSeizureEvent,
+  subgraphLendEvent,
+  subgraphLoanForEvents,
+  subgraphRepaymentEvent,
+} from 'lib/mockSubgraphEventsData';
+import {
+  EmailComponents,
+  getEmailComponentsMap,
+  getEmailSubject,
+} from 'lib/events/consumers/userNotifications/formatter';
+import { generateHTMLForEmail } from 'lib/events/consumers/userNotifications/mjml';
 
 jest.mock('lib/events/consumers/userNotifications/ses', () => ({
   executeEmailSendWithSes: jest.fn(),
@@ -32,6 +36,25 @@ const mockedGetNotificationsCall =
   getNotificationRequestsForAddress as jest.MockedFunction<
     typeof getNotificationRequestsForAddress
   >;
+
+jest.mock('lib/events/consumers/userNotifications/formatter', () => ({
+  getEmailSubject: jest.fn(),
+  getEmailComponentsMap: jest.fn(),
+}));
+
+jest.mock('lib/events/consumers/userNotifications/mjml', () => ({
+  generateHTMLForEmail: jest.fn(),
+}));
+
+const mockGetSubjectCall = getEmailSubject as jest.MockedFunction<
+  typeof getEmailSubject
+>;
+const mockGetComponentsCall = getEmailComponentsMap as jest.MockedFunction<
+  typeof getEmailComponentsMap
+>;
+const mockGetMJMLCall = generateHTMLForEmail as jest.MockedFunction<
+  typeof generateHTMLForEmail
+>;
 
 const event: NotificationTriggerType = 'All';
 const notificationMethod = NotificationMethod.EMAIL;
@@ -54,22 +77,30 @@ const notificationReqTwo: NotificationRequest = {
   event,
 };
 
-let loan = subgraphLoan;
-
-const emailParamsMatchingObject = (text: string) => ({
-  Source: process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_EMAIL!,
-  Destination: {
-    ToAddresses: [testRecipientOne, testRecipientTwo],
-  },
-  ReplyToAddresses: [process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_EMAIL!],
-  Message: expect.objectContaining({
-    Body: expect.objectContaining({
-      Html: expect.objectContaining({
-        Data: expect.stringContaining(text),
-      }),
-    }),
-  }),
-});
+const mockEmailComponents: EmailComponents = {
+  header: 'Loan #65: monarchs',
+  messageBeforeTerms: [
+    '0x10359 held the loan for 2 days and accrued 0.00000000000001 DAI in interest over that period.',
+  ],
+  terms: [
+    {
+      prefix: '0x7e646 held the loan for 7 days, with loan terms:',
+      amount: '8192.0 DAI',
+      duration: '120 days',
+      interest: '6.3072%',
+    },
+  ],
+  messageAfterTerms: [
+    'At this rate, repayment of 8361.869312 DAI will be due on 31/12/1969.',
+  ],
+  viewLinks: [
+    'https://nftpawnshop.xyz/loans/65',
+    'https://rinkeby.etherscan.io/tx/0x7685d19b85fb80c03ac0c117ea542b77a6c8ecebea56744b121183cfb614bce6',
+  ],
+  mainMessage: '0x10359 has been replaced as the lender on loan #65.',
+  footer:
+    'https://nftpawnshop.xyz/profile/0x10359616ab170c1bd6c478a40c6715a49ba25efc',
+};
 
 describe('Sending emails with Amazon SES', () => {
   beforeEach(() => {
@@ -79,157 +110,155 @@ describe('Sending emails with Amazon SES', () => {
       notificationReqTwo,
     ]); // two email addresses are subscribed to a particular eth addresses on-chain activity
     mockedSesEmailCall.mockResolvedValue();
+    mockGetSubjectCall.mockReturnValue('');
+    mockGetComponentsCall.mockResolvedValue({
+      [subgraphLoanForEvents.borrowTicketHolder]: mockEmailComponents,
+      [subgraphLoanForEvents.lendTicketHolder]: mockEmailComponents,
+    });
+    mockGetMJMLCall.mockReturnValue('');
   });
 
   describe('BuyoutEvent', () => {
+    beforeEach(() => {
+      mockGetComponentsCall.mockResolvedValue({
+        [subgraphLoanForEvents.borrowTicketHolder]: mockEmailComponents,
+        [subgraphBuyoutEvent.lendTicketHolder]: mockEmailComponents,
+        [subgraphBuyoutEvent.newLender]: mockEmailComponents,
+      });
+    });
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmailsForTriggerAndEntity('BuyoutEvent', loan);
+      await sendEmailsForTriggerAndEntity(
+        'BuyoutEvent',
+        subgraphBuyoutEvent,
+        0,
+      );
 
-      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
+      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(3);
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
-        loan.lendTicketHolder,
+        subgraphLoanForEvents.borrowTicketHolder,
       );
-      expect(mockedSesEmailCall).toBeCalledTimes(1);
-      expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(
-          emailParamsMatchingObject('Your loan was bought out'),
-        ),
+      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
+        subgraphBuyoutEvent.lendTicketHolder,
       );
+      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
+        subgraphBuyoutEvent.newLender,
+      );
+      expect(mockedSesEmailCall).toBeCalledTimes(6);
+      expect(mockedSesEmailCall).toHaveBeenCalledWith('', '', testRecipientOne);
+      expect(mockedSesEmailCall).toHaveBeenCalledWith('', '', testRecipientTwo);
     });
   });
   describe('LendEvent', () => {
-    it('successfully calls SES send email method with correct params when there was no previous lender', async () => {
-      await sendEmailsForTriggerAndEntity('LendEvent', loan, false);
+    it('successfully calls SES send email method with correct params', async () => {
+      await sendEmailsForTriggerAndEntity('LendEvent', subgraphLendEvent, 0);
 
-      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
+      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(2);
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
-        loan.borrowTicketHolder,
+        subgraphLoanForEvents.borrowTicketHolder,
       );
-      expect(mockedSesEmailCall).toBeCalledTimes(1);
-      expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(
-          emailParamsMatchingObject('Your loan was fulfilled'),
-        ),
+      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
+        subgraphLoanForEvents.lendTicketHolder,
       );
+      expect(mockedSesEmailCall).toBeCalledTimes(4);
+
+      expect(mockedSesEmailCall).toHaveBeenCalledWith('', '', testRecipientOne);
+      expect(mockedSesEmailCall).toHaveBeenCalledWith('', '', testRecipientTwo);
     });
 
-    it('successfully calls SES send email method with correct params when there was a previous lender', async () => {
-      await sendEmailsForTriggerAndEntity('LendEvent', loan, true);
+    it('does nothing if method is called with LendEvent and a previous terms event (indicating we have a BuyoutEvent)', async () => {
+      await sendEmailsForTriggerAndEntity(
+        'LendEvent',
+        subgraphLendEvent,
+        0,
+        subgraphLendEvent,
+      );
 
-      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
-      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
-        loan.borrowTicketHolder,
-      );
-      expect(mockedSesEmailCall).toBeCalledTimes(1);
-      expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(
-          emailParamsMatchingObject(
-            'The terms for one of your loans has been improved',
-          ),
-        ),
-      );
+      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(0);
+      expect(mockedSesEmailCall).toBeCalledTimes(0);
     });
   });
   describe('RepaymentEvent', () => {
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmailsForTriggerAndEntity('RepaymentEvent', loan);
+      await sendEmailsForTriggerAndEntity(
+        'RepaymentEvent',
+        subgraphRepaymentEvent,
+        0,
+      );
 
-      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
+      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(2);
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
-        loan.lendTicketHolder,
+        subgraphLoanForEvents.borrowTicketHolder,
       );
-      expect(mockedSesEmailCall).toBeCalledTimes(1);
-      expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(
-          emailParamsMatchingObject('Your loan was repaid'),
-        ),
+      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
+        subgraphLoanForEvents.lendTicketHolder,
       );
+      expect(mockedSesEmailCall).toBeCalledTimes(4);
+
+      expect(mockedSesEmailCall).toHaveBeenCalledWith('', '', testRecipientOne);
+      expect(mockedSesEmailCall).toHaveBeenCalledWith('', '', testRecipientTwo);
     });
   });
   describe('CollateralSeizureEvent', () => {
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmailsForTriggerAndEntity('CollateralSeizureEvent', loan);
+      await sendEmailsForTriggerAndEntity(
+        'CollateralSeizureEvent',
+        subgraphCollateralSeizureEvent,
+        0,
+      );
 
-      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
+      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(2);
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
-        loan.borrowTicketHolder,
+        subgraphLoanForEvents.borrowTicketHolder,
       );
-      expect(mockedSesEmailCall).toBeCalledTimes(1);
-      expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(
-          emailParamsMatchingObject('Your collateral was seized'),
-        ),
+      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
+        subgraphLoanForEvents.lendTicketHolder,
       );
+      expect(mockedSesEmailCall).toBeCalledTimes(4);
+
+      expect(mockedSesEmailCall).toHaveBeenCalledWith('', '', testRecipientOne);
+      expect(mockedSesEmailCall).toHaveBeenCalledWith('', '', testRecipientTwo);
     });
   });
-  describe('LiquidationOccuringBorrower', () => {
+  describe('LiquidationOccuring', () => {
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmailsForTriggerAndEntity('LiquidationOccurringBorrower', loan);
+      await sendEmailsForTriggerAndEntity(
+        'LiquidationOccurring',
+        subgraphLoanForEvents,
+        0,
+      );
 
-      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
+      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(2);
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
-        loan.borrowTicketHolder,
+        subgraphLoanForEvents.borrowTicketHolder,
       );
-      expect(mockedSesEmailCall).toBeCalledTimes(1);
-      expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(
-          emailParamsMatchingObject(
-            'Your NFT collateral is approaching liquidation',
-          ),
-        ),
+      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
+        subgraphLoanForEvents.lendTicketHolder,
       );
+      expect(mockedSesEmailCall).toBeCalledTimes(4);
+
+      expect(mockedSesEmailCall).toHaveBeenCalledWith('', '', testRecipientOne);
+      expect(mockedSesEmailCall).toHaveBeenCalledWith('', '', testRecipientTwo);
     });
   });
-  describe('LiquidationOccuringLender', () => {
+  describe('LiquidationOccurred', () => {
     it('successfully calls SES send email method with correct params', async () => {
-      await sendEmailsForTriggerAndEntity('LiquidationOccurringLender', loan);
+      await sendEmailsForTriggerAndEntity(
+        'LiquidationOccurred',
+        subgraphLoanForEvents,
+        0,
+      );
 
-      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
+      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(2);
       expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
-        loan.lendTicketHolder,
+        subgraphLoanForEvents.borrowTicketHolder,
       );
-      expect(mockedSesEmailCall).toBeCalledTimes(1);
-      expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(
-          emailParamsMatchingObject(
-            'An NFT you have lent against can be seized soon',
-          ),
-        ),
+      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
+        subgraphLoanForEvents.lendTicketHolder,
       );
-    });
-  });
-  describe('LiquidationOccurredBorrower', () => {
-    it('successfully calls SES send email method with correct params', async () => {
-      await sendEmailsForTriggerAndEntity('LiquidationOccurredBorrower', loan);
+      expect(mockedSesEmailCall).toBeCalledTimes(4);
 
-      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
-      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
-        loan.borrowTicketHolder,
-      );
-      expect(mockedSesEmailCall).toBeCalledTimes(1);
-      expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(
-          emailParamsMatchingObject('Your NFT collateral can be liquidated'),
-        ),
-      );
-    });
-  });
-  describe('LiquidationOccurredLender', () => {
-    it('successfully calls SES send email method with correct params', async () => {
-      await sendEmailsForTriggerAndEntity('LiquidationOccurredLender', loan);
-
-      expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
-      expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
-        loan.lendTicketHolder,
-      );
-      expect(mockedSesEmailCall).toBeCalledTimes(1);
-      expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(
-          emailParamsMatchingObject(
-            'An NFT you have lent against can be seized',
-          ),
-        ),
-      );
+      expect(mockedSesEmailCall).toHaveBeenCalledWith('', '', testRecipientOne);
+      expect(mockedSesEmailCall).toHaveBeenCalledWith('', '', testRecipientTwo);
     });
   });
 });

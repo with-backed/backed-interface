@@ -5,6 +5,8 @@ import { NotificationTriggerType } from 'lib/events/consumers/userNotifications/
 import { pushEventForProcessing } from 'lib/events/sns/helpers';
 import { deleteMessage, receiveMessages } from 'lib/events/sqs/helpers';
 import { nftBackedLoansClient } from 'lib/urql';
+import { subgraphLendEvent } from 'lib/mockSubgraphEventsData';
+import { getMostRecentTermsForLoan } from 'lib/loans/subgraph/subgraphLoans';
 
 const subgraphLoanCopy = {
   ...subgraphLoan,
@@ -44,10 +46,19 @@ const mockedSnsPushCall = pushEventForProcessing as jest.MockedFunction<
   typeof pushEventForProcessing
 >;
 
+jest.mock('lib/loans/subgraph/subgraphLoans', () => ({
+  getMostRecentTermsForLoan: jest.fn(),
+}));
+
+const mockedRecentTermsEvent = getMostRecentTermsForLoan as jest.MockedFunction<
+  typeof getMostRecentTermsForLoan
+>;
+
 describe('SQS consumer', () => {
   beforeEach(async () => {
     jest.clearAllMocks();
     mockedSnsPushCall.mockResolvedValue(true);
+    mockedRecentTermsEvent.mockResolvedValue(undefined);
   });
 
   describe('SQS queue empty', () => {
@@ -69,6 +80,11 @@ describe('SQS consumer', () => {
             receiptHandle: 'random-receipt-handle',
           },
         ]);
+        mockedRecentTermsEvent.mockResolvedValue({
+          ...subgraphLendEvent,
+          loanAmount: '8000000000000000000000',
+          timestamp: subgraphLendEvent.timestamp - 86400 * 2,
+        });
       });
       it('does not make call to deleteMessage or pushEventForProcessing if graph is still not in sync', async () => {
         mockedNftBackedLoansClientQuery.mockReturnValueOnce({
@@ -102,7 +118,11 @@ describe('SQS consumer', () => {
             lendTicketHolder: subgraphLoanCopy.lendTicketHolder,
             loan: subgraphLoanCopy,
           }),
-          txHash: 'random-tx-hash',
+          mostRecentTermsEvent: {
+            ...subgraphLendEvent,
+            loanAmount: '8000000000000000000000',
+            timestamp: subgraphLendEvent.timestamp - 86400 * 2,
+          },
         });
 
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledTimes(1);
@@ -172,7 +192,7 @@ describe('SQS consumer', () => {
             borrowTicketHolder: subgraphLoanCopy.borrowTicketHolder,
             loan: subgraphLoanCopy,
           }),
-          txHash: 'random-tx-hash',
+          mostRecentTermsEvent: undefined,
         });
 
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledTimes(1);
@@ -223,7 +243,7 @@ describe('SQS consumer', () => {
             lendTicketHolder: subgraphLoanCopy.lendTicketHolder,
             loan: subgraphLoanCopy,
           }),
-          txHash: 'random-tx-hash',
+          mostRecentTermsEvent: undefined,
         });
 
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledTimes(1);
@@ -274,7 +294,7 @@ describe('SQS consumer', () => {
             borrowTicketHolder: subgraphLoanCopy.borrowTicketHolder,
             loan: subgraphLoanCopy,
           }),
-          txHash: 'random-tx-hash',
+          mostRecentTermsEvent: undefined,
         });
 
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledTimes(1);

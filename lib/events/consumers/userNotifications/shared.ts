@@ -6,10 +6,8 @@ export enum NotificationMethod {
 
 export type NotificationTriggerType =
   | RawEventNameType
-  | 'LiquidationOccurringBorrower'
-  | 'LiquidationOccurringLender'
-  | 'LiquidationOccurredBorrower'
-  | 'LiquidationOccurredLender'
+  | 'LiquidationOccurring'
+  | 'LiquidationOccurred'
   | 'All';
 
 export type NotificationReqBody = {

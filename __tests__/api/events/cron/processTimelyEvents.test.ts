@@ -52,22 +52,16 @@ describe('/api/events/cron/processTimelyEvents', () => {
 
     await handler(req, res);
 
-    expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledTimes(4);
+    expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledTimes(2);
     expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledWith(
-      'LiquidationOccurringBorrower',
+      'LiquidationOccurring',
       aboutToExpireLoan,
+      expect.anything(),
     );
     expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledWith(
-      'LiquidationOccurringLender',
-      aboutToExpireLoan,
-    );
-    expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledWith(
-      'LiquidationOccurredBorrower',
+      'LiquidationOccurred',
       alreadyExpiredLoan,
-    );
-    expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledWith(
-      'LiquidationOccurredLender',
-      alreadyExpiredLoan,
+      expect.anything(),
     );
 
     expect(res._getStatusCode()).toBe(200);

@@ -1,9 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import {
-  BuyoutByTransactionHashDocument,
-  BuyoutByTransactionHashQuery,
-} from 'types/generated/graphql/nftLoans';
-import { nftBackedLoansClient } from 'lib/urql';
 import { sendEmailsForTriggerAndEntity } from 'lib/events/consumers/userNotifications/emails';
 import {
   confirmTopicSubscription,
@@ -27,26 +22,17 @@ export default async function handler(
   }
 
   try {
-    const { eventName, event, txHash } = JSON.parse(
+    const { eventName, event, mostRecentTermsEvent } = JSON.parse(
       parsedBody['Message'],
     ) as EventsSNSMessage;
 
-    let hasPreviousLender = false;
-    if (eventName === 'LendEvent') {
-      const { data, error } = await nftBackedLoansClient
-        .query<BuyoutByTransactionHashQuery>(BuyoutByTransactionHashDocument, {
-          id: txHash,
-        })
-        .toPromise();
-      if (error) {
-        // TODO: bugsnag
-      }
-      if (!!data?.buyoutEvent) {
-        hasPreviousLender = true;
-      }
-    }
-
-    await sendEmailsForTriggerAndEntity(eventName, event, hasPreviousLender);
+    const now = Math.floor(new Date().getTime() / 1000);
+    await sendEmailsForTriggerAndEntity(
+      eventName,
+      event,
+      now,
+      mostRecentTermsEvent,
+    );
 
     res.status(200).json(`notifications successfully sent`);
   } catch (e) {
