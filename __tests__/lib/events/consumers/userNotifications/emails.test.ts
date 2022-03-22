@@ -18,6 +18,7 @@ import {
   getEmailComponentsMap,
   getEmailSubject,
 } from 'lib/events/consumers/userNotifications/formatter';
+import { generateHTMLForEmail } from 'lib/events/consumers/userNotifications/mjml';
 
 jest.mock('lib/events/consumers/userNotifications/ses', () => ({
   executeEmailSendWithSes: jest.fn(),
@@ -41,11 +42,18 @@ jest.mock('lib/events/consumers/userNotifications/formatter', () => ({
   getEmailComponentsMap: jest.fn(),
 }));
 
+jest.mock('lib/events/consumers/userNotifications/mjml', () => ({
+  generateHTMLForEmail: jest.fn(),
+}));
+
 const mockGetSubjectCall = getEmailSubject as jest.MockedFunction<
   typeof getEmailSubject
 >;
 const mockGetComponentsCall = getEmailComponentsMap as jest.MockedFunction<
   typeof getEmailComponentsMap
+>;
+const mockGetMJMLCall = generateHTMLForEmail as jest.MockedFunction<
+  typeof generateHTMLForEmail
 >;
 
 const event: NotificationTriggerType = 'All';
@@ -68,15 +76,6 @@ const notificationReqTwo: NotificationRequest = {
   deliveryMethod: notificationMethod,
   event,
 };
-
-const emailParamsMatchingObject = (toAddress: string) => ({
-  Source: process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_EMAIL!,
-  Destination: {
-    ToAddresses: [toAddress],
-  },
-  ReplyToAddresses: [process.env.NEXT_PUBLIC_NFT_PAWN_SHOP_EMAIL!],
-  Message: expect.anything(),
-});
 
 const mockEmailComponents: EmailComponents = {
   header: 'Loan #65: monarchs',
@@ -111,11 +110,12 @@ describe('Sending emails with Amazon SES', () => {
       notificationReqTwo,
     ]); // two email addresses are subscribed to a particular eth addresses on-chain activity
     mockedSesEmailCall.mockResolvedValue();
-    mockGetSubjectCall.mockResolvedValue('');
+    mockGetSubjectCall.mockReturnValue('');
     mockGetComponentsCall.mockResolvedValue({
       [subgraphLoanForEvents.borrowTicketHolder]: mockEmailComponents,
       [subgraphLoanForEvents.lendTicketHolder]: mockEmailComponents,
     });
+    mockGetMJMLCall.mockReturnValue('');
   });
 
   describe('BuyoutEvent', () => {
@@ -144,16 +144,12 @@ describe('Sending emails with Amazon SES', () => {
         subgraphBuyoutEvent.newLender,
       );
       expect(mockedSesEmailCall).toBeCalledTimes(6);
-      expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(emailParamsMatchingObject(testRecipientOne)),
-      );
-      expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(emailParamsMatchingObject(testRecipientTwo)),
-      );
+      expect(mockedSesEmailCall).toHaveBeenCalledWith('', '', testRecipientOne);
+      expect(mockedSesEmailCall).toHaveBeenCalledWith('', '', testRecipientTwo);
     });
   });
   describe('LendEvent', () => {
-    it.only('successfully calls SES send email method with correct params', async () => {
+    it('successfully calls SES send email method with correct params', async () => {
       await sendEmailsForTriggerAndEntity('LendEvent', subgraphLendEvent, 0);
 
       expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(2);
@@ -164,12 +160,9 @@ describe('Sending emails with Amazon SES', () => {
         subgraphLoanForEvents.lendTicketHolder,
       );
       expect(mockedSesEmailCall).toBeCalledTimes(4);
-      expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(emailParamsMatchingObject(testRecipientOne)),
-      );
-      expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(emailParamsMatchingObject(testRecipientTwo)),
-      );
+
+      expect(mockedSesEmailCall).toHaveBeenCalledWith('', '', testRecipientOne);
+      expect(mockedSesEmailCall).toHaveBeenCalledWith('', '', testRecipientTwo);
     });
 
     it('does nothing if method is called with LendEvent and a previous terms event (indicating we have a BuyoutEvent)', async () => {
@@ -200,12 +193,9 @@ describe('Sending emails with Amazon SES', () => {
         subgraphLoanForEvents.lendTicketHolder,
       );
       expect(mockedSesEmailCall).toBeCalledTimes(4);
-      expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(emailParamsMatchingObject(testRecipientOne)),
-      );
-      expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(emailParamsMatchingObject(testRecipientTwo)),
-      );
+
+      expect(mockedSesEmailCall).toHaveBeenCalledWith('', '', testRecipientOne);
+      expect(mockedSesEmailCall).toHaveBeenCalledWith('', '', testRecipientTwo);
     });
   });
   describe('CollateralSeizureEvent', () => {
@@ -224,12 +214,9 @@ describe('Sending emails with Amazon SES', () => {
         subgraphLoanForEvents.lendTicketHolder,
       );
       expect(mockedSesEmailCall).toBeCalledTimes(4);
-      expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(emailParamsMatchingObject(testRecipientOne)),
-      );
-      expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(emailParamsMatchingObject(testRecipientTwo)),
-      );
+
+      expect(mockedSesEmailCall).toHaveBeenCalledWith('', '', testRecipientOne);
+      expect(mockedSesEmailCall).toHaveBeenCalledWith('', '', testRecipientTwo);
     });
   });
   describe('LiquidationOccuring', () => {
@@ -248,12 +235,9 @@ describe('Sending emails with Amazon SES', () => {
         subgraphLoanForEvents.lendTicketHolder,
       );
       expect(mockedSesEmailCall).toBeCalledTimes(4);
-      expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(emailParamsMatchingObject(testRecipientOne)),
-      );
-      expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(emailParamsMatchingObject(testRecipientTwo)),
-      );
+
+      expect(mockedSesEmailCall).toHaveBeenCalledWith('', '', testRecipientOne);
+      expect(mockedSesEmailCall).toHaveBeenCalledWith('', '', testRecipientTwo);
     });
   });
   describe('LiquidationOccurred', () => {
@@ -272,12 +256,9 @@ describe('Sending emails with Amazon SES', () => {
         subgraphLoanForEvents.lendTicketHolder,
       );
       expect(mockedSesEmailCall).toBeCalledTimes(4);
-      expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(emailParamsMatchingObject(testRecipientOne)),
-      );
-      expect(mockedSesEmailCall).toHaveBeenCalledWith(
-        expect.objectContaining(emailParamsMatchingObject(testRecipientTwo)),
-      );
+
+      expect(mockedSesEmailCall).toHaveBeenCalledWith('', '', testRecipientOne);
+      expect(mockedSesEmailCall).toHaveBeenCalledWith('', '', testRecipientTwo);
     });
   });
 });

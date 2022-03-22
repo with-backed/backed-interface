@@ -6,8 +6,6 @@ export function generateHTMLForEmail(components: EmailComponents): string {
   const reusableTextStyles = `font-size="14px" color="black" font-family="monospace" align="left" line-height="1.5em"`;
   const reusableAnchorStyles = `style="color: #0000EE; text-decoration:none"`;
 
-  const tableStyles = `style="margin-left: 20px; display: flex; flex-direction: row; flex-wrap: wrap"`;
-
   return mjml2html(
     `
       <mjml>

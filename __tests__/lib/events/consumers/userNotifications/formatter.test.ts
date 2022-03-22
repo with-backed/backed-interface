@@ -20,7 +20,7 @@ describe('Sending emails with Amazon SES', () => {
 
   describe('BuyoutEvent', () => {
     it('returns correct email components and subject for email', async () => {
-      const subject = await getEmailSubject('BuyoutEvent', subgraphBuyoutEvent);
+      const subject = getEmailSubject('BuyoutEvent', subgraphBuyoutEvent);
       const emailComponentsMap = await getEmailComponentsMap(
         'BuyoutEvent',
         subgraphBuyoutEvent,
@@ -129,7 +129,7 @@ describe('Sending emails with Amazon SES', () => {
   });
   describe('LendEvent', () => {
     it('returns correct email components and subject for email', async () => {
-      const subject = await getEmailSubject('LendEvent', subgraphLendEvent);
+      const subject = getEmailSubject('LendEvent', subgraphLendEvent);
       const emailComponentsMap = await getEmailComponentsMap(
         'LendEvent',
         subgraphLendEvent,
@@ -196,10 +196,7 @@ describe('Sending emails with Amazon SES', () => {
   });
   describe('RepaymentEvent', () => {
     it('returns correct email components and subject for email', async () => {
-      const subject = await getEmailSubject(
-        'RepaymentEvent',
-        subgraphRepaymentEvent,
-      );
+      const subject = getEmailSubject('RepaymentEvent', subgraphRepaymentEvent);
       const emailComponentsMap = await getEmailComponentsMap(
         'RepaymentEvent',
         subgraphRepaymentEvent,
@@ -263,7 +260,7 @@ describe('Sending emails with Amazon SES', () => {
   });
   describe('CollateralSeizureEvent', () => {
     it('returns correct email components and subject for email', async () => {
-      const subject = await getEmailSubject(
+      const subject = getEmailSubject(
         'CollateralSeizureEvent',
         subgraphCollateralSeizureEvent,
       );
@@ -327,7 +324,7 @@ describe('Sending emails with Amazon SES', () => {
   });
   describe('LiquidationOccuring', () => {
     it('returns correct email components and subject for email', async () => {
-      const subject = await getEmailSubject(
+      const subject = getEmailSubject(
         'LiquidationOccurring',
         subgraphLoanForEvents,
       );
@@ -401,7 +398,7 @@ describe('Sending emails with Amazon SES', () => {
         endDateTimestamp:
           subgraphLoanForEvents.lastAccumulatedTimestamp + 7 * 86400,
       };
-      const subject = await getEmailSubject('LiquidationOccurred', expiredLoan);
+      const subject = getEmailSubject('LiquidationOccurred', expiredLoan);
       const emailComponentsMap = await getEmailComponentsMap(
         'LiquidationOccurred',
         expiredLoan,

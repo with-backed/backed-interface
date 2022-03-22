@@ -118,10 +118,10 @@ const formattedDuration = (duration: number): string => {
   return `${minutes} minutes`;
 };
 
-export async function getEmailSubject(
+export function getEmailSubject(
   emailTrigger: NotificationTriggerType,
   entity: RawSubgraphEvent | Loan,
-): Promise<string> {
+): string {
   const emailMetadata = notificationEventToEmailMetadata[emailTrigger];
   if (!emailMetadata) {
     // fatal bugsnag, invalid email trigger was passed from SNS push
