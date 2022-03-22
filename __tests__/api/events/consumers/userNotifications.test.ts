@@ -5,6 +5,7 @@ import { nftBackedLoansClient } from 'lib/urql';
 import { createMocks } from 'node-mocks-http';
 import handler from 'pages/api/events/consumers/userNotifications';
 import fetchMock from 'jest-fetch-mock';
+import { subgraphLendEvent } from 'lib/mockSubgraphEventsData';
 
 const subgraphLoanCopy = {
   ...subgraphLoan,
@@ -66,7 +67,7 @@ describe('/api/events/consumers/userNotifications', () => {
               lendTicketHolder: subgraphLoanCopy.lendTicketHolder,
               loan: subgraphLoanCopy,
             },
-            txHash,
+            mostRecentTermsEvent: subgraphLendEvent,
           }),
         },
       });
@@ -82,6 +83,7 @@ describe('/api/events/consumers/userNotifications', () => {
           loan: subgraphLoanCopy,
         }),
         expect.anything(),
+        subgraphLendEvent,
       );
 
       expect(res._getStatusCode()).toBe(200);
@@ -102,7 +104,7 @@ describe('/api/events/consumers/userNotifications', () => {
               borrowTicketHolder: subgraphLoanCopy.borrowTicketHolder,
               loan: subgraphLoanCopy,
             },
-            txHash,
+            mostRecentTermsEvent: undefined,
           }),
         },
       });
@@ -118,6 +120,7 @@ describe('/api/events/consumers/userNotifications', () => {
           loan: subgraphLoanCopy,
         }),
         expect.anything(),
+        undefined,
       );
 
       expect(res._getStatusCode()).toBe(200);
@@ -136,7 +139,7 @@ describe('/api/events/consumers/userNotifications', () => {
               lendTicketHolder: subgraphLoanCopy.borrowTicketHolder,
               loan: subgraphLoanCopy,
             },
-            txHash,
+            mostRecentTermsEvent: undefined,
           }),
         },
       });
@@ -152,6 +155,7 @@ describe('/api/events/consumers/userNotifications', () => {
           loan: subgraphLoanCopy,
         }),
         expect.anything(),
+        undefined,
       );
 
       expect(res._getStatusCode()).toBe(200);
@@ -172,7 +176,7 @@ describe('/api/events/consumers/userNotifications', () => {
               lendTicketHolder: subgraphLoanCopy.lendTicketHolder,
               loan: subgraphLoanCopy,
             },
-            txHash,
+            mostRecentTermsEvent: undefined,
           }),
         },
       });
@@ -188,6 +192,7 @@ describe('/api/events/consumers/userNotifications', () => {
           loan: subgraphLoanCopy,
         }),
         expect.anything(),
+        undefined,
       );
 
       expect(res._getStatusCode()).toBe(200);
@@ -208,7 +213,7 @@ describe('/api/events/consumers/userNotifications', () => {
               lendTicketHolder: subgraphLoanCopy.borrowTicketHolder,
               loan: subgraphLoanCopy,
             },
-            txHash,
+            mostRecentTermsEvent: undefined,
           }),
         },
       });
@@ -224,6 +229,7 @@ describe('/api/events/consumers/userNotifications', () => {
           loan: subgraphLoanCopy,
         }),
         expect.anything(),
+        undefined,
       );
 
       expect(res._getStatusCode()).toBe(200);

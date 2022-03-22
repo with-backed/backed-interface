@@ -15,11 +15,14 @@ export const subgraphLoanForEvents = {
 export const subgraphBuyoutEvent: BuyoutEvent = {
   id: '0x7685d19b85fb80c03ac0c117ea542b77a6c8ecebea56744b121183cfb614bce6',
   blockNumber: 9950758,
-  loanAmount: '8193000000000000000000',
+  loanAmount: '8000000000000000000000',
   interestEarned: '10000',
   newLender: subgraphLoanForEvents.lendTicketHolder,
   lendTicketHolder: '0x10359616ab170c1bd6c478a40c6715a49ba25efc',
-  loan: subgraphLoanForEvents,
+  loan: {
+    ...subgraphLoanForEvents,
+    loanAmount: '8193000000000000000000',
+  },
   timestamp: 1641574026,
 };
 

@@ -2,7 +2,6 @@ import {
   getEmailComponentsMap,
   getEmailSubject,
 } from 'lib/events/consumers/userNotifications/formatter';
-import { getMostRecentTermsForLoan } from 'lib/loans/subgraph/subgraphLoans';
 import {
   subgraphBuyoutEvent,
   subgraphCollateralSeizureEvent,
@@ -64,7 +63,7 @@ describe('Sending emails with Amazon SES', () => {
         oldLenderComponents!.messageBeforeTerms,
       ]);
 
-      expect(borrowerComponents!.terms).toEqual([
+      expect(borrowerComponents.terms).toEqual([
         {
           prefix: 'Their loan terms were:',
           amount: '8000.0 DAI',
@@ -78,13 +77,13 @@ describe('Sending emails with Amazon SES', () => {
           interest: '6.3072%',
         },
       ]);
-      expect([borrowerComponents!.terms, borrowerComponents!.terms]).toEqual([
-        newLenderComponents!.terms,
-        oldLenderComponents!.terms,
+      expect([borrowerComponents.terms, borrowerComponents.terms]).toEqual([
+        newLenderComponents.terms,
+        oldLenderComponents.terms,
       ]);
 
       expect(borrowerComponents!.messageAfterTerms).toEqual([
-        'At this rate, repayment of 8361.869312 DAI will be due on 31/12/1969.',
+        'At this rate, repayment of 8362.890048 DAI will be due on 31/12/1969.',
       ]);
       expect([
         borrowerComponents!.messageAfterTerms,
