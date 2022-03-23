@@ -36,7 +36,6 @@ export const NotificationsModal = ({
   const { handleSubmit, watch, register, setValue } = form;
 
   const { emailAddress } = watch();
-  console.log(watch());
 
   const subscribeEmail = useCallback(async () => {
     const response = await fetch(
@@ -45,6 +44,7 @@ export const NotificationsModal = ({
         method: 'POST',
       },
     );
+
     if (response.status == 200) {
       addMessage({
         kind: 'success',

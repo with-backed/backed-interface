@@ -7,7 +7,7 @@ export const NotificationsModalStyles = () => {
   return (
     <div>
       <DialogDisclosure {...dialog}>relaunch modal</DialogDisclosure>
-      <NotificationsModal dialog={dialog} />
+      <NotificationsModal profileAddress="" dialog={dialog} />
     </div>
   );
 };
