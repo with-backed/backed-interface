@@ -1,6 +1,6 @@
-import { IncomingHttpHeaders } from 'http';
 import { NextApiRequest } from 'next';
-import { NextRequest } from 'next/server';
+// eslint-disable-next-line @next/next/no-server-import-in-page
+import type { NextRequest } from 'next/server';
 
 export const AUTH_STATUS = {
   ok: 200,
