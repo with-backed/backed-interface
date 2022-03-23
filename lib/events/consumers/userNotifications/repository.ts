@@ -74,7 +74,6 @@ export async function getNumberOfRequestsForNotificationDestination(
     const reqs = await prisma.notificationRequest.findMany({
       where: { deliveryDestination: notificationDestination },
     });
-    console.log({ reqs });
     return reqs.length;
   } catch (e) {
     console.error(e);
