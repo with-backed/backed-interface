@@ -2548,10 +2548,10 @@
   resolved "https://registry.yarnpkg.com/@pedrouid/environment/-/environment-1.0.1.tgz#858f0f8a057340e0b250398b75ead77d6f4342ec"
   integrity sha512-HaW78NszGzRZd9SeoI3JD11JqY+lubnaOx7Pewj5pfjqWXOEATpeKIFb9Z4t2WBUK2iryiXX3lzWwmYWgUL0Ug==
 
-"@pinata/ipfs-gateway-tools@1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@pinata/ipfs-gateway-tools/-/ipfs-gateway-tools-1.2.0.tgz#7c31401c7c106095242df6e2cd1a4f7f3b86a76d"
-  integrity sha512-cC7c5BtqyU7UOejocEBoaMlQMlBDvWhriGF/aauHKORc/Yo8d97RY1QvtAe+/v+i4w04CPGOln87EViXk6AjtA==
+"@pinata/ipfs-gateway-tools@1.1.6":
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/@pinata/ipfs-gateway-tools/-/ipfs-gateway-tools-1.1.6.tgz#1378db5e3dd879cd615fd88c952624f4c93e9e18"
+  integrity sha512-0KXTUkt8rxJWUXzTMS46OoeVDiDe15S7enZQV+TLU6/knrxg40H8aGl4D1IVg8vPt5ISBd9uePziIjN/UDlXaQ==
   dependencies:
     is-ipfs "^5.0.0"
 
