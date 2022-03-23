@@ -26,6 +26,7 @@ export const NotificationsModal = ({
 }: NotificationsModalProps) => {
   const { addMessage } = useGlobalMessages();
   const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
 
   const form = useForm<SubscribeToNotificationsFormData>({
     defaultValues: {
@@ -38,6 +39,7 @@ export const NotificationsModal = ({
   const { emailAddress } = watch();
 
   const subscribeEmail = useCallback(async () => {
+    setLoading(true);
     const response = await fetch(
       `/api/addresses/${profileAddress}/notifications/emails/${emailAddress}`,
       {
@@ -57,6 +59,7 @@ export const NotificationsModal = ({
       const { message } = await response.json();
       setError(message);
     }
+    setLoading(false);
   }, [profileAddress, addMessage, setValue, dialog, emailAddress]);
 
   return (
@@ -79,7 +82,9 @@ export const NotificationsModal = ({
           <Button kind="tertiary" onClick={dialog.toggle}>
             Cancel
           </Button>
-          <Button type="submit">Subscribe</Button>
+          <Button type="submit" disabled={loading}>
+            Subscribe
+          </Button>
         </div>
       </Form>
     </Modal>
