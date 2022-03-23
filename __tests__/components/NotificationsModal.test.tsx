@@ -4,7 +4,6 @@ import userEvent from '@testing-library/user-event';
 import { useDialogState, DialogDisclosure } from 'reakit/Dialog';
 import { NotificationsModal } from 'components/NotificationsModal';
 import fetchMock from 'jest-fetch-mock';
-import { wait } from '@testing-library/user-event/dist/utils';
 
 const Modal = () => {
   const dialog = useDialogState({ visible: true });
@@ -55,7 +54,7 @@ describe('NotificationsModal', () => {
     );
   });
 
-  it.only('displays error if API returns non 200', async () => {
+  it('displays error if API returns non 200', async () => {
     fetchMock.mockResponse((_req) =>
       Promise.resolve({
         body: JSON.stringify({ message: 'some failure' }),
