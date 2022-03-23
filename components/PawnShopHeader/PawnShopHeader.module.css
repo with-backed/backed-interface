@@ -17,6 +17,9 @@
 
 .link {
   grid-column: col-start 5 / span 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .link > a {

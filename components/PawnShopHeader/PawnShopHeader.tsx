@@ -4,13 +4,11 @@ import { ConnectWallet } from 'components/ConnectWallet';
 import styles from './PawnShopHeader.module.css';
 import { ButtonLink } from 'components/Button';
 import { useRouter } from 'next/router';
-import Image from 'next/image';
-import logo from './rinkebeeee.png';
-import betterLogo from './prawnshop.png';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import { Banner } from 'components/Banner';
 import { useNetworkMonitor } from 'hooks/useNetworkMonitor';
+import BackedBunny from 'components/Icons/BackedBunny';
 
 type PawnShopHeaderProps = {
   prawn?: boolean;
@@ -18,9 +16,7 @@ type PawnShopHeaderProps = {
 
 const CREATE_PATH = '/loans/create';
 
-export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
-  prawn,
-}) => {
+export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = () => {
   const { messages, removeMessage } = useGlobalMessages();
   useNetworkMonitor();
   const { pathname } = useRouter();
@@ -45,12 +41,8 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
           </div>
 
           <Link href="/" passHref>
-            <a className={styles.link}>
-              {prawn ? (
-                <Image src={betterLogo} alt="NFT Pawn Shop" priority={true} />
-              ) : (
-                <Image src={logo} alt="NFT Pawn Shop" priority={true} />
-              )}
+            <a title="Backed" className={styles.link}>
+              <BackedBunny />
             </a>
           </Link>
 
