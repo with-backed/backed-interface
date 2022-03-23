@@ -66,7 +66,7 @@ describe('LoanHeader', () => {
         refresh={noop}
       />,
     );
-    getByText('Available');
+    getByText('No lender');
   });
 
   it('renders an accruing status for accruing loans', () => {

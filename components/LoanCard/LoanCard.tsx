@@ -132,12 +132,13 @@ export const ExpandedAttributes = ({ loan }: AttributesProps) => {
     formattedPrincipal,
     formattedInterestRate,
     formattedInterestAccrued,
+    formattedStatus,
     formattedTotalDuration,
     formattedTimeRemaining,
   } = useLoanDetails(loan);
   return (
     <DescriptionList>
-      <dt>Loan Amount</dt>
+      <dt>Amount</dt>
       <dd>{formattedPrincipal}</dd>
       <div className={styles['stacked-entry']}>
         <dt>interest</dt>
@@ -152,7 +153,7 @@ export const ExpandedAttributes = ({ loan }: AttributesProps) => {
         <dd>{formattedTotalDuration}</dd>
       </div>
       <div className={styles['stacked-entry']}>
-        <dt>status</dt>
+        <dt>{statusLabel(formattedStatus)}</dt>
         <dd>{formattedTimeRemaining}</dd>
       </div>
     </DescriptionList>
@@ -160,16 +161,30 @@ export const ExpandedAttributes = ({ loan }: AttributesProps) => {
 };
 
 export const CompactAttributes = ({ loan }: AttributesProps) => {
-  const { formattedPrincipal, formattedInterestRate } = useLoanDetails(loan);
+  const {
+    formattedPrincipal,
+    formattedInterestRate,
+    formattedStatus,
+    formattedTimeRemaining,
+    formattedTotalDuration,
+  } = useLoanDetails(loan);
   return (
     <DescriptionList>
       <div className={styles['stacked-entry']}>
-        <dt>Loan Amount</dt>
+        <dt>Amount</dt>
         <dd>{formattedPrincipal}</dd>
       </div>
       <div className={styles['stacked-entry']}>
         <dt>interest</dt>
         <dd>{formattedInterestRate}</dd>
+      </div>
+      <div className={styles['stacked-entry']}>
+        <dt>duration</dt>
+        <dd>{formattedTotalDuration}</dd>
+      </div>
+      <div className={styles['stacked-entry']}>
+        <dt>{statusLabel(formattedStatus)}</dt>
+        <dd>{formattedTimeRemaining}</dd>
       </div>
     </DescriptionList>
   );
@@ -178,3 +193,10 @@ export const CompactAttributes = ({ loan }: AttributesProps) => {
 export const Relationship: React.FunctionComponent = ({ children }) => {
   return <span className={styles.relationship}>{children}</span>;
 };
+
+function statusLabel(status: string) {
+  if (status === 'Accruing interest') {
+    return 'time left';
+  }
+  return 'status';
+}
