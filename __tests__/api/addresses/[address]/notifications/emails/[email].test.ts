@@ -101,9 +101,9 @@ describe('/api/addresses/[address]/notifications/emails/[email]', () => {
       expect(mockedDeleteDBCall).toBeCalledTimes(1);
       expect(mockedDeleteDBCall).toHaveBeenCalledWith(address);
       expect(res._getStatusCode()).toBe(200);
-      expect(JSON.parse(res._getData())).toEqual(
-        `notifications for address ${address} deleted successfully`,
-      );
+      expect(JSON.parse(res._getData())).toEqual({
+        message: `notifications for address ${address} deleted successfully`,
+      });
     });
 
     it('returns a 400 if an email has tried to subscribe to more than 5 addresses', async () => {
@@ -122,9 +122,9 @@ describe('/api/addresses/[address]/notifications/emails/[email]', () => {
       await handler(req, res);
 
       expect(res._getStatusCode()).toBe(400);
-      expect(JSON.parse(res._getData())).toEqual(
-        'you can only subscribe to 5 addresses per email address',
-      );
+      expect(JSON.parse(res._getData())).toEqual({
+        message: 'you can only subscribe to 5 addresses per email address',
+      });
     });
   });
 });
