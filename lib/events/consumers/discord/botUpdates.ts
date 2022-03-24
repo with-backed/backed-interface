@@ -35,8 +35,8 @@ export async function sendBotUpdateForTriggerAndEntity(
       return;
   }
 
-  message += `\n\nLoan: https://rinkeby.withbacked.xyz/loans/${event.loan.id}`;
-  message += `\nEvent Tx: https://rinkeby.etherscan.io/tx/${event.id}`;
+  message += `\n\nLoan: <https://rinkeby.withbacked.xyz/loans/${event.loan.id}>`;
+  message += `\nEvent Tx: <https://rinkeby.etherscan.io/tx/${event.id}>`;
 
   await sendBotMessage(message);
 }
