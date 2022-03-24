@@ -24,11 +24,15 @@ const requiredEnvVars = [
   'EVENTS_API_SECRET_KEY',
 ];
 
-requiredEnvVars.forEach((element) => {
-  if (!process.env[element]) {
-    throw new Error(`Environment variable '${element}' isn't defined`);
-  }
-});
+// Fail Vercel deployments if project doesn't have the necessary
+// environment variables. These won't be checked for local builds.
+if (process.env.VERCEL) {
+  requiredEnvVars.forEach((element) => {
+    if (!process.env[element]) {
+      throw new Error(`Environment variable '${element}' isn't defined`);
+    }
+  });
+}
 
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
