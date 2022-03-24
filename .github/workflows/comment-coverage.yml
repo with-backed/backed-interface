@@ -2,7 +2,7 @@ name: Comment with coverage
 
 on:
   workflow_run:
-    workflows: ['Receive PR']
+    workflows: ['Node.js CI']
     types:
       - completed
 
