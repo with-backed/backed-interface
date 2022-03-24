@@ -35,7 +35,5 @@ export async function sendBotUpdateForTriggerAndEntity(
       return;
   }
 
-  console.log({ message });
-
   await sendBotMessage(message);
 }
