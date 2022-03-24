@@ -18,12 +18,22 @@
 .link {
   grid-column: col-start 5 / span 4;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
-.link > a {
+.link:visited {
   color: var(--neutral-100);
+}
+
+.link > svg {
+  height: 70px;
+}
+
+.link > h1 {
+  margin: 0;
+  font-size: var(--font-medium);
 }
 
 .pawn {

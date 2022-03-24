@@ -1,7 +1,7 @@
 import React from 'react';
 
 const BackedBunny = () => (
-  <svg width={35} height={35} fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       fill="#000"
       d="M4 9h1v4H4zm10 0h1v2h-1zm13-6h1v5h-1zm-7 4h1v2h-1zm1-2h1v2h-1zm5 3h1v2h-1zm-1 2h1v2h-1zm-1 2h1v2h-1zm-1 2h1v2h-1zm-12 0h1v2h-1zm1 2h1v2h-1zm10 0h1v2h-1zm-7-5h1v7h-1zm4-2h1v9h-1zM9 15h1v17H9zm16 0h1v17h-1zm-14 2h1v13h-1zm12 0h1v13h-1zM5 8h1v1H5zm7-1h1v1h-1zm1 1h1v1h-1zm9-4h1v1h-1zm1-1h1v1h-1zm-11 7h1v1h-1zm-2 5h1v1h-1zm14 0h1v1h-1zm-11 7h1v1h-1zm1-1h1v1h-1zm1 1h1v1h-1zm4 0h1v1h-1zm1-1h1v1h-1zm1 1h1v1h-1zm-4 4h1v1h-1zm-7-13h1v1h-1zM6 7h3v1H6zm-1 6h3v1H5zm5-2h2v1h-2zm-2 1h3v1H8zm8 5h3v1h-3zm0-2h3v1h-3zm0 10h3v1h-3zm-4 4h11v1H12zm-2 2h15v1H10zM9 6h3v1H9z"
