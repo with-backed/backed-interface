@@ -28,3 +28,7 @@ jobs:
         run: docker-compose up -d postgres && yarn run prisma-migrate:test
       - name: Run tests and calculate coverage
         run: yarn run test-coverage
+      - uses: actions/upload-artifact@v2
+        with:
+          name: coverage-summary.json
+          path: coverage/coverage-summary.json
