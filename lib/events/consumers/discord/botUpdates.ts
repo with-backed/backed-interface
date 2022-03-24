@@ -2,7 +2,7 @@ import { LendEvent } from 'types/generated/graphql/nftLoans';
 import { RawSubgraphEvent } from 'types/RawEvent';
 import { ensOrAddr } from '../userNotifications/helpers';
 import { NotificationTriggerType } from '../userNotifications/shared';
-import { discordLoanHyperlink, formatTermsForBot } from './formattingHelpers';
+import { formatTermsForBot } from './formattingHelpers';
 import { sendBotMessage } from './notifier';
 
 export async function sendBotUpdateForTriggerAndEntity(
@@ -20,10 +20,7 @@ export async function sendBotUpdateForTriggerAndEntity(
   switch (trigger) {
     case 'LendEvent':
       const lendEvent = event as LendEvent;
-      message = `${discordLoanHyperlink(
-        lendEvent.loan.id,
-        lendEvent.loan.collateralName,
-      )}: ${
+      message = `Loan #${lendEvent.loan.id}: ${
         lendEvent.loan.collateralName
       } has been lent to by ${await ensOrAddr(lendEvent.lender)}\n\n`;
       message += formatTermsForBot(
@@ -38,10 +35,8 @@ export async function sendBotUpdateForTriggerAndEntity(
       return;
   }
 
-  message += `[rinkeby.etherscan.io/tx/${event.id.substring(
-    0,
-    7,
-  )}...](https://rinkeby.etherscan.io/tx/${event.id})`;
+  message += `\nLoan: <https://rinkeby.withbacked.xyz/loans/${event.loan.id}`;
+  message += `\nEvent Tx: <https://rinkeby.etherscan.io/tx/${event.id}`;
 
   await sendBotMessage(message);
 }
