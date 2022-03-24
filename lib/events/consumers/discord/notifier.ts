@@ -6,10 +6,15 @@ export async function sendBotMessage(content: string) {
 
   console.log('outside the ready');
 
+  let clientReady = false;
   client.once('ready', async () => {
     console.log('inside the ready');
-    await (
-      client.channels.cache.get('956571169753026701') as Discord.TextChannel
-    ).send(content);
+    clientReady = true;
   });
+
+  while (!clientReady) {}
+
+  await (
+    client.channels.cache.get('956571169753026701') as Discord.TextChannel
+  ).send(content);
 }
