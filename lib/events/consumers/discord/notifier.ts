@@ -4,17 +4,9 @@ export async function sendBotMessage(content: string) {
   const client = new Discord.Client();
   await client.login(process.env.DISCORD_BOT_TOKEN!);
 
-  console.log(`Logged in as ${client.user!.tag}!`);
-
-  // let clientReady = false;
-  // client.once('ready', () => {
-  //     console.log('inside the ready');
-  //     clientReady = true;
-  // });
-
-  // while (!clientReady) { }
-
   await (
-    client.channels.cache.get('956571169753026701') as Discord.TextChannel
+    client.channels.cache.get(
+      process.env.NEXT_PUBLIC_BACKED_UPDATES_CHANNEL_ID!,
+    ) as Discord.TextChannel
   ).send(content);
 }

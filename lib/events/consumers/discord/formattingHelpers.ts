@@ -2,6 +2,10 @@ import { ethers } from 'ethers';
 import { formattedAnnualRate } from 'lib/interest';
 import { formattedDuration } from '../userNotifications/helpers';
 
+export function discordLoanHyperlink(loanId: string, collateralName: string) {
+  return `[https://rinkeby.withbacked.xyz/loans/${loanId}](Loan #${loanId}: ${collateralName})`;
+}
+
 export function formatTermsForBot(
   loanAmount: number,
   loanAssetDecimal: number,
