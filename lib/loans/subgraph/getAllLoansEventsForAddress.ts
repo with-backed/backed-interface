@@ -78,7 +78,7 @@ export async function getAllActiveLoansForAddress(
 
 export async function getAllEventsForAddress(
   address: string,
-): Promise<Dictionary<[Event, ...Event[]]>> {
+): Promise<Dictionary<Event[]>> {
   const c = nftBackedLoansClient;
   const whereBorrower = { borrowTicketHolder: address };
   const whereLender = { lendTicketHolder: address };
