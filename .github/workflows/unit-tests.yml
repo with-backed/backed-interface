@@ -28,9 +28,7 @@ jobs:
         run: docker-compose up -d postgres && yarn run prisma-migrate:test
       - name: Run tests and calculate coverage
         run: yarn run test-coverage
-      - name: Comment with coverage
-        uses: AthleticNet/comment-test-coverage@1.2.2
+      - uses: actions/upload-artifact@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          name: coverage-summary.json
           path: coverage/coverage-summary.json
-          title: Test Coverage
