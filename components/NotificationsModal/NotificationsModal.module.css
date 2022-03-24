@@ -6,3 +6,8 @@
 .button-row > button {
   width: auto;
 }
+
+.error-message {
+  color: var(--highlight-alert-100);
+  font-size: var(--font-small);
+}

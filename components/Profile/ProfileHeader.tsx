@@ -16,6 +16,8 @@ import { Fieldset } from 'components/Fieldset';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { EtherscanAddressLink } from 'components/EtherscanLink';
 import { TextButton } from 'components/Button';
+import { NotificationsModal } from 'components/NotificationsModal';
+import { useDialogState, DialogDisclosure } from 'reakit/Dialog';
 
 type ProfileHeaderProps = {
   address: string;
@@ -140,29 +142,36 @@ export function ProfileHeader({ address, loans }: ProfileHeaderProps) {
     [loans, address],
   );
 
+  const dialog = useDialogState();
+
   return (
-    <div className={styles['profile-header-wrapper']}>
-      <TwelveColumn>
-        <Fieldset legend="📭 Address">
-          <div className={styles.container}>
-            <span>{address}</span>
-            <EtherscanAddressLink address={address}>
-              View on Etherscan 🔗
-            </EtherscanAddressLink>
-            <TextButton>Subscribe to updates 🔔</TextButton>
-          </div>
-        </Fieldset>
-        <Fieldset legend="🖼 Borrowing">
-          <div className={styles.container}>
-            <LoanStats loans={loansAsBorrower} kind="borrower" />
-          </div>
-        </Fieldset>
-        <Fieldset legend="💸 Lending">
-          <div className={styles.container}>
-            <LoanStats loans={loansAsLender} kind="lender" />
-          </div>
-        </Fieldset>
-      </TwelveColumn>
-    </div>
+    <>
+      <div className={styles['profile-header-wrapper']}>
+        <TwelveColumn>
+          <Fieldset legend="📭 Address">
+            <div className={styles.container}>
+              <span>{address}</span>
+              <EtherscanAddressLink address={address}>
+                View on Etherscan 🔗
+              </EtherscanAddressLink>
+              <DialogDisclosure as={'text'} {...dialog}>
+                <TextButton>Subscribe to updates 🔔</TextButton>
+              </DialogDisclosure>
+            </div>
+          </Fieldset>
+          <Fieldset legend="🖼 Borrowing">
+            <div className={styles.container}>
+              <LoanStats loans={loansAsBorrower} kind="borrower" />
+            </div>
+          </Fieldset>
+          <Fieldset legend="💸 Lending">
+            <div className={styles.container}>
+              <LoanStats loans={loansAsLender} kind="lender" />
+            </div>
+          </Fieldset>
+        </TwelveColumn>
+      </div>
+      <NotificationsModal profileAddress={address} dialog={dialog} />
+    </>
   );
 }
