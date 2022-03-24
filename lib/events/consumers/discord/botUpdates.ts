@@ -5,12 +5,12 @@ import { NotificationTriggerType } from '../userNotifications/shared';
 import { formatTermsForBot } from './formattingHelpers';
 import { sendBotMessage } from './notifier';
 
-async function sendBotUpdateForTriggerAndEntity(
+export async function sendBotUpdateForTriggerAndEntity(
   trigger: NotificationTriggerType,
   event: RawSubgraphEvent,
   now: number,
   mostRecentTermsEvent?: LendEvent,
-) {
+): Promise<void> {
   // we do not want to send LendEvent emails and BuyoutEvent emails
   if (trigger === 'LendEvent' && !!mostRecentTermsEvent) {
     return;
