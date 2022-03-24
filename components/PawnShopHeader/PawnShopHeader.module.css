@@ -23,12 +23,20 @@
   justify-content: center;
 }
 
+.flipped-link {
+  composes: link;
+}
+
 .link:visited {
   color: var(--neutral-100);
 }
 
 .link > svg {
   height: 70px;
+}
+
+.flipped-link > svg {
+  transform: rotateX(180deg);
 }
 
 .link > h1 {
