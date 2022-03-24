@@ -21,27 +21,12 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-}
-
-.flipped-link {
-  composes: link;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: var(--font-large);
 }
 
 .link:visited {
   color: var(--neutral-100);
-}
-
-.link > svg {
-  height: 70px;
-}
-
-.flipped-link > svg {
-  transform: rotateX(180deg);
-}
-
-.link > h1 {
-  margin: 0;
-  font-size: var(--font-medium);
 }
 
 .pawn {
