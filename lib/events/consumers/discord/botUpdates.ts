@@ -38,9 +38,10 @@ export async function sendBotUpdateForTriggerAndEntity(
       return;
   }
 
-  message += `[https://rinkeby.etherscan.io/tx/${
-    event.id
-  }](https://rinkeby.etherscan.io/tx/${event.id.substring(0, 7)}...)`;
+  message += `[rinkeby.etherscan.io/tx/${event.id.substring(
+    0,
+    7,
+  )}...](https://rinkeby.etherscan.io/tx/${event.id})`;
 
   await sendBotMessage(message);
 }
