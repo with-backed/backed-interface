@@ -55,7 +55,8 @@ export async function sendBotUpdateForTriggerAndEntity(
       const lendEvent = event as LendEvent;
       message += `Loan #${lendEvent.loan.id}: ${
         lendEvent.loan.collateralName
-      } has been lent to by ${await ensOrAddr(lendEvent.lender)}\n\n`;
+      } has been lent to by ${await ensOrAddr(lendEvent.lender)}\n`;
+      message += `Their loans terms are:\n`;
       message += formatTermsForBot(
         event.loan.loanAmount,
         event.loan.loanAssetDecimal,
@@ -76,9 +77,9 @@ export async function sendBotUpdateForTriggerAndEntity(
         buyoutEvent.loan.loanAssetDecimal,
       );
 
-      message += `Loan #${buyoutEvent.loan.id}: ${buyoutEvent.loan.collateralName} has been bought out by ${newLender}\n\n`;
-      message += `${oldLender} held the loan for ${duration} and earned ${formattedInterestEarned} ${buyoutEvent.loan.loanAssetSymbol} over that time\n\n`;
-      message += `The old terms set by ${oldLender} were:\n\n`;
+      message += `Loan #${buyoutEvent.loan.id}: ${buyoutEvent.loan.collateralName} has been bought out by ${newLender}\n`;
+      message += `${oldLender} held the loan for ${duration} and earned ${formattedInterestEarned} ${buyoutEvent.loan.loanAssetSymbol} over that time\n`;
+      message += `The old terms set by ${oldLender} were:\n`;
       message += formatTermsForBot(
         mostRecentTermsEvent!.loanAmount,
         buyoutEvent.loan.loanAssetDecimal,
@@ -86,7 +87,7 @@ export async function sendBotUpdateForTriggerAndEntity(
         mostRecentTermsEvent!.durationSeconds,
         buyoutEvent.loan.loanAssetSymbol,
       );
-      message += `The new terms set by ${newLender} are:\n\n`;
+      message += `\nThe new terms set by ${newLender} are:\n`;
       message += formatTermsForBot(
         buyoutEvent.loan.loanAmount,
         buyoutEvent.loan.loanAssetDecimal,
@@ -107,14 +108,14 @@ export async function sendBotUpdateForTriggerAndEntity(
 
       message += `Loan #${repaymentEvent.loan.id}: ${
         repaymentEvent.loan.collateralName
-      } has been repaid by ${await ensOrAddr(repaymentEvent.repayer)}\n\n`;
+      } has been repaid by ${await ensOrAddr(repaymentEvent.repayer)}\n`;
       message += `${await ensOrAddr(
         repaymentEvent.lendTicketHolder,
       )} held the loan for ${duration} and earned ${formattedInterestEarned} ${
         repaymentEvent.loan.loanAssetSymbol
-      } over that time\n\n`;
+      } over that time\n`;
 
-      message += 'The loan terms were:\n\n';
+      message += 'The loan terms were:\n';
       message += formatTermsForBot(
         repaymentEvent.loan.loanAmount,
         repaymentEvent.loan.loanAssetDecimal,
@@ -137,7 +138,7 @@ export async function sendBotUpdateForTriggerAndEntity(
         parseSubgraphLoan(collateralSeizureEvent.loan),
       );
 
-      message += `Loan #${collateralSeizureEvent.loan.id}: ${collateralSeizureEvent.loan.collateralName} has had it's collateral seized\n\n`;
+      message += `Loan #${collateralSeizureEvent.loan.id}: ${collateralSeizureEvent.loan.collateralName} has had it's collateral seized\n`;
       message += `${lender} held the loan for ${duration}. The loan became due on ${maturity} with a repayment cost of ${repayment} ${collateralSeizureEvent.loan.loanAssetSymbol}. ${borrower} did not repay, so ${lender} was able to seize the loan's collateral`;
       break;
 
