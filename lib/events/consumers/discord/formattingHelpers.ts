@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { formattedAnnualRate } from 'lib/interest';
-import { formattedDuration } from '../userNotifications/helpers';
+import { formattedDuration } from 'lib/events/consumers/userNotifications/helpers';
 
 export function formatTermsForBot(
   loanAmount: number,
