@@ -17,3 +17,9 @@
 .insufficient-funds {
   color: var(--highlight-alert-100);
 }
+
+@media screen and (max-width: 400px) {
+  .base-wrapper {
+    grid-template-columns: 1fr;
+  }
+}

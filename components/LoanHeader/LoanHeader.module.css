@@ -22,3 +22,12 @@
 .form {
   grid-column: col-start 5 / -1;
 }
+
+@media screen and (max-width: 400px) {
+  .media {
+    grid-column: span 12;
+  }
+  .form {
+    grid-column: span 12;
+  }
+}
