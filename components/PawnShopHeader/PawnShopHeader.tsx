@@ -53,6 +53,16 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = () => {
           </div>
         </TwelveColumn>
       </header>
+      <header className={styles['mobile-header']}>
+        <Link href="/" passHref>
+          <a title="Backed" className={styles['mobile-link']}>
+            <BackedBunny />
+          </a>
+        </Link>
+        <div className={styles['mobile-button-wrapper']}>
+          <ConnectWallet />
+        </div>
+      </header>
     </>
   );
 };

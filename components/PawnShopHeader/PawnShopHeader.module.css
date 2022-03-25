@@ -7,6 +7,42 @@
   padding: 1rem 0;
 }
 
+@media screen and (max-width: 400px) {
+  .header {
+    display: none;
+  }
+}
+
+.mobile-header {
+  width: 100%;
+  background: var(--background-white);
+  display: flex;
+  align-items: center;
+  padding: 1rem 14px;
+  gap: 1.5rem;
+}
+
+@media screen and (min-width: 401px) {
+  .mobile-header {
+    display: none;
+  }
+}
+
+.mobile-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-link > svg {
+  height: 70px;
+}
+
+.mobile-button-wrapper {
+  overflow: hidden;
+}
+
 .top-row {
   display: grid;
   grid-template-columns: 1fr 300px 1fr;
