@@ -8,6 +8,8 @@ import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import { Banner } from 'components/Banner';
 import { useNetworkMonitor } from 'hooks/useNetworkMonitor';
+import BackedBunny from 'components/Icons/BackedBunny';
+import { useKonami } from 'hooks/useKonami';
 
 type PawnShopHeaderProps = {};
 
@@ -18,6 +20,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = () => {
   useNetworkMonitor();
   const { pathname } = useRouter();
   const kind = pathname === CREATE_PATH ? 'secondary' : 'primary';
+  const codeActive = useKonami();
   return (
     <>
       {messages.map((m) => {
@@ -38,8 +41,11 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = () => {
           </div>
 
           <Link href="/" passHref>
-            <a title="Backed" className={styles.link}>
-              ✨🖼️🐇 Backed ✨🥕💸
+            <a
+              title="Backed"
+              className={codeActive ? styles['flipped-link'] : styles.link}>
+              <BackedBunny />
+              <h1>{codeActive ? 'fronted' : 'backed'}</h1>
             </a>
           </Link>
 
