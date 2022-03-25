@@ -81,10 +81,10 @@ export async function sendBotUpdateForTriggerAndEntity(
       message += `The old terms set by ${oldLender} were:\n\n`;
       message += formatTermsForBot(
         mostRecentTermsEvent!.loanAmount,
-        mostRecentTermsEvent!.loan.loanAssetDecimal,
+        buyoutEvent.loan.loanAssetDecimal,
         mostRecentTermsEvent!.perSecondInterestRate,
         mostRecentTermsEvent!.durationSeconds,
-        mostRecentTermsEvent!.loan.loanAssetSymbol,
+        buyoutEvent.loan.loanAssetSymbol,
       );
       message += `The new terms set by ${newLender} are:\n\n`;
       message += formatTermsForBot(
@@ -125,6 +125,10 @@ export async function sendBotUpdateForTriggerAndEntity(
       break;
     case 'CollateralSeizureEvent':
       const collateralSeizureEvent = event as CollateralSeizureEvent;
+      const borrower = await ensOrAddr(
+        collateralSeizureEvent.borrowTicketHolder,
+      );
+      const lender = await ensOrAddr(collateralSeizureEvent.lendTicketHolder);
       duration = formattedDuration(
         collateralSeizureEvent.timestamp -
           collateralSeizureEvent.loan.lastAccumulatedTimestamp,
@@ -134,13 +138,7 @@ export async function sendBotUpdateForTriggerAndEntity(
       );
 
       message += `Loan #${collateralSeizureEvent.loan.id}: ${collateralSeizureEvent.loan.collateralName} has had it's collateral seized\n\n`;
-      message += `${await ensOrAddr(
-        collateralSeizureEvent.lendTicketHolder,
-      )} held the loan for ${duration}. The loan became due on ${maturity} with a repayment cost of ${repayment} ${
-        collateralSeizureEvent.loan.loanAssetSymbol
-      }. ${collateralSeizureEvent.borrowTicketHolder} did not repay, so ${
-        collateralSeizureEvent.lendTicketHolder
-      } was able to seize the loan's collateral\n\n`;
+      message += `${lender} held the loan for ${duration}. The loan became due on ${maturity} with a repayment cost of ${repayment} ${collateralSeizureEvent.loan.loanAssetSymbol}. ${borrower} did not repay, so ${lender} was able to seize the loan's collateral`;
       break;
 
     default:
