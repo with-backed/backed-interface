@@ -11,3 +11,11 @@
   composes: grid;
   padding: var(--gap) 0;
 }
+
+@media screen and (max-width: 400px) {
+  .grid {
+    gap: 0;
+    row-gap: 20px;
+    padding: 20px;
+  }
+}

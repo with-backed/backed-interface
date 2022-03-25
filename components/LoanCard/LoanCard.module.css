@@ -73,3 +73,10 @@
 .profile-link {
   grid-column: span 4;
 }
+
+@media screen and (max-width: 400px) {
+  .link,
+  .profile-link {
+    grid-column: span 12;
+  }
+}

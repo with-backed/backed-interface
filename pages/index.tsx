@@ -65,16 +65,6 @@ export default function Home({ loans }: HomeProps) {
         loans={paginatedLoans.map(parseSubgraphLoan)}
         view={showGrid ? 'cards' : 'list'}
       />
-
-      <div ref={ref} style={{ gridColumn: 'span 12' }}>
-        <p>
-          Welcome! Homepage in progress, try{' '}
-          <Link href="/loans/create"> Creating a loan</Link>
-        </p>
-        {process.env.NEXT_PUBLIC_ENV === 'rinkeby' && (
-          <Link href="/test">Get Rinkeby DAI and an NFT!</Link>
-        )}
-      </div>
     </TwelveColumn>
   );
 }
