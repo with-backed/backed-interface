@@ -61,7 +61,9 @@ export const ConnectWallet = () => {
   return (
     <>
       {!account && (
-        <DialogDisclosureButton {...dialog}>Connect</DialogDisclosureButton>
+        <DialogDisclosureButton {...dialog}>
+          <span aria-hidden="true">🥕</span> Connect
+        </DialogDisclosureButton>
       )}
       {!!account && <ConnectedWalletMenu />}
       <Modal
