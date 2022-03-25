@@ -45,7 +45,6 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = () => {
               title="Backed"
               className={codeActive ? styles['flipped-link'] : styles.link}>
               <BackedBunny />
-              <h1>{codeActive ? 'fronted' : 'backed'}</h1>
             </a>
           </Link>
 
