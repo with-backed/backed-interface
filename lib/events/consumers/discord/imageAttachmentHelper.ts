@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import ethers from 'ethers';
-import { getNFTInfoFromTokenInfo } from 'lib/getNFTInfo';
+import { NFTResponseData } from 'pages/api/nftInfo/[uri]';
 import { svg2png } from 'svg-png-converter';
 
 const SVG_PREFIX = 'data:image/svg+xml;base64,';
@@ -10,15 +10,21 @@ export async function collateralToDiscordMessageEmbed(
   collateralTokenId: ethers.BigNumber,
   collateralTokenURI: string,
 ): Promise<MessageEmbed> {
-  const nftInfo = await getNFTInfoFromTokenInfo(
-    collateralTokenId,
-    collateralTokenURI,
-    true,
+  const isDataUri = collateralTokenURI.startsWith('data:');
+  const tokenURIRes = await fetch(
+    isDataUri
+      ? collateralTokenURI
+      : `https://rinkeby.withbacked.xyz/api/nftInfo/${encodeURIComponent(
+          collateralTokenURI,
+        )}`,
   );
+  console.log({ tokenURIRes });
+  const NFTInfo: NFTResponseData = await tokenURIRes.json();
+  console.log({ NFTInfo });
 
-  if (nftInfo!.mediaUrl.startsWith(SVG_PREFIX)) {
+  if (NFTInfo!.image.startsWith(SVG_PREFIX)) {
     const outputBuffer = svg2png({
-      input: nftInfo!.mediaUrl.substring(SVG_PREFIX.length + 2),
+      input: NFTInfo!.image.substring(SVG_PREFIX.length + 2),
       encoding: 'base64',
       format: 'png',
     });
@@ -27,5 +33,5 @@ export async function collateralToDiscordMessageEmbed(
 
   return new MessageEmbed()
     .setTitle(`${collateralName} #${collateralTokenId}`)
-    .setImage(nftInfo!.mediaUrl);
+    .setImage(NFTInfo!.image);
 }
