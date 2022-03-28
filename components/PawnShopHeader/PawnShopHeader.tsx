@@ -32,7 +32,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = () => {
           </Banner>
         );
       })}
-      <header className={styles.header}>
+      <nav className={styles.header}>
         <TwelveColumn>
           <div className={styles.pawn}>
             <ButtonLink kind={kind} href={CREATE_PATH}>
@@ -52,7 +52,20 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = () => {
             <ConnectWallet />
           </div>
         </TwelveColumn>
-      </header>
+      </nav>
+      <nav className={styles['mobile-header']}>
+        <Link href="/" passHref>
+          <a title="Backed">
+            <BackedBunny />
+          </a>
+        </Link>
+        <div className={styles['sausage-links']}>
+          <ConnectWallet />
+          <ButtonLink kind={kind} href={CREATE_PATH}>
+            Create a Loan
+          </ButtonLink>
+        </div>
+      </nav>
     </>
   );
 };

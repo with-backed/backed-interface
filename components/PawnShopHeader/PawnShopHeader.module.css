@@ -7,16 +7,19 @@
   padding: 1rem 0;
 }
 
-.top-row {
-  display: grid;
-  grid-template-columns: 1fr 300px 1fr;
-  max-width: var(--max-width-header);
+.mobile-header {
   width: 100%;
+  background: var(--background-white);
+  display: grid;
   align-items: center;
+  grid-template-columns: 70px 1fr;
+  padding: 1rem 0;
+  gap: 1.5rem;
+  overflow: hidden;
 }
 
 .link {
-  grid-column: col-start 5 / span 4;
+  grid-column: span 6;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -27,10 +30,6 @@
   composes: link;
 }
 
-.link:visited {
-  color: var(--neutral-100);
-}
-
 .link > svg {
   height: 70px;
 }
@@ -39,18 +38,53 @@
   transform: rotateX(180deg);
 }
 
-.link > h1 {
-  margin: 0;
-  font-size: var(--font-medium);
-}
-
 .pawn {
-  grid-column: col-start / span 3;
+  grid-column: span 3;
   align-self: center;
 }
 
 .connect-wallet {
-  grid-column: col-start 10 / span 3;
+  grid-column: span 3;
   align-self: center;
   max-width: 100%;
+}
+
+.sausage-links {
+  display: flex;
+  overflow-x: auto;
+  gap: 1rem;
+}
+
+.sausage-links > * {
+  flex: 0 0 75%;
+}
+
+.sausage-links > div[class^='ConnectWallet'] {
+  overflow: hidden;
+}
+
+@media screen and (max-width: 955px) {
+  .link {
+    grid-column: span 4;
+  }
+
+  .pawn {
+    grid-column: span 4;
+  }
+
+  .connect-wallet {
+    grid-column: span 4;
+  }
+}
+
+@media screen and (min-width: 711px) {
+  .mobile-header {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 710px) {
+  .header {
+    display: none;
+  }
 }
