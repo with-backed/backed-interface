@@ -40,3 +40,11 @@
   composes: column;
   grid-column: col-start 5 / -1;
 }
+
+@media screen and (max-width: 700px) {
+  .left-column,
+  .right-column {
+    grid-column: span 12;
+    gap: 20px;
+  }
+}

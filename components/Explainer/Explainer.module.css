@@ -22,3 +22,10 @@
 .explainer-container {
   position: relative;
 }
+
+/* TODO: come up with a way to provide explainer content in mobile view. */
+@media screen and (max-width: 700px) {
+  .explainer {
+    display: none;
+  }
+}

@@ -22,3 +22,14 @@
 .form {
   grid-column: col-start 5 / -1;
 }
+
+@media screen and (max-width: 700px) {
+  .media,
+  .form {
+    grid-column: span 12;
+  }
+
+  .loan-header {
+    padding: calc(var(--gap) / 4) 0;
+  }
+}
