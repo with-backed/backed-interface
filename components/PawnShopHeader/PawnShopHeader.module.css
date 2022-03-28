@@ -30,7 +30,8 @@
   composes: link;
 }
 
-.link > svg {
+.link > svg,
+.link img {
   height: 70px;
 }
 
