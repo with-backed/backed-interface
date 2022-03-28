@@ -17,15 +17,11 @@ export async function collateralToDiscordMessageEmbed(
 
   if (isDataUri) {
     console.log({
-      sub: collateralTokenURI.substring(
-        collateralTokenURI.indexOf(JSON_PREFIX) + 2,
-      ),
+      sub: collateralTokenURI.substring(JSON_PREFIX.length),
     });
     NFTInfo = JSON.parse(
       Buffer.from(
-        collateralTokenURI.substring(
-          collateralTokenURI.indexOf(JSON_PREFIX) + 2,
-        ),
+        collateralTokenURI.substring(JSON_PREFIX.length),
         'base64',
       ).toString(),
     );
@@ -44,7 +40,7 @@ export async function collateralToDiscordMessageEmbed(
 
   if (NFTInfo!.image.startsWith(SVG_PREFIX)) {
     const outputBuffer = svg2png({
-      input: NFTInfo!.image.substring(SVG_PREFIX.length + 2),
+      input: NFTInfo!.image.substring(SVG_PREFIX.length),
       encoding: 'base64',
       format: 'png',
     });
