@@ -3,7 +3,7 @@ import {
   confirmTopicSubscription,
   EventsSNSMessage,
 } from 'lib/events/sns/helpers';
-import { sendBotUpdateForTriggerAndEntity } from 'lib/events/consumers/discord/botUpdates';
+import { sendBotUpdateForTriggerAndEntity } from 'lib/events/consumers/discord/formatter';
 
 export default async function handler(
   req: NextApiRequest,

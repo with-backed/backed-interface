@@ -9,13 +9,13 @@ import { RawSubgraphEvent } from 'types/RawEvent';
 import {
   ensOrAddr,
   getEstimatedRepaymentAndMaturity,
-} from '../userNotifications/helpers';
-import { NotificationTriggerType } from '../userNotifications/shared';
-import { formatTermsForBot } from './formattingHelpers';
-import { sendBotMessage } from './notifier';
-import { formattedDuration } from 'lib/events/consumers/userNotifications/helpers';
+  formattedDuration,
+} from 'lib/events/consumers/formattingHelpers';
+import { NotificationTriggerType } from 'lib/events/consumers/userNotifications/shared';
+import { sendBotMessage } from 'lib/events/consumers/discord/bot';
 import { ethers } from 'ethers';
 import { parseSubgraphLoan } from 'lib/loans/utils';
+import { formattedAnnualRate } from 'lib/interest';
 
 export async function sendBotUpdateForTriggerAndEntity(
   trigger: NotificationTriggerType,
@@ -40,7 +40,7 @@ export async function sendBotUpdateForTriggerAndEntity(
         createEvent.creator,
       )} has created a loan with the following collateral: ${
         createEvent.loan.collateralName
-      } #${createEvent.loan.collateralTokenId}\n`;
+      } #${createEvent.loan.collateralTokenId}\n\n`;
       message += `Their desired loans terms are:\n`;
       message += formatTermsForBot(
         createEvent.loan.loanAmount,
@@ -78,7 +78,8 @@ export async function sendBotUpdateForTriggerAndEntity(
       );
 
       message += `Loan #${buyoutEvent.loan.id}: ${buyoutEvent.loan.collateralName} has been bought out by ${newLender}\n`;
-      message += `${oldLender} held the loan for ${duration} and earned ${formattedInterestEarned} ${buyoutEvent.loan.loanAssetSymbol} over that time\n`;
+      message += `${oldLender} held the loan for ${duration} and earned ${formattedInterestEarned} ${buyoutEvent.loan.loanAssetSymbol} over that time\n\n`;
+
       message += `The old terms set by ${oldLender} were:\n`;
       message += formatTermsForBot(
         mostRecentTermsEvent!.loanAmount,
@@ -87,7 +88,8 @@ export async function sendBotUpdateForTriggerAndEntity(
         mostRecentTermsEvent!.durationSeconds,
         buyoutEvent.loan.loanAssetSymbol,
       );
-      message += `\nThe new terms set by ${newLender} are:\n`;
+
+      message += `\n\nThe new terms set by ${newLender} are:\n`;
       message += formatTermsForBot(
         buyoutEvent.loan.loanAmount,
         buyoutEvent.loan.loanAssetDecimal,
@@ -113,7 +115,7 @@ export async function sendBotUpdateForTriggerAndEntity(
         repaymentEvent.lendTicketHolder,
       )} held the loan for ${duration} and earned ${formattedInterestEarned} ${
         repaymentEvent.loan.loanAssetSymbol
-      } over that time\n`;
+      } over that time\n\n`;
 
       message += 'The loan terms were:\n';
       message += formatTermsForBot(
@@ -150,4 +152,26 @@ export async function sendBotUpdateForTriggerAndEntity(
   message += `\nEvent Tx: <https://rinkeby.etherscan.io/tx/${event.id}>`;
 
   await sendBotMessage(message);
+}
+
+function formatTermsForBot(
+  loanAmount: number,
+  loanAssetDecimal: number,
+  perSecondInterestRate: number,
+  durationSeconds: number,
+  loanAssetSymbol: string,
+): string {
+  const parsedLoanAmount = ethers.utils.formatUnits(
+    loanAmount.toString(),
+    loanAssetDecimal,
+  );
+  const amount = `${parsedLoanAmount} ${loanAssetSymbol}`;
+
+  const interest = formattedAnnualRate(
+    ethers.BigNumber.from(perSecondInterestRate),
+  );
+
+  return `Loan amount: ${amount}\nDuration: ${formattedDuration(
+    durationSeconds,
+  )}\nInterest: ${interest}%`;
 }

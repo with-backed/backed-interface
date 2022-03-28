@@ -12,7 +12,7 @@ import {
 
 const now = 1647357808;
 
-describe('Sending emails with Amazon SES', () => {
+describe('Transforming on-chain events to email components', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });

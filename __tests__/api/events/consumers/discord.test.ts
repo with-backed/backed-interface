@@ -4,7 +4,7 @@ import { createMocks } from 'node-mocks-http';
 import handler from 'pages/api/events/consumers/discord';
 import fetchMock from 'jest-fetch-mock';
 import { subgraphLendEvent } from 'lib/mockSubgraphEventsData';
-import { sendBotUpdateForTriggerAndEntity } from 'lib/events/consumers/discord/botUpdates';
+import { sendBotUpdateForTriggerAndEntity } from 'lib/events/consumers/discord/formatter';
 
 const subgraphLoanCopy = {
   ...subgraphLoan,
@@ -13,7 +13,7 @@ const subgraphLoanCopy = {
 subgraphLoanCopy.lendTicketHolder =
   ethers.Wallet.createRandom().address.toLowerCase();
 
-jest.mock('lib/events/consumers/discord/botUpdates', () => ({
+jest.mock('lib/events/consumers/discord/formatter', () => ({
   sendBotUpdateForTriggerAndEntity: jest.fn(),
 }));
 

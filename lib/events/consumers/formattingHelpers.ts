@@ -1,12 +1,10 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
-
-import { formattedAnnualRate } from 'lib/interest';
-import { SCALAR } from 'lib/constants';
-import { addressToENS } from 'lib/account';
-import { Loan as ParsedLoan } from 'types/Loan';
-import { Loan } from 'types/generated/graphql/nftLoans';
 import { ethers } from 'ethers';
+import { addressToENS } from 'lib/account';
+import { SCALAR } from 'lib/constants';
+import { formattedAnnualRate } from 'lib/interest';
+import { Loan as ParsedLoan } from 'types/Loan';
 
 dayjs.extend(duration);
 
@@ -18,8 +16,27 @@ export const ensOrAddr = async (rawAddress: string): Promise<string> => {
   return ens;
 };
 
-export const emailHeader = (loan: Loan): string =>
-  `Loan #${loan.id}: ${loan.collateralName}`;
+export const formattedDate = (timestamp: number): string =>
+  dayjs.unix(timestamp).format('MM/DD/YYYY');
+
+export const getEstimatedRepaymentAndMaturity = (
+  loan: ParsedLoan,
+  duration: ethers.BigNumber = loan.durationSeconds,
+): [string, string] => {
+  const interestOverTerm = loan.perSecondInterestRate
+    .mul(duration)
+    .mul(loan.loanAmount)
+    .div(SCALAR);
+
+  const estimatedRepayment = ethers.utils.formatUnits(
+    loan.accumulatedInterest.add(interestOverTerm).add(loan.loanAmount),
+    loan.loanAssetDecimals,
+  );
+
+  const dateOfMaturity = formattedDate(loan.endDateTimestamp!);
+
+  return [estimatedRepayment, dateOfMaturity];
+};
 
 export const formattedLoanTerms = (
   loanAmount: number,
@@ -45,25 +62,6 @@ export const formattedLoanTerms = (
   };
 };
 
-export const getEstimatedRepaymentAndMaturity = (
-  loan: ParsedLoan,
-  duration: ethers.BigNumber = loan.durationSeconds,
-): [string, string] => {
-  const interestOverTerm = loan.perSecondInterestRate
-    .mul(duration)
-    .mul(loan.loanAmount)
-    .div(SCALAR);
-
-  const estimatedRepayment = ethers.utils.formatUnits(
-    loan.accumulatedInterest.add(interestOverTerm).add(loan.loanAmount),
-    loan.loanAssetDecimals,
-  );
-
-  const dateOfMaturity = formattedDate(loan.endDateTimestamp!);
-
-  return [estimatedRepayment, dateOfMaturity];
-};
-
 export const formattedDuration = (duration: number): string => {
   const days = Math.floor(dayjs.duration({ seconds: duration }).asDays());
   if (days != 0) {
@@ -78,6 +76,3 @@ export const formattedDuration = (duration: number): string => {
   const minutes = Math.floor(dayjs.duration({ seconds: duration }).asMinutes());
   return minutes === 1 ? `${minutes} minute` : `${minutes} minutes`;
 };
-
-export const formattedDate = (timestamp: number): string =>
-  dayjs.unix(timestamp).format('MM/DD/YYYY');
