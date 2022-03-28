@@ -16,6 +16,8 @@ import { sendBotMessage } from 'lib/events/consumers/discord/bot';
 import { ethers } from 'ethers';
 import { parseSubgraphLoan } from 'lib/loans/utils';
 import { formattedAnnualRate } from 'lib/interest';
+import { collateralToDiscordMessageEmbed } from 'lib/events/consumers/discord/imageAttachmentHelper';
+import { getNFTInfoFromTokenInfo } from 'lib/getNFTInfo';
 
 export async function sendBotUpdateForTriggerAndEntity(
   trigger: NotificationTriggerType,
@@ -153,7 +155,13 @@ export async function sendBotUpdateForTriggerAndEntity(
   message += `\n\nLoan: <https://rinkeby.withbacked.xyz/loans/${event.loan.id}>`;
   message += `\nEvent Tx: <https://rinkeby.etherscan.io/tx/${event.id}>`;
 
-  await sendBotMessage(message);
+  const messagedEmbed = await collateralToDiscordMessageEmbed(
+    event.loan.collateralName,
+    event.loan.collateralTokenId,
+    event.loan.collateralTokenURI,
+  );
+
+  await sendBotMessage(message, messagedEmbed);
 }
 
 function formatTermsForBot(
