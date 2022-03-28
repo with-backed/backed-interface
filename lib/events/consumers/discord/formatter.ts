@@ -33,6 +33,8 @@ export async function sendBotUpdateForTriggerAndEntity(
   let duration: string;
   let formattedInterestEarned: string;
 
+  console.log({ trigger, event });
+
   switch (trigger) {
     case 'CreateEvent':
       const createEvent = event as CreateEvent;
