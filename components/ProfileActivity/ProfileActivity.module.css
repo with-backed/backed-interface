@@ -40,3 +40,24 @@
 .description {
   font-size: var(--font-small);
 }
+
+@media screen and (max-width: 700px) {
+  .event-list {
+    gap: 10px;
+  }
+  .event {
+    grid-template-columns: 1fr;
+    padding-bottom: 10px;
+    gap: 10px;
+    border-bottom: thin var(--neutral-20) solid;
+  }
+
+  .event:last-of-type {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .event > *:nth-child(2) {
+    display: none;
+  }
+}
