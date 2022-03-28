@@ -41,7 +41,9 @@ export async function getNFTInfoFromTokenInfo(
     const tokenURIRes = await fetch(
       isDataUri ? tokenURI : `/api/nftInfo/${encodeURIComponent(tokenURI)}`,
     );
+    console.log({ tokenURIRes });
     const NFTInfo: NFTResponseData = await tokenURIRes.json();
+    console.log({ NFTInfo });
 
     if (!NFTInfo) {
       return null;
