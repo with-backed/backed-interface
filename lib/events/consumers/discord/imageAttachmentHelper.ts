@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { MessageAttachment, MessageEmbed } from 'discord.js';
 import ethers from 'ethers';
 import { NFTResponseData } from 'pages/api/nftInfo/[uri]';
 import { svg2png } from 'svg-png-converter';
@@ -10,7 +10,7 @@ export async function collateralToDiscordMessageEmbed(
   collateralName: string,
   collateralTokenId: ethers.BigNumber,
   collateralTokenURI: string,
-): Promise<MessageEmbed> {
+): Promise<[MessageEmbed, MessageAttachment | undefined]> {
   let NFTInfo: NFTResponseData;
 
   const isDataUri = collateralTokenURI.startsWith('data:');
@@ -36,18 +36,25 @@ export async function collateralToDiscordMessageEmbed(
     NFTInfo = await tokenURIRes.json();
   }
 
-  console.log({ NFTInfo });
+  let rawBufferAttachment: MessageAttachment | undefined = undefined;
+  let messageEmbed: MessageEmbed;
 
   if (NFTInfo!.image.startsWith(SVG_PREFIX)) {
-    const outputBuffer = svg2png({
+    const outputBuffer = await svg2png({
       input: NFTInfo!.image.substring(SVG_PREFIX.length),
       encoding: 'base64',
       format: 'png',
     });
-    console.log(outputBuffer);
+
+    rawBufferAttachment = new MessageAttachment(outputBuffer, `collateral.png`);
+    messageEmbed = new MessageEmbed()
+      .setTitle(`${collateralName} #${collateralTokenId}`)
+      .setImage('attachment://collateral.png');
+  } else {
+    messageEmbed = new MessageEmbed()
+      .setTitle(`${collateralName} #${collateralTokenId}`)
+      .setImage(NFTInfo!.image);
   }
 
-  return new MessageEmbed()
-    .setTitle(`${collateralName} #${collateralTokenId}`)
-    .setImage(NFTInfo!.image);
+  return [messageEmbed, rawBufferAttachment];
 }

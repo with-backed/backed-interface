@@ -1,8 +1,9 @@
-import Discord, { MessageEmbed } from 'discord.js';
+import Discord, { MessageAttachment, MessageEmbed } from 'discord.js';
 
 export async function sendBotMessage(
   content: string,
   messageEmbed: MessageEmbed,
+  rawBufferAttachment?: MessageAttachment,
 ) {
   const client = new Discord.Client();
   await client.login(process.env.DISCORD_BOT_TOKEN!);
@@ -13,5 +14,6 @@ export async function sendBotMessage(
 
   await channel.send(content, {
     embed: messageEmbed,
+    files: !!rawBufferAttachment ? [rawBufferAttachment] : undefined,
   });
 }
