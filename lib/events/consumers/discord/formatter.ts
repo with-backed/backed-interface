@@ -17,7 +17,6 @@ import { ethers } from 'ethers';
 import { parseSubgraphLoan } from 'lib/loans/utils';
 import { formattedAnnualRate } from 'lib/interest';
 import { collateralToDiscordMessageEmbed } from 'lib/events/consumers/discord/imageAttachmentHelper';
-import { getNFTInfoFromTokenInfo } from 'lib/getNFTInfo';
 
 export async function sendBotUpdateForTriggerAndEntity(
   trigger: NotificationTriggerType,
