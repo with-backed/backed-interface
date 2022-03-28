@@ -33,7 +33,7 @@ export async function sendBotUpdateForTriggerAndEntity(
   let duration: string;
   let formattedInterestEarned: string;
 
-  console.log({ trigger, event });
+  console.log({ trigger });
 
   switch (trigger) {
     case 'CreateEvent':
@@ -142,7 +142,7 @@ export async function sendBotUpdateForTriggerAndEntity(
         parseSubgraphLoan(collateralSeizureEvent.loan),
       );
 
-      message += `Loan #${collateralSeizureEvent.loan.id}: ${collateralSeizureEvent.loan.collateralName} has had it's collateral seized\n`;
+      message += `Loan #${collateralSeizureEvent.loan.id}: ${collateralSeizureEvent.loan.collateralName} has had its collateral seized\n`;
       message += `${lender} held the loan for ${duration}. The loan became due on ${maturity} with a repayment cost of ${repayment} ${collateralSeizureEvent.loan.loanAssetSymbol}. ${borrower} did not repay, so ${lender} was able to seize the loan's collateral`;
       break;
 
