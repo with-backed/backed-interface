@@ -155,7 +155,9 @@ export function ProfileHeader({ address, loans }: ProfileHeaderProps) {
                 View on Etherscan 🔗
               </EtherscanAddressLink>
               <DialogDisclosure as={'text'} {...dialog}>
-                <TextButton>Subscribe to updates 🔔</TextButton>
+                <TextButton kind="clickable">
+                  Subscribe to updates 🔔
+                </TextButton>
               </DialogDisclosure>
             </div>
           </Fieldset>
