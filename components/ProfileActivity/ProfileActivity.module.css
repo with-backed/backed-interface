@@ -25,7 +25,6 @@
 .event-link {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
 }
 
 .event-link > span {
@@ -43,13 +42,11 @@
 
 @media screen and (max-width: 700px) {
   .event-list {
-    gap: 10px;
+    gap: 1.5rem;
   }
   .event {
     grid-template-columns: 1fr;
-    padding-bottom: 10px;
     gap: 10px;
-    border-bottom: thin var(--neutral-20) solid;
   }
 
   .event:last-of-type {
