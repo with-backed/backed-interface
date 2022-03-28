@@ -14,6 +14,5 @@ export async function sendBotMessage(
 
   await channel.send(content, {
     embed: messageEmbed,
-    files: !!rawBufferAttachment ? [rawBufferAttachment] : undefined,
   });
 }

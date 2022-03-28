@@ -49,6 +49,7 @@ export async function collateralToDiscordMessageEmbed(
     rawBufferAttachment = new MessageAttachment(outputBuffer, `collateral.png`);
     messageEmbed = new MessageEmbed()
       .setTitle(`${collateralName} #${collateralTokenId}`)
+      .attachFiles([rawBufferAttachment])
       .setImage('attachment://collateral.png');
   } else {
     messageEmbed = new MessageEmbed()
