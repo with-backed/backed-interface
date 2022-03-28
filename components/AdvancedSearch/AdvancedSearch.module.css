@@ -4,6 +4,13 @@
   box-sizing: border-box;
 }
 
+/* TODO: make advanced search mobile-friendly. This gets ugly around 700px so hiding there for now. */
+@media screen and (max-width: 700px) {
+  .wrapper {
+    display: none;
+  }
+}
+
 .header {
   display: flex;
   flex-direction: row;
