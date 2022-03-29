@@ -36,8 +36,7 @@ export async function sendEmailsForTriggerAndEntity(
 
     const emailAddresses = notificationRequestsForEthAddresses
       .filter((req) => req.deliveryMethod === NotificationMethod.EMAIL)
-      .map((req) => req.deliveryDestination)
-      .filter((value, index, self) => self.indexOf(value) === index);
+      .map((req) => req.deliveryDestination);
 
     if (emailAddresses.length === 0) {
       continue;
