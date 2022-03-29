@@ -9,7 +9,7 @@ import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import { Banner } from 'components/Banner';
 import { useNetworkMonitor } from 'hooks/useNetworkMonitor';
 import BackedBunny from 'components/Icons/BackedBunny';
-import pepe from './pepe-bunny.png';
+import pepe from './pepe-bunny-line.png';
 import { useKonami } from 'hooks/useKonami';
 import Image from 'next/image';
 
@@ -47,7 +47,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = () => {
               title="Backed"
               className={codeActive ? styles['flipped-link'] : styles.link}>
               {codeActive ? (
-                <Image src={pepe} alt="tfw" height={70} priority />
+                <Image src={pepe} alt="tfw" height={70} width={65} priority />
               ) : (
                 <BackedBunny />
               )}
