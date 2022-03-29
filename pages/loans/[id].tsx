@@ -21,6 +21,7 @@ export type LoanPageProps = {
   fallback: {
     [key: string]: any;
   };
+  randomNumber: number;
 };
 
 export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
@@ -39,6 +40,7 @@ export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
     };
   }
 
+  const randomNumber = Math.random();
   const loanInfoJson = JSON.stringify(loan);
   const historyJson = JSON.stringify(history);
 
@@ -52,6 +54,7 @@ export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
       fallback: {
         [`/api/loans/history/${id}`]: historyJson,
       },
+      randomNumber,
     },
   };
 };
@@ -60,6 +63,7 @@ export default function Loans({
   loanInfoJson,
   fallback,
   collateralSaleInfo,
+  randomNumber,
 }: LoanPageProps) {
   const serverLoan = useMemo(
     () => parseSerializedResponse(loanInfoJson) as Loan,
@@ -75,6 +79,7 @@ export default function Loans({
 
   return (
     <SWRConfig value={{ fallback: parsedFallback }}>
+      <span>{randomNumber}</span>
       <LoansInner
         serverLoan={serverLoan}
         collateralSaleInfo={collateralSaleInfo}
