@@ -72,7 +72,7 @@ export const NotificationsModal = ({
         </div>
         <Input
           id="emailAddress"
-          type="text"
+          type="email"
           color="dark"
           placeholder="Enter email address"
           {...register('emailAddress')}
