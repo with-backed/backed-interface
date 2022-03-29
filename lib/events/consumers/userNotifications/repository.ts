@@ -10,6 +10,14 @@ export async function createNotificationRequestForAddress(
   destination: string,
 ): Promise<NotificationRequest | null> {
   try {
+    const existingRequests = await getNotificationRequestsForAddress(address);
+    const duplicateRequest = existingRequests.find(
+      (r) => r.deliveryDestination === destination,
+    );
+    if (!!duplicateRequest) {
+      return duplicateRequest;
+    }
+
     const createdNotificationRequest = await prisma.notificationRequest.create({
       data: {
         ethAddress: address,
