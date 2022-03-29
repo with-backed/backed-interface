@@ -26,8 +26,6 @@ export default async function handler(
       parsedBody['Message'],
     ) as EventsSNSMessage;
 
-    console.log({ eventName, eventCollateral: event.loan.collateralName });
-
     const now = Math.floor(new Date().getTime() / 1000);
     await sendBotUpdateForTriggerAndEntity(
       eventName,
