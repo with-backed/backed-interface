@@ -39,6 +39,28 @@ describe('Notifications repository', () => {
       expect(deleteResult).toBeTruthy;
     });
 
+    it('does not create a duplicate notification request with the same desitination', async () => {
+      await createNotificationRequestForAddress(
+        address,
+        event,
+        notificationMethod,
+        notificationDestination,
+      );
+
+      await createNotificationRequestForAddress(
+        address,
+        event,
+        notificationMethod,
+        notificationDestination,
+      );
+
+      expect(
+        await (
+          await getNotificationRequestsForAddress(address)
+        ).length,
+      ).toEqual(1);
+    });
+
     it('returns null on error', async () => {
       const notificationRequest = await createNotificationRequestForAddress(
         null, // pass null address so DB errors
