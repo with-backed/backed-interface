@@ -9,12 +9,6 @@ import { useDialogState } from 'reakit/Dialog';
 import { FormWrapper } from 'components/layouts/FormWrapper';
 import { ConnectedWalletMenu } from './ConnectedWalletMenu';
 
-declare global {
-  interface Window {
-    ethereum: any;
-  }
-}
-
 const chainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || '0x4', 16);
 
 const visitMetaMask = () => {
