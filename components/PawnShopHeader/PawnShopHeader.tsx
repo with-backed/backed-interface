@@ -9,7 +9,9 @@ import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import { Banner } from 'components/Banner';
 import { useNetworkMonitor } from 'hooks/useNetworkMonitor';
 import BackedBunny from 'components/Icons/BackedBunny';
+import pepe from './pepe-bunny-line.png';
 import { useKonami } from 'hooks/useKonami';
+import Image from 'next/image';
 
 type PawnShopHeaderProps = {};
 
@@ -44,7 +46,11 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = () => {
             <a
               title="Backed"
               className={codeActive ? styles['flipped-link'] : styles.link}>
-              <BackedBunny />
+              {codeActive ? (
+                <Image src={pepe} alt="tfw" height={70} width={65} priority />
+              ) : (
+                <BackedBunny />
+              )}
             </a>
           </Link>
 
