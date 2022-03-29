@@ -2,7 +2,7 @@ import Discord, { MessageEmbed } from 'discord.js';
 
 export async function sendBotMessage(
   content: string,
-  messageEmbed: MessageEmbed,
+  messageEmbed?: MessageEmbed,
 ) {
   const client = new Discord.Client();
   await client.login(process.env.DISCORD_BOT_TOKEN!);
@@ -12,6 +12,6 @@ export async function sendBotMessage(
   )) as Discord.TextChannel;
 
   await channel.send(content, {
-    embed: messageEmbed,
+    embed: !!messageEmbed ? messageEmbed : undefined,
   });
 }
