@@ -1,4 +1,4 @@
-import Discord, { MessageAttachment, MessageEmbed } from 'discord.js';
+import Discord, { MessageEmbed } from 'discord.js';
 
 export async function sendBotMessage(
   content: string,
