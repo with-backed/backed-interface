@@ -24,7 +24,7 @@ export async function sendBotUpdateForTriggerAndEntity(
   now: number,
   mostRecentTermsEvent?: LendEvent,
 ): Promise<void> {
-  // we do not want to send LendEvent emails and BuyoutEvent emails
+  // we do not want to send LendEvent bot messages and BuyoutEvent bot messages
   if (trigger === 'LendEvent' && !!mostRecentTermsEvent) {
     return;
   }
