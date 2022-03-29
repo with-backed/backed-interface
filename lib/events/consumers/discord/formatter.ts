@@ -154,14 +154,13 @@ export async function sendBotUpdateForTriggerAndEntity(
   message += `\n\nLoan: <https://rinkeby.withbacked.xyz/loans/${event.loan.id}>`;
   message += `\nEvent Tx: <https://rinkeby.etherscan.io/tx/${event.id}>`;
 
-  const [messagedEmbed, rawBufferAttachment] =
-    await collateralToDiscordMessageEmbed(
-      event.loan.collateralName,
-      event.loan.collateralTokenId,
-      event.loan.collateralTokenURI,
-    );
+  const messagedEmbed = await collateralToDiscordMessageEmbed(
+    event.loan.collateralName,
+    event.loan.collateralTokenId,
+    event.loan.collateralTokenURI,
+  );
 
-  await sendBotMessage(message, messagedEmbed, rawBufferAttachment);
+  await sendBotMessage(message, messagedEmbed);
 }
 
 function formatTermsForBot(

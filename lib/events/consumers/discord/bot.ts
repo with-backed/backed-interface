@@ -3,7 +3,6 @@ import Discord, { MessageAttachment, MessageEmbed } from 'discord.js';
 export async function sendBotMessage(
   content: string,
   messageEmbed: MessageEmbed,
-  rawBufferAttachment?: MessageAttachment,
 ) {
   const client = new Discord.Client();
   await client.login(process.env.DISCORD_BOT_TOKEN!);
