@@ -5,9 +5,11 @@ import {
 } from 'types/generated/graphql/nftLoans';
 
 export async function subgraphLoanById(id: string) {
-  const { data, error } = await nftBackedLoansClient
+  const { data, error, stale } = await nftBackedLoansClient
     .query<LoanByIdQuery>(LoanByIdDocument, { id })
     .toPromise();
+
+  console.log(JSON.stringify({ data, error, stale }));
 
   if (error) {
     // TODO: bugsnag
