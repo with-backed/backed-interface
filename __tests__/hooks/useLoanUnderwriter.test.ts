@@ -49,7 +49,7 @@ describe('useLoanUnderwriter', () => {
       account: '0xmyaddress',
     });
     mockedLoanFacilitator.mockReturnValue({
-      underwriteLoan: jest.fn(),
+      lend: jest.fn(),
     } as any);
   });
 
@@ -87,7 +87,7 @@ describe('useLoanUnderwriter', () => {
   it('underwrites a loan', async () => {
     const transaction = makeTransaction();
     mockedLoanFacilitator.mockReturnValue({
-      underwriteLoan: jest.fn().mockResolvedValue(transaction),
+      lend: jest.fn().mockResolvedValue(transaction),
     } as any);
 
     const { result } = renderHook(() => useLoanUnderwriter(baseLoan, refresh));
@@ -112,7 +112,7 @@ describe('useLoanUnderwriter', () => {
   it('handles failure to underwrite a loan', async () => {
     const transaction = makeTransaction();
     mockedLoanFacilitator.mockReturnValue({
-      underwriteLoan: jest.fn().mockResolvedValue(transaction),
+      lend: jest.fn().mockResolvedValue(transaction),
     } as any);
 
     const { result } = renderHook(() => useLoanUnderwriter(baseLoan, refresh));
