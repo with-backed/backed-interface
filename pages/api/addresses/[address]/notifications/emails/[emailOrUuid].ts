@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import {
   createNotificationRequestForAddress,
-  deleteAllNotificationRequestsForAddress,
   deleteNotificationRequestById,
   getNumberOfRequestsForNotificationDestination,
 } from 'lib/events/consumers/userNotifications/repository';
@@ -21,7 +20,7 @@ export default async function handler(
   }
 
   // this endpoint takes an email if POST (i.e. subscribing to an ethAddresses activity)
-  // this endpoint atkes a UUID if DELETE (i.e. unsubscribing a particular email <> ethAddress pair)
+  // this endpoint takes a UUID if DELETE (i.e. unsubscribing a particular email <> ethAddress pair)
   try {
     const { address, emailOrUuid } = req.query as {
       address: string;
