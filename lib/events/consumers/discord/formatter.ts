@@ -29,8 +29,30 @@ export async function sendBotUpdateForTriggerAndEntity(
     return;
   }
 
-  let message: string = '';
+  const botMessageContent = `${await generateContentStringForEvent(
+    trigger,
+    event,
+    mostRecentTermsEvent,
+  )}
 
+Loan: <https://rinkeby.withbacked.xyz/loans/${event.loan.id}>
+Event Tx: <https://rinkeby.etherscan.io/tx/${event.id}>
+`;
+
+  const messagedEmbed = await collateralToDiscordMessageEmbed(
+    event.loan.collateralName,
+    event.loan.collateralTokenId,
+    event.loan.collateralTokenURI,
+  );
+
+  await sendBotMessage(botMessageContent, messagedEmbed);
+}
+
+async function generateContentStringForEvent(
+  trigger: NotificationTriggerType,
+  event: RawSubgraphEvent,
+  mostRecentTermsEvent?: LendEvent,
+): Promise<string> {
   let duration: string;
   let formattedInterestEarned: string;
 
@@ -38,37 +60,35 @@ export async function sendBotUpdateForTriggerAndEntity(
     case 'CreateEvent':
       const createEvent = event as CreateEvent;
 
-      message += '**New Loan Created**\n';
-      message += `${await ensOrAddr(
-        createEvent.creator,
-      )} has created a loan with collateral: ${
+      return `**New Loan Created**
+${await ensOrAddr(createEvent.creator)} has created a loan with collateral: ${
         createEvent.loan.collateralName
-      } #${createEvent.loan.collateralTokenId}\n\n`;
-      message += `Their desired loans terms are:\n`;
-      message += formatTermsForBot(
-        createEvent.loan.loanAmount,
-        createEvent.loan.loanAssetDecimal,
-        createEvent.loan.perSecondInterestRate,
-        createEvent.loan.durationSeconds,
-        createEvent.loan.loanAssetSymbol,
-      );
-      break;
+      } #${createEvent.loan.collateralTokenId}
+
+Their desired loans terms are:
+${formatTermsForBot(
+  createEvent.loan.loanAmount,
+  createEvent.loan.loanAssetDecimal,
+  createEvent.loan.perSecondInterestRate,
+  createEvent.loan.durationSeconds,
+  createEvent.loan.loanAssetSymbol,
+)}`;
     case 'LendEvent':
       const lendEvent = event as LendEvent;
 
-      message += '**Loan Lent To**\n';
-      message += `Loan #${lendEvent.loan.id}: ${
+      return `**Loan Lent To**
+Loan #${lendEvent.loan.id}: ${
         lendEvent.loan.collateralName
-      } has been lent to by ${await ensOrAddr(lendEvent.lender)}\n\n`;
-      message += `Their loans terms are:\n`;
-      message += formatTermsForBot(
-        event.loan.loanAmount,
-        event.loan.loanAssetDecimal,
-        event.loan.perSecondInterestRate,
-        event.loan.durationSeconds,
-        event.loan.loanAssetSymbol,
-      );
-      break;
+      } has been lent to by ${await ensOrAddr(lendEvent.lender)}
+
+Their loans terms are: 
+${formatTermsForBot(
+  event.loan.loanAmount,
+  event.loan.loanAssetDecimal,
+  event.loan.perSecondInterestRate,
+  event.loan.durationSeconds,
+  event.loan.loanAssetSymbol,
+)}`;
     case 'BuyoutEvent':
       const buyoutEvent = event as BuyoutEvent;
 
@@ -82,28 +102,31 @@ export async function sendBotUpdateForTriggerAndEntity(
         buyoutEvent.loan.loanAssetDecimal,
       );
 
-      message += '**Loan Bought Out**\n';
-      message += `Loan #${buyoutEvent.loan.id}: ${buyoutEvent.loan.collateralName} has been bought out by ${newLender}\n`;
-      message += `${oldLender} held the loan for ${duration} and earned ${formattedInterestEarned} ${buyoutEvent.loan.loanAssetSymbol} over that time\n\n`;
+      return `**Loan Bought Out**
+Loan #${buyoutEvent.loan.id}: ${
+        buyoutEvent.loan.collateralName
+      } has been bought out by ${newLender}
+${oldLender} held the loan for ${duration} and earned ${formattedInterestEarned} ${
+        buyoutEvent.loan.loanAssetSymbol
+      } over that time
 
-      message += `The old terms set by ${oldLender} were:\n`;
-      message += formatTermsForBot(
-        mostRecentTermsEvent!.loanAmount,
-        buyoutEvent.loan.loanAssetDecimal,
-        mostRecentTermsEvent!.perSecondInterestRate,
-        mostRecentTermsEvent!.durationSeconds,
-        buyoutEvent.loan.loanAssetSymbol,
-      );
+The old terms set by ${oldLender} were:
+${formatTermsForBot(
+  mostRecentTermsEvent!.loanAmount,
+  buyoutEvent.loan.loanAssetDecimal,
+  mostRecentTermsEvent!.perSecondInterestRate,
+  mostRecentTermsEvent!.durationSeconds,
+  buyoutEvent.loan.loanAssetSymbol,
+)}
 
-      message += `\n\nThe new terms set by ${newLender} are:\n`;
-      message += formatTermsForBot(
-        buyoutEvent.loan.loanAmount,
-        buyoutEvent.loan.loanAssetDecimal,
-        buyoutEvent.loan.perSecondInterestRate,
-        buyoutEvent.loan.durationSeconds,
-        buyoutEvent.loan.loanAssetSymbol,
-      );
-      break;
+The new terms set by ${newLender} are:
+${formatTermsForBot(
+  buyoutEvent.loan.loanAmount,
+  buyoutEvent.loan.loanAssetDecimal,
+  buyoutEvent.loan.perSecondInterestRate,
+  buyoutEvent.loan.durationSeconds,
+  buyoutEvent.loan.loanAssetSymbol,
+)}`;
     case 'RepaymentEvent':
       const repaymentEvent = event as RepaymentEvent;
       duration = formattedDuration(
@@ -114,25 +137,24 @@ export async function sendBotUpdateForTriggerAndEntity(
         repaymentEvent.loan.loanAssetDecimal,
       );
 
-      message += '**Loan Repaid**\n';
-      message += `Loan #${repaymentEvent.loan.id}: ${
+      return `**Loan Repaid**
+Loan #${repaymentEvent.loan.id}: ${
         repaymentEvent.loan.collateralName
-      } has been repaid by ${await ensOrAddr(repaymentEvent.repayer)}\n`;
-      message += `${await ensOrAddr(
-        repaymentEvent.lendTicketHolder,
-      )} held the loan for ${duration} and earned ${formattedInterestEarned} ${
+      } has been repaid by ${await ensOrAddr(repaymentEvent.repayer)}
+${await ensOrAddr(
+  repaymentEvent.lendTicketHolder,
+)} held the loan for ${duration} and earned ${formattedInterestEarned} ${
         repaymentEvent.loan.loanAssetSymbol
-      } over that time\n\n`;
-
-      message += 'The loan terms were:\n';
-      message += formatTermsForBot(
-        repaymentEvent.loan.loanAmount,
-        repaymentEvent.loan.loanAssetDecimal,
-        repaymentEvent.loan.perSecondInterestRate,
-        repaymentEvent.loan.durationSeconds,
-        repaymentEvent.loan.loanAssetSymbol,
-      );
-      break;
+      } over that time
+      
+The loan terms were:
+${formatTermsForBot(
+  repaymentEvent.loan.loanAmount,
+  repaymentEvent.loan.loanAssetDecimal,
+  repaymentEvent.loan.perSecondInterestRate,
+  repaymentEvent.loan.durationSeconds,
+  repaymentEvent.loan.loanAssetSymbol,
+)}`;
     case 'CollateralSeizureEvent':
       const collateralSeizureEvent = event as CollateralSeizureEvent;
       const borrower = await ensOrAddr(
@@ -147,25 +169,12 @@ export async function sendBotUpdateForTriggerAndEntity(
         parseSubgraphLoan(collateralSeizureEvent.loan),
       );
 
-      message += '**Loan Collateral Seized**\n';
-      message += `Loan #${collateralSeizureEvent.loan.id}: ${collateralSeizureEvent.loan.collateralName} has had its collateral seized\n`;
-      message += `${lender} held the loan for ${duration}. The loan became due on ${maturity} with a repayment cost of ${repayment} ${collateralSeizureEvent.loan.loanAssetSymbol}. ${borrower} did not repay, so ${lender} was able to seize the loan's collateral`;
-      break;
-
+      return `**Loan Collateral Seized**
+Loan #${collateralSeizureEvent.loan.id}: ${collateralSeizureEvent.loan.collateralName} has had its collateral seized
+${lender} held the loan for ${duration}. The loan became due on ${maturity} with a repayment cost of ${repayment} ${collateralSeizureEvent.loan.loanAssetSymbol}. ${borrower} did not repay, so ${lender} was able to seize the loan's collateral`;
     default:
-      return;
+      return '';
   }
-
-  message += `\n\nLoan: <https://rinkeby.withbacked.xyz/loans/${event.loan.id}>`;
-  message += `\nEvent Tx: <https://rinkeby.etherscan.io/tx/${event.id}>`;
-
-  const messagedEmbed = await collateralToDiscordMessageEmbed(
-    event.loan.collateralName,
-    event.loan.collateralTokenId,
-    event.loan.collateralTokenURI,
-  );
-
-  await sendBotMessage(message, messagedEmbed);
 }
 
 function formatTermsForBot(
