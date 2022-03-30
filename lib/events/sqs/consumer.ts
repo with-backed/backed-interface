@@ -1,6 +1,6 @@
 import { subgraphEventFromTxHash } from 'lib/eventsHelpers';
 import { getMostRecentTermsForLoan } from 'lib/loans/subgraph/subgraphLoans';
-import { pushEventForProcessing } from '../sns/helpers';
+import { pushEventForProcessing } from 'lib/events/sns/push';
 import { deleteMessage, receiveMessages } from './helpers';
 
 export async function main() {

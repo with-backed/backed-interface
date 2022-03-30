@@ -1,5 +1,7 @@
 import { nftBackedLoansClient } from './urql';
 import {
+  CreateByTransactionHashDocument,
+  CreateByTransactionHashQuery,
   BuyoutByTransactionHashDocument,
   BuyoutByTransactionHashQuery,
   CollateralSeizureEventByTransactionHashDocument,
@@ -16,6 +18,20 @@ export async function subgraphEventFromTxHash(
   txHash: string,
 ): Promise<RawSubgraphEvent | undefined | null> {
   switch (eventName) {
+    case 'CreateEvent':
+      const { data: createEventData, error: createEventError } =
+        await nftBackedLoansClient
+          .query<CreateByTransactionHashQuery>(
+            CreateByTransactionHashDocument,
+            {
+              id: txHash,
+            },
+          )
+          .toPromise();
+      if (createEventError) {
+        // TODO: bugsnag
+      }
+      return createEventData?.createEvent;
     case 'BuyoutEvent':
       const { data: buyoutEventData, error: buyoutEventError } =
         await nftBackedLoansClient

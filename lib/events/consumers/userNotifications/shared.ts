@@ -9,7 +9,3 @@ export type NotificationTriggerType =
   | 'LiquidationOccurring'
   | 'LiquidationOccurred'
   | 'All';
-
-export type NotificationReqBody = {
-  signedMessage: string;
-};

@@ -1,3 +1,12 @@
+query createByTransactionHash($id: ID!) {
+  createEvent(id: $id) {
+    ...createEventProperties
+    loan {
+      ...allLoanProperties
+    }
+  }
+}
+
 query buyoutByTransactionHash($id: ID!) {
   buyoutEvent(id: $id) {
     ...buyoutEventProperties

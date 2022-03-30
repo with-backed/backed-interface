@@ -11,13 +11,12 @@ import { RawSubgraphEvent } from 'types/RawEvent';
 import { parseSubgraphLoan } from 'lib/loans/utils';
 import { NotificationTriggerType } from './shared';
 import {
-  emailHeader,
   ensOrAddr,
   formattedDate,
   formattedDuration,
   formattedLoanTerms,
   getEstimatedRepaymentAndMaturity,
-} from './helpers';
+} from 'lib/events/consumers/formattingHelpers';
 
 type RenderedTerms = {
   prefix?: string;
@@ -78,6 +77,9 @@ export async function getEmailComponentsMap(
     mostRecentTermsEvent,
   );
 }
+
+const emailHeader = (loan: Loan): string =>
+  `Loan #${loan.id}: ${loan.collateralName}`;
 
 const notificationEventToEmailMetadata: {
   [key: string]: EmailMetadataType;
