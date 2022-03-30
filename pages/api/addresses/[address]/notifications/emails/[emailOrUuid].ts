@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import {
   createNotificationRequestForAddress,
   deleteAllNotificationRequestsForAddress,
+  deleteNotificationRequestById,
   getNumberOfRequestsForNotificationDestination,
 } from 'lib/events/consumers/userNotifications/repository';
 import { NotificationRequest } from '@prisma/client';
@@ -20,12 +21,15 @@ export default async function handler(
   }
 
   try {
-    const { address, email } = req.query as { address: string; email: string };
-
-    const destination = email as string;
-    const method = NotificationMethod.EMAIL;
+    const { address, emailOrUuid } = req.query as {
+      address: string;
+      emailOrUuid: string;
+    };
 
     if (req.method == 'POST') {
+      const destination = emailOrUuid as string;
+      const method = NotificationMethod.EMAIL;
+
       const numRequestsForEmail =
         await getNumberOfRequestsForNotificationDestination(destination);
       if (numRequestsForEmail === null) {
@@ -57,8 +61,9 @@ export default async function handler(
 
       res.status(200).json(notificationRequest);
     } else if (req.method == 'DELETE') {
-      const deleteNotificationRequestsRes =
-        await deleteAllNotificationRequestsForAddress(address);
+      const deleteNotificationRequestsRes = await deleteNotificationRequestById(
+        emailOrUuid,
+      );
       if (!deleteNotificationRequestsRes) {
         res.status(400).json({
           message: 'unexpected error deleting notification requests',
@@ -66,12 +71,11 @@ export default async function handler(
         return;
       }
       res.status(200).json({
-        message: `notifications for address ${address} deleted successfully`,
+        message: `notification request with uuid ${emailOrUuid} deleted successfully`,
       });
     }
   } catch (e) {
     // TODO: bugsnag
     console.error(e);
-    res.status(404);
   }
 }
