@@ -62,7 +62,7 @@ const testRecipientOne = 'adamgobes@gmail.com';
 const testRecipientTwo = 'anotherEmail@gmail.com';
 
 const notificationReqOne: NotificationRequest = {
-  id: 1,
+  id: 'uuid-1',
   ethAddress: '', // we don't care what this is for these tests
   deliveryDestination: testRecipientOne,
   deliveryMethod: notificationMethod,
@@ -70,7 +70,7 @@ const notificationReqOne: NotificationRequest = {
 };
 
 const notificationReqTwo: NotificationRequest = {
-  id: 1,
+  id: 'uuid-2',
   ethAddress: '', // we don't care what this is for these tests
   deliveryDestination: testRecipientTwo,
   deliveryMethod: notificationMethod,
@@ -112,8 +112,10 @@ describe('Sending emails with Amazon SES', () => {
     mockedSesEmailCall.mockResolvedValue();
     mockGetSubjectCall.mockReturnValue('');
     mockGetComponentsCall.mockResolvedValue({
-      [subgraphLoanForEvents.borrowTicketHolder]: mockEmailComponents,
-      [subgraphLoanForEvents.lendTicketHolder]: mockEmailComponents,
+      [subgraphLoanForEvents.borrowTicketHolder]: (_unsubscribeUuid: string) =>
+        mockEmailComponents,
+      [subgraphLoanForEvents.lendTicketHolder]: (_unsubscribeUuid: string) =>
+        mockEmailComponents,
     });
     mockGetMJMLCall.mockReturnValue('');
   });
@@ -121,9 +123,13 @@ describe('Sending emails with Amazon SES', () => {
   describe('BuyoutEvent', () => {
     beforeEach(() => {
       mockGetComponentsCall.mockResolvedValue({
-        [subgraphLoanForEvents.borrowTicketHolder]: mockEmailComponents,
-        [subgraphBuyoutEvent.lendTicketHolder]: mockEmailComponents,
-        [subgraphBuyoutEvent.newLender]: mockEmailComponents,
+        [subgraphLoanForEvents.borrowTicketHolder]: (
+          _unsubscribeUuid: string,
+        ) => mockEmailComponents,
+        [subgraphBuyoutEvent.lendTicketHolder]: (_unsubscribeUuid: string) =>
+          mockEmailComponents,
+        [subgraphBuyoutEvent.newLender]: (_unsubscribeUuid: string) =>
+          mockEmailComponents,
       });
     });
     it('successfully calls SES send email method with correct params', async () => {
