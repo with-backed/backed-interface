@@ -69,7 +69,7 @@ Their desired loans terms are:
 ${formatTermsForBot(
   createEvent.loan.loanAmount,
   createEvent.loan.loanAssetDecimal,
-  createEvent.loan.perSecondInterestRate,
+  createEvent.loan.perAnumInterestRate,
   createEvent.loan.durationSeconds,
   createEvent.loan.loanAssetSymbol,
 )}`;
@@ -85,7 +85,7 @@ Their loans terms are:
 ${formatTermsForBot(
   event.loan.loanAmount,
   event.loan.loanAssetDecimal,
-  event.loan.perSecondInterestRate,
+  event.loan.perAnumInterestRate,
   event.loan.durationSeconds,
   event.loan.loanAssetSymbol,
 )}`;
@@ -114,7 +114,7 @@ The old terms set by ${oldLender} were:
 ${formatTermsForBot(
   mostRecentTermsEvent!.loanAmount,
   buyoutEvent.loan.loanAssetDecimal,
-  mostRecentTermsEvent!.perSecondInterestRate,
+  mostRecentTermsEvent!.perAnumInterestRate,
   mostRecentTermsEvent!.durationSeconds,
   buyoutEvent.loan.loanAssetSymbol,
 )}
@@ -123,7 +123,7 @@ The new terms set by ${newLender} are:
 ${formatTermsForBot(
   buyoutEvent.loan.loanAmount,
   buyoutEvent.loan.loanAssetDecimal,
-  buyoutEvent.loan.perSecondInterestRate,
+  buyoutEvent.loan.perAnumInterestRate,
   buyoutEvent.loan.durationSeconds,
   buyoutEvent.loan.loanAssetSymbol,
 )}`;
@@ -151,7 +151,7 @@ The loan terms were:
 ${formatTermsForBot(
   repaymentEvent.loan.loanAmount,
   repaymentEvent.loan.loanAssetDecimal,
-  repaymentEvent.loan.perSecondInterestRate,
+  repaymentEvent.loan.perAnumInterestRate,
   repaymentEvent.loan.durationSeconds,
   repaymentEvent.loan.loanAssetSymbol,
 )}`;
@@ -180,7 +180,7 @@ ${lender} held the loan for ${duration}. The loan became due on ${maturity} with
 function formatTermsForBot(
   loanAmount: number,
   loanAssetDecimal: number,
-  perSecondInterestRate: number,
+  perAnumInterestRate: number,
   durationSeconds: number,
   loanAssetSymbol: string,
 ): string {
@@ -191,7 +191,7 @@ function formatTermsForBot(
   const amount = `${parsedLoanAmount} ${loanAssetSymbol}`;
 
   const interest = formattedAnnualRate(
-    ethers.BigNumber.from(perSecondInterestRate),
+    ethers.BigNumber.from(perAnumInterestRate),
   );
 
   return `Loan amount: ${amount}\nDuration: ${formattedDuration(

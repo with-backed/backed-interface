@@ -74,9 +74,9 @@ function Loan({ loan }: LoanProps) {
   const rate = useMemo(
     () =>
       parseFloat(
-        formattedAnnualRate(ethers.BigNumber.from(loan.perSecondInterestRate)),
+        formattedAnnualRate(ethers.BigNumber.from(loan.perAnumInterestRate)),
       ).toFixed(4),
-    [loan.perSecondInterestRate],
+    [loan.perAnumInterestRate],
   );
   return (
     <tr>

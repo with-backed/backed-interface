@@ -6,8 +6,8 @@ query homepageSearchWithoutLender(
   $borrowTicketHolder: Bytes
   $loanAmountMin: BigInt
   $loanAmountMax: BigInt
-  $perSecondInterestRateMin: BigInt
-  $perSecondInterestRateMax: BigInt
+  $perAnumInterestRateMin: BigInt
+  $perAnumInterestRateMax: BigInt
   $durationSecondsMin: BigInt
   $durationSecondsMax: BigInt
   $selectedSort: Loan_orderBy
@@ -24,8 +24,8 @@ query homepageSearchWithoutLender(
       borrowTicketHolder_contains: $borrowTicketHolder,
       loanAmount_gte: $loanAmountMin,
       loanAmount_lt: $loanAmountMax,
-      perSecondInterestRate_gte: $perSecondInterestRateMin,
-      perSecondInterestRate_lt: $perSecondInterestRateMax,
+      perAnumInterestRate_gte: $perAnumInterestRateMin,
+      perAnumInterestRate_lt: $perAnumInterestRateMax,
       durationSeconds_gte: $durationSecondsMin,
       durationSeconds_lt: $durationSecondsMax
     }

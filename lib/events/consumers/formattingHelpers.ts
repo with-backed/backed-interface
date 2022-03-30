@@ -23,7 +23,7 @@ export const getEstimatedRepaymentAndMaturity = (
   loan: ParsedLoan,
   duration: ethers.BigNumber = loan.durationSeconds,
 ): [string, string] => {
-  const interestOverTerm = loan.perSecondInterestRate
+  const interestOverTerm = loan.perAnumInterestRate
     .mul(duration)
     .mul(loan.loanAmount)
     .div(SCALAR);
@@ -41,7 +41,7 @@ export const getEstimatedRepaymentAndMaturity = (
 export const formattedLoanTerms = (
   loanAmount: number,
   loanAssetDecimal: number,
-  perSecondInterestRate: number,
+  perAnumInterestRate: number,
   durationSeconds: number,
   loanAssetSymbol: string,
 ) => {
@@ -52,7 +52,7 @@ export const formattedLoanTerms = (
   const amount = `${parsedLoanAmount} ${loanAssetSymbol}`;
 
   const interest = formattedAnnualRate(
-    ethers.BigNumber.from(perSecondInterestRate),
+    ethers.BigNumber.from(perAnumInterestRate),
   );
 
   return {

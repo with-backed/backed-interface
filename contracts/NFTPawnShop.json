@@ -550,7 +550,7 @@
         },
         {
           "internalType": "uint256",
-          "name": "perSecondInterestRate",
+          "name": "perAnumInterestRate",
           "type": "uint256"
         },
         {

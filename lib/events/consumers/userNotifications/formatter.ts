@@ -120,7 +120,7 @@ const notificationEventToEmailMetadata: {
             ...formattedLoanTerms(
               mostRecentTermsEvent!.loanAmount,
               event.loan.loanAssetDecimal,
-              mostRecentTermsEvent!.perSecondInterestRate,
+              mostRecentTermsEvent!.perAnumInterestRate,
               mostRecentTermsEvent!.durationSeconds,
               event.loan.loanAssetSymbol,
             ),
@@ -130,7 +130,7 @@ const notificationEventToEmailMetadata: {
             ...formattedLoanTerms(
               event.loan.loanAmount,
               event.loan.loanAssetDecimal,
-              event.loan.perSecondInterestRate,
+              event.loan.perAnumInterestRate,
               event.loan.durationSeconds,
               event.loan.loanAssetSymbol,
             ),
@@ -191,7 +191,7 @@ const notificationEventToEmailMetadata: {
             ...formattedLoanTerms(
               event.loan.loanAmount,
               event.loan.loanAssetDecimal,
-              event.loan.perSecondInterestRate,
+              event.loan.perAnumInterestRate,
               event.loan.durationSeconds,
               event.loan.loanAssetSymbol,
             ),
@@ -253,7 +253,7 @@ const notificationEventToEmailMetadata: {
             ...formattedLoanTerms(
               event.loan.loanAmount,
               event.loan.loanAssetDecimal,
-              event.loan.perSecondInterestRate,
+              event.loan.perAnumInterestRate,
               event.loan.durationSeconds,
               event.loan.loanAssetSymbol,
             ),
@@ -308,7 +308,7 @@ const notificationEventToEmailMetadata: {
             ...formattedLoanTerms(
               event.loan.loanAmount,
               event.loan.loanAssetDecimal,
-              event.loan.perSecondInterestRate,
+              event.loan.perAnumInterestRate,
               event.loan.durationSeconds,
               event.loan.loanAssetSymbol,
             ),
@@ -377,7 +377,7 @@ const notificationEventToEmailMetadata: {
             ...formattedLoanTerms(
               loan.loanAmount,
               loan.loanAssetDecimal,
-              loan.perSecondInterestRate,
+              loan.perAnumInterestRate,
               loan.durationSeconds,
               loan.loanAssetSymbol,
             ),
@@ -441,7 +441,7 @@ const notificationEventToEmailMetadata: {
             ...formattedLoanTerms(
               loan.loanAmount,
               loan.loanAssetDecimal,
-              loan.perSecondInterestRate,
+              loan.perAnumInterestRate,
               loan.durationSeconds,
               loan.loanAssetSymbol,
             ),

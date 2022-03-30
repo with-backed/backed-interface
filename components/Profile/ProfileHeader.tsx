@@ -78,7 +78,7 @@ function LoanStats({ loans, kind }: LoanStatsProps) {
             ethers.BigNumber.from(Date.now()).div(1000),
             l.loanAmount,
             l.lastAccumulatedTimestamp,
-            l.perSecondInterestRate,
+            l.perAnumInterestRate,
             l.accumulatedInterest,
           ),
         })),
