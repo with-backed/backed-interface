@@ -1,7 +1,11 @@
-import aws from 'aws-sdk';
-
-import { executeEmailSendWithSes } from './ses';
-import { LendEvent, Loan } from 'types/generated/graphql/nftLoans';
+import { executeEmailSendWithSes } from 'lib/events/consumers/userNotifications/ses';
+import {
+  BuyoutEvent,
+  LendEvent,
+  Loan,
+  RepaymentEvent,
+  CollateralSeizureEvent,
+} from 'types/generated/graphql/nftLoans';
 import { NotificationMethod, NotificationTriggerType } from './shared';
 import { RawSubgraphEvent } from 'types/RawEvent';
 import { getNotificationRequestsForAddress } from './repository';
@@ -30,23 +34,21 @@ export async function sendEmailsForTriggerAndEntity(
     return;
   }
 
-  for (const address in addressToEmailComponents) {
+  for (const ethAddress in addressToEmailComponents) {
     const notificationRequestsForEthAddresses =
-      await getNotificationRequestsForAddress(address);
+      await getNotificationRequestsForAddress(ethAddress);
 
-    const emailAddresses = notificationRequestsForEthAddresses
-      .filter((req) => req.deliveryMethod === NotificationMethod.EMAIL)
-      .map((req) => req.deliveryDestination);
+    const emailRequests = notificationRequestsForEthAddresses.filter(
+      (req) => req.deliveryMethod === NotificationMethod.EMAIL,
+    );
 
-    if (emailAddresses.length === 0) {
-      continue;
-    }
+    const allEmailSends = emailRequests.map((r) => {
+      const emailComponentGenerator = addressToEmailComponents[ethAddress];
 
-    const allEmailSends = emailAddresses.map((emailAddress) => {
       return executeEmailSendWithSes(
-        generateHTMLForEmail(addressToEmailComponents[address]),
+        generateHTMLForEmail(emailComponentGenerator(r.id)),
         getEmailSubject(emailTrigger, entity),
-        emailAddress,
+        r.deliveryDestination,
       );
     });
 
