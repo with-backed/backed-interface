@@ -20,6 +20,8 @@ export default async function handler(
     return;
   }
 
+  // this endpoint takes an email if POST (i.e. subscribing to an ethAddresses activity)
+  // this endpoint atkes a UUID if DELETE (i.e. unsubscribing a particular email <> ethAddress pair)
   try {
     const { address, emailOrUuid } = req.query as {
       address: string;
