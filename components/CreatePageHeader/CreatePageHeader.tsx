@@ -144,7 +144,6 @@ export function CreatePageHeader() {
           <SelectNFTButton
             dialog={dialog}
             disabled={current.matches('noWallet')}
-            done={!current.matches('selectNFT')}
           />
           <AuthorizeNFTButton
             collateralAddress={collateralAddress}

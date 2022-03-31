@@ -10,7 +10,6 @@ const ID = 'selectNFT';
 
 type SelectNFTButtonProps = {
   disabled: boolean;
-  done: boolean;
   dialog: DialogStateReturn;
 };
 export function SelectNFTButton({
@@ -27,10 +26,6 @@ export function SelectNFTButton({
       </Button>
     );
   }
-
-  // if (done) {
-  //   return <CompletedButton id={ID} buttonText={text} success />;
-  // }
 
   return (
     <DialogDisclosureButton id={ID} {...dialog}>
