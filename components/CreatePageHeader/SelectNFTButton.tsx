@@ -28,9 +28,9 @@ export function SelectNFTButton({
     );
   }
 
-  if (done) {
-    return <CompletedButton id={ID} buttonText={text} success />;
-  }
+  // if (done) {
+  //   return <CompletedButton id={ID} buttonText={text} success />;
+  // }
 
   return (
     <DialogDisclosureButton id={ID} {...dialog}>
