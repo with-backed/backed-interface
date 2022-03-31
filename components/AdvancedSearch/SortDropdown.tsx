@@ -40,14 +40,14 @@ const sortOptions: SortOptionInput[] = [
   },
   {
     value: {
-      field: Loan_OrderBy.PerSecondInterestRate,
+      field: Loan_OrderBy.PerAnumInterestRate,
       direction: OrderDirection.Desc,
     },
     label: 'Highest % APY',
   },
   {
     value: {
-      field: Loan_OrderBy.PerSecondInterestRate,
+      field: Loan_OrderBy.PerAnumInterestRate,
       direction: OrderDirection.Asc,
     },
     label: 'Lowest % APY',

@@ -36,8 +36,8 @@ export function LoanFormBetterTerms({
     [loan.loanAmount, loan.loanAssetDecimals],
   );
   const initialInterestRate = useMemo(
-    () => formattedAnnualRate(loan.perSecondInterestRate),
-    [loan.perSecondInterestRate],
+    () => formattedAnnualRate(loan.perAnumInterestRate),
+    [loan.perAnumInterestRate],
   );
   const initialDuration = useMemo(
     () => secondsBigNumToDays(loan.durationSeconds).toString(),
@@ -219,7 +219,7 @@ export function hasTenPercentImprovement({
   );
   const interestRateImproved = ethers.BigNumber.from(
     annualRateToPerSecond(parsedInterestRate),
-  ).lte(loan.perSecondInterestRate.sub(loan.perSecondInterestRate.div(10)));
+  ).lte(loan.perAnumInterestRate.sub(loan.perAnumInterestRate.div(10)));
   const amountImproved = ethers.utils
     .parseUnits(parsedLoanAmount, loan.loanAssetDecimals)
     .gte(loan.loanAmount.div(10).add(loan.loanAmount));

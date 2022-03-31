@@ -36,8 +36,8 @@ export function LoanFormAwaiting({
     [loan.loanAmount, loan.loanAssetDecimals],
   );
   const initialInterestRate = useMemo(
-    () => formattedAnnualRate(loan.perSecondInterestRate),
-    [loan.perSecondInterestRate],
+    () => formattedAnnualRate(loan.perAnumInterestRate),
+    [loan.perAnumInterestRate],
   );
   const initialDuration = useMemo(
     () => secondsBigNumToDays(loan.durationSeconds).toString(),

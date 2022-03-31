@@ -18,7 +18,7 @@ export function createEventToUnified(
     ...event,
     typename: 'CreateEvent',
     minter: ethers.utils.getAddress(event.creator),
-    maxInterestRate: ethers.BigNumber.from(event.maxPerSecondInterestRate),
+    maxInterestRate: ethers.BigNumber.from(event.maxPerAnumInterestRate),
     minLoanAmount: ethers.BigNumber.from(event.minLoanAmount),
     minDurationSeconds: ethers.BigNumber.from(event.minDurationSeconds),
     loanId,
@@ -69,7 +69,7 @@ export function lendEventToUnified(
   return {
     ...event,
     typename: 'LendEvent',
-    interestRate: ethers.BigNumber.from(event.perSecondInterestRate),
+    interestRate: ethers.BigNumber.from(event.perAnumInterestRate),
     loanAmount: ethers.BigNumber.from(event.loanAmount),
     durationSeconds: ethers.BigNumber.from(event.durationSeconds),
     underwriter: ethers.utils.getAddress(event.lender),

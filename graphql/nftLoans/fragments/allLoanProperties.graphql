@@ -3,7 +3,7 @@ fragment allLoanProperties on Loan {
   loanAssetContractAddress
   collateralContractAddress
   collateralTokenId
-  perSecondInterestRate
+  perAnumInterestRate
   accumulatedInterest
   lastAccumulatedTimestamp
   durationSeconds

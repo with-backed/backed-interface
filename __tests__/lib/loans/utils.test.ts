@@ -24,7 +24,7 @@ describe('parseSubgraphLoan', () => {
   let loanAssetContractAddress = '0x6916577695d0774171de3ed95d03a3239139eddb';
   let loanAssetDecimal = 18;
   let loanAssetSymbol = 'DAI';
-  let perSecondInterestRate = '15';
+  let perAnumInterestRate = '15';
   const collateralTokenURI = 'gopher://gopher.pawnshop.internet';
   const collateralName = 'This is a name';
   const numEvents = 0;
@@ -51,7 +51,7 @@ describe('parseSubgraphLoan', () => {
       loanAssetContractAddress,
       loanAssetDecimal,
       loanAssetSymbol,
-      perSecondInterestRate,
+      perAnumInterestRate,
       collateralTokenURI,
       collateralName,
       status,
@@ -88,7 +88,7 @@ describe('parseSubgraphLoan', () => {
       borrower: ethers.utils.getAddress(borrowTicketHolder),
       lendTicketHolder,
       lender: ethers.utils.getAddress(lendTicketHolder),
-      perSecondInterestRate: ethers.BigNumber.from(perSecondInterestRate),
+      perAnumInterestRate: ethers.BigNumber.from(perAnumInterestRate),
       lastAccumulatedTimestamp: ethers.BigNumber.from(lastAccumulatedTimestamp),
       interestOwed: ethers.BigNumber.from('0'),
       collateralTokenURI,
@@ -110,7 +110,7 @@ describe('parseSubgraphLoan', () => {
 
       const interestOwed = bigLoanAmount
         .mul(now.sub(lastAccumulatedTimestamp))
-        .mul(perSecondInterestRate)
+        .mul(perAnumInterestRate)
         .div(SCALAR)
         .add(accumulatedInterest);
 
