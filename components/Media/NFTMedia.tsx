@@ -19,6 +19,7 @@ export function NFTMedia({ nftInfo, small = false }: NFTMediaProps) {
       media={metadata.mediaUrl}
       mediaMimeType={metadata.mediaMimeType}
       autoPlay={false}
+      key={metadata.mediaUrl}
     />
   );
 }
