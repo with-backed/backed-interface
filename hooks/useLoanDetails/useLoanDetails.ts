@@ -56,7 +56,7 @@ export function useLoanDetails(loan: Loan) {
     loanAmount,
     loanAssetDecimals,
     loanAssetSymbol,
-    perSecondInterestRate,
+    perAnumInterestRate,
     endDateTimestamp,
   } = loan;
   const timestamp = useTimestamp();
@@ -77,8 +77,8 @@ export function useLoanDetails(loan: Loan) {
     ].join(' ');
   }, [loanAmount, loanAssetDecimals, loanAssetSymbol]);
   const formattedInterestRate = useMemo(() => {
-    return [truncate(formattedAnnualRate(perSecondInterestRate)), '%'].join('');
-  }, [perSecondInterestRate]);
+    return [truncate(formattedAnnualRate(perAnumInterestRate)), '%'].join('');
+  }, [perAnumInterestRate]);
   const formattedTotalDuration = useMemo(() => {
     return humanizedDuration(durationSeconds.toNumber());
   }, [durationSeconds]);
@@ -103,7 +103,7 @@ export function useLoanDetails(loan: Loan) {
     ].join(' ');
   }, [loanAmount, interestOwed, loanAssetDecimals, loanAssetSymbol]);
   const formattedEstimatedPaybackAtMaturity = useMemo(() => {
-    const interestOverTerm = perSecondInterestRate
+    const interestOverTerm = perAnumInterestRate
       .mul(durationSeconds)
       .mul(loanAmount)
       .div(SCALAR);
@@ -120,7 +120,7 @@ export function useLoanDetails(loan: Loan) {
     loanAssetSymbol,
     loanAmount,
     loanAssetDecimals,
-    perSecondInterestRate,
+    perAnumInterestRate,
   ]);
 
   // TODO: don't conflate "status" with "time remaining"

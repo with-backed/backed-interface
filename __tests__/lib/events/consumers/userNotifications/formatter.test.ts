@@ -12,7 +12,7 @@ import {
 
 const now = 1647357808;
 
-describe('Sending emails with Amazon SES', () => {
+describe('Transforming on-chain events to email components', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -40,11 +40,15 @@ describe('Sending emails with Amazon SES', () => {
       ]);
 
       const borrowerComponents =
-        emailComponentsMap![subgraphBuyoutEvent.loan.borrowTicketHolder];
+        emailComponentsMap![subgraphBuyoutEvent.loan.borrowTicketHolder](
+          'borrower-uuid',
+        );
       const newLenderComponents =
-        emailComponentsMap![subgraphBuyoutEvent.newLender];
+        emailComponentsMap![subgraphBuyoutEvent.newLender]('lender-uuid');
       const oldLenderComponents =
-        emailComponentsMap![subgraphBuyoutEvent.lendTicketHolder];
+        emailComponentsMap![subgraphBuyoutEvent.lendTicketHolder](
+          'old-lender-uuid',
+        );
 
       expect(borrowerComponents.header).toEqual('Loan #65: monarchs');
       expect([borrowerComponents.header, borrowerComponents.header]).toEqual([
@@ -116,13 +120,13 @@ describe('Sending emails with Amazon SES', () => {
       );
 
       expect(borrowerComponents.footer).toEqual(
-        'https://nftpawnshop.xyz/profile/0x0dd7d78ed27632839cd2a929ee570ead346c19fc',
+        'https://nftpawnshop.xyz/profile/0x0dd7d78ed27632839cd2a929ee570ead346c19fc?unsubscribe=true&uuid=borrower-uuid',
       );
       expect(oldLenderComponents.footer).toEqual(
-        'https://nftpawnshop.xyz/profile/0x10359616ab170c1bd6c478a40c6715a49ba25efc',
+        'https://nftpawnshop.xyz/profile/0x10359616ab170c1bd6c478a40c6715a49ba25efc?unsubscribe=true&uuid=old-lender-uuid',
       );
       expect(newLenderComponents.footer).toEqual(
-        'https://nftpawnshop.xyz/profile/0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866',
+        'https://nftpawnshop.xyz/profile/0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866?unsubscribe=true&uuid=lender-uuid',
       );
     });
   });
@@ -142,8 +146,11 @@ describe('Sending emails with Amazon SES', () => {
       ]);
 
       const borrowerComponents =
-        emailComponentsMap![subgraphLendEvent.borrowTicketHolder];
-      const lenderComponents = emailComponentsMap![subgraphLendEvent.lender];
+        emailComponentsMap![subgraphLendEvent.borrowTicketHolder](
+          'borrower-uuid',
+        );
+      const lenderComponents =
+        emailComponentsMap![subgraphLendEvent.lender]('lender-uuid');
 
       expect(borrowerComponents.header).toEqual('Loan #65: monarchs');
       expect(borrowerComponents.header).toEqual(lenderComponents.header);
@@ -184,10 +191,10 @@ describe('Sending emails with Amazon SES', () => {
       expect(borrowerComponents.viewLinks).toEqual(lenderComponents.viewLinks);
 
       expect(borrowerComponents.footer).toEqual(
-        'https://nftpawnshop.xyz/profile/0x0dd7d78ed27632839cd2a929ee570ead346c19fc',
+        'https://nftpawnshop.xyz/profile/0x0dd7d78ed27632839cd2a929ee570ead346c19fc?unsubscribe=true&uuid=borrower-uuid',
       );
       expect(lenderComponents.footer).toEqual(
-        'https://nftpawnshop.xyz/profile/0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866',
+        'https://nftpawnshop.xyz/profile/0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866?unsubscribe=true&uuid=lender-uuid',
       );
     });
   });
@@ -207,9 +214,11 @@ describe('Sending emails with Amazon SES', () => {
       ]);
 
       const borrowerComponents =
-        emailComponentsMap![subgraphRepaymentEvent.repayer];
+        emailComponentsMap![subgraphRepaymentEvent.repayer]('borrower-uuid');
       const lenderComponents =
-        emailComponentsMap![subgraphRepaymentEvent.lendTicketHolder];
+        emailComponentsMap![subgraphRepaymentEvent.lendTicketHolder](
+          'lender-uuid',
+        );
 
       expect(borrowerComponents.header).toEqual('Loan #65: monarchs');
       expect(borrowerComponents.header).toEqual(lenderComponents.header);
@@ -248,10 +257,10 @@ describe('Sending emails with Amazon SES', () => {
       expect(borrowerComponents.viewLinks).toEqual(lenderComponents.viewLinks);
 
       expect(borrowerComponents.footer).toEqual(
-        'https://nftpawnshop.xyz/profile/0x0dd7d78ed27632839cd2a929ee570ead346c19fc',
+        'https://nftpawnshop.xyz/profile/0x0dd7d78ed27632839cd2a929ee570ead346c19fc?unsubscribe=true&uuid=borrower-uuid',
       );
       expect(lenderComponents.footer).toEqual(
-        'https://nftpawnshop.xyz/profile/0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866',
+        'https://nftpawnshop.xyz/profile/0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866?unsubscribe=true&uuid=lender-uuid',
       );
     });
   });
@@ -274,9 +283,13 @@ describe('Sending emails with Amazon SES', () => {
       ]);
 
       const borrowerComponents =
-        emailComponentsMap![subgraphLoanForEvents.borrowTicketHolder];
+        emailComponentsMap![subgraphLoanForEvents.borrowTicketHolder](
+          'borrower-uuid',
+        );
       const lenderComponents =
-        emailComponentsMap![subgraphLoanForEvents.lendTicketHolder];
+        emailComponentsMap![subgraphLoanForEvents.lendTicketHolder](
+          'lender-uuid',
+        );
 
       expect(borrowerComponents.header).toEqual('Loan #65: monarchs');
       expect(borrowerComponents.header).toEqual(lenderComponents.header);
@@ -312,10 +325,10 @@ describe('Sending emails with Amazon SES', () => {
       expect(borrowerComponents.viewLinks).toEqual(lenderComponents.viewLinks);
 
       expect(borrowerComponents.footer).toEqual(
-        'https://nftpawnshop.xyz/profile/0x0dd7d78ed27632839cd2a929ee570ead346c19fc',
+        'https://nftpawnshop.xyz/profile/0x0dd7d78ed27632839cd2a929ee570ead346c19fc?unsubscribe=true&uuid=borrower-uuid',
       );
       expect(lenderComponents.footer).toEqual(
-        'https://nftpawnshop.xyz/profile/0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866',
+        'https://nftpawnshop.xyz/profile/0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866?unsubscribe=true&uuid=lender-uuid',
       );
     });
   });
@@ -338,9 +351,13 @@ describe('Sending emails with Amazon SES', () => {
       ]);
 
       const borrowerComponents =
-        emailComponentsMap![subgraphLoanForEvents.borrowTicketHolder];
+        emailComponentsMap![subgraphLoanForEvents.borrowTicketHolder](
+          'borrower-uuid',
+        );
       const lenderComponents =
-        emailComponentsMap![subgraphLoanForEvents.lendTicketHolder];
+        emailComponentsMap![subgraphLoanForEvents.lendTicketHolder](
+          'lender-uuid',
+        );
 
       expect(borrowerComponents.header).toEqual('Loan #65: monarchs');
       expect(borrowerComponents.header).toEqual(lenderComponents.header);
@@ -381,10 +398,10 @@ describe('Sending emails with Amazon SES', () => {
       expect(borrowerComponents.viewLinks).toEqual(lenderComponents.viewLinks);
 
       expect(borrowerComponents.footer).toEqual(
-        'https://nftpawnshop.xyz/profile/0x0dd7d78ed27632839cd2a929ee570ead346c19fc',
+        'https://nftpawnshop.xyz/profile/0x0dd7d78ed27632839cd2a929ee570ead346c19fc?unsubscribe=true&uuid=borrower-uuid',
       );
       expect(lenderComponents.footer).toEqual(
-        'https://nftpawnshop.xyz/profile/0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866',
+        'https://nftpawnshop.xyz/profile/0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866?unsubscribe=true&uuid=lender-uuid',
       );
     });
   });
@@ -409,9 +426,13 @@ describe('Sending emails with Amazon SES', () => {
       ]);
 
       const borrowerComponents =
-        emailComponentsMap![subgraphCollateralSeizureEvent.borrowTicketHolder];
+        emailComponentsMap![subgraphCollateralSeizureEvent.borrowTicketHolder](
+          'borrower-uuid',
+        );
       const lenderComponents =
-        emailComponentsMap![subgraphCollateralSeizureEvent.lendTicketHolder];
+        emailComponentsMap![subgraphCollateralSeizureEvent.lendTicketHolder](
+          'lender-uuid',
+        );
 
       expect(borrowerComponents.header).toEqual('Loan #65: monarchs');
       expect(borrowerComponents.header).toEqual(lenderComponents.header);
@@ -453,10 +474,10 @@ describe('Sending emails with Amazon SES', () => {
       expect(borrowerComponents.viewLinks).toEqual(lenderComponents.viewLinks);
 
       expect(borrowerComponents.footer).toEqual(
-        'https://nftpawnshop.xyz/profile/0x0dd7d78ed27632839cd2a929ee570ead346c19fc',
+        'https://nftpawnshop.xyz/profile/0x0dd7d78ed27632839cd2a929ee570ead346c19fc?unsubscribe=true&uuid=borrower-uuid',
       );
       expect(lenderComponents.footer).toEqual(
-        'https://nftpawnshop.xyz/profile/0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866',
+        'https://nftpawnshop.xyz/profile/0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866?unsubscribe=true&uuid=lender-uuid',
       );
     });
   });

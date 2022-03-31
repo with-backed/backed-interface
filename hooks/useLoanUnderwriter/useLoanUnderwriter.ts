@@ -29,7 +29,7 @@ export function useLoanUnderwriter(
         Math.floor(interestRate * 10 ** INTEREST_RATE_PERCENT_DECIMALS),
       ).div(SECONDS_IN_A_YEAR);
 
-      const t = await loanFacilitator.underwriteLoan(
+      const t = await loanFacilitator.lend(
         id,
         interestRatePerSecond,
         ethers.utils.parseUnits(loanAmount.toString(), loanAssetDecimals),

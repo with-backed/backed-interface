@@ -12,8 +12,8 @@ import {
 import {
   CreateLoanEvent,
   CloseEvent as NodeCloseEvent,
-  UnderwriteLoanEvent,
-  BuyoutUnderwriterEvent,
+  LendEvent as TypeChainLendEvent,
+  BuyoutLenderEvent,
   RepayEvent,
   SeizeCollateralEvent,
 } from 'types/generated/abis/NFTLoanFacilitator';
@@ -24,8 +24,8 @@ export async function nodeLoanEventsById(loanIdString: string) {
 
   const createLoanFilter = contract.filters.CreateLoan(loanId, null);
   const closeFilter = contract.filters.Close(loanId);
-  const underwriteLoanFilter = contract.filters.UnderwriteLoan(loanId);
-  const buyoutUnderwriterFilter = contract.filters.BuyoutUnderwriter(loanId);
+  const underwriteLoanFilter = contract.filters.Lend(loanId);
+  const buyoutUnderwriterFilter = contract.filters.BuyoutLender(loanId);
   const repayLoanFilter = contract.filters.Repay(loanId);
   const seizeCollateralFilter = contract.filters.SeizeCollateral(loanId);
 
@@ -91,7 +91,7 @@ export async function nodeLoanEventsById(loanIdString: string) {
 
   for (const event of underwriteLoanEvents) {
     const { blockNumber, transactionHash, args } =
-      event as unknown as UnderwriteLoanEvent;
+      event as unknown as TypeChainLendEvent;
     const timestamp = (await event.getBlock()).timestamp;
 
     const parsedEvent: LendEvent = {
@@ -102,7 +102,7 @@ export async function nodeLoanEventsById(loanIdString: string) {
       loanAmount: args.loanAmount,
       durationSeconds: args.durationSeconds,
       interestRate: args.interestRate,
-      underwriter: ethers.utils.getAddress(args.underwriter),
+      underwriter: ethers.utils.getAddress(args.lender),
       loanId,
     };
     events.push(parsedEvent);
@@ -110,7 +110,7 @@ export async function nodeLoanEventsById(loanIdString: string) {
 
   for (const event of buyoutUnderwriterEvents) {
     const { blockNumber, transactionHash, args } =
-      event as unknown as BuyoutUnderwriterEvent;
+      event as unknown as BuyoutLenderEvent;
     const timestamp = (await event.getBlock()).timestamp;
 
     const parsedEvent: BuyoutEvent = {
@@ -121,7 +121,7 @@ export async function nodeLoanEventsById(loanIdString: string) {
       replacedAmount: args.replacedAmount,
       interestEarned: args.interestEarned,
       replacedLoanOwner: ethers.utils.getAddress(args.replacedLoanOwner),
-      underwriter: ethers.utils.getAddress(args.underwriter),
+      underwriter: ethers.utils.getAddress(args.lender),
       loanId,
     };
     events.push(parsedEvent);

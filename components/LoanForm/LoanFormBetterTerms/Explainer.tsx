@@ -111,14 +111,14 @@ function Duration({ loan }: InnerProps) {
 }
 
 function InterestRate({ loan }: InnerProps) {
-  const minimumImprovement = loan.perSecondInterestRate.sub(
-    loan.perSecondInterestRate.div(10),
+  const minimumImprovement = loan.perAnumInterestRate.sub(
+    loan.perAnumInterestRate.div(10),
   );
   return (
     <div>
       The current interest rate is{' '}
-      {formattedAnnualRate(loan.perSecondInterestRate)} %. To improve by 10%,
-      lend at a lower rate, at most {formattedAnnualRate(minimumImprovement)} %.
+      {formattedAnnualRate(loan.perAnumInterestRate)} %. To improve by 10%, lend
+      at a lower rate, at most {formattedAnnualRate(minimumImprovement)} %.
     </div>
   );
 }

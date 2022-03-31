@@ -82,8 +82,8 @@ export async function searchLoans(
       loanAmountMax.nominal === 0
         ? ethers.constants.MaxInt256.toString()
         : formatNumberForGraph(loanAmountMax),
-    perSecondInterestRateMin: annualRateToPerSecond(loanInterestMin),
-    perSecondInterestRateMax:
+    perAnumInterestRateMin: annualRateToPerSecond(loanInterestMin),
+    perAnumInterestRateMax:
       loanInterestMax === 0
         ? ethers.constants.MaxInt256.toString()
         : annualRateToPerSecond(loanInterestMax),

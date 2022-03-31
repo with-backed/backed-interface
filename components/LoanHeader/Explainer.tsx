@@ -126,7 +126,7 @@ function BetterInterestRate({
           parseFloat(interestRate) * 10 ** INTEREST_RATE_PERCENT_DECIMALS,
         ),
       ).div(SECONDS_IN_A_YEAR)
-    : loan.perSecondInterestRate;
+    : loan.perAnumInterestRate;
   const durationSeconds = duration
     ? daysToSecondsBigNum(parseFloat(duration))
     : loan.durationSeconds;

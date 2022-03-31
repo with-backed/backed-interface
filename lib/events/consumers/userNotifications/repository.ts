@@ -34,7 +34,7 @@ export async function createNotificationRequestForAddress(
 }
 
 export async function deleteNotificationRequestById(
-  id: number,
+  id: string,
 ): Promise<boolean> {
   try {
     await prisma.notificationRequest.delete({

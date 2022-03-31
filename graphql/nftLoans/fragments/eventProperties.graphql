@@ -28,7 +28,7 @@ fragment createEventProperties on CreateEvent {
   timestamp
   blockNumber
   creator
-  maxPerSecondInterestRate
+  maxPerAnumInterestRate
   minDurationSeconds
   minLoanAmount
 }
@@ -38,7 +38,7 @@ fragment lendEventProperties on LendEvent {
   lender
   loanAmount
   durationSeconds
-  perSecondInterestRate
+  perAnumInterestRate
   timestamp
   blockNumber
   borrowTicketHolder

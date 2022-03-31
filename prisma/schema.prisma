@@ -12,7 +12,7 @@ datasource db {
 }
 
 model NotificationRequest {
-  id                  Int    @id @default(autoincrement())
+  id                  String @id @default(uuid())
   ethAddress          String @db.VarChar(42)
   event               String @db.VarChar(40)
   deliveryMethod      String @db.VarChar(40)
