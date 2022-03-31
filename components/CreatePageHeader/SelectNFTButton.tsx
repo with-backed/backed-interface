@@ -12,11 +12,7 @@ type SelectNFTButtonProps = {
   disabled: boolean;
   dialog: DialogStateReturn;
 };
-export function SelectNFTButton({
-  dialog,
-  disabled,
-  done,
-}: SelectNFTButtonProps) {
+export function SelectNFTButton({ dialog, disabled }: SelectNFTButtonProps) {
   const text = 'Select an NFT';
 
   if (disabled) {
