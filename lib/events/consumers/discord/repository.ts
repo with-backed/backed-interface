@@ -43,16 +43,12 @@ export async function setDiscordMetric(
 }
 
 export async function resetDiscordMetrics() {
-  const currentDiscordMetrics = await prisma.discordMetrics.findFirst();
+  const metrics = await prisma.discordMetrics.findFirst();
 
-  if (!currentDiscordMetrics) return;
+  if (!metrics) return;
 
   await prisma.discordMetrics.update({
-    data: {
-      numLoansCreated: 0,
-      numLoansLentTo: 0,
-      dollarLoansLentTo: 0,
-    },
-    where: { id: currentDiscordMetrics.id },
+    data: INITIAL_METRICS,
+    where: { id: metrics.id },
   });
 }
