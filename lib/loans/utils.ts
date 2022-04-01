@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { SCALAR } from 'lib/constants';
+import { SCALAR, SECONDS_IN_A_YEAR } from 'lib/constants';
 import { Loan } from 'types/Loan';
 import {
   Loan as SubgraphLoan,
@@ -68,4 +68,57 @@ export function getInterestOwed(
     .mul(perAnumInterestRate)
     .div(SCALAR)
     .add(accumulatedInterest);
+}
+
+// Less exact but good enough and more friendly
+// E.g. 10% on 10 DAI for 1 year will be 1 DAI rather than
+// 9.999999999979632 DAI
+export function estimatedRepayment(
+  interestRate: ethers.BigNumber, // scaled: 0.1% = 1
+  durationDays: ethers.BigNumber,
+  loanAmount: ethers.BigNumber,
+  loanAssetDecimals: number,
+) {
+  const interest = interestRate
+    .mul(loanAmount)
+    .mul(
+      durationDays
+        .mul(1000) // prevent dividing to 0
+        .div(365),
+    )
+    .div(1000) // removing duration scaling
+    .div(1000); // remove interest scaling
+
+  return ethers.utils.formatUnits(interest.add(loanAmount), loanAssetDecimals);
+}
+
+// this function matches exactly the computation
+// in the contract, however in most cases we will
+// likely just want
+// interest = amount * rate / (durationDays / 365)
+export function estimatedRepaymentExact(
+  interestRate: ethers.BigNumber,
+  durationSeconds: ethers.BigNumber,
+  loanAmount: ethers.BigNumber,
+  loanAssetDecimals: number,
+) {
+  const parsedLoanAmount = ethers.utils.parseUnits(
+    loanAmount.toString(),
+    loanAssetDecimals,
+  );
+
+  const interestOverTerm = parsedLoanAmount
+    .mul(durationSeconds)
+    .mul(
+      interestRate
+        .mul(ethers.BigNumber.from(10).pow(18))
+        .div(SECONDS_IN_A_YEAR),
+    )
+    .div(ethers.BigNumber.from(10).pow(18))
+    .div(SCALAR);
+
+  return ethers.utils.formatUnits(
+    interestOverTerm.add(parsedLoanAmount),
+    loanAssetDecimals,
+  );
 }

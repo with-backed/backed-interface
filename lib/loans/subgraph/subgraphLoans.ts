@@ -17,7 +17,6 @@ import {
   EventsForLoanDocument,
 } from 'types/generated/graphql/nftLoans';
 import { ethers } from 'ethers';
-import { annualRateToPerSecond } from 'lib/interest';
 import { daysToSecondsBigNum } from 'lib/duration';
 import { CombinedError } from 'urql';
 
@@ -82,11 +81,12 @@ export async function searchLoans(
       loanAmountMax.nominal === 0
         ? ethers.constants.MaxInt256.toString()
         : formatNumberForGraph(loanAmountMax),
-    perAnumInterestRateMin: annualRateToPerSecond(loanInterestMin),
+    perAnumInterestRateMin: loanInterestMin,
     perAnumInterestRateMax:
       loanInterestMax === 0
-        ? ethers.constants.MaxInt256.toString()
-        : annualRateToPerSecond(loanInterestMax),
+        ? // 2^16 - 1 is max possible
+          ethers.BigNumber.from(2).pow(16).sub(1).toString()
+        : loanInterestMax,
     durationSecondsMin: daysToSecondsBigNum(loanDurationMin).toString(),
     durationSecondsMax:
       loanDurationMax === 0

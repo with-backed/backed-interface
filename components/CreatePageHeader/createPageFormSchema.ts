@@ -12,7 +12,7 @@ export const createPageFormSchema = Yup.object({
   interestRate: Yup.number()
     .min(
       MIN_RATE,
-      `Interest rate must be greater than the minimum value of ${MIN_RATE}.`,
+      `Interest rate must be greater than the minimum value of ${MIN_RATE}%`,
     )
     .required(),
   duration: Yup.number()

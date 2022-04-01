@@ -11,7 +11,6 @@ import { useMachine } from '@xstate/react';
 import { loanFormBetterTermsMachine } from './loanFormBetterTermsMachine';
 import { Explainer } from './Explainer';
 import { ethers } from 'ethers';
-import { annualRateToPerSecond, formattedAnnualRate } from 'lib/interest';
 import { daysToSecondsBigNum, secondsBigNumToDays } from 'lib/duration';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Balance } from '../Balance';
@@ -36,7 +35,7 @@ export function LoanFormBetterTerms({
     [loan.loanAmount, loan.loanAssetDecimals],
   );
   const initialInterestRate = useMemo(
-    () => formattedAnnualRate(loan.perAnumInterestRate),
+    () => loan.perAnumInterestRate.toString(),
     [loan.perAnumInterestRate],
   );
   const initialDuration = useMemo(
@@ -217,9 +216,9 @@ export function hasTenPercentImprovement({
   const durationImproved = daysToSecondsBigNum(parsedDuration).gte(
     loan.durationSeconds.div(10).add(loan.durationSeconds),
   );
-  const interestRateImproved = ethers.BigNumber.from(
-    annualRateToPerSecond(parsedInterestRate),
-  ).lte(loan.perAnumInterestRate.sub(loan.perAnumInterestRate.div(10)));
+  const interestRateImproved = ethers.BigNumber.from(parsedInterestRate).lte(
+    loan.perAnumInterestRate.sub(loan.perAnumInterestRate.div(10)),
+  );
   const amountImproved = ethers.utils
     .parseUnits(parsedLoanAmount, loan.loanAssetDecimals)
     .gte(loan.loanAmount.div(10).add(loan.loanAmount));

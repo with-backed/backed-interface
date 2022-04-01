@@ -7,7 +7,6 @@ import { useWeb3 } from 'hooks/useWeb3';
 import {
   INTEREST_RATE_PERCENT_DECIMALS,
   SECONDS_IN_A_DAY,
-  SECONDS_IN_A_YEAR,
 } from 'lib/constants';
 import {
   jsonRpcERC20Contract,
@@ -87,16 +86,16 @@ export function CreatePageForm({
       const assetContract = jsonRpcERC20Contract(denomination.address);
       const loanAssetDecimals = await assetContract.decimals();
       const durationInSeconds = Math.ceil(parsedDuration * SECONDS_IN_A_DAY);
-      const interestRatePerSecond = ethers.BigNumber.from(
+      const annualInterestRate = ethers.BigNumber.from(
         Math.floor(parsedInterestRate * 10 ** INTEREST_RATE_PERCENT_DECIMALS),
-      ).div(SECONDS_IN_A_YEAR);
+      );
 
       const contract = web3LoanFacilitator(library!);
       onSubmit();
       const t = await contract.createLoan(
         collateralTokenID,
         collateralAddress,
-        interestRatePerSecond,
+        annualInterestRate,
         ethers.utils.parseUnits(loanAmount.toString(), loanAssetDecimals),
         denomination.address,
         durationInSeconds,
