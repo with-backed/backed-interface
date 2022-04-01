@@ -209,14 +209,14 @@ export function hasTenPercentImprovement({
   loanAmount,
 }: hasTenPercentImprovementParams) {
   const parsedDuration = parseFloat(duration) || 0;
-  const parsedInterestRate =
-    parseFloat(interestRate) || Number.MAX_SAFE_INTEGER;
+  const parsedRate = parseFloat(interestRate) || (Math.pow(2, 16) - 1) / 10;
+  const scaledRate = ethers.BigNumber.from(Math.floor(parsedRate * 10));
   const parsedLoanAmount = isNaN(parseFloat(loanAmount)) ? '0' : loanAmount;
 
   const durationImproved = daysToSecondsBigNum(parsedDuration).gte(
     loan.durationSeconds.div(10).add(loan.durationSeconds),
   );
-  const interestRateImproved = ethers.BigNumber.from(parsedInterestRate).lte(
+  const interestRateImproved = scaledRate.lte(
     loan.perAnumInterestRate.sub(loan.perAnumInterestRate.div(10)),
   );
   const amountImproved = ethers.utils

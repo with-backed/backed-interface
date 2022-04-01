@@ -1,5 +1,18 @@
 import { loanWithLenderAccruing } from 'lib/mockData';
 import { hasTenPercentImprovement } from 'components/LoanForm/LoanFormBetterTerms/LoanFormBetterTerms';
+import { ethers } from 'ethers';
+import { secondsToDays } from 'lib/duration';
+import { formatUnits } from 'ethers/lib/utils';
+
+const currentTermsInInputFormat = {
+  duration: secondsToDays(loanWithLenderAccruing.durationSeconds.toNumber()),
+  interestRate: loanWithLenderAccruing.perAnumInterestRate.toNumber() / 10.0,
+  loan: loanWithLenderAccruing,
+  loanAmount: formatUnits(
+    loanWithLenderAccruing.loanAmount.toString(),
+    loanWithLenderAccruing.loanAssetDecimals,
+  ),
+};
 
 describe('LoanForm', () => {
   describe('LoanFormBetterTerms', () => {
@@ -50,49 +63,55 @@ describe('LoanForm', () => {
       });
 
       it('returns false for almost-improved-enough loan terms', () => {
-        const duration = '3.2';
-        const interestRate = '4.4304';
-        const loanAmount = '10.9';
+        const improvedDuration = loanWithLenderAccruing.durationSeconds
+          .add(loanWithLenderAccruing.durationSeconds.div(10))
+          .sub(1); // not improved enough
 
         expect(
           hasTenPercentImprovement({
-            duration,
-            interestRate,
+            duration: secondsToDays(improvedDuration.toNumber()).toString(),
+            interestRate: currentTermsInInputFormat.interestRate.toString(),
             loan: loanWithLenderAccruing,
-            loanAmount,
+            loanAmount: currentTermsInInputFormat.loanAmount,
           }),
         ).toBeFalsy();
       });
 
       it('returns true when at least one loan term is improved', () => {
-        const duration = '3';
-        const interestRate = '4.7304';
-        const loanAmount = '10';
+        const improvedRate =
+          currentTermsInInputFormat.interestRate -
+          currentTermsInInputFormat.interestRate / 10;
+        const improvedDuration =
+          currentTermsInInputFormat.duration +
+          currentTermsInInputFormat.duration / 10;
+        const improvedAmount = ethers.BigNumber.from(
+          currentTermsInInputFormat.loanAmount,
+        ).add(loanWithLenderAccruing.loanAmount.div(10));
 
         expect(
           hasTenPercentImprovement({
-            duration: '3.3',
-            interestRate,
+            duration: currentTermsInInputFormat.duration.toString(),
+            interestRate: improvedRate.toString(),
             loan: loanWithLenderAccruing,
-            loanAmount,
+            loanAmount: currentTermsInInputFormat.loanAmount.toString(),
           }),
         ).toBeTruthy();
 
         expect(
           hasTenPercentImprovement({
-            duration,
-            interestRate: '4.0',
+            duration: improvedDuration.toString(),
+            interestRate: loanWithLenderAccruing.perAnumInterestRate.toString(),
             loan: loanWithLenderAccruing,
-            loanAmount,
+            loanAmount: currentTermsInInputFormat.loanAmount.toString(),
           }),
         ).toBeTruthy();
 
         expect(
           hasTenPercentImprovement({
-            duration,
-            interestRate,
+            duration: currentTermsInInputFormat.duration.toString(),
+            interestRate: loanWithLenderAccruing.perAnumInterestRate.toString(),
             loan: loanWithLenderAccruing,
-            loanAmount: '11',
+            loanAmount: improvedAmount.toString(),
           }),
         ).toBeTruthy();
       });
