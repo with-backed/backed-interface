@@ -87,7 +87,9 @@ export function CreatePageForm({
       const loanAssetDecimals = await assetContract.decimals();
       const durationInSeconds = Math.ceil(parsedDuration * SECONDS_IN_A_DAY);
       const annualInterestRate = ethers.BigNumber.from(
-        Math.floor(parsedInterestRate * 10 ** INTEREST_RATE_PERCENT_DECIMALS),
+        Math.floor(
+          parsedInterestRate * 10 ** INTEREST_RATE_PERCENT_DECIMALS - 2,
+        ),
       );
 
       const contract = web3LoanFacilitator(library!);
