@@ -72,14 +72,13 @@ export function getInterestOwed(
 
 // Less exact but good enough and more friendly
 // E.g. 10% on 10 DAI for 1 year will be 1 DAI rather than
-// 9.999999999979632 DAI
-export function estimatedRepayment(
+// 0.9999999999979632 DAI
+export function interestOverTerm(
   interestRate: ethers.BigNumber, // scaled: 0.1% = 1
   durationDays: ethers.BigNumber,
   loanAmount: ethers.BigNumber,
-  loanAssetDecimals: number,
-) {
-  const interest = interestRate
+): ethers.BigNumber {
+  return interestRate
     .mul(loanAmount)
     .mul(
       durationDays
@@ -88,8 +87,32 @@ export function estimatedRepayment(
     )
     .div(1000) // removing duration scaling
     .div(1000); // remove interest scaling
+}
 
-  return ethers.utils.formatUnits(interest.add(loanAmount), loanAssetDecimals);
+export function estimatedRepayment(
+  interestRate: ethers.BigNumber, // scaled: 0.1% = 1
+  durationDays: ethers.BigNumber,
+  loanAmount: ethers.BigNumber,
+): ethers.BigNumber {
+  const interest = interestOverTerm(interestRate, durationDays, loanAmount);
+
+  return interest.add(loanAmount);
+}
+
+export function interestOverTermExact(
+  interestRate: ethers.BigNumber,
+  durationSeconds: ethers.BigNumber,
+  loanAmount: ethers.BigNumber,
+): ethers.BigNumber {
+  return loanAmount
+    .mul(durationSeconds)
+    .mul(
+      interestRate
+        .mul(ethers.BigNumber.from(10).pow(18))
+        .div(SECONDS_IN_A_YEAR),
+    )
+    .div(ethers.BigNumber.from(10).pow(18))
+    .div(SCALAR);
 }
 
 // this function matches exactly the computation
@@ -100,25 +123,12 @@ export function estimatedRepaymentExact(
   interestRate: ethers.BigNumber,
   durationSeconds: ethers.BigNumber,
   loanAmount: ethers.BigNumber,
-  loanAssetDecimals: number,
-) {
-  const parsedLoanAmount = ethers.utils.parseUnits(
-    loanAmount.toString(),
-    loanAssetDecimals,
+): ethers.BigNumber {
+  const interest = interestOverTermExact(
+    interestRate,
+    durationSeconds,
+    loanAmount,
   );
 
-  const interestOverTerm = parsedLoanAmount
-    .mul(durationSeconds)
-    .mul(
-      interestRate
-        .mul(ethers.BigNumber.from(10).pow(18))
-        .div(SECONDS_IN_A_YEAR),
-    )
-    .div(ethers.BigNumber.from(10).pow(18))
-    .div(SCALAR);
-
-  return ethers.utils.formatUnits(
-    interestOverTerm.add(parsedLoanAmount),
-    loanAssetDecimals,
-  );
+  return interest.add(loanAmount);
 }

@@ -1,12 +1,8 @@
 import { Explainer as ExplainerWrapper } from 'components/Explainer';
 import { LoanFormData } from 'components/LoanForm/LoanFormData';
 import { ethers } from 'ethers';
-import {
-  INTEREST_RATE_PERCENT_DECIMALS,
-  SCALAR,
-  SECONDS_IN_A_YEAR,
-} from 'lib/constants';
-import { daysToSecondsBigNum, secondsBigNumToDays } from 'lib/duration';
+import { parseUnits } from 'ethers/lib/utils';
+import { secondsBigNumToDays } from 'lib/duration';
 import { estimatedRepayment } from 'lib/loans/utils';
 import React, { useCallback } from 'react';
 import { FieldError, UseFormReturn } from 'react-hook-form';
@@ -134,6 +130,10 @@ function BetterInterestRate({
     interestRatePerYear,
     durationDaysBigNum,
     parsedLoanAmount,
+  );
+
+  const humanRepayment = parseUnits(
+    repayment.toString(),
     loan.loanAssetDecimals,
   );
 
@@ -141,7 +141,7 @@ function BetterInterestRate({
     <div>
       The estimated repayment at maturity will be{' '}
       <b>
-        {repayment} {loan.loanAssetSymbol}.
+        {humanRepayment} {loan.loanAssetSymbol}.
       </b>
     </div>
   );

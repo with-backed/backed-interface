@@ -1,5 +1,6 @@
 import { Explainer as ExplainerWrapper } from 'components/Explainer';
 import { ethers } from 'ethers';
+import { parseUnits } from 'ethers/lib/utils';
 import { jsonRpcERC20Contract } from 'lib/contracts';
 import { estimatedRepayment } from 'lib/loans/utils';
 import React, { useEffect, useState } from 'react';
@@ -168,14 +169,14 @@ function EstimatedRepayment({
       interest,
       durationDaysBigNum,
       parsedLoanAmount,
-      decimals,
     );
+    const humanRepayment = parseUnits(repayment.toString(), decimals);
     return (
       <div>
         <br />
         The estimated repayment at maturity will be{' '}
         <b>
-          {repayment} {denomination.symbol}.
+          {humanRepayment} {denomination.symbol}.
         </b>
       </div>
     );
