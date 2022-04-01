@@ -18,6 +18,8 @@ import { EtherscanAddressLink } from 'components/EtherscanLink';
 import { TextButton } from 'components/Button';
 import { NotificationsModal } from 'components/NotificationsModal';
 import { useDialogState, DialogDisclosure } from 'reakit/Dialog';
+import { useRouter } from 'next/router';
+import { useGlobalMessages } from 'hooks/useGlobalMessages';
 
 type ProfileHeaderProps = {
   address: string;
@@ -133,6 +135,43 @@ function LoanStats({ loans, kind }: LoanStatsProps) {
 }
 
 export function ProfileHeader({ address, loans }: ProfileHeaderProps) {
+  const { query } = useRouter();
+  const { addMessage, removeMessage } = useGlobalMessages();
+
+  useEffect(() => {
+    const { unsubscribe, uuid } = query;
+
+    async function unsubscribeEmail() {
+      addMessage({
+        kind: 'info',
+        message: 'unsubscribing...',
+      });
+
+      const res = await fetch(
+        `/api/addresses/${address}/notifications/emails/${uuid}`,
+        {
+          method: 'DELETE',
+        },
+      );
+
+      if (res.status === 200) {
+        addMessage({
+          kind: 'success',
+          message: 'unsubscribe successful',
+        });
+      } else {
+        addMessage({
+          kind: 'error',
+          message: 'unsubscribe not successful, please try again',
+        });
+      }
+    }
+
+    if (unsubscribe) {
+      unsubscribeEmail();
+    }
+  }, [query, address, addMessage, removeMessage]);
+
   const loansAsBorrower = useMemo(
     () => loans.filter((l) => l.borrower === ethers.utils.getAddress(address)),
     [loans, address],

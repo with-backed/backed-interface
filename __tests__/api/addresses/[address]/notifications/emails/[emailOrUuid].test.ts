@@ -2,7 +2,7 @@ import { NotificationRequest } from '@prisma/client';
 import { ethers } from 'ethers';
 import {
   createNotificationRequestForAddress,
-  deleteAllNotificationRequestsForAddress,
+  deleteNotificationRequestById,
   getNumberOfRequestsForNotificationDestination,
 } from 'lib/events/consumers/userNotifications/repository';
 import {
@@ -10,7 +10,7 @@ import {
   NotificationMethod,
 } from 'lib/events/consumers/userNotifications/shared';
 import { createMocks } from 'node-mocks-http';
-import handler from 'pages/api/addresses/[address]/notifications/emails/[email]';
+import handler from 'pages/api/addresses/[address]/notifications/emails/[emailOrUuid]';
 
 const event: NotificationTriggerType = 'All';
 const notificationMethod = NotificationMethod.EMAIL;
@@ -18,7 +18,7 @@ const notificationDestination = 'adamgobes@gmail.com';
 
 jest.mock('lib/events/consumers/userNotifications/repository', () => ({
   createNotificationRequestForAddress: jest.fn(),
-  deleteAllNotificationRequestsForAddress: jest.fn(),
+  deleteNotificationRequestById: jest.fn(),
   getNumberOfRequestsForNotificationDestination: jest.fn(),
 }));
 
@@ -27,10 +27,9 @@ const mockedCreateDBCall =
     typeof createNotificationRequestForAddress
   >;
 
-const mockedDeleteDBCall =
-  deleteAllNotificationRequestsForAddress as jest.MockedFunction<
-    typeof deleteAllNotificationRequestsForAddress
-  >;
+const mockedDeleteDBCall = deleteNotificationRequestById as jest.MockedFunction<
+  typeof deleteNotificationRequestById
+>;
 
 const mockedGetReqCountCall =
   getNumberOfRequestsForNotificationDestination as jest.MockedFunction<
@@ -49,7 +48,7 @@ describe('/api/addresses/[address]/notifications/emails/[email]', () => {
       wallet = ethers.Wallet.createRandom();
       address = wallet.address;
       expectedNotificationRequest = {
-        id: 1,
+        id: 'some-uuid',
         ethAddress: address,
         deliveryDestination: notificationDestination,
         deliveryMethod: notificationMethod,
@@ -64,7 +63,7 @@ describe('/api/addresses/[address]/notifications/emails/[email]', () => {
         method: 'POST',
         query: {
           address,
-          email: notificationDestination,
+          emailOrUuid: notificationDestination,
         },
       });
 
@@ -89,7 +88,7 @@ describe('/api/addresses/[address]/notifications/emails/[email]', () => {
         method: 'DELETE',
         query: {
           address,
-          email: notificationDestination,
+          emailOrUuid: 'some-uuid',
         },
         body: {
           signedMessage: sig,
@@ -99,10 +98,11 @@ describe('/api/addresses/[address]/notifications/emails/[email]', () => {
       await handler(req, res);
 
       expect(mockedDeleteDBCall).toBeCalledTimes(1);
-      expect(mockedDeleteDBCall).toHaveBeenCalledWith(address);
+      expect(mockedDeleteDBCall).toHaveBeenCalledWith('some-uuid');
       expect(res._getStatusCode()).toBe(200);
       expect(JSON.parse(res._getData())).toEqual({
-        message: `notifications for address ${address} deleted successfully`,
+        message:
+          'notification request with uuid some-uuid deleted successfully',
       });
     });
 
@@ -112,7 +112,7 @@ describe('/api/addresses/[address]/notifications/emails/[email]', () => {
         method: 'POST',
         query: {
           address,
-          email: notificationDestination,
+          emailOrUuid: notificationDestination,
         },
         body: {
           signedMessage: sig,
