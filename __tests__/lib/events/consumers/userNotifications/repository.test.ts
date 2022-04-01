@@ -63,7 +63,7 @@ describe('Notifications repository', () => {
 
     it('returns null on error', async () => {
       const notificationRequest = await createNotificationRequestForAddress(
-        null, // pass null address so DB errors
+        null as any, // pass null address so DB errors
         event,
         notificationMethod,
         notificationDestination,

@@ -9,6 +9,10 @@ import { web3Erc721Contract } from 'lib/contracts';
 
 jest.mock('lib/contracts');
 jest.mock('lib/eip721Subraph');
+jest.mock('wagmi', () => ({
+  ...jest.requireActual('wagmi'),
+  useSigner: jest.fn().mockReturnValue([{ data: jest.fn() }]),
+}));
 
 const mockedIsNFTApprovedForCollateral =
   isNFTApprovedForCollateral as jest.MockedFunction<

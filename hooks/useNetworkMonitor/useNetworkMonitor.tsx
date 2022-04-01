@@ -1,14 +1,16 @@
 import { WrongNetwork } from 'components/Banner/messages';
 import { useGlobalMessages, Message } from 'hooks/useGlobalMessages';
-import { useWeb3 } from 'hooks/useWeb3';
 import React, { useEffect, useState } from 'react';
+import { useNetwork } from 'wagmi';
 
 const expectedChainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID as string);
 
 export function useNetworkMonitor() {
   const [currentMessages, setCurrentMessages] = useState<Message[]>([]);
-  const { chainId } = useWeb3();
+  const [{ data }] = useNetwork();
   const { addMessage, removeMessage } = useGlobalMessages();
+
+  const chainId = data.chain?.id;
 
   useEffect(() => {
     if (chainId) {

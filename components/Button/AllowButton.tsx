@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { TransactionButton } from 'components/Button';
 import { CompletedButton } from 'components/Button';
 import { authorizeCurrency } from 'lib/authorizations/authorizeCurrency';
-import { useWeb3 } from 'hooks/useWeb3';
+import { useSigner } from 'wagmi';
 
 interface AllowButtonProps {
   contractAddress: string;
@@ -17,7 +17,7 @@ export function AllowButton({
   callback,
   done,
 }: AllowButtonProps) {
-  const { library } = useWeb3();
+  const [{ data: signer }] = useSigner();
   const [txHash, setTxHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
 
@@ -25,11 +25,11 @@ export function AllowButton({
     authorizeCurrency({
       callback,
       contractAddress,
-      provider: library!,
+      signer: signer!,
       setTxHash,
       setWaitingForTx,
     });
-  }, [callback, contractAddress, library, setTxHash, setWaitingForTx]);
+  }, [callback, contractAddress, setTxHash, setWaitingForTx, signer]);
 
   const buttonText = useMemo(() => `Authorize ${symbol}`, [symbol]);
 

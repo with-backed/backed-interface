@@ -1,22 +1,22 @@
 import { Web3Provider } from '@ethersproject/providers';
-import { ethers } from 'ethers';
+import { ethers, Signer } from 'ethers';
 import { web3Erc20Contract } from 'lib/contracts';
 
 type AllowParams = {
   callback: () => void;
   contractAddress: string;
-  provider: Web3Provider;
+  signer: Signer;
   setTxHash: (value: string) => void;
   setWaitingForTx: (value: boolean) => void;
 };
 export async function authorizeCurrency({
   callback,
   contractAddress,
-  provider,
+  signer,
   setTxHash,
   setWaitingForTx,
 }: AllowParams) {
-  const contract = web3Erc20Contract(contractAddress, provider);
+  const contract = web3Erc20Contract(contractAddress, signer);
   const t = await contract.approve(
     process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT || '',
     ethers.BigNumber.from(2).pow(256).sub(1),

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styles from './Button.module.css';
 
 import { CoinbaseWallet } from 'components/Icons/CoinbaseWallet';
@@ -6,32 +6,52 @@ import { Metamask } from 'components/Icons/Metamask';
 import { WalletConnect } from 'components/Icons/WalletConnect';
 import { ButtonProps } from './Button';
 
-type SupportedWallet = 'MetaMask' | 'Coinbase Wallet' | 'Wallet Connect';
-
-const icons: { [key in SupportedWallet]: () => JSX.Element } = {
-  MetaMask: Metamask,
-  'Coinbase Wallet': CoinbaseWallet,
-  'Wallet Connect': WalletConnect,
+const icons: { [key: string]: () => JSX.Element } = {
+  injected: Metamask,
+  walletLink: CoinbaseWallet,
+  walletConnect: WalletConnect,
 };
 
-const classNames: { [key in SupportedWallet]: string } = {
-  MetaMask: 'metamask',
-  'Coinbase Wallet': 'coinbase-wallet',
-  'Wallet Connect': 'wallet-connect',
+const names: { [key: string]: string } = {
+  injected: 'MetaMask',
+  walletLink: 'Coinbase Wallet',
+  walletConnect: 'Wallet Connect',
+};
+
+const classNames: { [key: string]: string } = {
+  injected: 'metamask',
+  walletLink: 'coinbase-wallet',
+  walletConnect: 'wallet-connect',
+};
+
+const visitMetaMask = () => {
+  window.open('https://metamask.io', '_blank');
 };
 
 interface WalletButtonProps extends ButtonProps {
-  wallet: SupportedWallet;
+  wallet: string;
 }
 export function WalletButton({ wallet, onClick }: WalletButtonProps) {
-  const Icon = icons[wallet];
-  const walletClass = classNames[wallet];
+  const [providerAvailable, setProviderAvailable] = useState(false);
+  const Icon = icons[wallet] || icons.injected;
+  const walletClass = classNames[wallet] || classNames.injected;
   const className = [styles['wallet-button'], styles[walletClass]].join(' ');
+
+  useEffect(() => {
+    if (window.ethereum) {
+      setProviderAvailable(true);
+    }
+  }, [setProviderAvailable]);
+
   return (
-    <button className={className} onClick={onClick}>
+    <button
+      className={className}
+      onClick={
+        wallet === 'injected' && !providerAvailable ? visitMetaMask : onClick
+      }>
       <div className={styles['button-grid-wrapper']}>
         <Icon />
-        <p>{wallet}</p>
+        <p>{names[wallet]}</p>
       </div>
     </button>
   );

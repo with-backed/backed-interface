@@ -10,6 +10,7 @@ import {
   now,
 } from 'lib/mockData';
 import noop from 'lodash/noop';
+import { useAccount } from 'wagmi';
 
 jest.mock('components/Media', () => ({
   ...jest.requireActual('components/Media'),
@@ -20,9 +21,16 @@ jest.mock('hooks/useTimestamp', () => ({
   useTimestamp: jest.fn(),
 }));
 
+jest.mock('wagmi', () => ({
+  ...jest.requireActual('wagmi'),
+  useAccount: jest.fn(),
+  useSigner: jest.fn().mockReturnValue([{ data: jest.fn() }]),
+}));
+
 const mockedUseTimestamp = useTimestamp as jest.MockedFunction<
   typeof useTimestamp
 >;
+const mockedUseAccount = useAccount as jest.MockedFunction<typeof useAccount>;
 
 const collateralMedia = {
   mediaUrl: 'https:mediastuff',
@@ -32,6 +40,9 @@ const collateralMedia = {
 describe('LoanHeader', () => {
   beforeEach(() => {
     mockedUseTimestamp.mockReturnValue(now);
+    mockedUseAccount.mockReturnValue([
+      { data: { address: '0xaddress' } },
+    ] as any);
   });
 
   it('renders a loading status for accruing loans when there is no timestamp', () => {

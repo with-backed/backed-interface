@@ -48,7 +48,11 @@ describe('/api/addresses/[address]/notifications/emails/[email]', () => {
       wallet = ethers.Wallet.createRandom();
       address = wallet.address;
       expectedNotificationRequest = {
+<<<<<<< HEAD:__tests__/api/addresses/[address]/notifications/emails/[emailOrUuid].test.ts
         id: 'some-uuid',
+=======
+        id: '1',
+>>>>>>> 22872e2 (chore: squash everything for easier rebase):__tests__/api/addresses/[address]/notifications/emails/[email].test.ts
         ethAddress: address,
         deliveryDestination: notificationDestination,
         deliveryMethod: notificationMethod,

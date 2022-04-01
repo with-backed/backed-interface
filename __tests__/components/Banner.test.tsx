@@ -1,14 +1,14 @@
 import React from 'react';
-import { act, render, waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import { Banner } from 'components/Banner';
 import userEvent from '@testing-library/user-event';
 import { WrongNetwork } from 'components/Banner/messages';
-import { useWeb3 } from 'hooks/useWeb3';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
+import { useNetwork } from 'wagmi';
 
-jest.mock('hooks/useWeb3', () => ({
-  ...jest.requireActual('hooks/useWeb3'),
-  useWeb3: jest.fn(),
+jest.mock('wagmi', () => ({
+  ...jest.requireActual('wagmi'),
+  useNetwork: jest.fn(),
 }));
 
 jest.mock('hooks/useGlobalMessages', () => ({
@@ -16,7 +16,7 @@ jest.mock('hooks/useGlobalMessages', () => ({
   useGlobalMessages: jest.fn(),
 }));
 
-const mockedUseWeb3 = useWeb3 as jest.MockedFunction<typeof useWeb3>;
+const mockedUseNetwork = useNetwork as jest.MockedFunction<typeof useNetwork>;
 const mockedUseGlobalMessages = useGlobalMessages as jest.MockedFunction<
   typeof useGlobalMessages
 >;
@@ -42,15 +42,11 @@ describe('Banner', () => {
 
   describe('messages', () => {
     describe('WrongNetwork', () => {
-      let jsonRpcFetchFunc = jest.fn();
+      let switchNetwork = jest.fn();
       let addMessage = jest.fn();
       beforeEach(() => {
         jest.clearAllMocks();
-        mockedUseWeb3.mockReturnValue({
-          library: {
-            jsonRpcFetchFunc,
-          },
-        } as any);
+        mockedUseNetwork.mockReturnValue([{}, switchNetwork] as any);
         mockedUseGlobalMessages.mockReturnValue({
           addMessage,
         } as any);
@@ -69,16 +65,13 @@ describe('Banner', () => {
           <WrongNetwork expectedChainId={1} currentChainId={4} />,
         );
         const button = getByText('Switch to Homestead');
-        expect(jsonRpcFetchFunc).not.toHaveBeenCalled();
+        expect(switchNetwork).not.toHaveBeenCalled();
         userEvent.click(button);
-        expect(jsonRpcFetchFunc).toHaveBeenCalledWith(
-          'wallet_switchEthereumChain',
-          [{ chainId: '0x1' }],
-        );
+        expect(switchNetwork).toHaveBeenCalledWith(1);
       });
 
       it('attempts to change network when pressing the button', async () => {
-        jsonRpcFetchFunc.mockRejectedValue('fail');
+        switchNetwork.mockRejectedValue('fail');
         const { getByText } = render(
           <WrongNetwork expectedChainId={1} currentChainId={4} />,
         );

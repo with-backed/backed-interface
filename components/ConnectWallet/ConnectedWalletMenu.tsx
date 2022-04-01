@@ -1,13 +1,13 @@
 import { Button, ButtonLink } from 'components/Button';
 import { DisplayAddress } from 'components/DisplayAddress';
-import { useWeb3 } from 'hooks/useWeb3';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useAccount } from 'wagmi';
 import styles from './ConnectWallet.module.css';
 
 type ConnectedWalletMenuProps = {};
 
 export function ConnectedWalletMenu({}: ConnectedWalletMenuProps) {
-  const { account, deactivate } = useWeb3();
+  const [{ data }, disconnect] = useAccount();
   const [open, setOpen] = useState(false);
   const container = useRef<HTMLDivElement>(null);
 
@@ -32,7 +32,9 @@ export function ConnectedWalletMenu({}: ConnectedWalletMenuProps) {
     };
   }, [handleClick]);
 
-  if (!account) {
+  const address = data?.address;
+
+  if (!address) {
     return null;
   }
 
@@ -43,14 +45,14 @@ export function ConnectedWalletMenu({}: ConnectedWalletMenuProps) {
         kind="secondary"
         style={{ background: open ? 'var(--highlight-visited-10)' : '' }}>
         <span className={styles.address}>
-          🔓 <DisplayAddress address={account} />
+          🔓 <DisplayAddress address={address} />
         </span>
       </Button>
       <div className={styles.menu} style={{ display: open ? '' : 'none' }}>
-        <ButtonLink href={`/profile/${account}`} kind="tertiary">
+        <ButtonLink href={`/profile/${address}`} kind="tertiary">
           Profile
         </ButtonLink>
-        <Button kind="tertiary" onClick={deactivate}>
+        <Button kind="tertiary" onClick={disconnect}>
           Disconnect
         </Button>
       </div>
