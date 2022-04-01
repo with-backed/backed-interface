@@ -8,6 +8,7 @@ import {
   getDefaultWallets,
   connectorsForWallets,
   lightTheme,
+  Theme,
 } from '@rainbow-me/rainbowkit';
 import { AppProps } from 'next/app';
 import { PawnShopHeader } from 'components/PawnShopHeader';
@@ -35,10 +36,31 @@ const connectors = connectorsForWallets(wallets)({
   chainId: parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || '1'),
 });
 
+const defaultTheme = lightTheme();
+const customTheme: Theme = {
+  ...defaultTheme,
+  colors: {
+    ...defaultTheme.colors,
+    connectButtonText: 'var(--highlight-clickable-100)',
+    connectButtonInnerBackground: `linear-gradient(
+      180deg,
+      var(--highlight-clickable-5) 50%,
+      var(--highlight-clickable-7) 100%
+    )`,
+  },
+  fonts: {
+    body: 'var(--sans)',
+  },
+  shadows: {
+    ...defaultTheme.shadows,
+    connectButton: 'none',
+  },
+};
+
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <GlobalMessagingProvider>
-      <RainbowKitProvider theme={lightTheme()} chains={chains}>
+      <RainbowKitProvider theme={customTheme} chains={chains}>
         <WagmiProvider
           autoConnect
           connectors={connectors}
