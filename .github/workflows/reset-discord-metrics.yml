@@ -1,12 +1,12 @@
-name: process-on-chain-events-cron
+name: reset-discord-metrics
 on:
   schedule:
-    - cron: "*/5 * * * *" # every 5 minutes
+    - cron: "0 0 * * 1" # every Monday at 12am
 jobs:
   cron:
     runs-on: ubuntu-latest
     steps:
-      - name: Call our sqs consumer api to process new on chain events
+      - name: Call our reset discord metrics API to reset metrics for the week
         run: |
           curl --request POST \
           --url 'https://rinkeby.withbacked.xyz/api/events/cron/processNewOnchainEvents' \
