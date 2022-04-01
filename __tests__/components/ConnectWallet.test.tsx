@@ -11,6 +11,10 @@ jest.mock('wagmi', () => ({
   useAccount: jest.fn(),
 }));
 
+jest.mock('@rainbow-me/rainbowkit', () => ({
+  ConnectButton: () => <button>Connect Wallet</button>,
+}));
+
 // Mocking this to suppress ethers error that adds console noise.
 // Let's test DisplayAddress separately and/or make it easier to mock the dep.
 jest.mock('components/DisplayAddress', () => ({
@@ -56,58 +60,7 @@ describe('ConnectWallet', () => {
 
   it('renders', () => {
     const { getByText } = render(<ConnectWallet />);
-    getByText('Connect');
-  });
-
-  it('directs users to MetaMask website if there is no injected provider', () => {
-    const { getByText } = render(<ConnectWallet />);
-    const button = getByText('Connect');
-
-    userEvent.click(button);
-
-    expect(window.open).not.toHaveBeenCalled();
-    const metamask = getByText('MetaMask');
-    userEvent.click(metamask);
-    expect(window.open).toHaveBeenCalledWith('https://metamask.io', '_blank');
-  });
-
-  it('connects through Wallet Connect', () => {
-    window.ethereum = {} as any;
-    const { getByText } = render(<ConnectWallet />);
-    const button = getByText('Connect');
-
-    userEvent.click(button);
-
-    expect(mockConnect).not.toHaveBeenCalled();
-    const walletConnect = getByText('Wallet Connect');
-    userEvent.click(walletConnect);
-    expect(mockConnect).toHaveBeenCalled();
-  });
-
-  it('connects through Wallet Link', () => {
-    window.ethereum = {} as any;
-    const { getByText } = render(<ConnectWallet />);
-    const button = getByText('Connect');
-
-    userEvent.click(button);
-
-    expect(mockConnect).not.toHaveBeenCalled();
-    const walletLink = getByText('Coinbase Wallet');
-    userEvent.click(walletLink);
-    expect(mockConnect).toHaveBeenCalled();
-  });
-
-  it('connects through MetaMask if there is an injected provider', () => {
-    window.ethereum = {} as any;
-    const { getByText } = render(<ConnectWallet />);
-    const button = getByText('Connect');
-
-    userEvent.click(button);
-
-    expect(mockConnect).not.toHaveBeenCalled();
-    const metamask = getByText('MetaMask');
-    userEvent.click(metamask);
-    expect(mockConnect).toHaveBeenCalled();
+    getByText('Connect Wallet');
   });
 
   it('shows a menu when clicked that allows deactivation and profile navigation', () => {
