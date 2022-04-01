@@ -77,7 +77,7 @@ export function useLoanDetails(loan: Loan) {
     ].join(' ');
   }, [loanAmount, loanAssetDecimals, loanAssetSymbol]);
   const formattedInterestRate = useMemo(() => {
-    return [truncate(formattedAnnualRate(perAnumInterestRate)), '%'].join('');
+    return [truncate(perAnumInterestRate.div(10).toString()), '%'].join('');
   }, [perAnumInterestRate]);
   const formattedTotalDuration = useMemo(() => {
     return humanizedDuration(durationSeconds.toNumber());

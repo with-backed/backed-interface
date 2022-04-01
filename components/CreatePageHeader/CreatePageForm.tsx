@@ -88,9 +88,12 @@ export function CreatePageForm({
       const durationInSeconds = Math.ceil(parsedDuration * SECONDS_IN_A_DAY);
       const annualInterestRate = ethers.BigNumber.from(
         Math.floor(
-          parsedInterestRate * 10 ** INTEREST_RATE_PERCENT_DECIMALS - 2,
+          parsedInterestRate * 10 ** (INTEREST_RATE_PERCENT_DECIMALS - 2),
         ),
       );
+
+      console.log(`parsedInterestRate ${parsedInterestRate}`);
+      console.log(`rate ${annualInterestRate}`);
 
       const contract = web3LoanFacilitator(library!);
       onSubmit();

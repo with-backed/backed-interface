@@ -1,7 +1,7 @@
 import { Explainer as ExplainerWrapper } from 'components/Explainer';
 import { LoanFormData } from 'components/LoanForm/LoanFormData';
 import { ethers } from 'ethers';
-import { parseUnits } from 'ethers/lib/utils';
+import { formatUnits } from 'ethers/lib/utils';
 import { secondsBigNumToDays } from 'lib/duration';
 import { estimatedRepayment } from 'lib/loans/utils';
 import React, { useCallback } from 'react';
@@ -132,7 +132,7 @@ function BetterInterestRate({
     parsedLoanAmount,
   );
 
-  const humanRepayment = parseUnits(
+  const humanRepayment = formatUnits(
     repayment.toString(),
     loan.loanAssetDecimals,
   );

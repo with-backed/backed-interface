@@ -25,13 +25,13 @@ export function useLoanUnderwriter(
         throw new Error('Cannot underwrite a loan without a connected account');
       }
       const loanFacilitator = web3LoanFacilitator(library!);
-      const interestRatePerSecond = ethers.BigNumber.from(
-        Math.floor(interestRate * 10 ** INTEREST_RATE_PERCENT_DECIMALS),
-      ).div(SECONDS_IN_A_YEAR);
+      const annualInterestRate = ethers.BigNumber.from(
+        Math.floor(interestRate * 10 ** (INTEREST_RATE_PERCENT_DECIMALS - 2)),
+      );
 
       const t = await loanFacilitator.lend(
         id,
-        interestRatePerSecond,
+        annualInterestRate,
         ethers.utils.parseUnits(loanAmount.toString(), loanAssetDecimals),
         daysToSecondsBigNum(duration),
         account,
