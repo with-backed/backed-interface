@@ -92,9 +92,6 @@ export function CreatePageForm({
         ),
       );
 
-      console.log(`parsedInterestRate ${parsedInterestRate}`);
-      console.log(`rate ${annualInterestRate}`);
-
       const contract = web3LoanFacilitator(library!);
       onSubmit();
       const t = await contract.createLoan(
