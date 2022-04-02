@@ -65,8 +65,12 @@ export function getInterestOwed(
 ): ethers.BigNumber {
   return loanAmount
     .mul(now.sub(lastAccumulatedTimestamp))
-    .mul(perAnumInterestRate)
-    .div(SCALAR)
+    .mul(
+      perAnumInterestRate
+        .mul(ethers.BigNumber.from(10).pow(18))
+        .div(SECONDS_IN_A_YEAR),
+    )
+    .div(ethers.BigNumber.from(10).pow(21))
     .add(accumulatedInterest);
 }
 
