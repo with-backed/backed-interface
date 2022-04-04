@@ -162,3 +162,36 @@ export async function getMostRecentTermsForLoan(
 
   return lendEvents.sort((a, b) => b.blockNumber - a.blockNumber)[1];
 }
+
+export async function getCreatedLoansSince(timestamp: number) {
+  const where: Loan_Filter = {
+    createdAtTimestamp_gt: timestamp,
+  };
+
+  const { data, error } = await nftBackedLoansClient
+    .query<AllLoansQuery>(AllLoansDocument, {
+      where,
+    })
+    .toPromise();
+
+  if (error) {
+    // TODO: bugsnag
+  }
+  return data?.loans || [];
+}
+
+export async function getLentToLoansSince(timestamp: number) {
+  const where: Loan_Filter = {
+    lastAccumulatedTimestamp_gt: timestamp,
+  };
+
+  const { data, error } = await nftBackedLoansClient
+    .query<AllLoansQuery>(AllLoansDocument, {
+      where,
+    })
+    .toPromise();
+  if (error) {
+    // TODO: bugsnag
+  }
+  return data?.loans || [];
+}
