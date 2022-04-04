@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import { ethers } from 'ethers';
 import { addressToENS } from 'lib/account';
-import { SCALAR } from 'lib/constants';
+import { secondsBigNumToDaysBigNum } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
 import { interestOverTerm } from 'lib/loans/utils';
 import { Loan as ParsedLoan } from 'types/Loan';
@@ -26,7 +26,7 @@ export const getEstimatedRepaymentAndMaturity = (
 ): [string, string] => {
   const interest = interestOverTerm(
     loan.perAnumInterestRate,
-    secondsToDays(duration),
+    secondsBigNumToDaysBigNum(duration),
     loan.loanAmount,
   );
 
@@ -78,6 +78,3 @@ export const formattedDuration = (duration: number): string => {
   const minutes = Math.floor(dayjs.duration({ seconds: duration }).asMinutes());
   return minutes === 1 ? `${minutes} minute` : `${minutes} minutes`;
 };
-function secondsToDays(duration: ethers.BigNumber): ethers.BigNumber {
-  throw new Error('Function not implemented.');
-}
