@@ -9,5 +9,5 @@ jobs:
       - name: Call our notifications cron api
         run: |
           curl --request POST \
-          --url 'https://rinkeby.withbacked.xyz/api/cron/notifications' \
+          --url 'https://nft-pawn-shop-rinkeby.vercel.app/api/cron/notifications' \
           --header "Authorization: Basic $(echo -n username:${{ secrets.EVENTS_API_SECRET_KEY }} | base64)"
