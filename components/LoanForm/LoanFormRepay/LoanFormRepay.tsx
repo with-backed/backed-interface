@@ -5,7 +5,7 @@ import { useLoanDetails } from 'hooks/useLoanDetails';
 import { web3LoanFacilitator } from 'lib/contracts';
 import { Explainer } from './Explainer';
 import { Form } from 'components/Form';
-import { useWeb3 } from 'hooks/useWeb3';
+import { useSigner } from 'wagmi';
 
 type LoanFormRepayProps = {
   loan: Loan;
@@ -25,12 +25,12 @@ export function LoanFormRepay({
     formattedPrincipal,
     formattedInterestAccrued,
   } = useLoanDetails(loan);
-  const { library } = useWeb3();
+  const [{ data: signer }] = useSigner();
   const [txHash, setTxHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
 
   const repay = useCallback(async () => {
-    const t = await web3LoanFacilitator(library!).repayAndCloseLoan(loan.id);
+    const t = await web3LoanFacilitator(signer!).repayAndCloseLoan(loan.id);
     setWaitingForTx(true);
     setTxHash(t.hash);
     t.wait()
@@ -42,7 +42,7 @@ export function LoanFormRepay({
         setWaitingForTx(false);
         console.error(err);
       });
-  }, [library, loan.id, refresh]);
+  }, [loan.id, refresh, signer]);
 
   return (
     <>

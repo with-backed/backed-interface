@@ -1,20 +1,19 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import { useNetworkMonitor } from 'hooks/useNetworkMonitor';
-import { useWeb3 } from 'hooks/useWeb3';
-import { act } from 'react-test-renderer';
-
-jest.mock('hooks/useWeb3', () => ({
-  ...jest.requireActual('hooks/useWeb3'),
-  useWeb3: jest.fn(),
-}));
+import { useNetwork } from 'wagmi';
 
 jest.mock('hooks/useGlobalMessages', () => ({
   ...jest.requireActual('hooks/useGlobalMessages'),
   useGlobalMessages: jest.fn(),
 }));
 
-const mockedUseWeb3 = useWeb3 as jest.MockedFunction<typeof useWeb3>;
+jest.mock('wagmi', () => ({
+  ...jest.requireActual('wagmi'),
+  useNetwork: jest.fn(),
+}));
+
+const mockedUseNetwork = useNetwork as jest.MockedFunction<typeof useNetwork>;
 const mockedUseGlobalMessages = useGlobalMessages as jest.MockedFunction<
   typeof useGlobalMessages
 >;
@@ -22,10 +21,13 @@ const mockedUseGlobalMessages = useGlobalMessages as jest.MockedFunction<
 const addMessage = jest.fn();
 const removeMessage = jest.fn();
 
+const mockNetwork = (id?: number) =>
+  mockedUseNetwork.mockReturnValue([{ data: { chain: { id } } }] as any);
+
 describe('useNetworkMonitor', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockedUseWeb3.mockReturnValue({ chainId: 1 } as any);
+    mockedUseNetwork.mockReturnValue([{ chain: { id: 1 } }] as any);
     mockedUseGlobalMessages.mockReturnValue({
       addMessage,
       removeMessage,
@@ -34,22 +36,21 @@ describe('useNetworkMonitor', () => {
   });
 
   it('does nothing when not connected', async () => {
-    mockedUseWeb3.mockReturnValue({ chainId: undefined } as any);
+    mockNetwork();
     const { result } = renderHook(() => useNetworkMonitor());
     result.current;
     expect(addMessage).not.toHaveBeenCalled();
   });
 
   it('does nothing when connected to correct network', async () => {
-    mockedUseWeb3.mockReturnValue({
-      chainId: parseInt(process.env.NEXT_PUBLIC_CHAIN_ID as string),
-    } as any);
+    mockNetwork(parseInt(process.env.NEXT_PUBLIC_CHAIN_ID as string));
     const { result } = renderHook(() => useNetworkMonitor());
     result.current;
     expect(addMessage).not.toHaveBeenCalled();
   });
 
   it('adds a message when connected to wrong network, then removes one when resolved', () => {
+    mockNetwork(1282345);
     const { result, rerender } = renderHook(() => useNetworkMonitor());
     result.current;
     expect(addMessage).toHaveBeenCalledWith(
@@ -59,9 +60,7 @@ describe('useNetworkMonitor', () => {
     );
     expect(removeMessage).not.toHaveBeenCalled();
 
-    mockedUseWeb3.mockReturnValue({
-      chainId: parseInt(process.env.NEXT_PUBLIC_CHAIN_ID as string),
-    } as any);
+    mockNetwork(parseInt(process.env.NEXT_PUBLIC_CHAIN_ID as string));
 
     rerender();
 

@@ -4,6 +4,10 @@ import userEvent from '@testing-library/user-event';
 import { AllowButton, Button, DialogDisclosureButton } from 'components/Button';
 import { authorizeCurrency } from 'lib/authorizations/authorizeCurrency';
 
+jest.mock('wagmi', () => ({
+  ...jest.requireActual('wagmi'),
+  useSigner: jest.fn().mockReturnValue([{ data: jest.fn() }]),
+}));
 jest.mock('lib/authorizations/authorizeCurrency', () => ({
   ...jest.requireActual('lib/authorizations/authorizeCurrency'),
   authorizeCurrency: jest.fn(),
@@ -13,6 +17,7 @@ describe('Button Components', () => {
   describe('AllowButton', () => {
     const contractAddress = '0xaddress';
     const symbol = 'SYM';
+
     let callback = jest.fn();
     beforeEach(() => {
       callback = jest.fn();

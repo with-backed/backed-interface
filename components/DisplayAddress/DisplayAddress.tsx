@@ -1,4 +1,3 @@
-import { useWeb3 } from 'hooks/useWeb3';
 import { addressToENS } from 'lib/account';
 import React, { useEffect, useState } from 'react';
 import styles from './Address.module.css';

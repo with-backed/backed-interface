@@ -1,14 +1,14 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 import { useLoanUnderwriter } from 'hooks/useLoanUnderwriter';
-import { useWeb3 } from 'hooks/useWeb3';
 import { web3LoanFacilitator } from 'lib/contracts';
 import { baseLoan } from 'lib/mockData';
-import { reject } from 'lodash';
 import { EventEmitter } from 'stream';
+import { useAccount } from 'wagmi';
 
-jest.mock('hooks/useWeb3', () => ({
-  ...jest.requireActual('hooks/useWeb3'),
-  useWeb3: jest.fn(),
+jest.mock('wagmi', () => ({
+  ...jest.requireActual('wagmi'),
+  useAccount: jest.fn(),
+  useSigner: jest.fn().mockReturnValue([{ data: jest.fn() }]),
 }));
 
 jest.mock('lib/contracts', () => ({
@@ -16,7 +16,7 @@ jest.mock('lib/contracts', () => ({
   web3LoanFacilitator: jest.fn(),
 }));
 
-const mockedUseWeb3 = useWeb3 as jest.MockedFunction<typeof useWeb3>;
+const mockedUseAccount = useAccount as jest.MockedFunction<typeof useAccount>;
 const mockedLoanFacilitator = web3LoanFacilitator as jest.MockedFunction<
   typeof web3LoanFacilitator
 >;
@@ -41,13 +41,9 @@ const makeTransaction = () => {
 describe('useLoanUnderwriter', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockedUseWeb3.mockReturnValue({
-      active: true,
-      activate: jest.fn(),
-      setError: jest.fn(),
-      deactivate: jest.fn(),
-      account: '0xmyaddress',
-    });
+    mockedUseAccount.mockReturnValue([
+      { data: { address: '0xmyaddress' } },
+    ] as any);
     mockedLoanFacilitator.mockReturnValue({
       lend: jest.fn(),
     } as any);
@@ -64,12 +60,8 @@ describe('useLoanUnderwriter', () => {
   });
 
   it('signals an error if you try to underwrite before having an account', async () => {
-    mockedUseWeb3.mockReturnValue({
-      active: true,
-      activate: jest.fn(),
-      setError: jest.fn(),
-      deactivate: jest.fn(),
-    });
+    mockedUseAccount.mockReturnValue([{ data: { address: undefined } }] as any);
+
     const { result } = renderHook(() => useLoanUnderwriter(baseLoan, refresh));
 
     const { underwrite } = result.current;

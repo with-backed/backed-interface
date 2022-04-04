@@ -4,7 +4,6 @@ import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { NFTMedia } from 'components/Media/NFTMedia';
 import { NFTCollateralPicker } from 'components/NFTCollateralPicker/NFTCollateralPicker';
 import { ethers } from 'ethers';
-import { useWeb3 } from 'hooks/useWeb3';
 import { getNftContractAddress, HIDDEN_NFT_ADDRESSES } from 'lib/eip721Subraph';
 import { eip721Client } from 'lib/urql';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -21,13 +20,15 @@ import { SelectNFTButton } from './SelectNFTButton';
 import { createPageFormSchema } from './createPageFormSchema';
 import { NFTEntity } from 'types/NFT';
 import { useTokenMetadata } from 'hooks/useTokenMetadata';
+import { useAccount } from 'wagmi';
 
 export function CreatePageHeader() {
   const form = useForm<CreateFormData>({
     mode: 'all',
     resolver: yupResolver(createPageFormSchema),
   });
-  const { account } = useWeb3();
+  const [{ data }] = useAccount();
+  const account = data?.address;
   const [current, send] = useMachine(createPageFormMachine);
 
   const [selectedNFT, setSelectedNFT] = useState<NFTEntity | null>(null);
