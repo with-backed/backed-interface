@@ -4,10 +4,12 @@ import { getUnitPriceForCoin } from 'lib/coingecko';
 import { updateWatcher } from 'lib/events/consumers/discord/bot';
 import { DiscordMetric } from 'lib/events/consumers/discord/shared';
 import {
-  getCreatedLoansPastWeek,
-  getLentToLoansPastWeek,
+  getCreatedLoansSince,
+  getLentToLoansSince,
 } from 'lib/loans/subgraph/subgraphLoans';
 import { NextApiRequest, NextApiResponse } from 'next';
+
+const oneWeekAgoTimestamp = () => new Date().getTime() / 1000 - 7 * 24 * 3600;
 
 export default async function handler(
   req: NextApiRequest,
@@ -19,11 +21,11 @@ export default async function handler(
   }
 
   try {
-    const createdLoansThisWeek = await getCreatedLoansPastWeek(
-      new Date().getTime() / 1000 - 7 * 24 * 3600,
+    const createdLoansThisWeek = await getCreatedLoansSince(
+      oneWeekAgoTimestamp(),
     );
-    const lentToLoansThisWeek = await getLentToLoansPastWeek(
-      new Date().getTime() / 1000 - 7 * 24 * 3600,
+    const lentToLoansThisWeek = await getLentToLoansSince(
+      oneWeekAgoTimestamp(),
     );
 
     const lentToLoansDollarValues = await Promise.all(
@@ -32,7 +34,8 @@ export default async function handler(
           parseFloat(
             ethers.utils.formatUnits(loan.loanAmount, loan.loanAssetDecimal),
           ) *
-          (await getUnitPriceForCoin(loan.loanAssetContractAddress, 'usd'))!,
+          ((await getUnitPriceForCoin(loan.loanAssetContractAddress, 'usd')) ||
+            0),
       ),
     );
 

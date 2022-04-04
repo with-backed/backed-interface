@@ -163,9 +163,9 @@ export async function getMostRecentTermsForLoan(
   return lendEvents.sort((a, b) => b.blockNumber - a.blockNumber)[1];
 }
 
-export async function getCreatedLoansPastWeek(oneWeekAgo: number) {
+export async function getCreatedLoansSince(timestamp: number) {
   const where: Loan_Filter = {
-    createdAtTimestamp_gt: oneWeekAgo,
+    createdAtTimestamp_gt: timestamp,
   };
 
   const { data, error } = await nftBackedLoansClient
@@ -180,9 +180,9 @@ export async function getCreatedLoansPastWeek(oneWeekAgo: number) {
   return data?.loans || [];
 }
 
-export async function getLentToLoansPastWeek(oneWeekAgo: number) {
+export async function getLentToLoansSince(timestamp: number) {
   const where: Loan_Filter = {
-    lastAccumulatedTimestamp_gt: oneWeekAgo,
+    lastAccumulatedTimestamp_gt: timestamp,
   };
 
   const { data, error } = await nftBackedLoansClient

@@ -2,8 +2,8 @@ import { getUnitPriceForCoin } from 'lib/coingecko';
 import { updateWatcher } from 'lib/events/consumers/discord/bot';
 import { DiscordMetric } from 'lib/events/consumers/discord/shared';
 import {
-  getCreatedLoansPastWeek,
-  getLentToLoansPastWeek,
+  getCreatedLoansSince,
+  getLentToLoansSince,
 } from 'lib/loans/subgraph/subgraphLoans';
 import { subgraphLoan } from 'lib/mockData';
 import { createMocks } from 'node-mocks-http';
@@ -14,8 +14,8 @@ jest.mock('lib/events/consumers/discord/bot', () => ({
 }));
 
 jest.mock('lib/loans/subgraph/subgraphLoans', () => ({
-  getCreatedLoansPastWeek: jest.fn(),
-  getLentToLoansPastWeek: jest.fn(),
+  getCreatedLoansSince: jest.fn(),
+  getLentToLoansSince: jest.fn(),
 }));
 
 jest.mock('lib/coingecko', () => ({
@@ -30,11 +30,11 @@ const mockUpdateWatcherCall = updateWatcher as jest.MockedFunction<
   typeof updateWatcher
 >;
 
-const mockGetCreatedLoansCall = getCreatedLoansPastWeek as jest.MockedFunction<
-  typeof getCreatedLoansPastWeek
+const mockGetCreatedLoansCall = getCreatedLoansSince as jest.MockedFunction<
+  typeof getCreatedLoansSince
 >;
-const mockGetLentToLoansCall = getLentToLoansPastWeek as jest.MockedFunction<
-  typeof getLentToLoansPastWeek
+const mockGetLentToLoansCall = getLentToLoansSince as jest.MockedFunction<
+  typeof getLentToLoansSince
 >;
 
 describe('/api/events/updateDiscordMetrics', () => {
