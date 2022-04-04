@@ -5,7 +5,6 @@ import {
   CompletedButton,
   DialogDisclosureButton,
   TextButton,
-  WalletButton,
 } from 'components/Button';
 import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { Fieldset } from 'components/Fieldset';
@@ -52,13 +51,6 @@ export const InputStyles = () => {
           <ButtonLink kind="primary" href="https://google.com">
             Button Link
           </ButtonLink>
-        </FormWrapper>
-      </Fieldset>
-      <Fieldset legend="👛 Wallet buttons">
-        <FormWrapper>
-          <WalletButton wallet="MetaMask" />
-          <WalletButton wallet="Coinbase Wallet" />
-          <WalletButton wallet="Wallet Connect" />
         </FormWrapper>
       </Fieldset>
       <Fieldset legend="📚 Text buttons">
