@@ -9,7 +9,8 @@ import {
 } from 'lib/loans/subgraph/subgraphLoans';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-const oneWeekAgoTimestamp = () => new Date().getTime() / 1000 - 7 * 24 * 3600;
+const oneWeekAgoTimestamp = () =>
+  Math.floor(new Date().getTime() / 1000 - 7 * 24 * 3600);
 
 export default async function handler(
   req: NextApiRequest,
