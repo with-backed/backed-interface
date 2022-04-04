@@ -23,3 +23,10 @@ model LastTimestampForNotifications {
   id                   Int @id @default(autoincrement())
   lastWrittenTimestamp Int
 }
+
+model DiscordMetrics {
+  id                Int @id @default(autoincrement())
+  numLoansCreated   Int
+  numLoansLentTo    Int
+  dollarLoansLentTo Int
+}
