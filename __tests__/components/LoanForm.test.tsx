@@ -1,6 +1,5 @@
 import { loanWithLenderAccruing } from 'lib/mockData';
 import { hasTenPercentImprovement } from 'components/LoanForm/LoanFormBetterTerms/LoanFormBetterTerms';
-import { ethers } from 'ethers';
 import { secondsToDays } from 'lib/duration';
 import { formatUnits } from 'ethers/lib/utils';
 
