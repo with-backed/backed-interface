@@ -4,7 +4,6 @@ import {
   LoanStatus,
 } from 'types/generated/graphql/nftLoans';
 import { parseSubgraphLoan } from 'lib/loans/utils';
-import { INTEREST_RATE_PERCENT_DECIMALS, SCALAR } from 'lib/constants';
 
 const subgraphLoan: SubgraphLoan = {
   id: '1',
@@ -31,14 +30,7 @@ const subgraphLoan: SubgraphLoan = {
   __typename: 'Loan',
 };
 
-const now = 1649037744 * 1000;
-
 describe('parseSubgraphLoan', () => {
-  beforeAll(() => {
-    // freeze date for calculations
-    Date.now = jest.fn(() => now);
-  });
-
   it('parses values correctly', () => {
     const result = parseSubgraphLoan(subgraphLoan);
     expect(result).toEqual({
