@@ -48,7 +48,7 @@ export async function getNFTInfoFromTokenInfo(
     }
 
     const mediaUrl =
-      NFTInfo.animation_url == null || forceImage
+      !NFTInfo.animation_url || forceImage
         ? NFTInfo.image
         : NFTInfo.animation_url;
 
