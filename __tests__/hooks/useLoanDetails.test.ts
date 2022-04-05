@@ -19,10 +19,10 @@ describe('useLoanDetails', () => {
   it('renders loan details', () => {
     const result = renderHook(() => useLoanDetails(baseLoan));
     expect(result.result.current.formattedEstimatedPaybackAtMaturity).toEqual(
-      '10.0039 DAI',
+      '10.0080 DAI',
     );
     expect(result.result.current.formattedInterestAccrued).toEqual('0 DAI');
-    expect(result.result.current.formattedInterestRate).toEqual('4.7304%');
+    expect(result.result.current.formattedInterestRate).toEqual('10%');
     expect(result.result.current.formattedLoanID).toEqual('Loan #8');
     expect(result.result.current.formattedPrincipal).toEqual('10 DAI');
     expect(result.result.current.formattedStatus).toEqual('No lender');
