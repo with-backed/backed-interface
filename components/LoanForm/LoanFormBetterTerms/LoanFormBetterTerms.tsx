@@ -14,6 +14,7 @@ import { ethers } from 'ethers';
 import { daysToSecondsBigNum, secondsBigNumToDays } from 'lib/duration';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Balance } from '../Balance';
+import { formattedAnnualRate } from 'lib/interest';
 
 type LoanFormBetterTermsProps = {
   balance: number;
@@ -35,7 +36,7 @@ export function LoanFormBetterTerms({
     [loan.loanAmount, loan.loanAssetDecimals],
   );
   const initialInterestRate = useMemo(
-    () => loan.perAnumInterestRate.toString(),
+    () => formattedAnnualRate(loan.perAnumInterestRate),
     [loan.perAnumInterestRate],
   );
   const initialDuration = useMemo(
