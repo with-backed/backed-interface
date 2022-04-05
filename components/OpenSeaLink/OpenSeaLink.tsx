@@ -18,7 +18,7 @@ const OpenSeaLink: FunctionComponent<OpenSeaLinkProps> = ({
 
 interface OpenSeaNFTLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   contractAddress: string;
-  assetId: number;
+  assetId: string;
 }
 export const OpenSeaAddressLink: FunctionComponent<OpenSeaNFTLinkProps> = ({
   assetId,

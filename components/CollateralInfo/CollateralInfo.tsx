@@ -16,7 +16,7 @@ export const CollateralInfo = ({
   collateralSaleInfo,
 }: CollateralInfoProps) => {
   const tokenId = useMemo(
-    () => loan.collateralTokenId.toNumber(),
+    () => loan.collateralTokenId.toString(),
     [loan.collateralTokenId],
   );
 
