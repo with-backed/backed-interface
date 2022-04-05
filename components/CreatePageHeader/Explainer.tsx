@@ -173,7 +173,6 @@ function EstimatedRepayment({
     const humanRepayment = formatUnits(repayment.toString(), decimals);
     return (
       <div>
-        <br />
         The estimated repayment at maturity will be{' '}
         <b>
           {humanRepayment} {denomination.symbol}.
