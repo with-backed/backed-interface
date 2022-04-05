@@ -1,3 +1,4 @@
+import { MIN_RATE } from 'lib/constants';
 import * as Yup from 'yup';
 
 type LoanPageFormSchemaParams = {
@@ -18,6 +19,7 @@ export const loanPageFormSchema = ({
       )
       .required(),
     interestRate: Yup.number()
+      .min(MIN_RATE)
       .max(
         interestRate,
         `Interest rate must be no greater than the current term of ${interestRate}.`,
