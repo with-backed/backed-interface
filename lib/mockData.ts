@@ -60,7 +60,7 @@ export const baseLoan: Loan = {
   loanAssetContractAddress: '0x6916577695d0774171de3ed95d03a3239139eddb',
   loanAssetDecimals: 18,
   loanAssetSymbol: 'DAI',
-  perAnumInterestRate: ethers.BigNumber.from('15'),
+  perAnumInterestRate: ethers.BigNumber.from('100'),
   lastAccumulatedTimestamp: ethers.BigNumber.from(0),
   interestOwed: ethers.BigNumber.from(0),
   collateralName: 'The Best NFT Ever',

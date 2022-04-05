@@ -8,9 +8,11 @@ const currentTermsInInputFormat = {
   duration: secondsToDays(loanWithLenderAccruing.durationSeconds.toNumber()),
   interestRate: loanWithLenderAccruing.perAnumInterestRate.toNumber() / 10.0,
   loan: loanWithLenderAccruing,
-  loanAmount: formatUnits(
-    loanWithLenderAccruing.loanAmount.toString(),
-    loanWithLenderAccruing.loanAssetDecimals,
+  loanAmount: parseFloat(
+    formatUnits(
+      loanWithLenderAccruing.loanAmount.toString(),
+      loanWithLenderAccruing.loanAssetDecimals,
+    ),
   ),
 };
 
@@ -19,7 +21,7 @@ describe('LoanForm', () => {
     describe('hasTenPercentImprovement', () => {
       it('returns false for identical loan terms', () => {
         const duration = '3';
-        const interestRate = '4.7304';
+        const interestRate = '10';
         const loanAmount = '10';
 
         expect(
@@ -72,7 +74,7 @@ describe('LoanForm', () => {
             duration: secondsToDays(improvedDuration.toNumber()).toString(),
             interestRate: currentTermsInInputFormat.interestRate.toString(),
             loan: loanWithLenderAccruing,
-            loanAmount: currentTermsInInputFormat.loanAmount,
+            loanAmount: currentTermsInInputFormat.loanAmount.toString(),
           }),
         ).toBeFalsy();
       });
@@ -84,9 +86,9 @@ describe('LoanForm', () => {
         const improvedDuration =
           currentTermsInInputFormat.duration +
           currentTermsInInputFormat.duration / 10;
-        const improvedAmount = ethers.BigNumber.from(
-          currentTermsInInputFormat.loanAmount,
-        ).add(loanWithLenderAccruing.loanAmount.div(10));
+        const improvedAmount =
+          currentTermsInInputFormat.loanAmount +
+          currentTermsInInputFormat.loanAmount / 10;
 
         expect(
           hasTenPercentImprovement({
