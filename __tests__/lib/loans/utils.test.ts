@@ -4,6 +4,7 @@ import {
   LoanStatus,
 } from 'types/generated/graphql/nftLoans';
 import { parseSubgraphLoan } from 'lib/loans/utils';
+import { SECONDS_IN_A_YEAR } from 'lib/constants';
 
 const subgraphLoan: SubgraphLoan = {
   id: '1',
@@ -13,7 +14,7 @@ const subgraphLoan: SubgraphLoan = {
   perAnumInterestRate: '100',
   accumulatedInterest: '0',
   lastAccumulatedTimestamp: '0',
-  durationSeconds: '31536000',
+  durationSeconds: SECONDS_IN_A_YEAR,
   loanAmount: '1000000000000000000000',
   status: LoanStatus.Active,
   closed: false,
@@ -31,6 +32,9 @@ const subgraphLoan: SubgraphLoan = {
 };
 
 describe('parseSubgraphLoan', () => {
+  beforeAll(() => {
+    Date.now = jest.fn(() => 1649170976115);
+  });
   it('parses values correctly', () => {
     const result = parseSubgraphLoan(subgraphLoan);
     expect(result).toEqual({
@@ -64,8 +68,17 @@ describe('parseSubgraphLoan', () => {
 
   describe('when last accumulated timestamp is not 0', () => {
     it('correctly computes interest owed', () => {
-      // TODO: test this
-      expect(false).toBeTruthy();
+      const result = parseSubgraphLoan({
+        ...subgraphLoan,
+        lastAccumulatedTimestamp: 1649037744,
+      });
+
+      // This assumes the current implementation is correct, and guards that it
+      // doesn't change. In the future it will be worthwhile to have an
+      // integration test that checks the node and graph remain in sync.
+      expect(result.interestOwed).toEqual(
+        ethers.BigNumber.from('0x05dcef97daecb980'),
+      );
     });
   });
 });
