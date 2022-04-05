@@ -72,13 +72,13 @@ describe('Transforming on-chain events to email components', () => {
           prefix: 'Their loan terms were:',
           amount: '8000.0 DAI',
           duration: '120 days',
-          interest: '6.3072%',
+          interest: '2.0%',
         },
         {
           prefix: 'The new terms set by 0x7e646 are:',
           amount: '8193.0 DAI',
           duration: '120 days',
-          interest: '6.3072%',
+          interest: '2.0%',
         },
       ]);
       expect([borrowerComponents.terms, borrowerComponents.terms]).toEqual([
@@ -87,7 +87,7 @@ describe('Transforming on-chain events to email components', () => {
       ]);
 
       expect(borrowerComponents.messageAfterTerms).toEqual([
-        'At this rate, repayment of 8362.890048 DAI will be due on 01/01/1970.',
+        'At this rate, repayment of 8246.74608 DAI will be due on 01/01/1970.',
       ]);
       expect([
         borrowerComponents.messageAfterTerms,
@@ -172,13 +172,13 @@ describe('Transforming on-chain events to email components', () => {
           prefix: '0x7e646 lent at terms:',
           amount: '8192.0 DAI',
           duration: '120 days',
-          interest: '6.3072%',
+          interest: '2.0%',
         },
       ]);
       expect(borrowerComponents.terms).toEqual(lenderComponents.terms);
 
       expect(borrowerComponents.messageAfterTerms).toEqual([
-        'At this rate, repayment of 8361.869312 DAI will be due on 01/01/1970',
+        'At this rate, repayment of 8245.73952 DAI will be due on 01/01/1970',
       ]);
       expect(borrowerComponents.messageAfterTerms).toEqual(
         lenderComponents.messageAfterTerms,
@@ -237,7 +237,7 @@ describe('Transforming on-chain events to email components', () => {
           prefix: `0x7e646 held the loan for 2 hours, with loan terms:`,
           amount: '8192.0 DAI',
           duration: '120 days',
-          interest: '6.3072%',
+          interest: '2.0%',
         },
       ]);
       expect(borrowerComponents.terms).toEqual(lenderComponents.terms);
@@ -310,11 +310,11 @@ describe('Transforming on-chain events to email components', () => {
           prefix: '0x7e646 held the loan for 53 minutes at terms:',
           amount: '8192.0 DAI',
           duration: '120 days',
-          interest: '6.3072%',
+          interest: '2.0%',
         },
       ]);
       expect(borrowerComponents.messageAfterTerms).toEqual([
-        'The loan became due on 01/01/1970 with a repayment cost of 8361.869312 DAI.',
+        'The loan became due on 01/01/1970 with a repayment cost of 8245.73952 DAI.',
         'Borrower 0x0dd7d did not repay, so 0x7e646 was able to seize the collateral NFT on 02/17/2022.',
       ]);
 
@@ -378,14 +378,14 @@ describe('Transforming on-chain events to email components', () => {
           prefix: '0x7e646 held the loan for 25 days, with loan terms:',
           amount: '8192.0 DAI',
           duration: '120 days',
-          interest: '6.3072%',
+          interest: '2.0%',
         },
       ]);
       expect(borrowerComponents.terms).toEqual(lenderComponents.terms);
 
       expect(borrowerComponents.messageAfterTerms).toEqual([
-        'They accrued 8228.778934272 DAI over that period.',
-        'At this rate, repayment of 8361.869312 DAI will be due on 01/01/1970',
+        'They accrued 8203.14112 DAI over that period.',
+        'At this rate, repayment of 8245.73952 DAI will be due on 01/01/1970',
       ]);
       expect(borrowerComponents.messageAfterTerms).toEqual(
         lenderComponents.messageAfterTerms,
@@ -453,14 +453,14 @@ describe('Transforming on-chain events to email components', () => {
           prefix: '0x7e646 held the loan for 7 days, with loan terms:',
           amount: '8192.0 DAI',
           duration: '120 days',
-          interest: '6.3072%',
+          interest: '2.0%',
         },
       ]);
       expect(borrowerComponents.terms).toEqual(lenderComponents.terms);
 
       expect(borrowerComponents.messageAfterTerms).toEqual([
-        'They accrued 169.869312 DAI.',
-        'The loan became due on 02/24/2022 with a repayment cost of 8361.869312 DAI',
+        'They accrued 53.73952 DAI.',
+        'The loan became due on 02/24/2022 with a repayment cost of 8245.73952 DAI',
         'Unless borrower 0x0dd7d repays, 0x7e646 may seize the collateral NFT.',
       ]);
       expect(borrowerComponents.messageAfterTerms).toEqual(

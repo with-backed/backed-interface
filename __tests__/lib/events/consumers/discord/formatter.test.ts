@@ -59,7 +59,7 @@ describe('Formatting events for discord bot messages', () => {
         undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
-        expect.stringContaining('6.3072%'),
+        expect.stringContaining('2.0%'),
         undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
@@ -101,7 +101,7 @@ describe('Formatting events for discord bot messages', () => {
         undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
-        expect.stringContaining('6.3072%'),
+        expect.stringContaining('2.0%'),
         undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
@@ -154,7 +154,7 @@ describe('Formatting events for discord bot messages', () => {
         undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
-        expect.stringContaining('6.3072%'),
+        expect.stringContaining('2.0%'),
         undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
@@ -200,7 +200,7 @@ describe('Formatting events for discord bot messages', () => {
         undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
-        expect.stringContaining('6.3072%'),
+        expect.stringContaining('2.0%'),
         undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
@@ -235,7 +235,7 @@ describe('Formatting events for discord bot messages', () => {
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
         expect.stringContaining(
-          "0x7e646 held the loan for 53 minutes. The loan became due on 01/01/1970 with a repayment cost of 8361.869312 DAI. 0x0dd7d did not repay, so 0x7e646 was able to seize the loan's collateral",
+          "0x7e646 held the loan for 53 minutes. The loan became due on 01/01/1970 with a repayment cost of 8245.73952 DAI. 0x0dd7d did not repay, so 0x7e646 was able to seize the loan's collateral",
         ),
         undefined,
       );

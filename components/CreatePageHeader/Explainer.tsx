@@ -1,13 +1,8 @@
 import { Explainer as ExplainerWrapper } from 'components/Explainer';
 import { ethers } from 'ethers';
-import {
-  INTEREST_RATE_PERCENT_DECIMALS,
-  SCALAR,
-  SECONDS_IN_A_YEAR,
-} from 'lib/constants';
+import { formatUnits } from 'ethers/lib/utils';
 import { jsonRpcERC20Contract } from 'lib/contracts';
-import { daysToSecondsBigNum } from 'lib/duration';
-import { formattedAnnualRate } from 'lib/interest';
+import { estimatedRepayment } from 'lib/loans/utils';
 import React, { useEffect, useState } from 'react';
 import { FieldError, UseFormReturn } from 'react-hook-form';
 import type { CreateFormData } from './CreateFormData';
@@ -140,20 +135,7 @@ function MinimumDuration({ context }: InnerProps) {
 
 function MaximumInterestRate({ context }: InnerProps) {
   if (context.interestRate) {
-    const interestRatePerSecond = ethers.BigNumber.from(
-      Math.floor(
-        parseFloat(context.interestRate) * 10 ** INTEREST_RATE_PERCENT_DECIMALS,
-      ),
-    ).div(SECONDS_IN_A_YEAR);
-    return (
-      <div>
-        Effective rate: <b>{formattedAnnualRate(interestRatePerSecond)}% APR</b>
-        <br />
-        The contract stores and calculates interest on a per-second basis
-        instead of per-year, so actual APR differs slightly from what you input.
-        <EstimatedRepayment context={context} />
-      </div>
-    );
+    return <EstimatedRepayment context={context} />;
   }
   return (
     <div>
@@ -175,32 +157,28 @@ function EstimatedRepayment({
   }, [denomination, setDecimals]);
 
   if (interestRate && loanAmount && duration && denomination && decimals) {
-    const interestRatePerSecond = ethers.BigNumber.from(
-      Math.floor(
-        parseFloat(interestRate) * 10 ** INTEREST_RATE_PERCENT_DECIMALS,
-      ),
-    ).div(SECONDS_IN_A_YEAR);
-    const durationSeconds = daysToSecondsBigNum(parseFloat(duration));
     const parsedLoanAmount = ethers.utils.parseUnits(
       loanAmount.toString(),
       decimals,
     );
-    const interestOverTerm = interestRatePerSecond
-      .mul(durationSeconds)
-      .mul(parsedLoanAmount)
-      .div(SCALAR);
-    const estimatedRepayment = ethers.utils.formatUnits(
-      interestOverTerm.add(parsedLoanAmount),
-      decimals,
+    const durationDaysBigNum = ethers.BigNumber.from(parseFloat(duration));
+    // multiply by 10, min interest = 0.1% = 1 in the contract
+    // 10 = 10 ** INTEREST_RATE_DECIMALS - 2
+    const interest = ethers.BigNumber.from(parseFloat(interestRate) * 10);
+    const repayment = estimatedRepayment(
+      interest,
+      durationDaysBigNum,
+      parsedLoanAmount,
     );
+    const humanRepayment = formatUnits(repayment.toString(), decimals);
     return (
-      <>
+      <div>
         <br />
         The estimated repayment at maturity will be{' '}
         <b>
-          {estimatedRepayment} {denomination.symbol}.
+          {humanRepayment} {denomination.symbol}.
         </b>
-      </>
+      </div>
     );
   }
 

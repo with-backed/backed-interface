@@ -1,13 +1,9 @@
 import { Explainer as ExplainerWrapper } from 'components/Explainer';
 import { LoanFormData } from 'components/LoanForm/LoanFormData';
 import { ethers } from 'ethers';
-import {
-  INTEREST_RATE_PERCENT_DECIMALS,
-  SCALAR,
-  SECONDS_IN_A_YEAR,
-} from 'lib/constants';
-import { daysToSecondsBigNum, secondsBigNumToDays } from 'lib/duration';
-import { formattedAnnualRate } from 'lib/interest';
+import { formatUnits } from 'ethers/lib/utils';
+import { secondsBigNumToDays } from 'lib/duration';
+import { estimatedRepayment } from 'lib/loans/utils';
 import React, { useCallback } from 'react';
 import { FieldError, UseFormReturn } from 'react-hook-form';
 import { Loan } from 'types/Loan';
@@ -120,38 +116,32 @@ function BetterInterestRate({
   context: { duration, interestRate, loanAmount },
   loan,
 }: InnerProps) {
-  const interestRatePerSecond = interestRate
-    ? ethers.BigNumber.from(
-        Math.floor(
-          parseFloat(interestRate) * 10 ** INTEREST_RATE_PERCENT_DECIMALS,
-        ),
-      ).div(SECONDS_IN_A_YEAR)
+  const interestRatePerYear = interestRate
+    ? ethers.BigNumber.from(Math.floor(parseFloat(interestRate) * 10))
     : loan.perAnumInterestRate;
-  const durationSeconds = duration
-    ? daysToSecondsBigNum(parseFloat(duration))
+  const durationDaysBigNum = duration
+    ? ethers.BigNumber.from(parseFloat(duration))
     : loan.durationSeconds;
   const parsedLoanAmount = loanAmount
     ? ethers.utils.parseUnits(loanAmount.toString(), loan.loanAssetDecimals)
     : loan.loanAmount;
-  const interestOverTerm = interestRatePerSecond
-    .mul(durationSeconds)
-    .mul(parsedLoanAmount)
-    .div(SCALAR);
-  const estimatedRepayment = ethers.utils.formatUnits(
-    interestOverTerm.add(parsedLoanAmount),
+
+  const repayment = estimatedRepayment(
+    interestRatePerYear,
+    durationDaysBigNum,
+    parsedLoanAmount,
+  );
+
+  const humanRepayment = formatUnits(
+    repayment.toString(),
     loan.loanAssetDecimals,
   );
 
   return (
     <div>
-      Effective rate: <b>{formattedAnnualRate(interestRatePerSecond)}% APR</b>
-      <br />
-      The contract stores and calculates interest on a per-second basis instead
-      of per-year, so actual APR differs slightly from what you input.
-      <br />
       The estimated repayment at maturity will be{' '}
       <b>
-        {estimatedRepayment} {loan.loanAssetSymbol}.
+        {humanRepayment} {loan.loanAssetSymbol}.
       </b>
     </div>
   );

@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { SCALAR } from 'lib/constants';
+import { SCALAR, SECONDS_IN_A_YEAR } from 'lib/constants';
 import { Loan } from 'types/Loan';
 import {
   Loan as SubgraphLoan,
@@ -65,7 +65,74 @@ export function getInterestOwed(
 ): ethers.BigNumber {
   return loanAmount
     .mul(now.sub(lastAccumulatedTimestamp))
-    .mul(perAnumInterestRate)
-    .div(SCALAR)
+    .mul(
+      perAnumInterestRate
+        .mul(ethers.BigNumber.from(10).pow(18))
+        .div(SECONDS_IN_A_YEAR),
+    )
+    .div(ethers.BigNumber.from(10).pow(21))
     .add(accumulatedInterest);
+}
+
+// Less exact but good enough and more friendly
+// E.g. 10% on 10 DAI for 1 year will be 1 DAI rather than
+// 0.9999999999979632 DAI
+export function interestOverTerm(
+  interestRate: ethers.BigNumber, // scaled: 0.1% = 1
+  durationDays: ethers.BigNumber,
+  loanAmount: ethers.BigNumber,
+): ethers.BigNumber {
+  return interestRate
+    .mul(loanAmount)
+    .mul(
+      durationDays
+        .mul(1000) // prevent dividing to 0
+        .div(365),
+    )
+    .div(1000) // removing duration scaling
+    .div(1000); // remove interest scaling
+}
+
+export function estimatedRepayment(
+  interestRate: ethers.BigNumber, // scaled: 0.1% = 1
+  durationDays: ethers.BigNumber,
+  loanAmount: ethers.BigNumber,
+): ethers.BigNumber {
+  const interest = interestOverTerm(interestRate, durationDays, loanAmount);
+
+  return interest.add(loanAmount);
+}
+
+export function interestOverTermExact(
+  interestRate: ethers.BigNumber,
+  durationSeconds: ethers.BigNumber,
+  loanAmount: ethers.BigNumber,
+): ethers.BigNumber {
+  return loanAmount
+    .mul(durationSeconds)
+    .mul(
+      interestRate
+        .mul(ethers.BigNumber.from(10).pow(18))
+        .div(SECONDS_IN_A_YEAR),
+    )
+    .div(ethers.BigNumber.from(10).pow(18))
+    .div(SCALAR);
+}
+
+// this function matches exactly the computation
+// in the contract, however in most cases we will
+// likely just want
+// interest = amount * rate / (durationDays / 365)
+export function estimatedRepaymentExact(
+  interestRate: ethers.BigNumber,
+  durationSeconds: ethers.BigNumber,
+  loanAmount: ethers.BigNumber,
+): ethers.BigNumber {
+  const interest = interestOverTermExact(
+    interestRate,
+    durationSeconds,
+    loanAmount,
+  );
+
+  return interest.add(loanAmount);
 }

@@ -3,10 +3,7 @@ import { web3LoanFacilitator } from 'lib/contracts';
 import { daysToSecondsBigNum } from 'lib/duration';
 import { Loan } from 'types/Loan';
 import { useCallback, useState } from 'react';
-import {
-  INTEREST_RATE_PERCENT_DECIMALS,
-  SECONDS_IN_A_YEAR,
-} from 'lib/constants';
+import { INTEREST_RATE_PERCENT_DECIMALS } from 'lib/constants';
 import { useAccount, useSigner } from 'wagmi';
 
 // Annoyingly, the form data gets automatically parsed into numbers, so we can't use the LoanFormData type
@@ -27,13 +24,13 @@ export function useLoanUnderwriter(
         throw new Error('Cannot underwrite a loan without a connected account');
       }
       const loanFacilitator = web3LoanFacilitator(signer!);
-      const interestRatePerSecond = ethers.BigNumber.from(
-        Math.floor(interestRate * 10 ** INTEREST_RATE_PERCENT_DECIMALS),
-      ).div(SECONDS_IN_A_YEAR);
+      const annualInterestRate = ethers.BigNumber.from(
+        Math.floor(interestRate * 10 ** (INTEREST_RATE_PERCENT_DECIMALS - 2)),
+      );
 
       const t = await loanFacilitator.lend(
         id,
-        interestRatePerSecond,
+        annualInterestRate,
         ethers.utils.parseUnits(loanAmount.toString(), loanAssetDecimals),
         daysToSecondsBigNum(duration),
         account,
