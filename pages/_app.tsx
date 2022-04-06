@@ -10,7 +10,6 @@ import {
   lightTheme,
 } from '@rainbow-me/rainbowkit';
 import { AppProps } from 'next/app';
-import { PawnShopHeader } from 'components/PawnShopHeader';
 import { AppWrapper } from 'components/layouts/AppWrapper';
 import { providers } from 'ethers';
 import { TimestampProvider } from 'hooks/useTimestamp/useTimestamp';
@@ -45,7 +44,6 @@ export default function App({ Component, pageProps }: AppProps) {
           provider={jsonRpcProvider}>
           <TimestampProvider>
             <AppWrapper>
-              <PawnShopHeader />
               <Component {...pageProps} />
             </AppWrapper>
           </TimestampProvider>

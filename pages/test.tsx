@@ -6,23 +6,27 @@ import { ConnectWallet } from 'components/ConnectWallet';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { TransactionButton } from 'components/Button';
 import { useAccount, useSigner } from 'wagmi';
+import { PawnShopHeader } from 'components/PawnShopHeader';
 
 export default function Test() {
   const [{ data }] = useAccount();
   const account = data?.address;
   return (
-    <TwelveColumn>
-      <Fieldset
-        style={{ gridColumn: 'span 6', marginTop: 'var(--gap)' }}
-        legend="mint an NFT">
-        {account == null ? <ConnectWallet /> : <MintPunk />}
-      </Fieldset>
-      <Fieldset
-        style={{ gridColumn: 'span 6', marginTop: 'var(--gap)' }}
-        legend="mint DAI">
-        {account == null ? <ConnectWallet /> : <MintDAI />}
-      </Fieldset>
-    </TwelveColumn>
+    <>
+      <PawnShopHeader />
+      <TwelveColumn>
+        <Fieldset
+          style={{ gridColumn: 'span 6', marginTop: 'var(--gap)' }}
+          legend="mint an NFT">
+          {account == null ? <ConnectWallet /> : <MintPunk />}
+        </Fieldset>
+        <Fieldset
+          style={{ gridColumn: 'span 6', marginTop: 'var(--gap)' }}
+          legend="mint DAI">
+          {account == null ? <ConnectWallet /> : <MintDAI />}
+        </Fieldset>
+      </TwelveColumn>
+    </>
   );
 }
 

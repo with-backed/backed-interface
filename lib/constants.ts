@@ -8,3 +8,5 @@ export const MIN_RATE = 1 / 10 ** (INTEREST_RATE_PERCENT_DECIMALS - 2);
 export const SCALAR = ethers.BigNumber.from(10).pow(
   INTEREST_RATE_PERCENT_DECIMALS,
 );
+
+export const DISCORD_URL = 'https://discord.gg/ZCxGuE6Ytk';

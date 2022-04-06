@@ -30,11 +30,11 @@
   composes: link;
 }
 
-.link > svg {
+.link {
   height: 70px;
 }
 
-.flipped-link > svg {
+.flipped-link {
   transform: rotateX(180deg);
 }
 

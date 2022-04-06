@@ -17,6 +17,7 @@ import { parseSerializedResponse } from 'lib/parseSerializedResponse';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { PawnShopHeader } from 'components/PawnShopHeader';
 
 export type LoanPageProps = {
   loanInfoJson: string;
@@ -145,6 +146,7 @@ function LoansInner({
 
   return (
     <>
+      <PawnShopHeader />
       <LoanHeader
         loan={loan}
         collateralMedia={collateralMedia}
