@@ -1,7 +1,5 @@
-import { ethers } from 'ethers';
 import { NFTResponseData } from 'pages/api/nftInfo/[uri]';
 
-const SVG_PREFIX = 'data:image/svg+xml;base64,';
 const JSON_PREFIX = 'data:application/json;base64,';
 
 export async function getNFTInfoForAttachment(

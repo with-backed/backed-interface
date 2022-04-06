@@ -18,7 +18,7 @@ jest.mock('lib/events/consumers/discord/attachments', () => ({
   collateralToDiscordMessageEmbed: jest.fn(),
 }));
 
-jest.mock('lib/events/consumers/getNFTInfoForAttachment', () => ({
+jest.mock('lib/events/consumers/getNftInfoForAttachment', () => ({
   getNFTInfoForAttachment: jest.fn(),
 }));
 
