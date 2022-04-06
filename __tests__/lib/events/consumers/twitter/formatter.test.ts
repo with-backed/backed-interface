@@ -14,7 +14,7 @@ jest.mock('lib/events/consumers/twitter/api', () => ({
   tweet: jest.fn(),
 }));
 
-jest.mock('lib/events/consumers/getNFTInfoForAttachment', () => ({
+jest.mock('lib/events/consumers/getNftInfoForAttachment', () => ({
   getNFTInfoForAttachment: jest.fn(),
 }));
 
