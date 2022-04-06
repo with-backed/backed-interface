@@ -19,6 +19,7 @@ import {
 import { ethers } from 'ethers';
 import { daysToSecondsBigNum } from 'lib/duration';
 import { CombinedError } from 'urql';
+import { INTEREST_RATE_PERCENT_DECIMALS } from 'lib/constants';
 
 // TODO(Wilson): this is a temp fix just for this query. We should generalize this method to
 // take an arguments and return a cursor to return paginated results
@@ -81,12 +82,12 @@ export async function searchLoans(
       loanAmountMax.nominal === 0
         ? ethers.constants.MaxInt256.toString()
         : formatNumberForGraph(loanAmountMax),
-    perAnumInterestRateMin: loanInterestMin,
+    perAnumInterestRateMin: formatInterestForGraph(loanInterestMin),
     perAnumInterestRateMax:
       loanInterestMax === 0
         ? // 2^16 - 1 is max possible
           ethers.BigNumber.from(2).pow(16).sub(1).toString()
-        : loanInterestMax,
+        : formatInterestForGraph(loanInterestMax),
     durationSecondsMin: daysToSecondsBigNum(loanDurationMin).toString(),
     durationSecondsMax:
       loanDurationMax === 0
@@ -123,6 +124,12 @@ export async function searchLoans(
 const formatNumberForGraph = (loanAmount: LoanAmountInputType): string => {
   return ethers.utils
     .parseUnits(loanAmount.nominal.toString(), loanAmount.loanAssetDecimal)
+    .toString();
+};
+
+const formatInterestForGraph = (interest: number): string => {
+  return ethers.utils
+    .parseUnits(interest.toString(), INTEREST_RATE_PERCENT_DECIMALS - 2)
     .toString();
 };
 
