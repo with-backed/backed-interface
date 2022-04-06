@@ -18,6 +18,10 @@ export function secondsToDays(seconds: number) {
   return seconds / SECONDS_IN_A_DAY;
 }
 
+export function secondsBigNumToDaysBigNum(seconds: ethers.BigNumber) {
+  return seconds.div(SECONDS_IN_A_DAY);
+}
+
 export function secondsBigNumToDays(seconds: ethers.BigNumber) {
   return seconds.toNumber() / SECONDS_IN_A_DAY;
 }

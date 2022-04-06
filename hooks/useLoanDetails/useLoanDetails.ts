@@ -1,10 +1,10 @@
 import { ethers } from 'ethers';
 import { useTimestamp } from 'hooks/useTimestamp';
-import { SCALAR } from 'lib/constants';
-import { humanizedDuration } from 'lib/duration';
+import { humanizedDuration, secondsBigNumToDays } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
 import { Loan } from 'types/Loan';
 import { useMemo } from 'react';
+import { interestOverTerm } from 'lib/loans/utils';
 
 type LoanStatusParams = {
   timestamp: number | null;
@@ -103,12 +103,12 @@ export function useLoanDetails(loan: Loan) {
     ].join(' ');
   }, [loanAmount, interestOwed, loanAssetDecimals, loanAssetSymbol]);
   const formattedEstimatedPaybackAtMaturity = useMemo(() => {
-    const interestOverTerm = perAnumInterestRate
-      .mul(durationSeconds)
-      .mul(loanAmount)
-      .div(SCALAR);
-
-    const estimate = accumulatedInterest.add(loanAmount).add(interestOverTerm);
+    const totalInterest = interestOverTerm(
+      perAnumInterestRate,
+      ethers.BigNumber.from(secondsBigNumToDays(durationSeconds)),
+      loanAmount,
+    );
+    const estimate = accumulatedInterest.add(loanAmount).add(totalInterest);
 
     return [
       truncate(ethers.utils.formatUnits(estimate, loanAssetDecimals)),

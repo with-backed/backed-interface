@@ -2,8 +2,9 @@ import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import { ethers } from 'ethers';
 import { addressToENS } from 'lib/account';
-import { SCALAR } from 'lib/constants';
+import { secondsBigNumToDaysBigNum } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
+import { interestOverTerm } from 'lib/loans/utils';
 import { Loan as ParsedLoan } from 'types/Loan';
 
 dayjs.extend(duration);
@@ -23,13 +24,14 @@ export const getEstimatedRepaymentAndMaturity = (
   loan: ParsedLoan,
   duration: ethers.BigNumber = loan.durationSeconds,
 ): [string, string] => {
-  const interestOverTerm = loan.perAnumInterestRate
-    .mul(duration)
-    .mul(loan.loanAmount)
-    .div(SCALAR);
+  const interest = interestOverTerm(
+    loan.perAnumInterestRate,
+    secondsBigNumToDaysBigNum(duration),
+    loan.loanAmount,
+  );
 
   const estimatedRepayment = ethers.utils.formatUnits(
-    loan.accumulatedInterest.add(interestOverTerm).add(loan.loanAmount),
+    loan.accumulatedInterest.add(interest).add(loan.loanAmount),
     loan.loanAssetDecimals,
   );
 
