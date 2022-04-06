@@ -120,7 +120,7 @@ function BetterInterestRate({
     ? ethers.BigNumber.from(Math.floor(parseFloat(interestRate) * 10))
     : loan.perAnumInterestRate;
   const durationDaysBigNum = duration
-    ? ethers.BigNumber.from(parseFloat(duration))
+    ? ethers.BigNumber.from(Math.floor(parseFloat(duration)))
     : loan.durationSeconds;
   const parsedLoanAmount = loanAmount
     ? ethers.utils.parseUnits(loanAmount.toString(), loan.loanAssetDecimals)
