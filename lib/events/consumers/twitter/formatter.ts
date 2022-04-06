@@ -74,7 +74,7 @@ async function generateContentStringForEvent(
     case 'CreateEvent':
       const createEvent = event as CreateEvent;
 
-      return `${boldCharactersForTwitter('New Loan Created')}
+      return `New Loan Created
 ${await ensOrAddr(createEvent.creator)} has created a loan with collateral: ${
         createEvent.loan.collateralName
       } #${createEvent.loan.collateralTokenId}
@@ -90,7 +90,7 @@ ${formatTermsForBot(
     case 'LendEvent':
       const lendEvent = event as LendEvent;
 
-      return `${boldCharactersForTwitter('Loan Lent To')}
+      return `Loan Lent To
 ${truncatedLoanName(
   event.loan.id,
   event.loan.collateralName,
@@ -118,7 +118,7 @@ ${formatTermsForBot(
         buyoutEvent.loan.loanAssetDecimal,
       );
 
-      return `${boldCharactersForTwitter('Loan Bought Out')}
+      return `Loan Bought Out
 ${truncatedLoanName(
   event.loan.id,
   event.loan.collateralName,
@@ -152,7 +152,7 @@ ${formatTermsForBot(
         repaymentEvent.loan.loanAssetDecimal,
       );
 
-      return `${boldCharactersForTwitter('Loan Repaid')}
+      return `Loan Repaid
 ${truncatedLoanName(
   event.loan.id,
   event.loan.collateralName,
@@ -186,7 +186,7 @@ ${formatTermsForBot(
         parseSubgraphLoan(collateralSeizureEvent.loan),
       );
 
-      return `${boldCharactersForTwitter('Loan Collateral Seized')}
+      return `Loan Collateral Seized
 ${truncatedLoanName(
   event.loan.id,
   event.loan.collateralName,
