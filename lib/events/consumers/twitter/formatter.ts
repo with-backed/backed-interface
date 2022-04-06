@@ -94,6 +94,7 @@ ${formatTermsForBot(
 ${truncatedLoanName(
   event.loan.id,
   event.loan.collateralName,
+  event.loan.collateralTokenId,
 )} has been lent to by ${await ensOrAddr(lendEvent.lender)}
 
 Their loans terms are: 
@@ -121,6 +122,7 @@ ${formatTermsForBot(
 ${truncatedLoanName(
   event.loan.id,
   event.loan.collateralName,
+  event.loan.collateralTokenId,
 )} has been bought out by ${newLender}
 
 The old terms set by ${oldLender} were:
@@ -154,6 +156,7 @@ ${formatTermsForBot(
 ${truncatedLoanName(
   event.loan.id,
   event.loan.collateralName,
+  event.loan.collateralTokenId,
 )} has been repaid by ${await ensOrAddr(repaymentEvent.repayer)}
 ${await ensOrAddr(
   repaymentEvent.lendTicketHolder,
@@ -187,6 +190,7 @@ ${formatTermsForBot(
 ${truncatedLoanName(
   event.loan.id,
   event.loan.collateralName,
+  event.loan.collateralTokenId,
 )} has had its collateral seized
 ${lender} held the loan for ${duration}. The loan became due on ${maturity} with a repayment cost of ${repayment} ${
         collateralSeizureEvent.loan.loanAssetSymbol
@@ -196,10 +200,16 @@ ${lender} held the loan for ${duration}. The loan became due on ${maturity} with
   }
 }
 
-const truncatedLoanName = (loanId: string, collateralName: string): string =>
+const truncatedLoanName = (
+  loanId: string,
+  collateralName: string,
+  tokenId: string,
+): string =>
   collateralName.length > 15
-    ? `Loan #${loanId}: ${collateralName.substring(0, 14)}...`
-    : `Loan #${loanId}: ${collateralName}`;
+    ? `Loan #${loanId}
+${collateralName.substring(0, 14)}... #${tokenId}`
+    : `Loan #${loanId} 
+${collateralName} #${tokenId}`;
 
 function formatTermsForBot(
   loanAmount: number,

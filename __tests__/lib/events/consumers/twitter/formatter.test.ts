@@ -7,10 +7,28 @@ import {
 } from 'lib/mockSubgraphEventsData';
 import { tweet } from 'lib/events/consumers/twitter/api';
 import { sendTweetForTriggerAndEntity } from 'lib/events/consumers/twitter/formatter';
+import { nftResponseDataToImageBuffer } from 'lib/events/consumers/twitter/attachments';
+import { getNFTInfoForAttachment } from 'lib/events/consumers/getNftInfoForAttachment';
 
 jest.mock('lib/events/consumers/twitter/api', () => ({
   tweet: jest.fn(),
 }));
+
+jest.mock('lib/events/consumers/getNFTInfoForAttachment', () => ({
+  getNFTInfoForAttachment: jest.fn(),
+}));
+
+jest.mock('lib/events/consumers/twitter/attachments', () => ({
+  nftResponseDataToImageBuffer: jest.fn(),
+}));
+
+const mockImageBufferCall = nftResponseDataToImageBuffer as jest.MockedFunction<
+  typeof nftResponseDataToImageBuffer
+>;
+
+const mockNFTInfoCall = getNFTInfoForAttachment as jest.MockedFunction<
+  typeof getNFTInfoForAttachment
+>;
 
 const mockTweetCall = tweet as jest.MockedFunction<typeof tweet>;
 
@@ -18,6 +36,8 @@ describe('Formatting events for tweet updates', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockTweetCall.mockResolvedValue();
+    mockNFTInfoCall.mockResolvedValue(null);
+    mockImageBufferCall.mockResolvedValue(undefined);
   });
 
   describe('CreateEvent', () => {
@@ -40,19 +60,7 @@ describe('Formatting events for tweet updates', () => {
         undefined,
       );
       expect(mockTweetCall).toHaveBeenCalledWith(
-        expect.stringContaining('6.3072%'),
-        undefined,
-      );
-      expect(mockTweetCall).toHaveBeenCalledWith(
-        expect.stringContaining(
-          'Loan: https://rinkeby.withbacked.xyz/loans/65',
-        ),
-        undefined,
-      );
-      expect(mockTweetCall).toHaveBeenCalledWith(
-        expect.stringContaining(
-          'Event Tx: https://rinkeby.etherscan.io/tx/0x7685d19b85fb80c03ac0c117ea542b77a6c8ecebea56744b121183cfb614bce6',
-        ),
+        expect.stringContaining('2.0%'),
         undefined,
       );
     });
@@ -64,9 +72,11 @@ describe('Formatting events for tweet updates', () => {
 
       expect(mockTweetCall).toHaveBeenCalledTimes(1);
       expect(mockTweetCall).toHaveBeenCalledWith(
-        expect.stringContaining(
-          'Loan #65: monarchs has been lent to by 0x7e646',
-        ),
+        expect.stringContaining('Loan #65'),
+        undefined,
+      );
+      expect(mockTweetCall).toHaveBeenCalledWith(
+        expect.stringContaining('monarchs #147 has been lent to by 0x7e646'),
         undefined,
       );
       expect(mockTweetCall).toHaveBeenCalledWith(
@@ -78,19 +88,7 @@ describe('Formatting events for tweet updates', () => {
         undefined,
       );
       expect(mockTweetCall).toHaveBeenCalledWith(
-        expect.stringContaining('6.3072%'),
-        undefined,
-      );
-      expect(mockTweetCall).toHaveBeenCalledWith(
-        expect.stringContaining(
-          'Loan: https://rinkeby.withbacked.xyz/loans/65',
-        ),
-        undefined,
-      );
-      expect(mockTweetCall).toHaveBeenCalledWith(
-        expect.stringContaining(
-          'Event Tx: https://rinkeby.etherscan.io/tx/0x7685d19b85fb80c03ac0c117ea542b77a6c8ecebea56744b121183cfb614bce6',
-        ),
+        expect.stringContaining('2.0%'),
         undefined,
       );
     });
@@ -106,15 +104,11 @@ describe('Formatting events for tweet updates', () => {
 
       expect(mockTweetCall).toHaveBeenCalledTimes(1);
       expect(mockTweetCall).toHaveBeenCalledWith(
-        expect.stringContaining(
-          'Loan #65: monarchs has been bought out by 0x7e646',
-        ),
+        expect.stringContaining('Loan #65'),
         undefined,
       );
       expect(mockTweetCall).toHaveBeenCalledWith(
-        expect.stringContaining(
-          '0x10359 held the loan for 2 days and earned 0.00000000000001 DAI over that time',
-        ),
+        expect.stringContaining('monarchs #147 has been bought out by 0x7e646'),
         undefined,
       );
       expect(mockTweetCall).toHaveBeenCalledWith(
@@ -126,23 +120,11 @@ describe('Formatting events for tweet updates', () => {
         undefined,
       );
       expect(mockTweetCall).toHaveBeenCalledWith(
-        expect.stringContaining('6.3072%'),
+        expect.stringContaining('2.0%'),
         undefined,
       );
       expect(mockTweetCall).toHaveBeenCalledWith(
         expect.stringContaining('8193.0 DAI'),
-        undefined,
-      );
-      expect(mockTweetCall).toHaveBeenCalledWith(
-        expect.stringContaining(
-          'Loan: https://rinkeby.withbacked.xyz/loans/65',
-        ),
-        undefined,
-      );
-      expect(mockTweetCall).toHaveBeenCalledWith(
-        expect.stringContaining(
-          'Event Tx: https://rinkeby.etherscan.io/tx/0x7685d19b85fb80c03ac0c117ea542b77a6c8ecebea56744b121183cfb614bce6',
-        ),
         undefined,
       );
     });
@@ -157,9 +139,11 @@ describe('Formatting events for tweet updates', () => {
 
       expect(mockTweetCall).toHaveBeenCalledTimes(1);
       expect(mockTweetCall).toHaveBeenCalledWith(
-        expect.stringContaining(
-          'Loan #65: monarchs has been repaid by 0x0dd7d',
-        ),
+        expect.stringContaining('Loan #65'),
+        undefined,
+      );
+      expect(mockTweetCall).toHaveBeenCalledWith(
+        expect.stringContaining('monarchs #147 has been repaid by 0x0dd7d'),
         undefined,
       );
       expect(mockTweetCall).toHaveBeenCalledWith(
@@ -171,19 +155,7 @@ describe('Formatting events for tweet updates', () => {
         undefined,
       );
       expect(mockTweetCall).toHaveBeenCalledWith(
-        expect.stringContaining('6.3072%'),
-        undefined,
-      );
-      expect(mockTweetCall).toHaveBeenCalledWith(
-        expect.stringContaining(
-          'Loan: https://rinkeby.withbacked.xyz/loans/65',
-        ),
-        undefined,
-      );
-      expect(mockTweetCall).toHaveBeenCalledWith(
-        expect.stringContaining(
-          'Event Tx: https://rinkeby.etherscan.io/tx/0x7685d19b85fb80c03ac0c117ea542b77a6c8ecebea56744b121183cfb614bce6',
-        ),
+        expect.stringContaining('2.0%'),
         undefined,
       );
     });
@@ -198,26 +170,16 @@ describe('Formatting events for tweet updates', () => {
 
       expect(mockTweetCall).toHaveBeenCalledTimes(1);
       expect(mockTweetCall).toHaveBeenCalledWith(
-        expect.stringContaining(
-          'Loan #65: monarchs has had its collateral seized',
-        ),
+        expect.stringContaining('Loan #65'),
+        undefined,
+      );
+      expect(mockTweetCall).toHaveBeenCalledWith(
+        expect.stringContaining('monarchs #147 has had its collateral seized'),
         undefined,
       );
       expect(mockTweetCall).toHaveBeenCalledWith(
         expect.stringContaining(
-          "0x7e646 held the loan for 53 minutes. The loan became due on 01/01/1970 with a repayment cost of 8361.869312 DAI. 0x0dd7d did not repay, so 0x7e646 was able to seize the loan's collateral",
-        ),
-        undefined,
-      );
-      expect(mockTweetCall).toHaveBeenCalledWith(
-        expect.stringContaining(
-          'Loan: https://rinkeby.withbacked.xyz/loans/65',
-        ),
-        undefined,
-      );
-      expect(mockTweetCall).toHaveBeenCalledWith(
-        expect.stringContaining(
-          'Event Tx: https://rinkeby.etherscan.io/tx/0x7685d19b85fb80c03ac0c117ea542b77a6c8ecebea56744b121183cfb614bce6',
+          "0x7e646 held the loan for 53 minutes. The loan became due on 01/01/1970 with a repayment cost of 8245.73952 DAI. 0x0dd7d did not repay, so 0x7e646 was able to seize the loan's collateral",
         ),
         undefined,
       );
