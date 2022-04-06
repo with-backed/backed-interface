@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { useTimestamp } from 'hooks/useTimestamp';
-import { humanizedDuration, secondsBigNumToDays } from 'lib/duration';
+import { humanizedDuration, secondsBigNumToDaysBigNum } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
 import { Loan } from 'types/Loan';
 import { useMemo } from 'react';
@@ -105,7 +105,7 @@ export function useLoanDetails(loan: Loan) {
   const formattedEstimatedPaybackAtMaturity = useMemo(() => {
     const totalInterest = interestOverTerm(
       perAnumInterestRate,
-      ethers.BigNumber.from(secondsBigNumToDays(durationSeconds)),
+      ethers.BigNumber.from(secondsBigNumToDaysBigNum(durationSeconds)),
       loanAmount,
     );
     const estimate = accumulatedInterest.add(loanAmount).add(totalInterest);

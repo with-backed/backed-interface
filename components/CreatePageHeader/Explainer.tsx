@@ -161,7 +161,9 @@ function EstimatedRepayment({
       loanAmount.toString(),
       decimals,
     );
-    const durationDaysBigNum = ethers.BigNumber.from(parseFloat(duration));
+    const durationDaysBigNum = ethers.BigNumber.from(
+      Math.floor(parseFloat(duration)),
+    );
     // multiply by 10, min interest = 0.1% = 1 in the contract
     // 10 = 10 ** INTEREST_RATE_DECIMALS - 2
     const interest = ethers.BigNumber.from(parseFloat(interestRate) * 10);
