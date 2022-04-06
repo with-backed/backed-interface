@@ -124,6 +124,7 @@ ${formatTermsForBot(
   createEvent.loan.durationSeconds,
   createEvent.loan.loanAssetSymbol,
 )}`;
+      break;
     case 'LendEvent':
       const lendEvent = event as LendEvent;
 
@@ -236,10 +237,10 @@ ${lender} held the loan for ${duration}. The loan became due on ${maturity} with
   }
 
   message += `
-  
-Loan: ${loanLink}
-Event Tx: ${eventLink}
-  `;
+
+  Loan: ${loanLink}
+  Event Tx: ${eventLink}
+    `;
 
   return message;
 }
