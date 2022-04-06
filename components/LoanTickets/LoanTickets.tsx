@@ -25,7 +25,7 @@ function BorrowerColumn({ loan }: BorrowerColumnProps) {
 
   return (
     <div className={styles.column}>
-      <PawnTicketArt tokenId={loan.id} />
+      <PawnTicketArt tokenID={loan.id} />
       <OpenSeaAddressLink
         assetId={loan.id.toString()}
         contractAddress={BORROW_CONTRACT.address}>
@@ -71,7 +71,7 @@ function LenderColumn({ loan }: LenderColumnProps) {
 
   return (
     <div className={styles.column}>
-      <PawnLoanArt tokenId={loan.id} />
+      <PawnLoanArt tokenID={loan.id} />
       <OpenSeaAddressLink
         assetId={loan.id.toString()}
         contractAddress={LEND_CONTRACT.address}>
