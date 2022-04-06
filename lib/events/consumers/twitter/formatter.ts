@@ -91,9 +91,10 @@ ${formatTermsForBot(
       const lendEvent = event as LendEvent;
 
       return `${boldCharactersForTwitter('Loan Lent To')}
-Loan #${lendEvent.loan.id}: ${
-        lendEvent.loan.collateralName
-      } has been lent to by ${await ensOrAddr(lendEvent.lender)}
+${truncatedLoanName(
+  event.loan.id,
+  event.loan.collateralName,
+)} has been lent to by ${await ensOrAddr(lendEvent.lender)}
 
 Their loans terms are: 
 ${formatTermsForBot(
@@ -117,12 +118,10 @@ ${formatTermsForBot(
       );
 
       return `${boldCharactersForTwitter('Loan Bought Out')}
-Loan #${buyoutEvent.loan.id}: ${
-        buyoutEvent.loan.collateralName
-      } has been bought out by ${newLender}
-${oldLender} held the loan for ${duration} and earned ${formattedInterestEarned} ${
-        buyoutEvent.loan.loanAssetSymbol
-      } over that time
+${truncatedLoanName(
+  event.loan.id,
+  event.loan.collateralName,
+)} has been bought out by ${newLender}
 
 The old terms set by ${oldLender} were:
 ${formatTermsForBot(
@@ -152,9 +151,10 @@ ${formatTermsForBot(
       );
 
       return `${boldCharactersForTwitter('Loan Repaid')}
-Loan #${repaymentEvent.loan.id}: ${
-        repaymentEvent.loan.collateralName
-      } has been repaid by ${await ensOrAddr(repaymentEvent.repayer)}
+${truncatedLoanName(
+  event.loan.id,
+  event.loan.collateralName,
+)} has been repaid by ${await ensOrAddr(repaymentEvent.repayer)}
 ${await ensOrAddr(
   repaymentEvent.lendTicketHolder,
 )} held the loan for ${duration} and earned ${formattedInterestEarned} ${
@@ -184,9 +184,10 @@ ${formatTermsForBot(
       );
 
       return `${boldCharactersForTwitter('Loan Collateral Seized')}
-Loan #${collateralSeizureEvent.loan.id}: ${
-        collateralSeizureEvent.loan.collateralName
-      } has had its collateral seized
+${truncatedLoanName(
+  event.loan.id,
+  event.loan.collateralName,
+)} has had its collateral seized
 ${lender} held the loan for ${duration}. The loan became due on ${maturity} with a repayment cost of ${repayment} ${
         collateralSeizureEvent.loan.loanAssetSymbol
       }. ${borrower} did not repay, so ${lender} was able to seize the loan's collateral`;
@@ -194,6 +195,11 @@ ${lender} held the loan for ${duration}. The loan became due on ${maturity} with
       return '';
   }
 }
+
+const truncatedLoanName = (loanId: string, collateralName: string): string =>
+  collateralName.length > 15
+    ? `Loan #${loanId}: ${collateralName.substring(0, 14)}...`
+    : `Loan #${loanId}: ${collateralName}`;
 
 function formatTermsForBot(
   loanAmount: number,

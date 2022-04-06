@@ -4,17 +4,8 @@ import { ethers } from 'ethers';
 import { addressToENS } from 'lib/account';
 import { secondsBigNumToDaysBigNum } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
-import { interestOverTerm, parseSubgraphLoan } from 'lib/loans/utils';
-import {
-  CollateralSeizureEvent,
-  CreateEvent,
-  LendEvent,
-  BuyoutEvent,
-  RepaymentEvent,
-} from 'types/generated/graphql/nftLoans';
+import { interestOverTerm } from 'lib/loans/utils';
 import { Loan as ParsedLoan } from 'types/Loan';
-import { RawSubgraphEvent } from 'types/RawEvent';
-import { NotificationTriggerType } from './userNotifications/shared';
 
 dayjs.extend(duration);
 
