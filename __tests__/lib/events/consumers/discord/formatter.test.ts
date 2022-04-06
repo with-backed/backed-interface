@@ -7,7 +7,7 @@ import {
   subgraphLendEvent,
   subgraphRepaymentEvent,
 } from 'lib/mockSubgraphEventsData';
-import { collateralToDiscordMessageEmbed } from 'lib/events/consumers/discord/imageAttachmentHelper';
+import { collateralToDiscordMessageEmbed } from 'lib/events/consumers/discord/attachments';
 
 jest.mock('lib/events/consumers/discord/bot', () => ({
   sendBotMessage: jest.fn(),
