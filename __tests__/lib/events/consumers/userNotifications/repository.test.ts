@@ -11,7 +11,7 @@ import {
   NotificationMethod,
 } from 'lib/events/consumers/userNotifications/shared';
 
-const address = '0x7e6463782b87c57cffa6af66e7c2de64e97d1866';
+const address = '0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866';
 const event: NotificationTriggerType = 'All';
 const notificationMethod = NotificationMethod.EMAIL;
 const notificationDestination = 'adamgobes@gmail.com';
