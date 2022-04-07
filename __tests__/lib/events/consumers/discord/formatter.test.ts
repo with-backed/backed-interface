@@ -7,21 +7,30 @@ import {
   subgraphLendEvent,
   subgraphRepaymentEvent,
 } from 'lib/mockSubgraphEventsData';
-import { collateralToDiscordMessageEmbed } from 'lib/events/consumers/discord/imageAttachmentHelper';
+import { collateralToDiscordMessageEmbed } from 'lib/events/consumers/discord/attachments';
+import { getNFTInfoForAttachment } from 'lib/events/consumers/getNftInfoForAttachment';
 
 jest.mock('lib/events/consumers/discord/bot', () => ({
   sendBotMessage: jest.fn(),
 }));
 
-jest.mock('lib/events/consumers/discord/imageAttachmentHelper', () => ({
+jest.mock('lib/events/consumers/discord/attachments', () => ({
   collateralToDiscordMessageEmbed: jest.fn(),
+}));
+
+jest.mock('lib/events/consumers/getNftInfoForAttachment', () => ({
+  getNFTInfoForAttachment: jest.fn(),
 }));
 
 const mockSendBotUpdateCall = sendBotMessage as jest.MockedFunction<
   typeof sendBotMessage
 >;
 
-const mockImageAttachmentCall =
+const mockNFTInfoCall = getNFTInfoForAttachment as jest.MockedFunction<
+  typeof getNFTInfoForAttachment
+>;
+
+const mockMessageEmbedCall =
   collateralToDiscordMessageEmbed as jest.MockedFunction<
     typeof collateralToDiscordMessageEmbed
   >;
@@ -32,7 +41,8 @@ describe('Formatting events for discord bot messages', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockSendBotUpdateCall.mockResolvedValue();
-    mockImageAttachmentCall.mockResolvedValue(undefined);
+    mockMessageEmbedCall.mockResolvedValue(undefined);
+    mockNFTInfoCall.mockResolvedValue(null);
   });
 
   describe('CreateEvent', () => {

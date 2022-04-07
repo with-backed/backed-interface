@@ -1,52 +1,45 @@
+import { RawSubgraphEvent } from 'types/RawEvent';
+import { NotificationTriggerType } from 'lib/events/consumers/userNotifications/shared';
 import {
-  LendEvent,
+  CreateEvent,
   BuyoutEvent,
+  LendEvent,
   RepaymentEvent,
   CollateralSeizureEvent,
-  CreateEvent,
 } from 'types/generated/graphql/nftLoans';
-import { RawSubgraphEvent } from 'types/RawEvent';
+import { tweet } from './api';
+import { getNFTInfoForAttachment } from '../getNftInfoForAttachment';
+import { nftResponseDataToImageBuffer } from './attachments';
+import { ethers } from 'ethers';
+import { formattedAnnualRate } from 'lib/interest';
 import {
   ensOrAddr,
-  getEstimatedRepaymentAndMaturity,
   formattedDuration,
+  getEstimatedRepaymentAndMaturity,
 } from 'lib/events/consumers/formattingHelpers';
-import { NotificationTriggerType } from 'lib/events/consumers/userNotifications/shared';
-import { sendBotMessage } from 'lib/events/consumers/discord/bot';
-import { ethers } from 'ethers';
 import { parseSubgraphLoan } from 'lib/loans/utils';
-import { formattedAnnualRate } from 'lib/interest';
-import { collateralToDiscordMessageEmbed } from './attachments';
-import { getNFTInfoForAttachment } from 'lib/events/consumers/getNftInfoForAttachment';
 
-export async function sendBotUpdateForTriggerAndEntity(
+export async function sendTweetForTriggerAndEntity(
   trigger: NotificationTriggerType,
   event: RawSubgraphEvent,
-  now: number,
   mostRecentTermsEvent?: LendEvent,
-): Promise<void> {
-  // we do not want to send LendEvent bot messages and BuyoutEvent bot messages
+) {
+  // we do not want to tweet for LendEvent bot messages and BuyoutEvent bot messages
   if (trigger === 'LendEvent' && !!mostRecentTermsEvent) {
     return;
   }
 
-  const botMessageContent = `${await generateContentStringForEvent(
+  const tweetContent = await generateContentStringForEvent(
     trigger,
     event,
     mostRecentTermsEvent,
-  )}
-
-Loan: <https://rinkeby.withbacked.xyz/loans/${event.loan.id}>
-Event Tx: <https://rinkeby.etherscan.io/tx/${event.id}>
-`;
-
-  const messagedEmbed = await collateralToDiscordMessageEmbed(
-    await getNFTInfoForAttachment(event.loan.collateralTokenURI),
-    event.loan.collateralName,
-    event.loan.collateralTokenId,
   );
 
-  await sendBotMessage(botMessageContent, messagedEmbed);
+  const attachmentImageBuffer = await nftResponseDataToImageBuffer(
+    await getNFTInfoForAttachment(event.loan.collateralTokenURI),
+  );
+
+  await tweet(tweetContent, attachmentImageBuffer);
 }
 
 async function generateContentStringForEvent(
@@ -61,7 +54,7 @@ async function generateContentStringForEvent(
     case 'CreateEvent':
       const createEvent = event as CreateEvent;
 
-      return `**New Loan Created**
+      return `New Loan Created
 ${await ensOrAddr(createEvent.creator)} has created a loan with collateral: ${
         createEvent.loan.collateralName
       } #${createEvent.loan.collateralTokenId}
@@ -77,10 +70,12 @@ ${formatTermsForBot(
     case 'LendEvent':
       const lendEvent = event as LendEvent;
 
-      return `**Loan Lent To**
-Loan #${lendEvent.loan.id}: ${
-        lendEvent.loan.collateralName
-      } has been lent to by ${await ensOrAddr(lendEvent.lender)}
+      return `Loan Lent To
+${truncatedLoanName(
+  event.loan.id,
+  event.loan.collateralName,
+  event.loan.collateralTokenId,
+)} has been lent to by ${await ensOrAddr(lendEvent.lender)}
 
 Their loans terms are: 
 ${formatTermsForBot(
@@ -103,13 +98,12 @@ ${formatTermsForBot(
         buyoutEvent.loan.loanAssetDecimal,
       );
 
-      return `**Loan Bought Out**
-Loan #${buyoutEvent.loan.id}: ${
-        buyoutEvent.loan.collateralName
-      } has been bought out by ${newLender}
-${oldLender} held the loan for ${duration} and earned ${formattedInterestEarned} ${
-        buyoutEvent.loan.loanAssetSymbol
-      } over that time
+      return `Loan Bought Out
+${truncatedLoanName(
+  event.loan.id,
+  event.loan.collateralName,
+  event.loan.collateralTokenId,
+)} has been bought out by ${newLender}
 
 The old terms set by ${oldLender} were:
 ${formatTermsForBot(
@@ -138,10 +132,12 @@ ${formatTermsForBot(
         repaymentEvent.loan.loanAssetDecimal,
       );
 
-      return `**Loan Repaid**
-Loan #${repaymentEvent.loan.id}: ${
-        repaymentEvent.loan.collateralName
-      } has been repaid by ${await ensOrAddr(repaymentEvent.repayer)}
+      return `Loan Repaid
+${truncatedLoanName(
+  event.loan.id,
+  event.loan.collateralName,
+  event.loan.collateralTokenId,
+)} has been repaid by ${await ensOrAddr(repaymentEvent.repayer)}
 ${await ensOrAddr(
   repaymentEvent.lendTicketHolder,
 )} held the loan for ${duration} and earned ${formattedInterestEarned} ${
@@ -170,13 +166,30 @@ ${formatTermsForBot(
         parseSubgraphLoan(collateralSeizureEvent.loan),
       );
 
-      return `**Loan Collateral Seized**
-Loan #${collateralSeizureEvent.loan.id}: ${collateralSeizureEvent.loan.collateralName} has had its collateral seized
-${lender} held the loan for ${duration}. The loan became due on ${maturity} with a repayment cost of ${repayment} ${collateralSeizureEvent.loan.loanAssetSymbol}. ${borrower} did not repay, so ${lender} was able to seize the loan's collateral`;
+      return `Loan Collateral Seized
+${truncatedLoanName(
+  event.loan.id,
+  event.loan.collateralName,
+  event.loan.collateralTokenId,
+)} has had its collateral seized
+${lender} held the loan for ${duration}. The loan became due on ${maturity} with a repayment cost of ${repayment} ${
+        collateralSeizureEvent.loan.loanAssetSymbol
+      }. ${borrower} did not repay, so ${lender} was able to seize the loan's collateral`;
     default:
       return '';
   }
 }
+
+const truncatedLoanName = (
+  loanId: string,
+  collateralName: string,
+  tokenId: string,
+): string =>
+  collateralName.length > 15
+    ? `Loan #${loanId}
+${collateralName.substring(0, 14)}... #${tokenId}`
+    : `Loan #${loanId} 
+${collateralName} #${tokenId}`;
 
 function formatTermsForBot(
   loanAmount: number,
@@ -195,7 +208,7 @@ function formatTermsForBot(
     ethers.BigNumber.from(perAnumInterestRate),
   );
 
-  return `Loan amount: ${amount}
-Duration: ${formattedDuration(durationSeconds)}
-Interest: ${interest}%`;
+  return `${amount}
+${formattedDuration(durationSeconds)}
+${interest}%`;
 }
