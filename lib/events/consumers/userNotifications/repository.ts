@@ -1,4 +1,5 @@
 import { PrismaClient, NotificationRequest } from '@prisma/client';
+import { ethers } from 'ethers';
 import { NotificationTriggerType, NotificationMethod } from './shared';
 
 const prisma = new PrismaClient();
@@ -20,7 +21,7 @@ export async function createNotificationRequestForAddress(
 
     const createdNotificationRequest = await prisma.notificationRequest.create({
       data: {
-        ethAddress: address,
+        ethAddress: ethers.utils.getAddress(address),
         deliveryMethod: method,
         deliveryDestination: destination,
         event,
@@ -52,7 +53,7 @@ export async function deleteAllNotificationRequestsForAddress(
 ): Promise<boolean> {
   try {
     await prisma.notificationRequest.deleteMany({
-      where: { ethAddress: address },
+      where: { ethAddress: ethers.utils.getAddress(address) },
     });
     return true;
   } catch (e) {
@@ -67,7 +68,7 @@ export async function getNotificationRequestsForAddress(
 ): Promise<NotificationRequest[]> {
   try {
     return await prisma.notificationRequest.findMany({
-      where: { ethAddress: address, event },
+      where: { ethAddress: ethers.utils.getAddress(address), event },
     });
   } catch (e) {
     console.error(e);
