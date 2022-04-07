@@ -27,6 +27,7 @@ export default async function handler(
     ) as EventsSNSMessage;
 
     const now = Math.floor(new Date().getTime() / 1000);
+    console.log('running sendEmailsForTriggerAndEntity');
     await sendEmailsForTriggerAndEntity(
       eventName,
       event,
