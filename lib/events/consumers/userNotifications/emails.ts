@@ -30,7 +30,6 @@ export async function sendEmailsForTriggerAndEntity(
     now,
     mostRecentTermsEvent,
   );
-  console.log({ addressToEmailComponents });
   if (!addressToEmailComponents) {
     return;
   }
@@ -42,8 +41,6 @@ export async function sendEmailsForTriggerAndEntity(
     const emailRequests = notificationRequestsForEthAddresses.filter(
       (req) => req.deliveryMethod === NotificationMethod.EMAIL,
     );
-
-    console.log({ emailRequests });
 
     const allEmailSends = emailRequests.map((r) => {
       const emailComponentGenerator = addressToEmailComponents[ethAddress];
