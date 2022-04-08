@@ -38,7 +38,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = () => {
         <TwelveColumn>
           <div className={styles.pawn}>
             <ButtonLink kind={kind} href={CREATE_PATH}>
-              Pawn Your NFT
+              Create a Loan
             </ButtonLink>
           </div>
 
