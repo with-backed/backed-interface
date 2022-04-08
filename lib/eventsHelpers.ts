@@ -12,6 +12,7 @@ import {
   RepaymentEventByTransactionHashQuery,
 } from 'types/generated/graphql/nftLoans';
 import { RawEventNameType, RawSubgraphEvent } from 'types/RawEvent';
+import { captureException } from '@sentry/nextjs';
 
 export async function subgraphEventFromTxHash(
   eventName: RawEventNameType,
@@ -29,7 +30,7 @@ export async function subgraphEventFromTxHash(
           )
           .toPromise();
       if (createEventError) {
-        // TODO: bugsnag
+        captureException(createEventError);
       }
       return createEventData?.createEvent;
     case 'BuyoutEvent':
@@ -43,7 +44,7 @@ export async function subgraphEventFromTxHash(
           )
           .toPromise();
       if (buyoutEventError) {
-        // TODO: bugsnag
+        captureException(buyoutEventError);
       }
       return buyoutEventData?.buyoutEvent;
     case 'LendEvent':
@@ -54,7 +55,7 @@ export async function subgraphEventFromTxHash(
           })
           .toPromise();
       if (lendEventError) {
-        // TODO: bugsnag
+        captureException(lendEventError);
       }
       return lendEventData?.lendEvent;
     case 'RepaymentEvent':
@@ -66,7 +67,7 @@ export async function subgraphEventFromTxHash(
           )
           .toPromise();
       if (repayEventError) {
-        // TODO: bugsnag
+        captureException(repayEventError);
       }
       return repayEventData?.repaymentEvent;
     case 'CollateralSeizureEvent':
@@ -80,7 +81,7 @@ export async function subgraphEventFromTxHash(
         )
         .toPromise();
       if (collateralSeizureEventError) {
-        // TODO: bugsnag
+        captureException(collateralSeizureEventError);
       }
       return collateralSeizureEventData?.collateralSeizureEvent;
     default:

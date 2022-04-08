@@ -1,3 +1,4 @@
+import { captureEvent } from '@sentry/nextjs';
 import { nftBackedLoansClient } from 'lib/urql';
 import {
   LoanByIdDocument,
@@ -10,13 +11,12 @@ export async function subgraphLoanById(id: string) {
     .toPromise();
 
   if (error) {
-    // TODO: bugsnag
+    captureEvent(error);
   }
 
   if (data?.loan) {
     return data.loan;
   }
 
-  // TODO: bugsnag? is not finding a loan exceptional or just something that happens?
   return null;
 }

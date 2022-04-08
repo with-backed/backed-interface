@@ -1,3 +1,4 @@
+import { captureException } from '@sentry/nextjs';
 import { ethers } from 'ethers';
 import {
   Sale as NFTSale,
@@ -23,14 +24,13 @@ export async function queryMostRecentSaleForNFT(
     .toPromise();
 
   if (error) {
-    // TODO: bugsnag
+    captureException(error);
   }
 
   if (data?.sales && data.sales.length > 0) {
     return data.sales[0];
   }
 
-  // TODO: bugsnag? is not finding any sales exceptional or just something that happens?
   return null;
 }
 

@@ -29,6 +29,7 @@
     "@pinata/ipfs-gateway-tools": "1.1.6",
     "@prisma/client": "3.11.0",
     "@rainbow-me/rainbowkit": "0.0.2",
+    "@sentry/nextjs": "6.19.6",
     "@web3-react/core": "6.1.9",
     "@web3-react/injected-connector": "6.0.7",
     "@web3-react/walletconnect-connector": "6.2.13",

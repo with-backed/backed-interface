@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import IPFSGatewayTools from '@pinata/ipfs-gateway-tools/dist/node';
 import { fetchWithTimeout } from 'lib/fetchWithTimeout';
+import { captureException, withSentry } from '@sentry/nextjs';
 
 const ipfsGatewayTools = new IPFSGatewayTools();
 
@@ -13,7 +14,7 @@ export type NFTResponseData = {
   external_url: string;
 } | null;
 
-export default async function handler(
+async function handler(
   req: NextApiRequest,
   res: NextApiResponse<NFTResponseData>,
 ) {
@@ -33,10 +34,7 @@ export default async function handler(
       external_url,
     });
   } catch (e) {
-    // TODO: bugsnag
-    if ((e as any).name === 'AbortError') {
-      return res.status(408).json(null);
-    }
+    captureException(e);
     return res.status(404).json(null);
   }
 }
@@ -53,3 +51,5 @@ function convertIPFS(uri: string) {
   }
   return uri;
 }
+
+export default withSentry(handler);

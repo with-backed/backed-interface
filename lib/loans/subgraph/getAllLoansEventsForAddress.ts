@@ -30,6 +30,7 @@ import {
 } from 'lib/eventTransformers';
 import { ethers } from 'ethers';
 import { OperationResult } from 'urql';
+import { captureException } from '@sentry/nextjs';
 
 export async function getAllActiveLoansForAddress(
   address: string,
@@ -69,7 +70,7 @@ export async function getAllActiveLoansForAddress(
   return results
     .map((result) => {
       if (result.error) {
-        // TODO: bugsnag
+        captureException(result.error);
       }
       return result.data ? result.data.loans : [];
     })
@@ -127,8 +128,7 @@ export async function getAllEventsForAddress(
 
   queries.forEach((q) => {
     if (q.error) {
-      // TODO: bugsnag
-      console.error(q.error);
+      captureException(q.error);
     }
 
     if (q.data) {
