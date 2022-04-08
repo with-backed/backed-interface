@@ -45,6 +45,13 @@ export default function Home({ loans }: HomeProps) {
 
   return (
     <TwelveColumn>
+      <button
+        type="button"
+        onClick={() => {
+          throw new Error('Sentry Frontend Error');
+        }}>
+        Throw error
+      </button>
       <div className={searchStyles.wrapper}>
         <SearchHeader
           setSelectedSort={setSelectedSort}
