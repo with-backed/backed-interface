@@ -1,3 +1,4 @@
+import { captureEvent, captureException, captureMessage } from '@sentry/nextjs';
 import { EtherscanTransactionLink } from 'components/EtherscanLink';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { NFTMedia } from 'components/Media/NFTMedia';
@@ -37,10 +38,12 @@ export function ProfileActivity({
         {events.map((e) => {
           const loan = loanLookup[e.loanId.toString()];
           if (!loan) {
-            // TODO: bugsnag
             // Sometimes an event points to a loanId that we don't have.
             // Unsure whether this is due to query being limited, will have
             // to investigate.
+            captureMessage(
+              `${e.typename} ${e.id} refers to loan ID ${e.loanId}, which is not present in result set.`,
+            );
             return null;
           }
           return (

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import styles from './NFTCollateralPicker.module.css';
 import { NFTMedia } from 'components/Media/NFTMedia';
 import { Modal } from 'components/Modal';
@@ -62,7 +62,6 @@ export function NFTCollateralPicker({
   }
 
   if (error) {
-    // TODO: bugsnag
     return (
       <Modal dialog={dialog} heading="✨ 🔍 Select an NFT 🖼 ✨">
         <div className={styles.nftPicker}>

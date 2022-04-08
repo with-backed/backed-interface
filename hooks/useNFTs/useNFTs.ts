@@ -1,4 +1,6 @@
+import { captureException } from '@sentry/nextjs';
 import { ethers } from 'ethers';
+import { useEffect } from 'react';
 import {
   NftsQuery,
   NftsDocument,
@@ -22,6 +24,12 @@ export const useNFTs = (address: string) => {
     ...nft,
     identifier: ethers.BigNumber.from(nft.identifier),
   }));
+
+  useEffect(() => {
+    if (error) {
+      captureException(error);
+    }
+  }, [error]);
 
   return { fetching, error, nfts };
 };

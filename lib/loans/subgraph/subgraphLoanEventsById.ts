@@ -19,6 +19,7 @@ import {
   repaymentEventToUnified,
 } from 'lib/eventTransformers';
 import { ethers } from 'ethers';
+import { captureException } from '@sentry/nextjs';
 
 /**
  * @param id the id of the loan
@@ -32,7 +33,7 @@ export async function subgraphLoanHistoryById(id: string): Promise<Event[]> {
   const events: Event[] = [];
 
   if (error) {
-    // TODO: bugsnag
+    captureException(error);
   }
   if (!data?.loan) {
     return events;
