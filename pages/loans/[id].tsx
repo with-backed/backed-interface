@@ -14,6 +14,9 @@ import {
 } from 'lib/loans/collateralSaleInfo';
 import { SWRConfig, useSWRConfig } from 'swr';
 import { parseSerializedResponse } from 'lib/parseSerializedResponse';
+import { useGlobalMessages } from 'hooks/useGlobalMessages';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 export type LoanPageProps = {
   loanInfoJson: string;
@@ -115,6 +118,30 @@ function LoansInner({
       }
     });
   }, [loan.collateralTokenURI, loan.collateralTokenId]);
+
+  const { query } = useRouter();
+  const { addMessage } = useGlobalMessages();
+
+  useEffect(() => {
+    const { newLoan } = query;
+
+    async function promptSubscribe() {
+      addMessage({
+        kind: 'success',
+        message: (
+          <div>
+            <span>{`You've successfully created loan #${loan.id}! To get notifications on its activity, go to the`}</span>
+            <Link href={`/profile/${loan.borrower}`}> profile page</Link>{' '}
+            <span>{`of address ${loan.borrower.substring(0, 7)}...`}</span>
+          </div>
+        ),
+      });
+    }
+
+    if (newLoan) {
+      promptSubscribe();
+    }
+  }, [query.newLoan]);
 
   return (
     <>

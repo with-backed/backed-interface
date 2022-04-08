@@ -72,7 +72,7 @@ export function CreatePageForm({
     contract.once(filter, (id) => {
       onApproved();
       setWaitingForTx(false);
-      window.location.assign(`/loans/${id.toString()}`);
+      window.location.assign(`/loans/${id.toString()}?newLoan=true`);
     });
   }, [account, onApproved]);
 
