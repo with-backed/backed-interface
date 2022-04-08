@@ -14,6 +14,7 @@ shouldInitialize &&
       'https://7e7528c337a44263b8b757289e80e7fc@o1195560.ingest.sentry.io/6318688',
     // Adjust this value in production, or use tracesSampler for greater control
     tracesSampleRate: 0.2,
+    environment: process.env.NEXT_PUBLIC_CHAIN_ID,
     // ...
     // Note: if you want to override the automatic release value, do not set a
     // `release` value here - use the environment variable `SENTRY_RELEASE`, so
