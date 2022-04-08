@@ -125,7 +125,7 @@ function LoansInner({
   useEffect(() => {
     const { newLoan } = query;
 
-    async function promptSubscribe() {
+    if (newLoan) {
       addMessage({
         kind: 'success',
         message: (
@@ -136,10 +136,6 @@ function LoansInner({
           </div>
         ),
       });
-    }
-
-    if (newLoan) {
-      promptSubscribe();
     }
   }, [query.newLoan]);
 
