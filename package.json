@@ -24,6 +24,8 @@
     "prisma:studio": "dotenv -e .env.test npx prisma studio"
   },
   "dependencies": {
+    "@bugsnag/js": "7.16.2",
+    "@bugsnag/plugin-react": "7.16.2",
     "@ethersproject/providers": "5.6.1",
     "@hookform/resolvers": "2.8.8",
     "@pinata/ipfs-gateway-tools": "1.1.6",
