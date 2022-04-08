@@ -119,25 +119,29 @@ function LoansInner({
     });
   }, [loan.collateralTokenURI, loan.collateralTokenId]);
 
-  const { query } = useRouter();
+  const router = useRouter();
   const { addMessage } = useGlobalMessages();
 
   useEffect(() => {
-    const { newLoan } = query;
+    const { newLoan } = router.query;
 
     if (newLoan) {
       addMessage({
         kind: 'success',
         message: (
-          <div>
-            <span>{`You've successfully created loan #${loan.id}! To get notifications on its activity, go to the`}</span>
-            <Link href={`/profile/${loan.borrower}`}> profile page</Link>{' '}
-            <span>{`of address ${loan.borrower.substring(0, 7)}...`}</span>
-          </div>
+          <p>
+            {`You've successfully created loan #${loan.id}! To get notifications on its activity, go to the`}
+            <Link href={`/profile/${loan.borrower}`}> profile page</Link> of
+            address{' '}
+            <span title={loan.borrower}>
+              {loan.borrower.substring(0, 7)}...
+            </span>
+          </p>
         ),
       });
+      router.replace(`/loans/${loan.id}`, undefined, { shallow: true });
     }
-  }, [query.newLoan]);
+  }, [router.query.newLoan]);
 
   return (
     <>
