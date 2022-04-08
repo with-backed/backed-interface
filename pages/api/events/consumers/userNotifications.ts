@@ -4,11 +4,9 @@ import {
   confirmTopicSubscription,
   EventsSNSMessage,
 } from 'lib/events/sns/helpers';
+import { captureException, withSentry } from '@sentry/nextjs';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<string>,
-) {
+async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
   if (req.method != 'POST') {
     res.status(405).send('Only POST requests allowed');
     return;
@@ -36,8 +34,9 @@ export default async function handler(
 
     res.status(200).json(`notifications successfully sent`);
   } catch (e) {
-    // TODO: bugsnag
-    console.error(e);
+    captureException(e);
     res.status(404);
   }
 }
+
+export default withSentry(handler);

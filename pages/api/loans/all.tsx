@@ -5,8 +5,9 @@ import {
   Loan_OrderBy,
   OrderDirection,
 } from 'types/generated/graphql/nftLoans';
+import { captureException, withSentry } from '@sentry/nextjs';
 
-export default async function handler(
+async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Loan[] | null>,
 ) {
@@ -22,8 +23,9 @@ export default async function handler(
 
     res.status(200).json(loans);
   } catch (e) {
-    // TODO: bugsnag
-    console.error(e);
+    captureException(e);
     res.status(404);
   }
 }
+
+export default withSentry(handler);

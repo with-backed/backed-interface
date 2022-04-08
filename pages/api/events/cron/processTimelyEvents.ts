@@ -1,15 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getNotificationRequestsForAddress } from 'lib/events/consumers/userNotifications/repository';
 import { sendEmailsForTriggerAndEntity } from 'lib/events/consumers/userNotifications/emails';
-import { NotificationTriggerType } from 'lib/events/consumers/userNotifications/shared';
-import { Loan } from 'types/generated/graphql/nftLoans';
-import { NotificationRequest } from '@prisma/client';
 import { getLiquidatedLoansForTimestamp } from 'lib/events/timely/timely';
+import { captureException, withSentry } from '@sentry/nextjs';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<string>,
-) {
+async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
   if (req.method != 'POST') {
     res.status(405).send('Only POST requests allowed');
     return;
@@ -50,8 +44,9 @@ export default async function handler(
 
     res.status(200).json(`notifications successfully sent`);
   } catch (e) {
-    // TODO: bugsnag
-    console.error(e);
+    captureException(e);
     res.status(404);
   }
 }
+
+export default withSentry(handler);

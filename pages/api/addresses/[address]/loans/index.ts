@@ -1,8 +1,9 @@
 import { getAllActiveLoansForAddress } from 'lib/loans/subgraph/getAllLoansEventsForAddress';
 import { Loan as SubgraphLoan } from 'types/generated/graphql/nftLoans';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { captureException, withSentry } from '@sentry/nextjs';
 
-export default async function handler(
+async function handler(
   req: NextApiRequest,
   res: NextApiResponse<SubgraphLoan[]>,
 ) {
@@ -11,8 +12,9 @@ export default async function handler(
     const loans = await getAllActiveLoansForAddress(address as string);
     res.status(200).json(loans);
   } catch (e) {
-    // TODO: bugsnag
-    console.error(e);
+    captureException(e);
     res.status(404);
   }
 }
+
+export default withSentry(handler);

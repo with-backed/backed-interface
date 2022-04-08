@@ -7,10 +7,11 @@ import {
 import { NotificationRequest } from '@prisma/client';
 import { NotificationMethod } from 'lib/events/consumers/userNotifications/shared';
 import { APIErrorMessage } from 'pages/api/sharedTypes';
+import { captureException, withSentry } from '@sentry/nextjs';
 
 const MAX_ADDRESSES_PER_NOTIFICATION_DESTINATION = 5;
 
-export default async function handler(
+async function handler(
   req: NextApiRequest,
   res: NextApiResponse<NotificationRequest | APIErrorMessage>,
 ) {
@@ -76,7 +77,8 @@ export default async function handler(
       });
     }
   } catch (e) {
-    // TODO: bugsnag
-    console.error(e);
+    captureException(e);
   }
 }
+
+export default withSentry(handler);

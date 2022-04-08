@@ -1,5 +1,5 @@
+import { captureException, withSentry } from '@sentry/nextjs';
 import { ethers } from 'ethers';
-import { parseUnits } from 'ethers/lib/utils';
 import { getUnitPriceForCoin } from 'lib/coingecko';
 import { updateWatcher } from 'lib/events/consumers/discord/bot';
 import { DiscordMetric } from 'lib/events/consumers/discord/shared';
@@ -12,10 +12,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 const oneWeekAgoTimestamp = () =>
   Math.floor(new Date().getTime() / 1000 - 7 * 24 * 3600);
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse,
-) {
+async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method != 'POST') {
     res.status(405).send('Only POST requests allowed');
     return;
@@ -55,8 +52,9 @@ export default async function handler(
 
     res.status(200).json({ success: true });
   } catch (e) {
-    // TODO: bugsnag
-    console.error(e);
+    captureException(e);
     res.status(404);
   }
 }
+
+export default withSentry(handler);
