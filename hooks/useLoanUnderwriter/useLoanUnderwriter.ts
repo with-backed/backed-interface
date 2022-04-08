@@ -5,6 +5,7 @@ import { Loan } from 'types/Loan';
 import { useCallback, useState } from 'react';
 import { INTEREST_RATE_PERCENT_DECIMALS } from 'lib/constants';
 import { useAccount, useSigner } from 'wagmi';
+import Bugsnag from '@bugsnag/js';
 
 // Annoyingly, the form data gets automatically parsed into numbers, so we can't use the LoanFormData type
 type Values = { interestRate: number; duration: number; loanAmount: number };
@@ -44,7 +45,7 @@ export function useLoanUnderwriter(
           refresh();
         })
         .catch((err) => {
-          // TODO: bugsnag
+          Bugsnag.notify(err);
           setTransactionPending(false);
           console.error(err);
         });

@@ -1,3 +1,4 @@
+import Bugsnag from '@bugsnag/js';
 import { nftBackedLoansClient } from 'lib/urql';
 import {
   LoanByIdDocument,
@@ -10,13 +11,16 @@ export async function subgraphLoanById(id: string) {
     .toPromise();
 
   if (error) {
-    // TODO: bugsnag
+    Bugsnag.notify(error);
   }
 
   if (data?.loan) {
     return data.loan;
   }
 
-  // TODO: bugsnag? is not finding a loan exceptional or just something that happens?
+  // TODO: is not finding a loan exceptional or just something that happens?
+  Bugsnag.notify(
+    new Error(`Loan with id ${id} does not exist in the subgraph`),
+  );
   return null;
 }

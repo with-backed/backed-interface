@@ -20,6 +20,7 @@ import { ethers } from 'ethers';
 import { daysToSecondsBigNum } from 'lib/duration';
 import { CombinedError } from 'urql';
 import { INTEREST_RATE_PERCENT_DECIMALS } from 'lib/constants';
+import Bugsnag from '@bugsnag/js';
 
 // TODO(Wilson): this is a temp fix just for this query. We should generalize this method to
 // take an arguments and return a cursor to return paginated results
@@ -42,7 +43,7 @@ export default async function subgraphLoans(
     .query<AllLoansQuery>(AllLoansDocument, queryArgs)
     .toPromise();
   if (error) {
-    // TODO: bugsnag
+    Bugsnag.notify(error);
   }
   return data?.loans || [];
 }
@@ -116,7 +117,7 @@ export async function searchLoans(
   }
 
   if (error) {
-    // TODO: bugsnag
+    Bugsnag.notify(error);
   }
   return data?.loans || [];
 }
@@ -148,7 +149,7 @@ export async function getLoansExpiringWithin(
     })
     .toPromise();
   if (error) {
-    // TODO: bugsnag
+    Bugsnag.notify(error);
   }
   return data?.loans || [];
 }
@@ -161,7 +162,7 @@ export async function getMostRecentTermsForLoan(
     .toPromise();
 
   if (error) {
-    // TODO: bugsnag
+    Bugsnag.notify(error);
   }
 
   const lendEvents = (data?.loan?.lendEvents as LendEvent[]) || [];
@@ -182,7 +183,7 @@ export async function getCreatedLoansSince(timestamp: number) {
     .toPromise();
 
   if (error) {
-    // TODO: bugsnag
+    Bugsnag.notify(error);
   }
   return data?.loans || [];
 }
@@ -198,7 +199,7 @@ export async function getLentToLoansSince(timestamp: number) {
     })
     .toPromise();
   if (error) {
-    // TODO: bugsnag
+    Bugsnag.notify(error);
   }
   return data?.loans || [];
 }

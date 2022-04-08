@@ -1,3 +1,4 @@
+import Bugsnag from '@bugsnag/js';
 import { ethers } from 'ethers';
 import {
   Sale as NFTSale,
@@ -23,14 +24,19 @@ export async function queryMostRecentSaleForNFT(
     .toPromise();
 
   if (error) {
-    // TODO: bugsnag
+    Bugsnag.notify(error);
   }
 
   if (data?.sales && data.sales.length > 0) {
     return data.sales[0];
   }
 
-  // TODO: bugsnag? is not finding any sales exceptional or just something that happens?
+  // TODO: is not finding any sales exceptional or just something that happens?
+  Bugsnag.notify(
+    new Error(
+      `No sales information for NFT ${nftTokenId} from contract ${nftContractAddress}`,
+    ),
+  );
   return null;
 }
 

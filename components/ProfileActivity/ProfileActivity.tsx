@@ -1,3 +1,4 @@
+import Bugsnag from '@bugsnag/js';
 import { EtherscanTransactionLink } from 'components/EtherscanLink';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { NFTMedia } from 'components/Media/NFTMedia';
@@ -37,10 +38,12 @@ export function ProfileActivity({
         {events.map((e) => {
           const loan = loanLookup[e.loanId.toString()];
           if (!loan) {
-            // TODO: bugsnag
             // Sometimes an event points to a loanId that we don't have.
             // Unsure whether this is due to query being limited, will have
             // to investigate.
+            Bugsnag.notify(
+              new Error(`${e.typename} refers to unknown loanId ${e.loanId}`),
+            );
             return null;
           }
           return (
