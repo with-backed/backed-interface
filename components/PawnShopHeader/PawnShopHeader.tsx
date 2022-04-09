@@ -8,16 +8,21 @@ import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import { Banner } from 'components/Banner';
 import { useNetworkMonitor } from 'hooks/useNetworkMonitor';
-import BackedBunny from 'components/Icons/BackedBunny';
+import backedBunny from './backed-bunny.png';
+import borkedBunny from './borked-bunny.png';
 import pepe from './pepe-bunny-line.png';
 import { useKonami } from 'hooks/useKonami';
 import Image from 'next/image';
 
-type PawnShopHeaderProps = {};
+type PawnShopHeaderProps = {
+  isErrorPage?: boolean;
+};
 
 const CREATE_PATH = '/loans/create';
 
-export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = () => {
+export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = (
+  props,
+) => {
   const { messages, removeMessage } = useGlobalMessages();
   useNetworkMonitor();
   const { pathname } = useRouter();
@@ -46,10 +51,24 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = () => {
             <a
               title="Backed"
               className={codeActive ? styles['flipped-link'] : styles.link}>
-              {codeActive ? (
+              {props?.isErrorPage == true ? (
+                <Image
+                  src={borkedBunny}
+                  alt="Error Bunny"
+                  height={70}
+                  width={70}
+                  priority
+                />
+              ) : codeActive ? (
                 <Image src={pepe} alt="tfw" height={70} width={65} priority />
               ) : (
-                <BackedBunny />
+                <Image
+                  src={backedBunny}
+                  alt="Backed Bunny"
+                  height={70}
+                  width={70}
+                  priority
+                />
               )}
             </a>
           </Link>
@@ -62,7 +81,23 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = () => {
       <nav className={styles['mobile-header']}>
         <Link href="/" passHref>
           <a title="Backed">
-            <BackedBunny />
+            {props?.isErrorPage == true ? (
+              <Image
+                src={borkedBunny}
+                alt="Error Bunny"
+                height={70}
+                width={70}
+                priority
+              />
+            ) : (
+              <Image
+                src={backedBunny}
+                alt="Backed Bunny"
+                height={70}
+                width={70}
+                priority
+              />
+            )}
           </a>
         </Link>
         <div className={styles['sausage-links']}>

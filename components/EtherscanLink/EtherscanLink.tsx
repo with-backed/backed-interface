@@ -20,27 +20,29 @@ interface EtherscanAddressLinkProps
   extends AnchorHTMLAttributes<HTMLAnchorElement> {
   address: string;
 }
-export const EtherscanAddressLink: FunctionComponent<EtherscanAddressLinkProps> =
-  ({ address, children, ...props }) => {
-    return (
-      <EtherscanLink path={`/address/${address}`} {...props}>
-        {children}
-      </EtherscanLink>
-    );
-  };
+export const EtherscanAddressLink: FunctionComponent<
+  EtherscanAddressLinkProps
+> = ({ address, children, ...props }) => {
+  return (
+    <EtherscanLink path={`/address/${address}`} {...props}>
+      {children}
+    </EtherscanLink>
+  );
+};
 
 interface EtherscanTransactionLinkProps
   extends AnchorHTMLAttributes<HTMLAnchorElement> {
   transactionHash: string;
 }
-export const EtherscanTransactionLink: FunctionComponent<EtherscanTransactionLinkProps> =
-  ({ transactionHash, children, ...props }) => {
-    return (
-      <EtherscanLink path={`/tx/${transactionHash}`} {...props}>
-        {children}
-      </EtherscanLink>
-    );
-  };
+export const EtherscanTransactionLink: FunctionComponent<
+  EtherscanTransactionLinkProps
+> = ({ transactionHash, children, ...props }) => {
+  return (
+    <EtherscanLink path={`/tx/${transactionHash}`} {...props}>
+      {children}
+    </EtherscanLink>
+  );
+};
 
 interface EtherscanTokenLinkProps
   extends AnchorHTMLAttributes<HTMLAnchorElement> {
