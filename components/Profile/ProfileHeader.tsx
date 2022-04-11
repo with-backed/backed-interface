@@ -201,7 +201,7 @@ export function ProfileHeader({ address, loans }: ProfileHeaderProps) {
                   Subscribe to updates 🔔
                 </TextButton>
               </DialogDisclosure>
-              {connectedAddress && accountData?.address === address && (
+              {connectedAddress && connectedAddress === address && (
                 <TextButton
                   kind="clickable"
                   onClick={() => {
