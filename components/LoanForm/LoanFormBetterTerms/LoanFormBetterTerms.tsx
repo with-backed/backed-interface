@@ -215,14 +215,25 @@ export function hasTenPercentImprovement({
   const parsedLoanAmount = isNaN(parseFloat(loanAmount)) ? '0' : loanAmount;
 
   const durationImproved = daysToSecondsBigNum(parsedDuration).gte(
-    loan.durationSeconds.div(10).add(loan.durationSeconds),
+    ceilTenPercent(loan.durationSeconds).add(loan.durationSeconds),
   );
   const interestRateImproved = scaledRate.lte(
-    loan.perAnumInterestRate.sub(loan.perAnumInterestRate.div(10)),
+    loan.perAnumInterestRate.sub(ceilTenPercent(loan.perAnumInterestRate)),
   );
   const amountImproved = ethers.utils
     .parseUnits(parsedLoanAmount, loan.loanAssetDecimals)
-    .gte(loan.loanAmount.div(10).add(loan.loanAmount));
+    .gte(ceilTenPercent(loan.loanAmount).add(loan.loanAmount));
 
   return durationImproved || interestRateImproved || amountImproved;
+}
+
+export function ceilDiv(a: ethers.BigNumber, b: ethers.BigNumber) {
+  // from: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/7392d8373873bed5da9ac9a97811d709f8c5ffbb/contracts/utils/math/Math.sol#L41
+  const divided = a.div(b);
+  const adjustment = a.mod(b).eq(0) ? 0 : 1;
+  return divided.add(adjustment);
+}
+
+function ceilTenPercent(a: ethers.BigNumber) {
+  return ceilDiv(a, ethers.BigNumber.from(10));
 }
