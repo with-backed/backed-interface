@@ -136,7 +136,7 @@ function LoanStats({ loans, kind }: LoanStatsProps) {
 }
 
 export function ProfileHeader({ address, loans }: ProfileHeaderProps) {
-  const { query, push } = useRouter();
+  const { query } = useRouter();
   const { addMessage, removeMessage } = useGlobalMessages();
   const [{ data: accountData }, disconnect] = useAccount();
   const connectedAddress = accountData?.address;
@@ -206,7 +206,6 @@ export function ProfileHeader({ address, loans }: ProfileHeaderProps) {
                   kind="clickable"
                   onClick={() => {
                     disconnect();
-                    push('/');
                   }}>
                   Disconnect 🚪
                 </TextButton>
