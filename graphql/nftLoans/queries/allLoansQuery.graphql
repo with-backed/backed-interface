@@ -1,6 +1,7 @@
 query allLoans(
   $where: Loan_filter
   $first: Int
+  $skip: Int
   $orderBy: Loan_orderBy
   $orderDirection: OrderDirection
 ) {
@@ -9,6 +10,7 @@ query allLoans(
     orderBy: $orderBy
     orderDirection: $orderDirection
     first: $first
+    skip: $skip
   ) {
     ...allLoanProperties
   }
