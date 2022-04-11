@@ -1,6 +1,6 @@
 import { CompletedButton, TransactionButton } from 'components/Button';
 import { ethers } from 'ethers';
-import { web3Erc721Contract } from 'lib/contracts';
+import { contractDirectory, web3Erc721Contract } from 'lib/contracts';
 import { isNFTApprovedForCollateral } from 'lib/eip721Subraph';
 import React, { useCallback, useEffect, useState } from 'react';
 import { NFTEntity } from 'types/NFT';
@@ -43,7 +43,7 @@ export function AuthorizeNFTButton({
   const approve = useCallback(async () => {
     const web3Contract = web3Erc721Contract(collateralAddress, signer!);
     const t = await web3Contract.approve(
-      process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT || '',
+      contractDirectory.loanFacilitator,
       collateralTokenID,
     );
     setTransactionHash(t.hash);

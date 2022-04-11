@@ -1,12 +1,9 @@
 import { NFTEntity } from 'types/NFT';
+import { contractDirectory } from './contracts';
 
 export const HIDDEN_NFT_ADDRESSES = [
-  !!process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT
-    ? process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT.toLowerCase()
-    : '',
-  !!process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT
-    ? process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT.toLowerCase()
-    : '',
+  contractDirectory.borrowTicket,
+  contractDirectory.lendTicket,
 ];
 
 export function getNftContractAddress(nft: NFTEntity): string {
@@ -23,7 +20,7 @@ export function isNFTApprovedForCollateral(nft: NFTEntity): boolean {
     nft.approvals.filter(
       (approval: any) =>
         approval.approved.id.toLowerCase() ===
-        process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT?.toLowerCase(),
+        contractDirectory.loanFacilitator.toLowerCase(),
     ).length > 0
   );
 }
