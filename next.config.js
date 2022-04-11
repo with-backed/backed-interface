@@ -9,6 +9,9 @@ const moduleExports = {
     // remove properties matching the default regex ^data-test
     reactRemoveProperties: true,
   },
+  images: {
+    domains: ['nftpawnshop.mypinata.cloud'],
+  },
 };
 
 const shouldInitializeSentry = !process.env.GITHUB_ACTIONS;

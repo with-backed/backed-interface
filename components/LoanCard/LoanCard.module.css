@@ -64,7 +64,7 @@
 }
 
 .media {
-  height: 100%;
+  max-height: 350px;
   position: relative;
   top: 55px;
 }
