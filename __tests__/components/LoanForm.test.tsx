@@ -1,7 +1,11 @@
 import { loanWithLenderAccruing } from 'lib/mockData';
-import { hasTenPercentImprovement } from 'components/LoanForm/LoanFormBetterTerms/LoanFormBetterTerms';
+import {
+  ceilDiv,
+  hasTenPercentImprovement,
+} from 'components/LoanForm/LoanFormBetterTerms/LoanFormBetterTerms';
 import { secondsToDays } from 'lib/duration';
 import { formatUnits } from 'ethers/lib/utils';
+import { ethers } from 'ethers';
 
 const currentTermsInInputFormat = {
   duration: secondsToDays(loanWithLenderAccruing.durationSeconds.toNumber()),
@@ -17,6 +21,17 @@ const currentTermsInInputFormat = {
 
 describe('LoanForm', () => {
   describe('LoanFormBetterTerms', () => {
+    describe('ceilDiv', () => {
+      it('works', () => {
+        expect(
+          ceilDiv(ethers.BigNumber.from(1), ethers.BigNumber.from(10)),
+        ).toEqual(ethers.BigNumber.from(1));
+
+        expect(
+          ceilDiv(ethers.BigNumber.from(11), ethers.BigNumber.from(10)),
+        ).toEqual(ethers.BigNumber.from(2));
+      });
+    });
     describe('hasTenPercentImprovement', () => {
       it('returns false for identical loan terms', () => {
         const duration = '3';
