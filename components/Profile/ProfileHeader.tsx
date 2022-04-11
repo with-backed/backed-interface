@@ -20,6 +20,7 @@ import { NotificationsModal } from 'components/NotificationsModal';
 import { useDialogState, DialogDisclosure } from 'reakit/Dialog';
 import { useRouter } from 'next/router';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
+import { useAccount } from 'wagmi';
 
 type ProfileHeaderProps = {
   address: string;
@@ -137,6 +138,8 @@ function LoanStats({ loans, kind }: LoanStatsProps) {
 export function ProfileHeader({ address, loans }: ProfileHeaderProps) {
   const { query } = useRouter();
   const { addMessage, removeMessage } = useGlobalMessages();
+  const [{ data: accountData }, disconnect] = useAccount();
+  const connectedAddress = accountData?.address;
 
   useEffect(() => {
     const { unsubscribe, uuid } = query;
@@ -198,6 +201,15 @@ export function ProfileHeader({ address, loans }: ProfileHeaderProps) {
                   Subscribe to updates 🔔
                 </TextButton>
               </DialogDisclosure>
+              {connectedAddress && connectedAddress === address && (
+                <TextButton
+                  kind="clickable"
+                  onClick={() => {
+                    disconnect();
+                  }}>
+                  Disconnect 🚪
+                </TextButton>
+              )}
             </div>
           </Fieldset>
           <Fieldset legend="🖼 Borrowing">
