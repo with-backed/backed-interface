@@ -16,7 +16,7 @@ import { Button } from 'components/Button';
 import { useLoanViewerRole } from 'hooks/useLoanViewerRole';
 import { LoanFormDisclosure } from './LoanFormDisclosure';
 import { useAccount } from 'wagmi';
-import { LoanOfferBetterTermsDisclosure } from './LoanOfferBetterTermsDisclosure/LoanOfferBetterTermsDisclosure';
+import { LoanOfferBetterTermsDisclosure } from 'components/LoanForm/LoanOfferBetterTermsDisclosure';
 
 type LoanFormProps = {
   loan: Loan;
