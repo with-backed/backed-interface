@@ -73,7 +73,6 @@ export async function sendConfirmationEmail(
   if (!!process.env.LOCAL_DEV) {
     return;
   }
-  // TODO(adamgobes): return if we are local
 
   const confirmationEmailComponents: GenericEmailComponents = {
     header: 'Email request received for Backed',
