@@ -3,7 +3,6 @@ export enum GenericEmailType {
 }
 
 export type GenericEmailComponents = {
-  header: string;
   mainMessage: string;
   footer: string;
 };

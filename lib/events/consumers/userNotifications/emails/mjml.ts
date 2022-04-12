@@ -14,7 +14,7 @@ export function generateHTMLForEventsEmail(
       <mj-body>
         <mj-section>
           <mj-column>
-            <mj-text ${TEXT_STYLES}>&#x1F407; Backed</mj-text>
+            <mj-text ${TEXT_STYLES}>&#128444; &#x1F407; Backed</mj-text>
     
             <mj-divider border-width="1px"></mj-divider>
     
@@ -103,15 +103,9 @@ export function generateHTMLForGenericEmail(
       <mj-body>
         <mj-section>
           <mj-column>
-            <mj-text ${TEXT_STYLES}>&#x1F407; Backed</mj-text>
+            <mj-text ${TEXT_STYLES}>&#128444; &#x1F407; Backed</mj-text>
     
             <mj-divider border-width="1px"></mj-divider>
-    
-            <mj-text ${TEXT_STYLES}>
-              ${components.header}
-            </mj-text>
-    
-            <mj-divider border-style="dashed" border-width="1px"></mj-divider>
     
             <mj-text ${TEXT_STYLES}>${components.mainMessage}</mj-text>
     
