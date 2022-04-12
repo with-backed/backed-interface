@@ -7,6 +7,7 @@ export default function Page() {
     <>
       <Head>
         <title>Backed | 500</title>
+        <meta name="description" content="Something went wrong" />
       </Head>
       <PawnShopHeader isErrorPage={true} />
       <Custom500 />

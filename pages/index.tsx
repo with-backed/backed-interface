@@ -49,6 +49,10 @@ export default function Home({ loans }: HomeProps) {
     <>
       <Head>
         <title>Backed | Home</title>
+        <meta
+          name="description"
+          content="Welcome to Backed protocol. View existing loans, lend against NFTs, or propose loan terms on your own NFTs."
+        />
       </Head>
       <PawnShopHeader />
       <TwelveColumn>

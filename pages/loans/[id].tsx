@@ -149,6 +149,10 @@ function LoansInner({
     <>
       <Head>
         <title>Backed | Loan #{loan.id.toString()}</title>
+        <meta
+          name="description"
+          content={`View loan #${loan.id.toString()} on Backed protocol`}
+        />
       </Head>
       <PawnShopHeader />
       <LoanHeader

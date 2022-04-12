@@ -60,6 +60,10 @@ export default function Profile({ address, loans, events }: ProfilePageProps) {
     <>
       <Head>
         <title>Backed | Profile for ${address}</title>
+        <meta
+          name="description"
+          content={`View the Backed protocol profile for ${address}, see their activity and follow for updates`}
+        />
       </Head>
       <PawnShopHeader />
       <ProfileHeader address={address} loans={parsedLoans} />

@@ -8,6 +8,10 @@ export default function Create() {
     <>
       <Head>
         <title>Backed | Create a Loan</title>
+        <meta
+          name="description"
+          content="Collateralize your NFT with Backed protocol"
+        />
       </Head>
       <PawnShopHeader />
       <CreatePageHeader />;

@@ -16,6 +16,10 @@ export default function Test() {
     <>
       <Head>
         <title>Backed | Test</title>
+        <meta
+          name="description"
+          content="Mint testnet DAI and NFTs to try out Backed protocol on Rinkeby"
+        />
       </Head>
       <PawnShopHeader />
       <TwelveColumn>
