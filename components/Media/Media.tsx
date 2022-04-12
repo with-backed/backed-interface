@@ -39,7 +39,7 @@ export const Media: FunctionComponent<MediaProps> = ({
     return <Audio media={media} onError={onError} />;
   }
 
-  return <img src={media} onError={onError} alt="" />;
+  return <img className={styles.image} src={media} onError={onError} alt="" />;
 };
 
 function Video({
