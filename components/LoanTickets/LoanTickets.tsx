@@ -5,7 +5,7 @@ import { OpenSeaAddressLink } from 'components/OpenSeaLink';
 import { PawnLoanArt, PawnTicketArt } from 'components/PawnArt';
 import { DisplayAddress } from 'components/DisplayAddress';
 import { useLoanDetails } from 'hooks/useLoanDetails';
-import { jsonRpcERC721Contract } from 'lib/contracts';
+import { contractDirectory, jsonRpcERC721Contract } from 'lib/contracts';
 import { Loan } from 'types/Loan';
 import React from 'react';
 import styles from './LoanTickets.module.css';
@@ -19,9 +19,7 @@ type BorrowerColumnProps = LoanTicketsProps;
 
 function BorrowerColumn({ loan }: BorrowerColumnProps) {
   const { formattedTotalPayback } = useLoanDetails(loan);
-  const BORROW_CONTRACT = jsonRpcERC721Contract(
-    process.env.NEXT_PUBLIC_BORROW_TICKET_CONTRACT || '',
-  );
+  const BORROW_CONTRACT = jsonRpcERC721Contract(contractDirectory.borrowTicket);
 
   return (
     <div className={styles.column}>
@@ -51,9 +49,7 @@ type LenderColumnProps = LoanTicketsProps;
 
 function LenderColumn({ loan }: LenderColumnProps) {
   const { formattedInterestAccrued } = useLoanDetails(loan);
-  const LEND_CONTRACT = jsonRpcERC721Contract(
-    process.env.NEXT_PUBLIC_LEND_TICKET_CONTRACT || '',
-  );
+  const LEND_CONTRACT = jsonRpcERC721Contract(contractDirectory.lendTicket);
 
   if (!loan.lender) {
     return (

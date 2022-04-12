@@ -1,6 +1,5 @@
-import { Web3Provider } from '@ethersproject/providers';
 import { ethers } from 'ethers';
-import { jsonRpcERC20Contract, web3Erc20Contract } from './contracts';
+import { contractDirectory, jsonRpcERC20Contract } from 'lib/contracts';
 
 export async function getAccountLoanAssetBalance(
   account: string,
@@ -22,7 +21,7 @@ export async function getAccountLoanAssetAllowance(
   const assetContract = jsonRpcERC20Contract(loanAssetContractAddress);
   return assetContract.allowance(
     account as string,
-    process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT || '',
+    contractDirectory.loanFacilitator,
   );
 }
 
@@ -30,7 +29,7 @@ export function waitForApproval(account: string, contractAddress: string) {
   const contract = jsonRpcERC20Contract(contractAddress);
   const filter = contract.filters.Approval(
     account,
-    process.env.NEXT_PUBLIC_NFT_LOAN_FACILITATOR_CONTRACT,
+    contractDirectory.loanFacilitator,
     null,
   );
   return new Promise((resolve) => {
