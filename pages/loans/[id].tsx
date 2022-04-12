@@ -18,6 +18,7 @@ import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { PawnShopHeader } from 'components/PawnShopHeader';
+import Head from 'next/head';
 
 export type LoanPageProps = {
   loanInfoJson: string;
@@ -142,10 +143,13 @@ function LoansInner({
       });
       router.replace(`/loans/${loan.id}`, undefined, { shallow: true });
     }
-  }, [router.query.newLoan]);
+  }, [addMessage, loan.borrower, loan.id, router, router.query.newLoan]);
 
   return (
     <>
+      <Head>
+        <title>Backed | Loan #{loan.id.toString()}</title>
+      </Head>
       <PawnShopHeader />
       <LoanHeader
         loan={loan}

@@ -11,6 +11,7 @@ import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { SortOptionValue } from 'components/AdvancedSearch/SortDropdown';
 import { HomePageLoans } from 'components/HomePageLoans';
 import { PawnShopHeader } from 'components/PawnShopHeader';
+import Head from 'next/head';
 
 const PAGE_LIMIT = 20;
 
@@ -46,6 +47,9 @@ export default function Home({ loans }: HomeProps) {
 
   return (
     <>
+      <Head>
+        <title>Backed | Home</title>
+      </Head>
       <PawnShopHeader />
       <TwelveColumn>
         <div className={searchStyles.wrapper}>
