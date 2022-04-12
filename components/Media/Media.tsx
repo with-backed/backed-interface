@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import React, {
   FunctionComponent,
   useCallback,
@@ -40,17 +39,7 @@ export const Media: FunctionComponent<MediaProps> = ({
     return <Audio media={media} onError={onError} />;
   }
 
-  return (
-    <div className={styles.image}>
-      <Image
-        src={media}
-        onError={onError}
-        alt=""
-        layout="fill"
-        objectFit="contain"
-      />
-    </div>
-  );
+  return <img src={media} onError={onError} alt="" />;
 };
 
 function Video({

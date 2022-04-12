@@ -65,8 +65,15 @@
 
 .media {
   height: 100%;
-  position: relative;
-  top: 55px;
+  margin-bottom: -55px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 1;
+}
+
+.media > * {
+  max-height: 350px;
 }
 
 .loading-media {
