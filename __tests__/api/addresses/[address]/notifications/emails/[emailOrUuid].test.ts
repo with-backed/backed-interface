@@ -1,5 +1,6 @@
 import { NotificationRequest } from '@prisma/client';
 import { ethers } from 'ethers';
+import { sendConfirmationEmail } from 'lib/events/consumers/userNotifications/emails/emails';
 import {
   createNotificationRequestForAddress,
   deleteNotificationRequestById,
@@ -21,6 +22,13 @@ jest.mock('lib/events/consumers/userNotifications/repository', () => ({
   deleteNotificationRequestById: jest.fn(),
   getNumberOfRequestsForNotificationDestination: jest.fn(),
 }));
+
+jest.mock('lib/events/consumers/userNotifications/emails/emails', () => ({
+  sendConfirmationEmail: jest.fn(),
+}));
+
+const mockedConfirmationEmailCall =
+  sendConfirmationEmail as jest.MockedFunction<typeof sendConfirmationEmail>;
 
 const mockedCreateDBCall =
   createNotificationRequestForAddress as jest.MockedFunction<
@@ -54,8 +62,9 @@ describe('/api/addresses/[address]/notifications/emails/[email]', () => {
         deliveryMethod: notificationMethod,
         event,
       };
+      mockedConfirmationEmailCall.mockResolvedValue();
     });
-    it('makes a call to prisma repository and returns 200 on POST', async () => {
+    it('makes a call to prisma repository, sends confirmation email, and returns 200 on POST', async () => {
       mockedGetReqCountCall.mockResolvedValue(1);
       mockedCreateDBCall.mockResolvedValue(expectedNotificationRequest);
 
@@ -80,6 +89,7 @@ describe('/api/addresses/[address]/notifications/emails/[email]', () => {
       expect(JSON.parse(res._getData())).toEqual(
         expect.objectContaining(expectedNotificationRequest),
       );
+      expect(mockedConfirmationEmailCall).toHaveBeenCalledTimes(1);
     });
 
     it('makes a call to prisma repository and returns 200 on DELETE', async () => {

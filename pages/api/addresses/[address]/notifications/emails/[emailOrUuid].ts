@@ -8,6 +8,7 @@ import { NotificationRequest } from '@prisma/client';
 import { NotificationMethod } from 'lib/events/consumers/userNotifications/shared';
 import { APIErrorMessage } from 'pages/api/sharedTypes';
 import { captureException, withSentry } from '@sentry/nextjs';
+import { sendConfirmationEmail } from 'lib/events/consumers/userNotifications/emails/emails';
 
 const MAX_ADDRESSES_PER_NOTIFICATION_DESTINATION = 5;
 
@@ -60,6 +61,8 @@ async function handler(
         });
         return;
       }
+
+      await sendConfirmationEmail(destination, address, notificationRequest.id);
 
       res.status(200).json(notificationRequest);
     } else if (req.method == 'DELETE') {
