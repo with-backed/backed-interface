@@ -14,7 +14,7 @@ export default function Create() {
         />
       </Head>
       <PawnShopHeader />
-      <CreatePageHeader />;
+      <CreatePageHeader />
     </>
   );
 }
