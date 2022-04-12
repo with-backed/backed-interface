@@ -15,7 +15,6 @@ import { providers } from 'ethers';
 import { TimestampProvider } from 'hooks/useTimestamp/useTimestamp';
 import { GlobalMessagingProvider } from 'hooks/useGlobalMessages';
 import { WagmiProvider, chain } from 'wagmi';
-import Head from 'next/head';
 
 const jsonRpcProvider = new providers.JsonRpcProvider(
   process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
@@ -45,38 +44,6 @@ export default function App({ Component, pageProps }: AppProps) {
           provider={jsonRpcProvider}>
           <TimestampProvider>
             <AppWrapper>
-              <Head>
-                <link
-                  rel="preload"
-                  href="/fonts/maru/GT-Maru-Regular-Trial.woff2"
-                  as="font"
-                  type="font/woff2"
-                />
-                <link
-                  rel="preload"
-                  href="/fonts/maru/GT-Maru-Light-Trial.woff2"
-                  as="font"
-                  type="font/woff2"
-                />
-                <link
-                  rel="preload"
-                  href="/fonts/maru/GT-Maru-Mono-Regular-Trial.woff2"
-                  as="font"
-                  type="font/woff2"
-                />
-                <link
-                  rel="preload"
-                  href="/fonts/maru/GT-Maru-Mono-Regular-Oblique-Trial.woff2"
-                  as="font"
-                  type="font/woff2"
-                />
-                <link
-                  rel="preload"
-                  href="/fonts/maru/GT-Maru-Mono-Bold-Trial.woff2"
-                  as="font"
-                  type="font/woff2"
-                />
-              </Head>
               <Component {...pageProps} />
             </AppWrapper>
           </TimestampProvider>
