@@ -1,3 +1,4 @@
+import { captureException } from '@sentry/nextjs';
 import { ethers } from 'ethers';
 import { NFTResponseData } from 'pages/api/nftInfo/[uri]';
 import { ERC721 } from 'types/generated/abis';
@@ -26,7 +27,7 @@ export async function getNFTInfo({
 
     return getNFTInfoFromTokenInfo(tokenId, tokenURI, forceImage);
   } catch (error) {
-    console.log(error);
+    captureException(error);
     return null;
   }
 }
@@ -62,7 +63,7 @@ export async function getNFTInfoFromTokenInfo(
       mediaMimeType,
     };
   } catch (error) {
-    console.log(error);
+    captureException(error);
     return null;
   }
 }
