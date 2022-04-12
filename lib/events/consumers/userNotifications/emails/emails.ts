@@ -70,6 +70,9 @@ export async function sendConfirmationEmail(
   ethAddress: string,
   unsubscribeUuid: string,
 ) {
+  if (!!process.env.LOCAL_DEV) {
+    return;
+  }
   // TODO(adamgobes): return if we are local
 
   const confirmationEmailComponents: GenericEmailComponents = {
