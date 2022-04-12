@@ -85,13 +85,15 @@ const sortOptions: SortOptionInput[] = [
 export default function SortDropdown({ setSelectedSort }: SortDropdownProps) {
   return (
     <div className={styles.sortDropdown}>
-      <div>Sort by</div>
       <div className={styles.sortSelectWrapper}>
-        <Select
-          onChange={(option: any) => setSelectedSort(option.value)}
-          options={sortOptions}
-          color="dark"
-        />
+        <label className={styles['select-label']}>
+          Sort by
+          <Select
+            onChange={(option: any) => setSelectedSort(option.value)}
+            options={sortOptions}
+            color="dark"
+          />
+        </label>
       </div>
     </div>
   );

@@ -11,6 +11,7 @@ import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { SortOptionValue } from 'components/AdvancedSearch/SortDropdown';
 import { HomePageLoans } from 'components/HomePageLoans';
 import { PawnShopHeader } from 'components/PawnShopHeader';
+import Head from 'next/head';
 
 const PAGE_LIMIT = 20;
 
@@ -46,6 +47,13 @@ export default function Home({ loans }: HomeProps) {
 
   return (
     <>
+      <Head>
+        <title>Backed | Home</title>
+        <meta
+          name="description"
+          content="Welcome to Backed protocol. View existing loans, lend against NFTs, or propose loan terms on your own NFTs."
+        />
+      </Head>
       <PawnShopHeader />
       <TwelveColumn>
         <div className={searchStyles.wrapper}>

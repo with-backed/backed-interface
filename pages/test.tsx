@@ -7,12 +7,20 @@ import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { TransactionButton } from 'components/Button';
 import { useAccount, useSigner } from 'wagmi';
 import { PawnShopHeader } from 'components/PawnShopHeader';
+import Head from 'next/head';
 
 export default function Test() {
   const [{ data }] = useAccount();
   const account = data?.address;
   return (
     <>
+      <Head>
+        <title>Backed | Test</title>
+        <meta
+          name="description"
+          content="Mint testnet DAI and NFTs to try out Backed protocol on Rinkeby"
+        />
+      </Head>
       <PawnShopHeader />
       <TwelveColumn>
         <Fieldset

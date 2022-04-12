@@ -131,3 +131,9 @@
 .to {
   margin: 0 6px;
 }
+
+.select-label {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}

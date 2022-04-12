@@ -15,6 +15,7 @@ import { Toggle } from 'components/Toggle';
 import { ProfileLoans } from 'components/Profile/ProfileLoans';
 import styles from './[address].module.css';
 import { PawnShopHeader } from 'components/PawnShopHeader';
+import Head from 'next/head';
 
 export type ProfilePageProps = {
   address: string;
@@ -57,6 +58,13 @@ export default function Profile({ address, loans, events }: ProfilePageProps) {
 
   return (
     <>
+      <Head>
+        <title>Backed | Profile for ${address}</title>
+        <meta
+          name="description"
+          content={`View the Backed protocol profile for ${address}, see their activity and follow for updates`}
+        />
+      </Head>
       <PawnShopHeader />
       <ProfileHeader address={address} loans={parsedLoans} />
       {parsedLoans.length > 0 && (

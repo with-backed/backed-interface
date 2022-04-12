@@ -21,6 +21,7 @@ export const GridListSelector = ({ handleChange }: GridListSelectorProps) => {
   }, [checked, handleChange, setChecked]);
   return (
     <Checkbox
+      aria-label="Toggle between grid and list view"
       as="div"
       checked={checked}
       onChange={toggle}
