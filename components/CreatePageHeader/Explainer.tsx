@@ -88,7 +88,7 @@ function SelectNFT({ context }: InnerProps) {
 function AuthorizeNFT({ context }: InnerProps) {
   return (
     <div>
-      This allows the Pawn Shop to move your NFT and to trasnfer it to the
+      This allows the Pawn Shop to move your NFT and to transfer it to the
       lender if you do not repay your loan.
     </div>
   );
