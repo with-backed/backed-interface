@@ -22,4 +22,21 @@
   .base-wrapper {
     grid-template-columns: 1fr;
   }
+
+  .disclosure-text-wrapper {
+    width: 100%;
+  }
+}
+
+.disclosure-text-wrapper {
+  text-align: left;
+  padding: 1.75rem;
+  width: 50%;
+  font-size: var(--font-medium);
+  line-height: 2rem;
+}
+
+.disclosure-text {
+  color: var(--highlight-clickable-100);
+  cursor: pointer;
 }
