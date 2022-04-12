@@ -1,5 +1,5 @@
 import { NFTEntity } from 'types/NFT';
-import { contractDirectory } from './contracts';
+import { contractDirectory } from 'lib/contracts';
 
 export const HIDDEN_NFT_ADDRESSES = [
   contractDirectory.borrowTicket,

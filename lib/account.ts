@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { contractDirectory, jsonRpcERC20Contract } from './contracts';
+import { contractDirectory, jsonRpcERC20Contract } from 'lib/contracts';
 
 export async function getAccountLoanAssetBalance(
   account: string,
