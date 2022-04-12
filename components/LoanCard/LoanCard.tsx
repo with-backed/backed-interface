@@ -84,14 +84,17 @@ export function LoanCardLoaded({
     <Link href={`/loans/${id}`}>
       <a className={styles['profile-link']} aria-label={title} title={title}>
         <div className={styles['profile-card']}>
-          {metadata && (
-            <Media
-              media={metadata.mediaUrl}
-              mediaMimeType={metadata.mediaMimeType}
-              autoPlay={false}
-            />
-          )}
-          {!metadata && <Fallback animated={false} />}
+          <div className={styles.media}>
+            {metadata && (
+              <Media
+                media={metadata.mediaUrl}
+                mediaMimeType={metadata.mediaMimeType}
+                autoPlay={false}
+              />
+            )}
+            {!metadata && <Fallback animated={false} />}
+          </div>
+
           <div className={styles['profile-card-attributes']}>
             <span>{metadata ? metadata.name : '--'}</span>
             {children}

@@ -7,12 +7,12 @@
   padding: var(--padding-loan-card);
   gap: 0.66rem;
   background: var(--background-fieldset);
-  box-shadow: var(--box-shadow);
 }
 
 .profile-card {
   composes: card;
   padding: 0;
+  background-color: transparent;
 }
 
 .profile-card dl {
@@ -29,6 +29,10 @@
   flex-direction: column;
   gap: 0.4rem;
   padding: var(--padding-loan-card);
+  background-color: var(--background-fieldset);
+  box-shadow: var(--box-shadow);
+  border-radius: var(--border-radius-small);
+  padding-top: 65px;
 }
 
 .relationship {
@@ -59,11 +63,19 @@
   white-space: nowrap;
 }
 
+.media {
+  height: 100%;
+  position: relative;
+  top: 55px;
+}
+
 .loading-media {
   overflow: hidden;
   height: 0;
   padding-top: 100%;
   background-color: var(--neutral-20);
+  position: relative;
+  top: 55px;
 }
 
 .link {
