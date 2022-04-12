@@ -1,19 +1,25 @@
 import { executeEmailSendWithSes } from 'lib/events/consumers/userNotifications/emails/ses';
 import { LendEvent, Loan } from 'types/generated/graphql/nftLoans';
-import { NotificationMethod, NotificationTriggerType } from '../shared';
+import {
+  NotificationMethod,
+  NotificationTriggerType,
+} from 'lib/events/consumers/userNotifications/shared';
 import { RawSubgraphEvent } from 'types/RawEvent';
-import { getNotificationRequestsForAddress } from '../repository';
+import { getNotificationRequestsForAddress } from 'lib/events/consumers/userNotifications/repository';
 import {
   generateHTMLForEventsEmail,
   generateHTMLForGenericEmail,
 } from './mjml';
-import { getEmailComponentsMap, getEmailSubject } from './eventsFormatter';
-import { ensOrAddr } from '../../formattingHelpers';
+import {
+  getEmailComponentsMap,
+  getEmailSubject,
+} from 'lib/events/consumers/userNotifications/emails/eventsFormatter';
+import { ensOrAddr } from 'lib/events/consumers/formattingHelpers';
 import {
   GenericEmailComponents,
   GenericEmailType,
   getSubjectForGenericEmail,
-} from './genericFormatter';
+} from 'lib/events/consumers/userNotifications/emails/genericFormatter';
 
 export async function sendEmailsForTriggerAndEntity(
   emailTrigger: NotificationTriggerType,
@@ -71,7 +77,7 @@ export async function sendConfirmationEmail(
     mainMessage: `We've received your request to subscribe to the activity of ${await ensOrAddr(
       ethAddress,
     )}`,
-    footer: `https://nftpawnshop.xyz/profile/${ethAddress}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+    footer: `https://rinkeby.withbacked.xyz/profile/${ethAddress}?unsubscribe=true&uuid=${unsubscribeUuid}`,
   };
 
   await executeEmailSendWithSes(
