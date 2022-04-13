@@ -1,42 +1,12 @@
-/* https://reneroth.xyz/marquees-in-css/ */
-.container {
-  overflow: hidden;
-  white-space: nowrap;
-  align-items: stretch;
-  position: absolute;
-  left: 0;
-  right: 0;
+.marquee {
+  height: 40px;
+  background-color: var(--highlight-active-5);
 }
 
-.scrolling {
-  text-align: center;
-  animation: marquee 15s linear infinite;
-  display: inline-block;
-  width: 100%;
-  background: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 0) calc(50% - 1px),
-    var(--neutral-100) calc(50%),
-    rgba(0, 0, 0, 0) calc(50% + 1px)
-  );
+.marquee > div[class='overlay'] {
+  display: none;
 }
 
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-100%);
-  }
-}
-
-.paused {
-  animation-play-state: paused;
-}
-
-.wrapper > * {
-  background: var(--neutral-5);
-  margin: 0 2rem;
-  padding: 0 0.25rem;
-  font-size: var(--font-large);
+.marquee > div[class='marquee'] {
+  justify-content: space-around;
 }

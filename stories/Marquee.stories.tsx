@@ -7,12 +7,13 @@ export default {
   component: Marquee,
 };
 
-const messages = [
-  'this is some text',
-  'so is this',
-  'here is somewhat longer text for testing purposes',
-];
-
 export const MarqueeStyles = () => {
-  return <Marquee messages={messages} />;
+  return (
+    <Marquee>
+      <div>Greetings, fellows.</div>
+      <div>
+        This div has <a>a link in it</a>, isn&apos;t that cool?
+      </div>
+    </Marquee>
+  );
 };
