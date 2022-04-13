@@ -137,7 +137,13 @@ describe('Sending emails with Amazon SES', () => {
   });
 
   describe('Confirmation email', () => {
-    it.only('successfully calls SES send email method with correct params', async () => {
+    beforeEach(() => {
+      process.env.VERCEL_ENV = 'development';
+    });
+    afterEach(() => {
+      process.env.VERCEL_ENV = undefined;
+    });
+    it('successfully calls SES send email method with correct params', async () => {
       await sendConfirmationEmail(
         notificationReqOne.deliveryDestination,
         notificationReqOne.ethAddress,
