@@ -16,7 +16,7 @@ export function LoanOfferBetterTermsDisclosure({
   return (
     <>
       <div className={textWrapperClassName}>
-        🎉 You are the lender on this loan! You can still{' '}
+        🎉 You are the current lender! &nbsp;You can still{' '}
         <Disclosure
           as="text"
           role={'disclosure'}
@@ -24,7 +24,7 @@ export function LoanOfferBetterTermsDisclosure({
           {...disclosure}>
           update the loan terms
         </Disclosure>
-        , which will reset the loan duration
+        , which will reset the loan duration.
       </div>
       <DisclosureContent {...disclosure}>{children}</DisclosureContent>
     </>
