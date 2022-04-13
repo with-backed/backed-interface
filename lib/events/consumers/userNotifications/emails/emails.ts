@@ -70,12 +70,11 @@ export async function sendConfirmationEmail(
   ethAddress: string,
   unsubscribeUuid: string,
 ) {
-  if (!!process.env.LOCAL_DEV) {
+  if (!process.env.VERCEL_ENV) {
     return;
   }
 
   const confirmationEmailComponents: GenericEmailComponents = {
-    header: 'Email request received for Backed',
     mainMessage: `We've received your request to subscribe to the activity of ${await ensOrAddr(
       ethAddress,
     )}`,
