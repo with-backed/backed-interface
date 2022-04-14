@@ -7,6 +7,11 @@ type MarqueeProps = ComponentProps<typeof ReactMarquee> & {};
 export const Marquee: FunctionComponent<MarqueeProps> = ({
   children,
   className = styles.marquee,
+  gradient = false,
 }) => {
-  return <ReactMarquee className={className}>{children}</ReactMarquee>;
+  return (
+    <ReactMarquee className={className} gradient={gradient}>
+      {children}
+    </ReactMarquee>
+  );
 };

@@ -3,10 +3,6 @@
   background-color: var(--highlight-active-5);
 }
 
-.marquee > div[class='overlay'] {
-  display: none;
-}
-
 .marquee > div[class='marquee'] {
   justify-content: space-around;
   gap: 2rem;
