@@ -6,6 +6,7 @@ import { useCallback, useState } from 'react';
 import { INTEREST_RATE_PERCENT_DECIMALS } from 'lib/constants';
 import { useAccount, useSigner } from 'wagmi';
 import { captureException } from '@sentry/nextjs';
+import { useGlobalMessages } from 'hooks/useGlobalMessages';
 
 // Annoyingly, the form data gets automatically parsed into numbers, so we can't use the LoanFormData type
 type Values = { interestRate: number; duration: number; loanAmount: number };
@@ -19,6 +20,8 @@ export function useLoanUnderwriter(
   const [{ data }] = useAccount();
   const [{ data: signer }] = useSigner();
   const account = data?.address;
+  const { addMessage } = useGlobalMessages();
+
   const underwrite = useCallback(
     async ({ interestRate, duration, loanAmount }: Values) => {
       if (!account) {
@@ -43,6 +46,10 @@ export function useLoanUnderwriter(
         .then(() => {
           setTransactionPending(false);
           refresh();
+          addMessage({
+            kind: 'success',
+            message: '💸 You are now the Lender on this loan!',
+          });
         })
         .catch((err) => {
           captureException(err);

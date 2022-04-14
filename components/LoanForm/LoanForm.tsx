@@ -1,7 +1,6 @@
 import { ethers } from 'ethers';
 import { Loan } from 'types/Loan';
 import React, { useEffect, useMemo, useState } from 'react';
-import { ConnectWallet } from 'components/ConnectWallet';
 import {
   getAccountLoanAssetAllowance,
   getAccountLoanAssetBalance,
@@ -17,6 +16,7 @@ import { Button } from 'components/Button';
 import { useLoanViewerRole } from 'hooks/useLoanViewerRole';
 import { LoanFormDisclosure } from './LoanFormDisclosure';
 import { useAccount } from 'wagmi';
+import { LoanOfferBetterTermsDisclosure } from 'components/LoanForm/LoanOfferBetterTermsDisclosure';
 
 type LoanFormProps = {
   loan: Loan;
@@ -126,7 +126,9 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
   }
 
   return (
-    <LoanFormDisclosure title={'Offer better terms'} className={styles.wrapper}>
+    <LoanOfferBetterTermsDisclosure
+      textWrapperClassName={styles['disclosure-text-wrapper']}
+      disclosureTextClassName={styles['disclosure-text']}>
       <div className={styles['form-wrapper']}>
         <LoanFormBetterTerms
           balance={balance}
@@ -136,6 +138,6 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
           refresh={refresh}
         />
       </div>
-    </LoanFormDisclosure>
+    </LoanOfferBetterTermsDisclosure>
   );
 }
