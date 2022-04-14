@@ -3,33 +3,12 @@ import { ethers } from 'ethers';
 import { NFTResponseData } from 'pages/api/nftInfo/[uri]';
 import { ERC721 } from 'types/generated/abis';
 
-export interface GetNFTInfoArgs {
-  contract: ERC721;
-  tokenId: ethers.BigNumber;
-  forceImage?: boolean;
-}
-
 export interface GetNFTInfoResponse {
   name: string;
   description: string;
   mediaUrl: string;
   mediaMimeType: string;
   id: ethers.BigNumber;
-}
-
-export async function getNFTInfo({
-  contract,
-  tokenId,
-  forceImage = false,
-}: GetNFTInfoArgs): Promise<GetNFTInfoResponse | null> {
-  try {
-    const tokenURI = await contract.tokenURI(tokenId);
-
-    return getNFTInfoFromTokenInfo(tokenId, tokenURI, forceImage);
-  } catch (error) {
-    captureException(error);
-    return null;
-  }
 }
 
 export async function getNFTInfoFromTokenInfo(
