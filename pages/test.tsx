@@ -8,6 +8,7 @@ import { TransactionButton } from 'components/Button';
 import { useAccount, useSigner } from 'wagmi';
 import { PawnShopHeader } from 'components/PawnShopHeader';
 import Head from 'next/head';
+import { captureException } from '@sentry/nextjs';
 
 export default function Test() {
   const [{ data }] = useAccount();
@@ -57,7 +58,7 @@ function MintPunk() {
       })
       .catch((err) => {
         setTxPending(false);
-        console.log(err);
+        captureException(err);
       });
   };
 
@@ -109,7 +110,7 @@ function MintDAI() {
       })
       .catch((err) => {
         setTxPending(false);
-        console.log(err);
+        captureException(err);
       });
   };
 

@@ -1,3 +1,4 @@
+import { captureException } from '@sentry/nextjs';
 import { ethers, Signer } from 'ethers';
 import { contractDirectory, web3Erc20Contract } from 'lib/contracts';
 
@@ -29,6 +30,6 @@ export async function authorizeCurrency({
     })
     .catch((err) => {
       setWaitingForTx(false);
-      console.log(err);
+      captureException(err);
     });
 }
