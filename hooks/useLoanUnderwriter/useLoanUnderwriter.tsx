@@ -7,6 +7,7 @@ import { INTEREST_RATE_PERCENT_DECIMALS } from 'lib/constants';
 import { useAccount, useSigner } from 'wagmi';
 import { captureException } from '@sentry/nextjs';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
+import { EtherscanTransactionLink } from 'components/EtherscanLink';
 
 // Annoyingly, the form data gets automatically parsed into numbers, so we can't use the LoanFormData type
 type Values = { interestRate: number; duration: number; loanAmount: number };
@@ -15,12 +16,12 @@ export function useLoanUnderwriter(
   { id, loanAssetDecimals }: Loan,
   refresh: () => void,
 ) {
+  const { addMessage } = useGlobalMessages();
   const [txHash, setTxHash] = useState('');
   const [transactionPending, setTransactionPending] = useState(false);
   const [{ data }] = useAccount();
   const [{ data: signer }] = useSigner();
   const account = data?.address;
-  const { addMessage } = useGlobalMessages();
 
   const underwrite = useCallback(
     async ({ interestRate, duration, loanAmount }: Values) => {
@@ -54,10 +55,20 @@ export function useLoanUnderwriter(
         .catch((err) => {
           captureException(err);
           setTransactionPending(false);
-          console.error(err);
+          addMessage({
+            kind: 'error',
+            message: (
+              <div>
+                Failed to underwrite loan #{id.toString()}.{' '}
+                <EtherscanTransactionLink transactionHash={t.hash}>
+                  View transaction
+                </EtherscanTransactionLink>
+              </div>
+            ),
+          });
         });
     },
-    [account, id, signer, loanAssetDecimals, refresh],
+    [account, addMessage, id, signer, loanAssetDecimals, refresh],
   );
 
   return {
