@@ -15,6 +15,7 @@ export function useLoanUnderwriter(
   { id, loanAssetDecimals }: Loan,
   refresh: () => void,
 ) {
+  const { addMessage } = useGlobalMessages();
   const [txHash, setTxHash] = useState('');
   const [transactionPending, setTransactionPending] = useState(false);
   const [{ data }] = useAccount();
@@ -54,10 +55,13 @@ export function useLoanUnderwriter(
         .catch((err) => {
           captureException(err);
           setTransactionPending(false);
-          console.error(err);
+          addMessage({
+            kind: 'error',
+            message: `Failed to underwrite loan # ${id.toString()}`,
+          });
         });
     },
-    [account, id, signer, loanAssetDecimals, refresh],
+    [account, addMessage, id, signer, loanAssetDecimals, refresh],
   );
 
   return {
