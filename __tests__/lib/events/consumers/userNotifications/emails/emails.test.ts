@@ -109,12 +109,12 @@ const mockEmailComponents: EventsEmailComponents = {
     'At this rate, repayment of 8361.869312 DAI will be due on 31/12/1969.',
   ],
   viewLinks: [
-    'https://nftpawnshop.xyz/loans/65',
+    'https://rinkeby.withbacked.xyz/loans/65',
     'https://rinkeby.etherscan.io/tx/0x7685d19b85fb80c03ac0c117ea542b77a6c8ecebea56744b121183cfb614bce6',
   ],
   mainMessage: '0x10359 has been replaced as the lender on loan #65.',
   footer:
-    'https://nftpawnshop.xyz/profile/0x10359616ab170c1bd6c478a40c6715a49ba25efc',
+    'https://rinkeby.withbacked.xyz/profile/0x10359616ab170c1bd6c478a40c6715a49ba25efc',
 };
 
 describe('Sending emails with Amazon SES', () => {
@@ -191,12 +191,12 @@ describe('Sending emails with Amazon SES', () => {
         expect(mockedSesEmailCall).toBeCalledTimes(6);
         expect(mockedSesEmailCall).toHaveBeenCalledWith(
           '',
-          '',
+          expect.anything(),
           testRecipientOne,
         );
         expect(mockedSesEmailCall).toHaveBeenCalledWith(
           '',
-          '',
+          expect.anything(),
           testRecipientTwo,
         );
       });
@@ -216,12 +216,12 @@ describe('Sending emails with Amazon SES', () => {
 
         expect(mockedSesEmailCall).toHaveBeenCalledWith(
           '',
-          '',
+          expect.anything(),
           testRecipientOne,
         );
         expect(mockedSesEmailCall).toHaveBeenCalledWith(
           '',
-          '',
+          expect.anything(),
           testRecipientTwo,
         );
       });
@@ -257,12 +257,12 @@ describe('Sending emails with Amazon SES', () => {
 
         expect(mockedSesEmailCall).toHaveBeenCalledWith(
           '',
-          '',
+          expect.anything(),
           testRecipientOne,
         );
         expect(mockedSesEmailCall).toHaveBeenCalledWith(
           '',
-          '',
+          expect.anything(),
           testRecipientTwo,
         );
       });
@@ -286,12 +286,12 @@ describe('Sending emails with Amazon SES', () => {
 
         expect(mockedSesEmailCall).toHaveBeenCalledWith(
           '',
-          '',
+          expect.anything(),
           testRecipientOne,
         );
         expect(mockedSesEmailCall).toHaveBeenCalledWith(
           '',
-          '',
+          expect.anything(),
           testRecipientTwo,
         );
       });
@@ -315,12 +315,12 @@ describe('Sending emails with Amazon SES', () => {
 
         expect(mockedSesEmailCall).toHaveBeenCalledWith(
           '',
-          '',
+          expect.anything(),
           testRecipientOne,
         );
         expect(mockedSesEmailCall).toHaveBeenCalledWith(
           '',
-          '',
+          expect.anything(),
           testRecipientTwo,
         );
       });
@@ -344,12 +344,12 @@ describe('Sending emails with Amazon SES', () => {
 
         expect(mockedSesEmailCall).toHaveBeenCalledWith(
           '',
-          '',
+          expect.anything(),
           testRecipientOne,
         );
         expect(mockedSesEmailCall).toHaveBeenCalledWith(
           '',
-          '',
+          expect.anything(),
           testRecipientTwo,
         );
       });
