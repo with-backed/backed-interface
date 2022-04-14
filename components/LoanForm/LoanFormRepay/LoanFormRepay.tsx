@@ -8,6 +8,7 @@ import { Form } from 'components/Form';
 import { useSigner } from 'wagmi';
 import { captureException } from '@sentry/nextjs';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
+import { EtherscanTransactionLink } from 'components/EtherscanLink';
 
 type LoanFormRepayProps = {
   loan: Loan;
@@ -46,7 +47,14 @@ export function LoanFormRepay({
         captureException(err);
         addMessage({
           kind: 'error',
-          message: `Failed to repay loan ${loan.id.toString()}`,
+          message: (
+            <div>
+              Failed to repay loan #{loan.id.toString()}.{' '}
+              <EtherscanTransactionLink transactionHash={t.hash}>
+                View transaction
+              </EtherscanTransactionLink>
+            </div>
+          ),
         });
       });
   }, [addMessage, loan.id, refresh, signer]);

@@ -1,5 +1,6 @@
 import { captureException } from '@sentry/nextjs';
 import { TransactionButton } from 'components/Button';
+import { EtherscanTransactionLink } from 'components/EtherscanLink';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import { web3LoanFacilitator } from 'lib/contracts';
 import React, { useCallback, useState } from 'react';
@@ -37,7 +38,14 @@ export function LoanFormSeizeCollateral({
         captureException(err);
         addMessage({
           kind: 'error',
-          message: `Failed to seize collateral on loan # ${loan.id.toString()}`,
+          message: (
+            <div>
+              Failed to seize collateral on loan #{loan.id.toString()}.{' '}
+              <EtherscanTransactionLink transactionHash={t.hash}>
+                View transaction
+              </EtherscanTransactionLink>
+            </div>
+          ),
         });
       });
   }, [addMessage, loan.id, loan.lender, refresh, signer]);

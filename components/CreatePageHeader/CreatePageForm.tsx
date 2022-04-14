@@ -1,5 +1,6 @@
 import { captureException } from '@sentry/nextjs';
 import { TransactionButton } from 'components/Button';
+import { EtherscanTransactionLink } from 'components/EtherscanLink';
 import { Form } from 'components/Form';
 import { Input } from 'components/Input';
 import { Select } from 'components/Select';
@@ -123,7 +124,14 @@ export function CreatePageForm({
           captureException(err);
           addMessage({
             kind: 'error',
-            message: 'Loan creation transaction failed.',
+            message: (
+              <div>
+                Failed to create loan.{' '}
+                <EtherscanTransactionLink transactionHash={t.hash}>
+                  View transaction
+                </EtherscanTransactionLink>
+              </div>
+            ),
           });
         });
     },

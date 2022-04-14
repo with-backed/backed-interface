@@ -1,5 +1,6 @@
 import { captureException } from '@sentry/nextjs';
 import { CompletedButton, TransactionButton } from 'components/Button';
+import { EtherscanTransactionLink } from 'components/EtherscanLink';
 import { ethers } from 'ethers';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import { contractDirectory, web3Erc721Contract } from 'lib/contracts';
@@ -62,7 +63,15 @@ export function AuthorizeNFTButton({
         captureException(err);
         addMessage({
           kind: 'error',
-          message: `Failed to authorize NFT ID ${collateralTokenID.toString()} on ${collateralAddress}`,
+          message: (
+            <div>
+              Failed to authorize NFT ID {collateralTokenID.toString()} on $
+              {collateralAddress}.{' '}
+              <EtherscanTransactionLink transactionHash={t.hash}>
+                View transaction
+              </EtherscanTransactionLink>
+            </div>
+          ),
         });
         onError(err);
       });
