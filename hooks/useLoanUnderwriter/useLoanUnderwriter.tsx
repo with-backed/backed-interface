@@ -7,6 +7,7 @@ import { INTEREST_RATE_PERCENT_DECIMALS } from 'lib/constants';
 import { useAccount, useSigner } from 'wagmi';
 import { captureException } from '@sentry/nextjs';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
+import { EtherscanTransactionLink } from 'components/EtherscanLink';
 
 // Annoyingly, the form data gets automatically parsed into numbers, so we can't use the LoanFormData type
 type Values = { interestRate: number; duration: number; loanAmount: number };
@@ -56,7 +57,14 @@ export function useLoanUnderwriter(
           setTransactionPending(false);
           addMessage({
             kind: 'error',
-            message: `Failed to underwrite loan # ${id.toString()}`,
+            message: (
+              <div>
+                Failed to underwrite loan #{id.toString()}.{' '}
+                <EtherscanTransactionLink transactionHash={t.hash}>
+                  View transaction
+                </EtherscanTransactionLink>
+              </div>
+            ),
           });
         });
     },
