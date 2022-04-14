@@ -21,7 +21,6 @@ export function useLoanUnderwriter(
   const [{ data }] = useAccount();
   const [{ data: signer }] = useSigner();
   const account = data?.address;
-  const { addMessage } = useGlobalMessages();
 
   const underwrite = useCallback(
     async ({ interestRate, duration, loanAmount }: Values) => {
