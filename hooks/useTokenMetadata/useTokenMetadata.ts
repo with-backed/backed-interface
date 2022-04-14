@@ -1,10 +1,5 @@
 import { ethers } from 'ethers';
-import {
-  GetNFTInfoArgs,
-  getNFTInfo,
-  getNFTInfoFromTokenInfo,
-  GetNFTInfoResponse,
-} from 'lib/getNFTInfo';
+import { getNFTInfoFromTokenInfo, GetNFTInfoResponse } from 'lib/getNFTInfo';
 import { useCallback, useEffect, useState } from 'react';
 
 export type TokenURIAndID = {
@@ -31,9 +26,7 @@ type ResolvedNFTMetadata = {
 
 export type MaybeNFTMetadata = LoadingNFTMetadata | ResolvedNFTMetadata;
 
-export function useTokenMetadata(spec: GetNFTInfoArgs): MaybeNFTMetadata;
-export function useTokenMetadata(spec: TokenURIAndID): MaybeNFTMetadata;
-export function useTokenMetadata(spec: any): MaybeNFTMetadata {
+export function useTokenMetadata(spec: TokenURIAndID): MaybeNFTMetadata {
   const [result, setResult] = useState<MaybeNFTMetadata>({
     isLoading: true,
     metadata: null,
@@ -47,15 +40,13 @@ export function useTokenMetadata(spec: any): MaybeNFTMetadata {
     }
 
     let fetchedMetadata: GetNFTInfoResponse | null = null;
-    if (spec.tokenURI) {
-      fetchedMetadata = await getNFTInfoFromTokenInfo(
-        spec.tokenID,
-        spec.tokenURI,
-        spec.forceImage,
-      );
-    } else {
-      fetchedMetadata = await getNFTInfo(spec);
-    }
+
+    fetchedMetadata = await getNFTInfoFromTokenInfo(
+      spec.tokenID,
+      spec.tokenURI,
+      spec.forceImage,
+    );
+
     if (fetchedMetadata) {
       METADATA_CACHE[cacheKey] = fetchedMetadata;
     }

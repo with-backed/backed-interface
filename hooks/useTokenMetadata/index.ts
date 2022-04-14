@@ -1,2 +1,2 @@
 export { useTokenMetadata } from './useTokenMetadata';
-export type { MaybeNFTMetadata } from './useTokenMetadata';
+export type { MaybeNFTMetadata, TokenURIAndID } from './useTokenMetadata';
