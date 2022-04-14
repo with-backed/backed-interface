@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import IPFSGatewayTools from '@pinata/ipfs-gateway-tools/dist/node';
-import { fetchWithTimeout } from 'lib/fetchWithTimeout';
 import { captureException, withSentry } from '@sentry/nextjs';
 
 const ipfsGatewayTools = new IPFSGatewayTools();
@@ -43,11 +42,19 @@ async function handler(
  * If `uri` is an IPFS uri, convert to use our gateway. Otherwise return it untouched.
  */
 function convertIPFS(uri: string) {
-  if (ipfsGatewayTools.containsCID(uri).containsCid) {
-    return ipfsGatewayTools.convertToDesiredGateway(
-      uri,
-      'https://nftpawnshop.mypinata.cloud',
-    );
+  try {
+    if (ipfsGatewayTools.containsCID(uri).containsCid) {
+      return ipfsGatewayTools.convertToDesiredGateway(
+        uri,
+        'https://nftpawnshop.mypinata.cloud',
+      );
+    }
+  } catch (e) {
+    if ((e as any).message !== 'url is not string') {
+      // got an annoying false positive message here; uri would definitely be
+      // type string but the error would be raised anyway. Skipping those.
+      captureException({ e });
+    }
   }
   return uri;
 }
