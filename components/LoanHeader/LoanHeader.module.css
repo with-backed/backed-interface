@@ -17,6 +17,9 @@
 
 .media {
   grid-column: col-start / span 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .form {

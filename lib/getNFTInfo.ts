@@ -1,7 +1,6 @@
 import { captureException } from '@sentry/nextjs';
 import { ethers } from 'ethers';
 import { NFTResponseData } from 'pages/api/nftInfo/[uri]';
-import { ERC721 } from 'types/generated/abis';
 
 export interface GetNFTInfoResponse {
   name: string;
@@ -48,7 +47,15 @@ export async function getNFTInfoFromTokenInfo(
 }
 
 async function getMimeType(mediaUrl: string) {
-  const res = await fetch(mediaUrl, { method: 'HEAD' });
-  // If we get no mime type in headers, we don't know what the MIME type is
-  return res.headers.get('Content-Type') || 'application/octet-stream';
+  const defaultMimeType = 'application/octet-stream';
+  try {
+    const res = await fetch(mediaUrl, { method: 'HEAD' });
+    // If we get no mime type in headers, we don't know what the MIME type is
+    return res.headers.get('Content-Type') || defaultMimeType;
+  } catch (e) {
+    // Likely what happened here is a failure to fetch due to CORS. Could
+    // sidestep by proxying this through an API route.
+    captureException(e);
+    return defaultMimeType;
+  }
 }
