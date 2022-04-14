@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { subgraphLoan } from 'lib/mockData';
 import { getLiquidatedLoansForTimestamp } from 'lib/events/timely/timely';
-import { sendEmailsForTriggerAndEntity } from 'lib/events/consumers/userNotifications/emails';
+import { sendEmailsForTriggerAndEntity } from 'lib/events/consumers/userNotifications/emails/emails';
 import { createMocks } from 'node-mocks-http';
 import handler from 'pages/api/events/cron/processTimelyEvents';
 
@@ -17,7 +17,7 @@ const alreadyExpiredLoan = {
   lendTicketHolder: ethers.Wallet.createRandom().address.toLowerCase(),
 };
 
-jest.mock('lib/events/consumers/userNotifications/emails', () => ({
+jest.mock('lib/events/consumers/userNotifications/emails/emails', () => ({
   sendEmailsForTriggerAndEntity: jest.fn(),
 }));
 

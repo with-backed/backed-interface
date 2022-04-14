@@ -1,7 +1,7 @@
 import {
   getEmailComponentsMap,
   getEmailSubject,
-} from 'lib/events/consumers/userNotifications/formatter';
+} from 'lib/events/consumers/userNotifications/emails/eventsFormatter';
 import {
   subgraphBuyoutEvent,
   subgraphCollateralSeizureEvent,

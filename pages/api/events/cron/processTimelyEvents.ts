@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { sendEmailsForTriggerAndEntity } from 'lib/events/consumers/userNotifications/emails';
+import { sendEmailsForTriggerAndEntity } from 'lib/events/consumers/userNotifications/emails/emails';
 import { getLiquidatedLoansForTimestamp } from 'lib/events/timely/timely';
 import { captureException, withSentry } from '@sentry/nextjs';
 
