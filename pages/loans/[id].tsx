@@ -4,8 +4,6 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { loanById } from 'lib/loans/loanById';
 import { LoanHeader } from 'components/LoanHeader';
 import { LoanInfo } from 'components/LoanInfo';
-import { CollateralMedia } from 'types/CollateralMedia';
-import { getNFTInfoFromTokenInfo } from 'lib/getNFTInfo';
 import { nodeLoanById } from 'lib/loans/node/nodeLoanById';
 import { subgraphLoanHistoryById } from 'lib/loans/subgraph/subgraphLoanEventsById';
 import {
@@ -19,6 +17,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { PawnShopHeader } from 'components/PawnShopHeader';
 import Head from 'next/head';
+import { useTokenMetadata, TokenURIAndID } from 'hooks/useTokenMetadata';
 
 export type LoanPageProps = {
   loanInfoJson: string;
@@ -97,8 +96,14 @@ function LoansInner({
 }) {
   const { mutate } = useSWRConfig();
   const [loan, setLoan] = useState(serverLoan);
-  const [collateralMedia, setCollateralMedia] =
-    useState<CollateralMedia | null>(null);
+  const tokenSpec: TokenURIAndID = useMemo(
+    () => ({
+      tokenURI: loan.collateralTokenURI,
+      tokenID: loan.collateralTokenId,
+    }),
+    [loan.collateralTokenId, loan.collateralTokenURI],
+  );
+  const metadata = useTokenMetadata(tokenSpec);
 
   const refresh = useCallback(() => {
     mutate(`/api/loans/history/${loan.id}`);
@@ -108,18 +113,6 @@ function LoansInner({
       }
     });
   }, [loan.id, mutate]);
-
-  useEffect(() => {
-    getNFTInfoFromTokenInfo(
-      loan.collateralTokenId,
-      loan.collateralTokenURI,
-    ).then((response) => {
-      if (response) {
-        const { mediaMimeType, mediaUrl } = response;
-        setCollateralMedia({ mediaMimeType, mediaUrl });
-      }
-    });
-  }, [loan.collateralTokenURI, loan.collateralTokenId]);
 
   const router = useRouter();
   const { addMessage } = useGlobalMessages();
@@ -157,7 +150,7 @@ function LoansInner({
       <PawnShopHeader />
       <LoanHeader
         loan={loan}
-        collateralMedia={collateralMedia}
+        collateralMedia={metadata.metadata}
         refresh={refresh}
       />
       <LoanInfo loan={loan} collateralSaleInfo={collateralSaleInfo} />
