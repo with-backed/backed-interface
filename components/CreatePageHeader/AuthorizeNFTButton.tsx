@@ -1,5 +1,7 @@
+import { captureException } from '@sentry/nextjs';
 import { CompletedButton, TransactionButton } from 'components/Button';
 import { ethers } from 'ethers';
+import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import { contractDirectory, web3Erc721Contract } from 'lib/contracts';
 import { isNFTApprovedForCollateral } from 'lib/eip721Subraph';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -28,6 +30,7 @@ export function AuthorizeNFTButton({
   onError,
   onSubmit,
 }: AuthorizeNFTButtonProps) {
+  const { addMessage } = useGlobalMessages();
   const [{ data: signer }] = useSigner();
   const [transactionHash, setTransactionHash] = useState('');
   const [isPending, setIsPending] = useState(false);
@@ -56,9 +59,15 @@ export function AuthorizeNFTButton({
       })
       .catch((err) => {
         setIsPending(false);
+        captureException(err);
+        addMessage({
+          kind: 'error',
+          message: `Failed to authorize NFT ID ${collateralTokenID.toString()} on ${collateralAddress}`,
+        });
         onError(err);
       });
   }, [
+    addMessage,
     collateralAddress,
     collateralTokenID,
     onApproved,

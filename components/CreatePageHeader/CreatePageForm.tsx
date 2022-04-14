@@ -1,8 +1,10 @@
+import { captureException } from '@sentry/nextjs';
 import { TransactionButton } from 'components/Button';
 import { Form } from 'components/Form';
 import { Input } from 'components/Input';
 import { Select } from 'components/Select';
 import { ethers } from 'ethers';
+import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import {
   INTEREST_RATE_PERCENT_DECIMALS,
   SECONDS_IN_A_DAY,
@@ -56,6 +58,7 @@ export function CreatePageForm({
     watch,
     formState: { errors },
   } = form;
+  const { addMessage } = useGlobalMessages();
   const [{ data }] = useAccount();
   const [{ data: signer }] = useSigner();
   const account = data?.address;
@@ -117,11 +120,16 @@ export function CreatePageForm({
         .catch((err) => {
           setWaitingForTx(false);
           onError();
-          console.error(err);
+          captureException(err);
+          addMessage({
+            kind: 'error',
+            message: 'Loan creation transaction failed.',
+          });
         });
     },
     [
       account,
+      addMessage,
       collateralAddress,
       collateralTokenID,
       onError,
