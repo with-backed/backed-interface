@@ -59,7 +59,7 @@ export async function sendEmailsForTriggerAndEntity(
         generateHTMLForEventsEmail(emailComponentGenerator(r.id)),
         mainnet()
           ? getEmailSubject(emailTrigger, entity)
-          : `RINKEBY: ${getEmailSubject(emailTrigger, entity)}`,
+          : `[TESTNET]: ${getEmailSubject(emailTrigger, entity)}`,
         r.deliveryDestination,
       );
     });
