@@ -18,7 +18,7 @@ export default {
 export const LoanCards = () => {
   return (
     <TwelveColumn>
-      <LoanCardLoading>
+      <LoanCardLoading id="12">
         <Relationship>borrower</Relationship>
         <ExpandedAttributes loan={baseLoan} />
       </LoanCardLoading>

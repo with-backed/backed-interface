@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 import Link from 'next/link';
 import React, { useMemo } from 'react';
 import styles from './LoanCard.module.css';
-import { useTokenMetadata } from 'hooks/useTokenMetadata';
+import { TokenURIAndID, useTokenMetadata } from 'hooks/useTokenMetadata';
 import { Media } from 'components/Media';
 import { GetNFTInfoResponse } from 'lib/getNFTInfo';
 import { Fallback } from 'components/Media/Fallback';
@@ -23,10 +23,11 @@ export function LoanCard({
 }: LoanCardProps) {
   const title = `View loan #${loan.id}`;
 
-  const tokenSpec = useMemo(
+  const tokenSpec: TokenURIAndID = useMemo(
     () => ({
       tokenURI: loan.collateralTokenURI,
       tokenID: ethers.BigNumber.from(loan.collateralTokenId),
+      forceImage: true,
     }),
     [loan.collateralTokenId, loan.collateralTokenURI],
   );
@@ -47,7 +48,7 @@ export function LoanCard({
 
   if (maybeMetadata.isLoading) {
     return (
-      <LoanCardLoading>
+      <LoanCardLoading id={loan.id.toString()}>
         {selectedAddress && <Relationship>{relationship}</Relationship>}
         {attributes}
       </LoanCardLoading>
@@ -105,25 +106,27 @@ export function LoanCardLoaded({
   );
 }
 
-type LoanCardLoadingProps = {};
+type LoanCardLoadingProps = { id: string };
 
 /**
  * Only exported for the Storybook. Please use top-level LoanCard.
  */
 export function LoanCardLoading({
   children,
+  id,
 }: React.PropsWithChildren<LoanCardLoadingProps>) {
   return (
-    <a className={styles['profile-link']}>
-      <div className={styles['profile-card']}>
-        <Fallback />
-        <div className={styles['profile-card-attributes']}>
-          <span>loading name</span>
-
-          {children}
+    <Link href={`/loans/${id}`}>
+      <a className={styles['profile-link']}>
+        <div className={styles['profile-card']}>
+          <Fallback />
+          <div className={styles['profile-card-attributes']}>
+            <span>loading name</span>
+            {children}
+          </div>
         </div>
-      </div>
-    </a>
+      </a>
+    </Link>
   );
 }
 
