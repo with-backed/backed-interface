@@ -53,7 +53,7 @@ function convertIPFS(uri: string) {
     if ((e as any).message !== 'url is not string') {
       // got an annoying false positive message here; uri would definitely be
       // type string but the error would be raised anyway. Skipping those.
-      captureException({ e });
+      captureException(e);
     }
   }
   return uri;
