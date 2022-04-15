@@ -13,7 +13,7 @@ import { HomePageLoans } from 'components/HomePageLoans';
 import { PawnShopHeader } from 'components/PawnShopHeader';
 import Head from 'next/head';
 
-const PAGE_LIMIT = 20;
+const PAGE_LIMIT = 18;
 
 export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
   return {
