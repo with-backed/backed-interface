@@ -6,6 +6,7 @@ import { estimatedRepayment } from 'lib/loans/utils';
 import React, { useEffect, useState } from 'react';
 import { FieldError, UseFormReturn } from 'react-hook-form';
 import type { CreateFormData } from './CreateFormData';
+import text from '../../text/text.yml';
 
 type ExplainerProps = {
   form: UseFormReturn<CreateFormData, object>;
@@ -69,80 +70,42 @@ function Error({
 }
 
 function NoWallet({ context }: InnerProps) {
-  return (
-    <div>
-      First, connect a wallet. Then, follow these steps to create a loan and
-      make it available to lenders.
-    </div>
-  );
+  return <div>{text.en.explainer_bubble.no_wallet}</div>;
 }
 
 function SelectNFT({ context }: InnerProps) {
-  return (
-    <div>
-      Follow these steps to create a loan and make it available to lenders.
-    </div>
-  );
+  return <div>{text.en.explainer_bubble.select_an_nft}</div>;
 }
 
 function AuthorizeNFT({ context }: InnerProps) {
-  return (
-    <div>
-      This allows the Pawn Shop to move your NFT and to transfer it to the
-      lender if you do not repay your loan.
-    </div>
-  );
+  return <div>{text.en.explainer_bubble.authorize_nft}</div>;
 }
 
 function PendingAuthorization({ context }: InnerProps) {
-  return <div>This can take a few minutes.</div>;
+  return <div>{text.en.explainer_bubble.pending_authorization}</div>;
 }
 
 function LoanFormUnfocused({ context }: InnerProps) {
-  return (
-    <div>
-      Set your loan terms. Any lender who wishes can meet these terms, and you
-      will automatically receive the loan amount minus a 1% origination fee.
-    </div>
-  );
+  return <div>{text.en.explainer_bubble.loan_form_unfocused}</div>;
 }
 
 function Denomination({ context }: InnerProps) {
-  return (
-    <div>
-      This is the token used for the loan principal, interest, and repayment.
-    </div>
-  );
+  return <div>{text.en.explainer_bubble.denomination}</div>;
 }
 
 function LoanAmount({ context }: InnerProps) {
-  return (
-    <div>
-      Lenders can give you a larger loan, but this is the minimum amount
-      you&apos;ll accept.
-    </div>
-  );
+  return <div>{text.en.explainer_bubble.loan_amount}</div>;
 }
 
 function MinimumDuration({ context }: InnerProps) {
-  return (
-    <div>
-      Lenders can give you a longer loan and reset the duration, but this is the
-      minimum length of a loan you&apos;ll accept.
-    </div>
-  );
+  return <div>{text.en.explainer_bubble.minimum_duration}</div>;
 }
 
 function MaximumInterestRate({ context }: InnerProps) {
   if (context.interestRate) {
     return <EstimatedRepayment context={context} />;
   }
-  return (
-    <div>
-      Lenders can give you a lower interest rate, but this is the maximum
-      interest rate you&apos;ll pay.
-    </div>
-  );
+  return <div>{text.en.explainer_bubble.maximum_interest_rate}</div>;
 }
 
 function EstimatedRepayment({
@@ -175,7 +138,7 @@ function EstimatedRepayment({
     const humanRepayment = formatUnits(repayment.toString(), decimals);
     return (
       <div>
-        The estimated repayment at maturity will be{' '}
+        {text.en.explainer_bubble.human_repayment}
         <b>
           {humanRepayment} {denomination.symbol}.
         </b>
@@ -187,20 +150,15 @@ function EstimatedRepayment({
 }
 
 function MintBorrowerTicket({ context }: InnerProps) {
-  return (
-    <div>
-      This is the last step of creating a loan. You will be issued an NFT
-      representing your rights and obligations as a borrower. This cannot be
-      undone without closing the loan and repaying any loan amount you&apos;ve
-      received and interest accrued.
-    </div>
-  );
+  return <div>{text.en.explainer_bubble.mint_borrower_ticket}</div>;
 }
 
 function PendingMintBorrowerAuthorization({ context }: InnerProps) {
-  return <div>This can take a few more minutes.</div>;
+  return (
+    <div>{text.en.explainer_bubble.pending_mint_borrower_authorizaiton}</div>
+  );
 }
 
 function MintBorrowerTicketSuccess({ context }: InnerProps) {
-  return <div>Your loan is created and available for lenders to see!</div>;
+  return <div>{text.en.explainer_bubble.mint_borrower_ticket_success}</div>;
 }

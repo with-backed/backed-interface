@@ -12,6 +12,7 @@ import { SortOptionValue } from 'components/AdvancedSearch/SortDropdown';
 import { HomePageLoans } from 'components/HomePageLoans';
 import { PawnShopHeader } from 'components/PawnShopHeader';
 import Head from 'next/head';
+import text from '../text/text.yml';
 
 const PAGE_LIMIT = 20;
 
@@ -26,6 +27,13 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
 type HomeProps = {
   loans: SubgraphLoan[];
 };
+
+String.prototype.interpolate = function (params) {
+  const names = Object.keys(params);
+  const vals = Object.values(params);
+  return new Function(...names, `return \`${this}\`;`)(...vals);
+};
+
 export default function Home({ loans }: HomeProps) {
   const ref = useRef() as React.MutableRefObject<HTMLInputElement>;
 
@@ -79,7 +87,7 @@ export default function Home({ loans }: HomeProps) {
 
         <div ref={ref} style={{ gridColumn: 'span 12' }}>
           <p>
-            Welcome! Homepage in progress, try{' '}
+            {text.en.homepage}, try{' '}
             <Link href="/loans/create"> Creating a loan</Link>
           </p>
           {process.env.NEXT_PUBLIC_ENV === 'rinkeby' && (

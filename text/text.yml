@@ -1,0 +1,32 @@
+en:
+  banner: 
+    switch_network_fail: "Looks like your wallet does not support automatic network changes. Please change the network manually."
+    wrong_network_message: "You're viewing data from the ${expectedChainName} network, but your
+      wallet is connected to the ${currentChainName} network. "
+  
+  homepage: "Welcome! Homepage in progress"
+
+  explainer_bubble:
+    no_wallet: "First, connect a wallet. Then, follow these steps to create a loan and
+        make it available to lenders."
+    select_an_nft: "Follow these steps to create a loan and make it available to lenders."
+    authorize_nft: "This allows the Pawn Shop to move your NFT and to transfer it to the
+        lender if you do not repay your loan."
+    pending_authorization: "This can take a few minutes."
+    loan_form_unfocused: "Set your loan terms. Any lender who wishes can meet these terms, and you
+        will automatically receive the loan amount minus a 1% origination fee."
+    denomination: "This is the token used for the loan principal, interest, and repayment."
+    loan_amount: "Lenders can give you a larger loan, but this is the minimum amount
+        you'll accept."
+    minimum_duration: "Lenders can give you a longer loan and reset the duration, but this is the
+        minimum length of a loan you'll accept."
+    maximum_interest_rate: "Lenders can give you a lower interest rate, but this is the maximum
+        interest rate you'll pay."
+    human_repayment: "The estimated repayment at maturity will be "
+    mint_borrower_ticket: "This is the last step of creating a loan. You will be issued an NFT
+        representing your rights and obligations as a borrower. This cannot be
+        undone without closing the loan and repaying any loan amount you've
+        received and interest accrued."
+    pending_mint_borrower_authorizaiton: "This can take a few more minutes."
+    mint_borrower_ticket_success: "Your loan is created and available for lenders to see!"
+    

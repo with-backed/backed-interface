@@ -30,9 +30,20 @@ const sentryWebpackPluginOptions = {
 
 // Make sure adding Sentry options is the last code to run before exporting, to
 // ensure that your source maps include changes from all other Webpack plugins
-module.exports = shouldInitializeSentry
+const sentry = shouldInitializeSentry
   ? withSentryConfig(
       withBundleAnalyzer(moduleExports),
       sentryWebpackPluginOptions,
     )
   : withBundleAnalyzer(moduleExports);
+
+module.exports = {
+  webpack: function (config) {
+    config.module.rules.push({
+      test: /\.ya?ml$/,
+      use: 'js-yaml-loader',
+    });
+    return config;
+  },
+  sentry,
+};
