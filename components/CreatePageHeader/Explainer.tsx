@@ -13,7 +13,7 @@ type ExplainerProps = {
   top: number;
 };
 
-type InnerProps = { context: CreateFormData };
+type InnerProps = { context: CreateFormData; decimals: number | null };
 
 export const explainers: {
   [key: string]: (props: InnerProps) => JSX.Element;
@@ -33,13 +33,24 @@ export const explainers: {
 };
 
 export function Explainer({ form, state, top }: ExplainerProps) {
+  const context = form.watch();
+  const [decimals, setDecimals] = useState<number | null>(null);
+  useEffect(() => {
+    if (context.denomination) {
+      const loanAssetContract = jsonRpcERC20Contract(
+        context.denomination.address,
+      );
+      loanAssetContract.decimals().then(setDecimals);
+    }
+  }, [context.denomination, setDecimals]);
+
   const error = Object.values(form.formState.errors)[0];
   const Inner = explainers[state];
 
   return (
     <ExplainerWrapper top={top} display={!!error ? 'error' : 'normal'}>
       {!!error && <Error error={error} />}
-      {!error && <Inner context={form.watch()} />}
+      {!error && <Inner context={form.watch()} decimals={decimals} />}
     </ExplainerWrapper>
   );
 }
@@ -133,9 +144,9 @@ function MinimumDuration({ context }: InnerProps) {
   );
 }
 
-function MaximumInterestRate({ context }: InnerProps) {
+function MaximumInterestRate({ context, decimals }: InnerProps) {
   if (context.interestRate) {
-    return <EstimatedRepayment context={context} />;
+    return <EstimatedRepayment context={context} decimals={decimals} />;
   }
   return (
     <div>
@@ -147,18 +158,11 @@ function MaximumInterestRate({ context }: InnerProps) {
 
 function EstimatedRepayment({
   context: { denomination, duration, interestRate, loanAmount },
+  decimals,
 }: InnerProps) {
-  const [decimals, setDecimals] = useState<number | null>(null);
-  useEffect(() => {
-    if (denomination) {
-      const loanAssetContract = jsonRpcERC20Contract(denomination.address);
-      loanAssetContract.decimals().then(setDecimals);
-    }
-  }, [denomination, setDecimals]);
-
   if (interestRate && loanAmount && duration && denomination && decimals) {
     const parsedLoanAmount = ethers.utils.parseUnits(
-      loanAmount.toString(),
+      parseFloat(loanAmount).toFixed(decimals),
       decimals,
     );
     const durationDaysBigNum = ethers.BigNumber.from(
@@ -166,7 +170,9 @@ function EstimatedRepayment({
     );
     // multiply by 10, min interest = 0.1% = 1 in the contract
     // 10 = 10 ** INTEREST_RATE_DECIMALS - 2
-    const interest = ethers.BigNumber.from(parseFloat(interestRate) * 10);
+    const interest = ethers.BigNumber.from(
+      Math.floor(parseFloat(interestRate) * 10),
+    );
     const repayment = estimatedRepayment(
       interest,
       durationDaysBigNum,
