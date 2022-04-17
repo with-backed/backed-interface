@@ -22,13 +22,21 @@ async function handler(
     const decodedUri = decodeURIComponent(uri as string);
     const resolvedUri = convertIPFS(decodedUri);
     const tokenURIRes = await fetch(resolvedUri);
-    const { name, description, tokenId, image, animation_url, external_url } =
-      await tokenURIRes.json();
+    const {
+      name,
+      description,
+      tokenId,
+      image,
+      image_url,
+      animation_url,
+      external_url,
+    } = await tokenURIRes.json();
+
     res.status(200).json({
       name,
       description,
       tokenId,
-      image: convertIPFS(image),
+      image: convertIPFS(image) || convertIPFS(image_url),
       animation_url: convertIPFS(animation_url),
       external_url,
     });
