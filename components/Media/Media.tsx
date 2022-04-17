@@ -23,7 +23,7 @@ export const Media: FunctionComponent<MediaProps> = ({
     setHasError(true);
   }, [setHasError]);
 
-  if (hasError) {
+  if (hasError || !media) {
     return <Fallback />;
   }
 
