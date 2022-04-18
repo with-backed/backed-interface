@@ -101,6 +101,12 @@
       },
       {
         "indexed": false,
+        "internalType": "bool",
+        "name": "allowLoanAmountIncrease",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
         "internalType": "uint256",
         "name": "minLoanAmount",
         "type": "uint256"
@@ -343,8 +349,13 @@
       },
       {
         "internalType": "uint16",
-        "name": "maxPerAnumInterest",
+        "name": "maxPerAnnumInterest",
         "type": "uint16"
+      },
+      {
+        "internalType": "bool",
+        "name": "allowLoanAmountIncrease",
+        "type": "bool"
       },
       {
         "internalType": "uint128",
@@ -479,7 +490,7 @@
       },
       {
         "internalType": "uint16",
-        "name": "perAnumInterestRate",
+        "name": "perAnnumInterestRate",
         "type": "uint16"
       },
       {
@@ -496,6 +507,16 @@
         "internalType": "address",
         "name": "collateralContractAddress",
         "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "allowLoanAmountIncrease",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint88",
+        "name": "originationFeeRate",
+        "type": "uint88"
       },
       {
         "internalType": "address",
@@ -540,7 +561,7 @@
           },
           {
             "internalType": "uint16",
-            "name": "perAnumInterestRate",
+            "name": "perAnnumInterestRate",
             "type": "uint16"
           },
           {
@@ -557,6 +578,16 @@
             "internalType": "address",
             "name": "collateralContractAddress",
             "type": "address"
+          },
+          {
+            "internalType": "bool",
+            "name": "allowLoanAmountIncrease",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint88",
+            "name": "originationFeeRate",
+            "type": "uint88"
           },
           {
             "internalType": "address",
@@ -688,6 +719,44 @@
     "name": "setLendTicketContract",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes",
+        "name": "",
+        "type": "bytes"
+      },
+      {
+        "internalType": "bytes",
+        "name": "",
+        "type": "bytes"
+      }
+    ],
+    "name": "tokensReceived",
+    "outputs": [],
+    "stateMutability": "pure",
     "type": "function"
   },
   {
