@@ -30,7 +30,12 @@ export default async function subgraphLoans(
   sort: Loan_OrderBy = Loan_OrderBy.CreatedAtTimestamp,
   sortDirection: OrderDirection = OrderDirection.Desc,
 ): Promise<Loan[]> {
-  const whereFilter: Loan_Filter = { closed: false };
+  const whereFilter: Loan_Filter = {
+    closed: false,
+    id_not_in: !!process.env.LOAN_ID_BLOCK_LIST
+      ? process.env.LOAN_ID_BLOCK_LIST.split(',')
+      : undefined,
+  };
   const queryArgs: QueryLoansArgs = {
     where: whereFilter,
     first,
