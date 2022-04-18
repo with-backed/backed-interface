@@ -10,7 +10,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
   }
 
   try {
-    const currentTimestamp = new Date().getTime() / 1000;
+    const currentTimestamp = Math.floor(new Date().getTime() / 1000);
     console.log(
       `running notifications cron job with timestamp ${currentTimestamp}`,
     );
