@@ -1,5 +1,9 @@
-import { convertERC20ToCurrency, ERC20Amount } from 'lib/erc20Helper';
-import { useEffect, useMemo, useState } from 'react';
+import {
+  convertERC20ToCurrency,
+  CurrentRatesCache,
+  ERC20Amount,
+} from 'lib/erc20Helper';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 type BaseProps = {
   currency: 'usd' | 'gbp' | 'eur';
@@ -29,6 +33,16 @@ export function DisplayCurrency(props: any): JSX.Element | null {
   );
 
   const [total, setTotal] = useState<number | null>(null);
+  const [rateCache, setRateCache] = useState<CurrentRatesCache>({});
+  const setKeyValueForCache = useCallback(
+    (newKey: string, newValue: { nominal: number; expiry: number }) => {
+      setRateCache((prevRateCache: CurrentRatesCache) => ({
+        ...prevRateCache,
+        [newKey]: newValue,
+      }));
+    },
+    [setRateCache],
+  );
   useEffect(() => {
     if (!!process.env.NEXT_PUBLIC_COINGECKO_KILLSWITCH_ON) {
       setTotal(null);
@@ -36,7 +50,12 @@ export function DisplayCurrency(props: any): JSX.Element | null {
     }
 
     async function fetchTotalAmounts() {
-      const total = await convertERC20ToCurrency(amounts, currency);
+      const total = await convertERC20ToCurrency(
+        amounts,
+        currency,
+        rateCache,
+        setKeyValueForCache,
+      );
       if (!total) {
         setTotal(null);
       } else {
