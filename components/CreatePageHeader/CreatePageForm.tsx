@@ -97,6 +97,8 @@ export function CreatePageForm({
           parsedInterestRate * 10 ** (INTEREST_RATE_PERCENT_DECIMALS - 2),
         ),
       );
+      // TODO: allow user to select
+      const allowLoanAmountIncrease = true;
 
       const contract = web3LoanFacilitator(signer!);
       onSubmit();
@@ -104,6 +106,7 @@ export function CreatePageForm({
         collateralTokenID,
         collateralAddress,
         annualInterestRate,
+        allowLoanAmountIncrease,
         ethers.utils.parseUnits(loanAmount.toString(), loanAssetDecimals),
         denomination.address,
         durationInSeconds,
