@@ -23,6 +23,7 @@ export const subgraphCreateEvent: CreateEvent = {
   minDurationSeconds: subgraphLoanForEvents.durationSeconds,
   loan: subgraphLoanForEvents,
   timestamp: 1641574026,
+  allowLoanAmountIncrease: true,
 };
 
 export const subgraphBuyoutEvent: BuyoutEvent = {
