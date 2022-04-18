@@ -17,6 +17,8 @@ import {
   formattedLoanTerms,
   getEstimatedRepaymentAndMaturity,
 } from 'lib/events/consumers/formattingHelpers';
+import { siteUrl } from 'lib/chainEnv';
+import { captureMessage } from '@sentry/nextjs';
 
 type RenderedTerms = {
   prefix?: string;
@@ -50,6 +52,7 @@ export function getEmailSubject(
   const emailMetadata = notificationEventToEmailMetadata[emailTrigger];
   if (!emailMetadata) {
     // fatal bugsnag, invalid email trigger was passed from SNS push
+    captureMessage(`Invalid emailTrigger provided: ${emailTrigger}`);
     return '';
   }
   return emailMetadata.getSubjectFromEntity(entity);
@@ -68,6 +71,7 @@ export async function getEmailComponentsMap(
   const emailMetadata = notificationEventToEmailMetadata[emailTrigger];
   if (!emailMetadata) {
     // fatal bugsnag, invalid email trigger was passed from SNS push
+    captureMessage(`Invalid emailTrigger provided: ${emailTrigger}`);
     return null;
   }
 
@@ -140,7 +144,7 @@ const notificationEventToEmailMetadata: {
           `At this rate, repayment of ${repayment} ${event.loan.loanAssetSymbol} will be due on ${maturity}.`,
         ],
         viewLinks: [
-          `https://nftpawnshop.xyz/loans/${event.loan.id}`,
+          `${siteUrl()}/loans/${event.loan.id}`,
           `${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/tx/${event.id}`,
         ],
       };
@@ -150,19 +154,25 @@ const notificationEventToEmailMetadata: {
           ({
             ...sharedComponents,
             mainMessage: `The loan created by ${borrower} has been bought out with new terms.`,
-            footer: `https://nftpawnshop.xyz/profile/${event.loan.borrowTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${siteUrl()}/profile/${
+              event.loan.borrowTicketHolder
+            }?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
         [event.newLender]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
             mainMessage: `${newLender} replaced ${oldLender} as lender.`,
-            footer: `https://nftpawnshop.xyz/profile/${event.newLender}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${siteUrl()}/profile/${
+              event.newLender
+            }?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
         [event.lendTicketHolder]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
             mainMessage: `${oldLender} has been replaced as the lender on loan #${event.loan.id}.`,
-            footer: `https://nftpawnshop.xyz/profile/${event.lendTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${siteUrl()}/profile/${
+              event.lendTicketHolder
+            }?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
       };
     },
@@ -201,7 +211,7 @@ const notificationEventToEmailMetadata: {
           `At this rate, repayment of ${repayment} ${event.loan.loanAssetSymbol} will be due on ${maturity}`,
         ],
         viewLinks: [
-          `https://nftpawnshop.xyz/loans/${event.loan.id}`,
+          `${siteUrl()}/loans/${event.loan.id}`,
           `${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/tx/${event.id}`,
         ],
       };
@@ -210,12 +220,16 @@ const notificationEventToEmailMetadata: {
         [event.borrowTicketHolder]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `https://nftpawnshop.xyz/profile/${event.borrowTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${siteUrl()}/profile/${
+              event.borrowTicketHolder
+            }?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
         [event.lender]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `https://nftpawnshop.xyz/profile/${event.lender}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${siteUrl()}/profile/${
+              event.lender
+            }?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
       };
     },
@@ -264,7 +278,7 @@ const notificationEventToEmailMetadata: {
           `The total cost to repay was ${formattedTotalRepay} ${event.loan.loanAssetSymbol}.`,
         ],
         viewLinks: [
-          `https://nftpawnshop.xyz/loans/${event.loan.id}`,
+          `${siteUrl()}/loans/${event.loan.id}`,
           `${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/tx/${event.id}`,
         ],
       };
@@ -273,12 +287,16 @@ const notificationEventToEmailMetadata: {
         [event.repayer]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `https://nftpawnshop.xyz/profile/${event.repayer}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${siteUrl()}/profile/${
+              event.repayer
+            }?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
         [event.lendTicketHolder]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `https://nftpawnshop.xyz/profile/${event.lendTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${siteUrl()}/profile/${
+              event.lendTicketHolder
+            }?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
       };
     },
@@ -325,7 +343,7 @@ const notificationEventToEmailMetadata: {
           )}.`,
         ],
         viewLinks: [
-          `https://nftpawnshop.xyz/loans/${event.loan.id}`,
+          `${siteUrl()}/loans/${event.loan.id}`,
           `${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/tx/${event.id}`,
         ],
       };
@@ -334,12 +352,16 @@ const notificationEventToEmailMetadata: {
         [event.borrowTicketHolder]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `https://nftpawnshop.xyz/profile/${event.borrowTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${siteUrl()}/profile/${
+              event.borrowTicketHolder
+            }?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
         [event.lendTicketHolder]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `https://nftpawnshop.xyz/profile/${event.lendTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${siteUrl()}/profile/${
+              event.lendTicketHolder
+            }?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
       };
     },
@@ -387,20 +409,24 @@ const notificationEventToEmailMetadata: {
           `They accrued ${interestAccruedSoFar} ${loan.loanAssetSymbol} over that period.`,
           `At this rate, repayment of ${repayment} ${loan.loanAssetSymbol} will be due on ${maturity}`,
         ],
-        viewLinks: [`https://nftpawnshop.xyz/loans/${loan.id}`, ''],
-        footer: `https://nftpawnshop.xyz`,
+        viewLinks: [`${siteUrl()}/loans/${loan.id}`, ''],
+        footer: `${siteUrl()}`,
       };
 
       return {
         [loan.borrowTicketHolder]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `https://nftpawnshop.xyz/profile/${loan.borrowTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${siteUrl()}/profile/${
+              loan.borrowTicketHolder
+            }?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
         [loan.lendTicketHolder]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `https://nftpawnshop.xyz/profile/${loan.lendTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${siteUrl()}/profile/${
+              loan.lendTicketHolder
+            }?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
       };
     },
@@ -454,20 +480,24 @@ const notificationEventToEmailMetadata: {
           )} with a repayment cost of ${repayment} ${loan.loanAssetSymbol}`,
           `Unless borrower ${borrower} repays, ${lender} may seize the collateral NFT.`,
         ],
-        viewLinks: [`https://nftpawnshop.xyz/loans/${loan.id}`, ''],
-        footer: `https://nftpawnshop.xyz`,
+        viewLinks: [`${siteUrl()}/loans/${loan.id}`, ''],
+        footer: `${siteUrl()}`,
       };
 
       return {
         [loan.borrowTicketHolder]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `https://nftpawnshop.xyz/profile/${loan.borrowTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${siteUrl()}/profile/${
+              loan.borrowTicketHolder
+            }?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
         [loan.lendTicketHolder]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `https://nftpawnshop.xyz/profile/${loan.lendTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${siteUrl()}/profile/${
+              loan.lendTicketHolder
+            }?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
       };
     },
