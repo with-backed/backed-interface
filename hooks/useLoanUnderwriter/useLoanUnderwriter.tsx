@@ -8,6 +8,7 @@ import { useAccount, useSigner } from 'wagmi';
 import { captureException } from '@sentry/nextjs';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import { EtherscanTransactionLink } from 'components/EtherscanLink';
+import Link from 'next/link';
 
 // Annoyingly, the form data gets automatically parsed into numbers, so we can't use the LoanFormData type
 type Values = { interestRate: number; duration: number; loanAmount: number };
@@ -49,7 +50,14 @@ export function useLoanUnderwriter(
           refresh();
           addMessage({
             kind: 'success',
-            message: '💸 You are now the Lender on this loan!',
+            message: (
+              <p>
+                {
+                  '💸 You are now the Lender on this loan! Subscribe to activity notifications from your'
+                }
+                <Link href={`/profile/${account}`}> profile page</Link>.
+              </p>
+            ),
           });
         })
         .catch((err) => {
