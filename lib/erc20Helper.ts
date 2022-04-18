@@ -31,7 +31,6 @@ export async function convertERC20ToCurrency(
     if (cache[cacheKey] && now < cache[cacheKey].expiry) {
       rate = cache[cacheKey].nominal;
     } else {
-      console.log('made request to coingecko');
       rate = await getUnitPriceForCoin(amounts[i].address, currency);
 
       if (!rate) return null;
