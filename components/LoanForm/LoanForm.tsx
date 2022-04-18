@@ -125,10 +125,26 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
     );
   }
 
+  if (viewerIsLender) {
+    return (
+      <LoanOfferBetterTermsDisclosure
+        textWrapperClassName={styles['disclosure-text-wrapper']}
+        disclosureTextClassName={styles['disclosure-text']}>
+        <div className={styles['form-wrapper']}>
+          <LoanFormBetterTerms
+            balance={balance}
+            loan={loan}
+            needsAllowance={needsAllowance}
+            setNeedsAllowance={setNeedsAllowance}
+            refresh={refresh}
+          />
+        </div>
+      </LoanOfferBetterTermsDisclosure>
+    );
+  }
+
   return (
-    <LoanOfferBetterTermsDisclosure
-      textWrapperClassName={styles['disclosure-text-wrapper']}
-      disclosureTextClassName={styles['disclosure-text']}>
+    <LoanFormDisclosure title={'Offer better terms'} className={styles.wrapper}>
       <div className={styles['form-wrapper']}>
         <LoanFormBetterTerms
           balance={balance}
@@ -138,6 +154,6 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
           refresh={refresh}
         />
       </div>
-    </LoanOfferBetterTermsDisclosure>
+    </LoanFormDisclosure>
   );
 }
