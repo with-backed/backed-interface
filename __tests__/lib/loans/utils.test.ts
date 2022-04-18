@@ -26,7 +26,7 @@ describe('parseSubgraphLoan', () => {
         subgraphLoan.accumulatedInterest,
       ),
       borrower: ethers.utils.getAddress(subgraphLoan.borrowTicketHolder),
-      lender: ethers.utils.getAddress(subgraphLoan.lendTicketHolder),
+      lender: null,
       perAnumInterestRate: ethers.BigNumber.from(
         subgraphLoan.perAnumInterestRate,
       ),
@@ -48,7 +48,7 @@ describe('parseSubgraphLoan', () => {
       // doesn't change. In the future it will be worthwhile to have an
       // integration test that checks the node and graph remain in sync.
       expect(result.interestOwed).toEqual(
-        ethers.BigNumber.from('0x05dcef97daecb980'),
+        ethers.BigNumber.from('0x099b222643db7333'),
       );
     });
   });
