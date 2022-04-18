@@ -41,6 +41,7 @@ export const subgraphLoan: SubgraphLoan = {
   collateralTokenURI:
     'ipfs://QmXuEFJVjQrHX7GRWY2WnbUP59re3WsyDLZoKqXvRPSxBY/147',
   collateralName: 'monarchs',
+  allowLoanAmountIncrease: true,
   __typename: 'Loan',
 };
 

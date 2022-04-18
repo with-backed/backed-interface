@@ -20,4 +20,5 @@ fragment allLoanProperties on Loan {
   createdAtTimestamp
   lastUpdatedAtTimestamp
   numEvents
+  allowLoanAmountIncrease
 }
