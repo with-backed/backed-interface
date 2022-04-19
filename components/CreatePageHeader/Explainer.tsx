@@ -43,7 +43,11 @@ export function Explainer({ form, state, top }: ExplainerProps) {
   }, [context.denomination, setDecimals]);
 
   const error = Object.values(form.formState.errors)[0];
-  const Inner = explainers[state];
+  const Inner = explainers[state] || null;
+
+  if (!error && !Inner) {
+    return null;
+  }
 
   return (
     <ExplainerWrapper top={top} display={!!error ? 'error' : 'normal'}>
