@@ -18,8 +18,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
     const { liquidationOccurringLoans, liquidationOccurredLoans } =
       await getLiquidatedLoansForTimestamp(currentTimestamp);
 
-    console.log({ liquidationOccurringLoans, liquidationOccurredLoans });
-
     for (
       let loanIndex = 0;
       loanIndex < liquidationOccurringLoans.length;
