@@ -16,6 +16,6 @@ export const createPageFormSchema = Yup.object({
     )
     .required(),
   duration: Yup.number()
-    .moreThan(0, 'Duration must be longer than 0 days.')
+    .moreThan(0, 'Duration must be greater than 0.')
     .required(),
 });
