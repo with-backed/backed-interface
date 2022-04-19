@@ -1,4 +1,4 @@
-# backed-client
+# backed-interface
 
 ![backed](/components/PawnShopHeader/backed-bunny.png 'backed')
 
