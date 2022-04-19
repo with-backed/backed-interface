@@ -8,26 +8,26 @@ import {
   useState,
 } from 'react';
 
-export type CurrentRatesCache = {
+export type CurrentCachedRates = {
   [key: string]: {
     nominal: number;
     expiry: number;
   };
 };
 
-type RatesCacheAccessor = {
+type CachedRatesAccessor = {
   getRate: (erc20Address: string, fiat: string) => Promise<number | null>;
 };
 
-export const RatesCacheContext = createContext<RatesCacheAccessor>({
+export const CachedRatesContext = createContext<CachedRatesAccessor>({
   getRate: async () => null,
 });
 
 export function CachedRatesProvider({ children }: PropsWithChildren<{}>) {
-  const [rateCache, setRateCache] = useState<CurrentRatesCache>({});
+  const [rateCache, setRateCache] = useState<CurrentCachedRates>({});
   const setKeyValueForCache = useCallback(
     (newKey: string, newValue: { nominal: number; expiry: number }) => {
-      setRateCache((prevRateCache: CurrentRatesCache) => ({
+      setRateCache((prevRateCache: CurrentCachedRates) => ({
         ...prevRateCache,
         [newKey]: newValue,
       }));
@@ -59,13 +59,13 @@ export function CachedRatesProvider({ children }: PropsWithChildren<{}>) {
   );
 
   return (
-    <RatesCacheContext.Provider value={{ getRate }}>
+    <CachedRatesContext.Provider value={{ getRate }}>
       {children}
-    </RatesCacheContext.Provider>
+    </CachedRatesContext.Provider>
   );
 }
 
 export function useCachedRates() {
-  const ratesCache = useContext(RatesCacheContext);
+  const ratesCache = useContext(CachedRatesContext);
   return ratesCache;
 }
