@@ -21,13 +21,14 @@ export const explainers: {
   noWallet: NoWallet,
   selectNFT: SelectNFT,
   authorizeNFT: AuthorizeNFT,
-  loanFormUnfocused: LoanFormUnfocused,
+  loanFormUnfocused: SetLoanTerms,
   denomination: Denomination,
   loanAmount: LoanAmount,
   minimumDuration: MinimumDuration,
   maximumInterestRate: MaximumInterestRate,
   mintBorrowerTicket: MintBorrowerTicket,
   mintBorrowerTicketSuccess: MintBorrowerTicketSuccess,
+  setLoanTerms: SetLoanTerms,
 };
 
 export function Explainer({ form, state, top }: ExplainerProps) {
@@ -103,15 +104,6 @@ function AuthorizeNFT({ context }: InnerProps) {
     <div>
       This allows the Pawn Shop to move your NFT and to transfer it to the
       lender if you do not repay your loan.
-    </div>
-  );
-}
-
-function LoanFormUnfocused({ context }: InnerProps) {
-  return (
-    <div>
-      Set your loan terms. Any lender who wishes can meet these terms, and you
-      will automatically receive the loan amount minus a 1% origination fee.
     </div>
   );
 }
@@ -203,4 +195,17 @@ function MintBorrowerTicket({ context }: InnerProps) {
 
 function MintBorrowerTicketSuccess({ context }: InnerProps) {
   return <div>Your loan is created and available for lenders to see!</div>;
+}
+
+function SetLoanTerms({ context }: InnerProps) {
+  return (
+    <div>
+      When a lender meets these terms, you will immediately receive the loan
+      amount minus a 1% origination fee.
+      <br />
+      Lenders can be &ldquo;bought out&rdquo; by new lenders offering better
+      terms (higher amount, lower rate, or longer duration). When this happens,
+      the new terms will instantly go into effect.
+    </div>
+  );
 }
