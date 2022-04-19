@@ -1,8 +1,5 @@
-import {
-  convertERC20ToCurrency,
-  CurrentRatesCache,
-  ERC20Amount,
-} from 'lib/erc20Helper';
+import { useCachedRates } from 'hooks/useCachedRates/useCachedRates';
+import { ERC20Amount } from 'lib/erc20Helper';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 type BaseProps = {
@@ -19,6 +16,7 @@ export function DisplayCurrency(props: SingleAmount): JSX.Element | null;
 export function DisplayCurrency(props: AggregateAmounts): JSX.Element | null;
 export function DisplayCurrency(props: any): JSX.Element | null {
   const { currency } = props as SingleAmount | AggregateAmounts;
+  const { getRate } = useCachedRates();
 
   const formatter = useMemo(() => {
     return new Intl.NumberFormat('en-US', { currency, style: 'currency' });
@@ -33,16 +31,6 @@ export function DisplayCurrency(props: any): JSX.Element | null {
   );
 
   const [total, setTotal] = useState<number | null>(null);
-  const [rateCache, setRateCache] = useState<CurrentRatesCache>({});
-  const setKeyValueForCache = useCallback(
-    (newKey: string, newValue: { nominal: number; expiry: number }) => {
-      setRateCache((prevRateCache: CurrentRatesCache) => ({
-        ...prevRateCache,
-        [newKey]: newValue,
-      }));
-    },
-    [setRateCache],
-  );
   useEffect(() => {
     if (!!process.env.NEXT_PUBLIC_COINGECKO_KILLSWITCH_ON) {
       setTotal(null);
@@ -50,17 +38,18 @@ export function DisplayCurrency(props: any): JSX.Element | null {
     }
 
     async function fetchTotalAmounts() {
-      const total = await convertERC20ToCurrency(
-        amounts,
-        currency,
-        rateCache,
-        setKeyValueForCache,
-      );
-      if (!total) {
-        setTotal(null);
-      } else {
-        setTotal(total);
+      let total = 0;
+      for (let i = 0; i < amounts.length; i++) {
+        const rate = await getRate(amounts[i].address, currency);
+
+        if (!rate) {
+          setTotal(null);
+          return;
+        }
+
+        total += parseFloat(amounts[i].nominal) * rate;
       }
+      setTotal(total);
     }
     fetchTotalAmounts();
   }, [amounts, currency]);
