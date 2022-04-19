@@ -3,6 +3,7 @@ import { TransactionButton } from 'components/Button';
 import { EtherscanTransactionLink } from 'components/EtherscanLink';
 import { Form } from 'components/Form';
 import { Input } from 'components/Input';
+import { LoanTermsDisclosure } from 'components/LoanTermsDisclosure';
 import { Select } from 'components/Select';
 import { ethers } from 'ethers';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
@@ -67,6 +68,7 @@ export function CreatePageForm({
   const [txHash, setTxHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
   const [loanAssetOptions, setLoanAssetOptions] = useState<LoanAsset[]>([]);
+  const [hasReviewed, setHasReviewed] = useState(false);
 
   const watchAllFields = watch();
 
@@ -246,6 +248,8 @@ export function CreatePageForm({
           {...register('interestRate', { onBlur: handleBlur })}
         />
       </label>
+
+      <LoanTermsDisclosure terms={watchAllFields} onClick={() => {}} />
 
       <TransactionButton
         id="mintBorrowerTicket"
