@@ -35,6 +35,8 @@ export async function getLiquidatedLoansForTimestamp(
   // in a perfect world, currentTimestamp === currentRunTimestamp, but with inconsistincies in our cron or anything else, they may differ
   const currentRunTimestamp = pastTimestamp + notificationsFreq * 3600;
 
+  console.log({ currentRunTimestamp });
+
   const liquidationOccurringLoans = await getLoansExpiringWithin(
     currentRunTimestamp + (HOURS_IN_DAY + notificationsFreq) * 3600,
     currentRunTimestamp + HOURS_IN_DAY * 3600,
