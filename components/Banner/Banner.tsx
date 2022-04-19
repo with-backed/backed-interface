@@ -16,12 +16,14 @@ export function Banner({
   return (
     <div className={styles[kind]}>
       <div className={styles.inner}>{children}</div>
-      <button
-        aria-label="close message"
-        className={styles.close}
-        onClick={close}>
-        ×
-      </button>
+      {!!close && (
+        <button
+          aria-label="close message"
+          className={styles.close}
+          onClick={close}>
+          ×
+        </button>
+      )}
     </div>
   );
 }

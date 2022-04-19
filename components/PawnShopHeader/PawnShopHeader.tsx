@@ -12,6 +12,7 @@ import borkedBunny from './borked-bunny.png';
 import pepe from './pepe-bunny-line.png';
 import { useKonami } from 'hooks/useKonami';
 import Image from 'next/image';
+import { WrongNetwork } from 'components/Banner/messages';
 
 type PawnShopHeaderProps = {
   isErrorPage?: boolean;
@@ -29,6 +30,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = (
   return (
     <>
       <div className={styles['banner-container']}>
+        <WrongNetwork />
         {messages.map((m) => {
           const close = () => removeMessage(m);
           return (

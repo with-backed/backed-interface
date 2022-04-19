@@ -3,17 +3,16 @@ import { ethers } from 'ethers';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import React, { useCallback, useMemo } from 'react';
 import { useNetwork } from 'wagmi';
+import { Banner } from '../Banner';
 
-type WrongNetworkProps = {
-  currentChainId: number;
-  expectedChainId: number;
-};
-export const WrongNetwork = ({
-  currentChainId,
-  expectedChainId,
-}: WrongNetworkProps) => {
-  const [{}, switchNetwork] = useNetwork();
+const expectedChainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID as string);
+
+type WrongNetworkProps = {};
+export const WrongNetwork = ({}: WrongNetworkProps) => {
+  const [{ data }, switchNetwork] = useNetwork();
   const { addMessage } = useGlobalMessages();
+
+  const chainId = data.chain?.id;
 
   const handleClick = useCallback(async () => {
     try {
@@ -25,25 +24,34 @@ export const WrongNetwork = ({
           'Looks like your wallet does not support automatic network changes. Please change the network manually.',
       });
     }
-  }, [addMessage, expectedChainId, switchNetwork]);
+  }, [addMessage, switchNetwork]);
 
   const currentChainName = useMemo(() => {
-    const rawName = ethers.providers.getNetwork(currentChainId).name;
-    return rawName[0].toUpperCase() + rawName.slice(1);
-  }, [currentChainId]);
+    if (chainId) {
+      const rawName = ethers.providers.getNetwork(chainId).name;
+      return rawName[0].toUpperCase() + rawName.slice(1);
+    }
+    return '';
+  }, [chainId]);
 
   const expectedChainName = useMemo(() => {
     const rawName = ethers.providers.getNetwork(expectedChainId).name;
     return rawName[0].toUpperCase() + rawName.slice(1);
-  }, [expectedChainId]);
+  }, []);
 
-  return (
-    <span>
-      You&apos;re viewing data from the {expectedChainName} network, but your
-      wallet is connected to the {currentChainName} network.{' '}
-      <TextButton kind="alert" onClick={handleClick}>
-        Switch to {expectedChainName}
-      </TextButton>
-    </span>
-  );
+  if (chainId && chainId !== expectedChainId) {
+    return (
+      <Banner kind="error">
+        <span>
+          You&apos;re viewing data from the {expectedChainName} network, but
+          your wallet is connected to the {currentChainName} network.{' '}
+          <TextButton kind="alert" onClick={handleClick}>
+            Switch to {expectedChainName}
+          </TextButton>
+        </span>
+      </Banner>
+    );
+  }
+
+  return null;
 };
