@@ -7,38 +7,41 @@ import { useRouter } from 'next/router';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import { Banner } from 'components/Banner';
-import { useNetworkMonitor } from 'hooks/useNetworkMonitor';
 import backedBunny from './backed-bunny.png';
 import borkedBunny from './borked-bunny.png';
 import pepe from './pepe-bunny-line.png';
 import { useKonami } from 'hooks/useKonami';
 import Image from 'next/image';
+import { WrongNetwork } from 'components/Banner/messages';
 
 type PawnShopHeaderProps = {
   isErrorPage?: boolean;
 };
 
+const expectedChainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID as string);
 const CREATE_PATH = '/loans/create';
 
 export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = (
   props,
 ) => {
   const { messages, removeMessage } = useGlobalMessages();
-  useNetworkMonitor();
   const { pathname } = useRouter();
   const kind = pathname === CREATE_PATH ? 'secondary' : 'primary';
   const codeActive = useKonami();
   return (
     <>
-      {messages.map((m) => {
-        const close = () => removeMessage(m);
-        return (
-          // It's possible for a ReactNode to be null, but `message` shouldn't be on a banner.
-          <Banner key={m.message as any} kind={m.kind} close={close}>
-            {m.message}
-          </Banner>
-        );
-      })}
+      <div className={styles['banner-container']}>
+        <WrongNetwork expectedChainId={expectedChainId} />
+        {messages.map((m) => {
+          const close = () => removeMessage(m);
+          return (
+            // It's possible for a ReactNode to be null, but `message` shouldn't be on a banner.
+            <Banner key={m.message as any} kind={m.kind} close={close}>
+              {m.message}
+            </Banner>
+          );
+        })}
+      </div>
       <nav className={styles.header}>
         <TwelveColumn>
           <div className={styles.pawn}>
