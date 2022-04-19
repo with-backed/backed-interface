@@ -1,5 +1,6 @@
-import { convertERC20ToCurrency, ERC20Amount } from 'lib/erc20Helper';
-import { useEffect, useMemo, useState } from 'react';
+import { useCachedRates } from 'hooks/useCachedRates/useCachedRates';
+import { ERC20Amount } from 'lib/erc20Helper';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 type BaseProps = {
   currency: 'usd' | 'gbp' | 'eur';
@@ -15,6 +16,7 @@ export function DisplayCurrency(props: SingleAmount): JSX.Element | null;
 export function DisplayCurrency(props: AggregateAmounts): JSX.Element | null;
 export function DisplayCurrency(props: any): JSX.Element | null {
   const { currency } = props as SingleAmount | AggregateAmounts;
+  const { getRate } = useCachedRates();
 
   const formatter = useMemo(() => {
     return new Intl.NumberFormat('en-US', { currency, style: 'currency' });
@@ -36,12 +38,18 @@ export function DisplayCurrency(props: any): JSX.Element | null {
     }
 
     async function fetchTotalAmounts() {
-      const total = await convertERC20ToCurrency(amounts, currency);
-      if (!total) {
-        setTotal(null);
-      } else {
-        setTotal(total);
+      let total = 0;
+      for (let i = 0; i < amounts.length; i++) {
+        const rate = await getRate(amounts[i].address, currency);
+
+        if (!rate) {
+          setTotal(null);
+          return;
+        }
+
+        total += parseFloat(amounts[i].nominal) * rate;
       }
+      setTotal(total);
     }
     fetchTotalAmounts();
   }, [amounts, currency]);

@@ -15,6 +15,7 @@ import { providers } from 'ethers';
 import { TimestampProvider } from 'hooks/useTimestamp/useTimestamp';
 import { GlobalMessagingProvider } from 'hooks/useGlobalMessages';
 import { WagmiProvider, chain } from 'wagmi';
+import { CachedRatesProvider } from 'hooks/useCachedRates/useCachedRates';
 
 const jsonRpcProvider = new providers.JsonRpcProvider(
   process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
@@ -43,9 +44,11 @@ export default function App({ Component, pageProps }: AppProps) {
           connectors={connectors}
           provider={jsonRpcProvider}>
           <TimestampProvider>
-            <AppWrapper>
-              <Component {...pageProps} />
-            </AppWrapper>
+            <CachedRatesProvider>
+              <AppWrapper>
+                <Component {...pageProps} />
+              </AppWrapper>
+            </CachedRatesProvider>
           </TimestampProvider>
         </WagmiProvider>
       </RainbowKitProvider>
