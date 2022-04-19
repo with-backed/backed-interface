@@ -36,8 +36,8 @@ export async function getLiquidatedLoansForTimestamp(
   const currentRunTimestamp = pastTimestamp + notificationsFreq * 3600;
 
   const liquidationOccurringLoans = await getLoansExpiringWithin(
-    currentRunTimestamp + (HOURS_IN_DAY + notificationsFreq) * 3600,
     currentRunTimestamp + HOURS_IN_DAY * 3600,
+    currentRunTimestamp + (HOURS_IN_DAY + notificationsFreq) * 3600,
   );
 
   const liquidationOccurredLoans = await getLoansExpiringWithin(
