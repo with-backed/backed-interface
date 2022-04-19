@@ -20,6 +20,7 @@
     "graphql:generate:nft-loans": "graphql-codegen --config codegen/nftLoans.yml",
     "graphql:generate:nft-sales": "graphql-codegen --config codegen/nftSales.yml",
     "abis:generate": "yarn typechain --target ethers-v5 --out-dir ./types/generated/abis './abis/*.json'",
+    "prisma-migrate:test": "dotenv -e .env.test -- npx prisma migrate dev",
     "prisma-migrate:local": "dotenv -e .env.local -- npx prisma migrate dev",
     "prisma-migrate:prod": "dotenv -e .env.production.local -- npx prisma migrate deploy",
     "prisma:studio": "dotenv -e .env.test npx prisma studio"
