@@ -1,6 +1,10 @@
 import { ethers } from 'ethers';
 import { useTimestamp } from 'hooks/useTimestamp';
-import { humanizedDuration, secondsBigNumToDaysBigNum } from 'lib/duration';
+import {
+  secondsBigNumToDays,
+  secondsBigNumToDaysBigNum,
+  secondsToDays,
+} from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
 import { Loan } from 'types/Loan';
 import { useMemo } from 'react';
@@ -38,9 +42,11 @@ function loanStatus({
   return 'Accruing interest';
 }
 
-function truncate(numberString: string, maxDigits: number = 4) {
-  const number = parseFloat(numberString);
-  const delta = number - (number ^ 0);
+function truncate(num: string, maxDigits?: number): string;
+function truncate(num: number, maxDigits?: number): string;
+function truncate(num: string | number, maxDigits: number = 4): string {
+  const number = typeof num === 'string' ? parseFloat(num) : num;
+  const delta = number - Math.floor(number);
   // TODO: handle very small numbers that may render as 0.0000
   return number.toFixed(delta > 0 ? maxDigits : 0);
 }
@@ -80,7 +86,7 @@ export function useLoanDetails(loan: Loan) {
     return [truncate(formattedAnnualRate(perAnumInterestRate)), '%'].join('');
   }, [perAnumInterestRate]);
   const formattedTotalDuration = useMemo(() => {
-    return humanizedDuration(durationSeconds.toNumber());
+    return truncate(secondsBigNumToDays(durationSeconds), 2) + ' days';
   }, [durationSeconds]);
   const formattedInterestAccrued = useMemo(() => {
     return [
@@ -134,7 +140,7 @@ export function useLoanDetails(loan: Loan) {
     if (timestamp > endDateTimestamp) {
       return 'past due';
     }
-    return humanizedDuration(endDateTimestamp - timestamp) + ' left';
+    return truncate(secondsToDays(endDateTimestamp - timestamp), 2) + ' days';
   }, [endDateTimestamp, timestamp]);
 
   return {
