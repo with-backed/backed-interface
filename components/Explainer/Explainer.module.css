@@ -2,7 +2,7 @@
   position: absolute;
   border-radius: var(--border-radius-large);
   box-shadow: var(--box-shadow-blue);
-  padding: var(--padding-loan-card);
+  padding: 16px 21px;
   align-self: start;
   font-family: var(--sans);
   background: var(--background-white);
