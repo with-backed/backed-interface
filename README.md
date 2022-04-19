@@ -14,6 +14,16 @@ By default, just running `yarn dev` runs the frontend hooked up to the rinkeby t
 
 Coming soon after our deploy to mainnet.
 
+### Setting up the notifications DB
+
+We use postgres + prisma ORM to keep track of which users have requested to receive notifications (email, telegram, etc.). In order to spin up prisma, run `docker-compose up -d postgres`, then, add the following to your `.env.local`
+
+```
+DATABASE_URL=postgresql://user:password@localhost:5432/notifications?schema=public
+```
+
+Finally, you'll need to apply all our DB migrations to your new local instance. Do this by running `yarn prisma-migrate:test`.
+
 ### Tests
 
 `yarn test`

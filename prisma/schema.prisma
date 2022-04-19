@@ -24,9 +24,7 @@ model LastTimestampForNotifications {
   lastWrittenTimestamp Int
 }
 
-model DiscordMetrics {
+model BackedMetrics {
   id                Int @id @default(autoincrement())
-  numLoansCreated   Int
-  numLoansLentTo    Int
-  dollarLoansLentTo Int
+  emailsSentPastDay Int
 }
