@@ -7,7 +7,6 @@ import { useRouter } from 'next/router';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import { Banner } from 'components/Banner';
-import { useNetworkMonitor } from 'hooks/useNetworkMonitor';
 import backedBunny from './backed-bunny.png';
 import borkedBunny from './borked-bunny.png';
 import pepe from './pepe-bunny-line.png';
@@ -24,7 +23,6 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = (
   props,
 ) => {
   const { messages, removeMessage } = useGlobalMessages();
-  useNetworkMonitor();
   const { pathname } = useRouter();
   const kind = pathname === CREATE_PATH ? 'secondary' : 'primary';
   const codeActive = useKonami();
