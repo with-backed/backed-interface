@@ -5,10 +5,10 @@ import React, { useCallback, useMemo } from 'react';
 import { useNetwork } from 'wagmi';
 import { Banner } from '../Banner';
 
-const expectedChainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID as string);
-
-type WrongNetworkProps = {};
-export const WrongNetwork = ({}: WrongNetworkProps) => {
+type WrongNetworkProps = {
+  expectedChainId: number;
+};
+export const WrongNetwork = ({ expectedChainId }: WrongNetworkProps) => {
   const [{ data }, switchNetwork] = useNetwork();
   const { addMessage } = useGlobalMessages();
 
@@ -24,7 +24,7 @@ export const WrongNetwork = ({}: WrongNetworkProps) => {
           'Looks like your wallet does not support automatic network changes. Please change the network manually.',
       });
     }
-  }, [addMessage, switchNetwork]);
+  }, [addMessage, expectedChainId, switchNetwork]);
 
   const currentChainName = useMemo(() => {
     if (chainId) {
@@ -37,7 +37,7 @@ export const WrongNetwork = ({}: WrongNetworkProps) => {
   const expectedChainName = useMemo(() => {
     const rawName = ethers.providers.getNetwork(expectedChainId).name;
     return rawName[0].toUpperCase() + rawName.slice(1);
-  }, []);
+  }, [expectedChainId]);
 
   if (chainId && chainId !== expectedChainId) {
     return (

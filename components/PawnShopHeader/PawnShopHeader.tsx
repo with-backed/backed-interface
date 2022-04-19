@@ -18,6 +18,7 @@ type PawnShopHeaderProps = {
   isErrorPage?: boolean;
 };
 
+const expectedChainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID as string);
 const CREATE_PATH = '/loans/create';
 
 export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = (
@@ -30,7 +31,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = (
   return (
     <>
       <div className={styles['banner-container']}>
-        <WrongNetwork />
+        <WrongNetwork expectedChainId={expectedChainId} />
         {messages.map((m) => {
           const close = () => removeMessage(m);
           return (

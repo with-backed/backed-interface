@@ -46,24 +46,23 @@ describe('Banner', () => {
       let addMessage = jest.fn();
       beforeEach(() => {
         jest.clearAllMocks();
-        mockedUseNetwork.mockReturnValue([{}, switchNetwork] as any);
+        mockedUseNetwork.mockReturnValue([
+          { data: { chain: { id: 4 } } },
+          switchNetwork,
+        ] as any);
         mockedUseGlobalMessages.mockReturnValue({
           addMessage,
         } as any);
       });
       it('renders', () => {
-        const { getByText } = render(
-          <WrongNetwork expectedChainId={1} currentChainId={4} />,
-        );
+        const { getByText } = render(<WrongNetwork expectedChainId={1} />);
         getByText(
           "You're viewing data from the Homestead network, but your wallet is connected to the Rinkeby network.",
         );
       });
 
       it('attempts to change network when pressing the button', () => {
-        const { getByText } = render(
-          <WrongNetwork expectedChainId={1} currentChainId={4} />,
-        );
+        const { getByText } = render(<WrongNetwork expectedChainId={1} />);
         const button = getByText('Switch to Homestead');
         expect(switchNetwork).not.toHaveBeenCalled();
         userEvent.click(button);
@@ -72,9 +71,7 @@ describe('Banner', () => {
 
       it('attempts to change network when pressing the button', async () => {
         switchNetwork.mockRejectedValue('fail');
-        const { getByText } = render(
-          <WrongNetwork expectedChainId={1} currentChainId={4} />,
-        );
+        const { getByText } = render(<WrongNetwork expectedChainId={1} />);
         const button = getByText('Switch to Homestead');
         expect(addMessage).not.toHaveBeenCalled();
         userEvent.click(button);
