@@ -66,8 +66,8 @@ describe('getLiquidatedLoansForTimestamp', () => {
 
     expect(mockedGetExpiringLoansCall).toHaveBeenCalledTimes(2);
     expect(mockedGetExpiringLoansCall).toHaveBeenCalledWith(
-      now + 25 * 3600,
       now + 24 * 3600,
+      now + 25 * 3600,
     );
     expect(mockedGetExpiringLoansCall).toHaveBeenCalledWith(now - 3600, now);
 
