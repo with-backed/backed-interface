@@ -21,14 +21,12 @@ export const explainers: {
   noWallet: NoWallet,
   selectNFT: SelectNFT,
   authorizeNFT: AuthorizeNFT,
-  pendingAuthorization: PendingAuthorization,
   loanFormUnfocused: LoanFormUnfocused,
   denomination: Denomination,
   loanAmount: LoanAmount,
   minimumDuration: MinimumDuration,
   maximumInterestRate: MaximumInterestRate,
   mintBorrowerTicket: MintBorrowerTicket,
-  pendingMintBorrowerTicket: PendingMintBorrowerAuthorization,
   mintBorrowerTicketSuccess: MintBorrowerTicketSuccess,
 };
 
@@ -103,10 +101,6 @@ function AuthorizeNFT({ context }: InnerProps) {
       lender if you do not repay your loan.
     </div>
   );
-}
-
-function PendingAuthorization({ context }: InnerProps) {
-  return <div>This can take a few minutes.</div>;
 }
 
 function LoanFormUnfocused({ context }: InnerProps) {
@@ -201,10 +195,6 @@ function MintBorrowerTicket({ context }: InnerProps) {
       received and interest accrued.
     </div>
   );
-}
-
-function PendingMintBorrowerAuthorization({ context }: InnerProps) {
-  return <div>This can take a few more minutes.</div>;
 }
 
 function MintBorrowerTicketSuccess({ context }: InnerProps) {
