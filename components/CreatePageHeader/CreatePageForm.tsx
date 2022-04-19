@@ -187,6 +187,7 @@ export function CreatePageForm({
                 handleSelectBlur(!!watchAllFields.denomination);
                 onBlur();
               }}
+              isDisabled={disabled}
               onFocus={() => onFocus('DENOMINATION')}
               options={
                 loanAssetOptions.map((asset) => ({
