@@ -55,8 +55,6 @@ describe('useLoanDetails', () => {
     const result = renderHook(() =>
       useLoanDetails({ ...baseLoan, endDateTimestamp: 1090004 }),
     );
-    expect(result.result.current.formattedTimeRemaining).toEqual(
-      '13 days left',
-    );
+    expect(result.result.current.formattedTimeRemaining).toEqual('12.62 days');
   });
 });
