@@ -24,7 +24,7 @@ import React, {
   useState,
 } from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
-import { useAccount, useProvider, useSigner } from 'wagmi';
+import { useAccount, useSigner } from 'wagmi';
 import { CreateFormData } from './CreateFormData';
 
 type CreatePageFormProps = {
@@ -182,6 +182,7 @@ export function CreatePageForm({
             <Select
               id="denomination"
               onChange={onChange}
+              color="light"
               onBlur={() => {
                 handleSelectBlur(!!watchAllFields.denomination);
                 onBlur();
