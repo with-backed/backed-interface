@@ -143,6 +143,7 @@ export async function getLoansExpiringWithin(
   timeOne: number,
   timeTwo: number,
 ): Promise<Loan[]> {
+  console.log({ timeOne, timeTwo });
   const where: Loan_Filter = {
     endDateTimestamp_gt: timeOne,
     endDateTimestamp_lt: timeTwo,
