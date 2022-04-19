@@ -1,21 +1,17 @@
-import {
-  Button,
-  CompletedButton,
-  DialogDisclosureButton,
-} from 'components/Button';
+import { Button, DialogDisclosureButton } from 'components/Button';
 import React from 'react';
 import { DialogStateReturn } from 'reakit/Dialog';
 
 const ID = 'selectNFT';
 
 type SelectNFTButtonProps = {
-  disabled: boolean;
+  state: 'disabled' | 'active' | 'selected';
   dialog: DialogStateReturn;
 };
-export function SelectNFTButton({ dialog, disabled }: SelectNFTButtonProps) {
+export function SelectNFTButton({ dialog, state }: SelectNFTButtonProps) {
   const text = 'Select an NFT';
 
-  if (disabled) {
+  if (state === 'disabled') {
     return (
       <Button id={ID} disabled>
         {text}
@@ -24,7 +20,10 @@ export function SelectNFTButton({ dialog, disabled }: SelectNFTButtonProps) {
   }
 
   return (
-    <DialogDisclosureButton id={ID} {...dialog}>
+    <DialogDisclosureButton
+      kind={state === 'active' ? 'primary' : 'secondary'}
+      id={ID}
+      {...dialog}>
       {text}
     </DialogDisclosureButton>
   );

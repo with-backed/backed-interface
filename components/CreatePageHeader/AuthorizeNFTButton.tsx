@@ -38,9 +38,13 @@ export function AuthorizeNFTButton({
   const [isCollateralApproved, setIsCollateralApproved] = useState(false);
 
   useEffect(() => {
-    if (!!nft && isNFTApprovedForCollateral(nft)) {
-      setIsCollateralApproved(true);
-      onAlreadyApproved();
+    if (!!nft) {
+      if (isNFTApprovedForCollateral(nft)) {
+        setIsCollateralApproved(true);
+        onAlreadyApproved();
+      } else {
+        setIsCollateralApproved(false);
+      }
     }
   }, [nft, onAlreadyApproved]);
 

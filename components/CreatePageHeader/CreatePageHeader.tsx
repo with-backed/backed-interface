@@ -137,19 +137,26 @@ export function CreatePageHeader() {
     ].some(current.matches);
   }, [current]);
 
+  const nftButtonState = useMemo(() => {
+    if (current.matches('noWallet')) {
+      return 'disabled';
+    }
+    if (selectedNFT) {
+      return 'selected';
+    }
+    return 'active';
+  }, [current, selectedNFT]);
+
   return (
     <div className={styles['create-page-header']}>
       <ThreeColumn>
         <NFTMedia nftInfo={nftInfo} />
         <div className={styles['button-container']}>
-          <SelectNFTButton
-            dialog={dialog}
-            disabled={current.matches('noWallet')}
-          />
+          <SelectNFTButton dialog={dialog} state={nftButtonState} />
           <AuthorizeNFTButton
             collateralAddress={collateralAddress}
             collateralTokenID={collateralTokenID}
-            disabled={!current.matches('authorizeNFT')}
+            disabled={!selectedNFT}
             nft={selectedNFT}
             onAlreadyApproved={onAlreadyApproved}
             onApproved={onApproved}
