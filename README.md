@@ -1,6 +1,6 @@
-# pawn-shop-client-private
+# backed-interface
 
-Otherwise known as the frontend component of `💸✨🎸 nft pawn shop 💍✨💸`
+![backed](/components/PawnShopHeader/backed-bunny.png 'backed')
 
 ## Developing
 
@@ -8,23 +8,14 @@ Install all deps by running `yarn`
 
 ### Running on rinkeby
 
-By default, just running `yarn dev` runs the frontend hooked up to the rinkeby testnet. Our app will allow you to mint NFTs and Rinkeby DAI at http://localhost:3000/test. You'll need some Rinkeby eth for gas.
+By default, just running `yarn dev` runs the frontend hooked up to the rinkeby testnet. Our app will allow you to mint NFTs and Rinkeby DAI at http://localhost:3000/test. You'll need some Rinkeby eth for gas, you can request a small amount from [Chainlink](https://faucets.chain.link/rinkeby).
 
-### Running locally
+### Running on other chains
 
-1. Create `.env.local` (`touch .env.local`) with the below. Update `lib/contracts.ts` using locally deployed contract addresses (detailed instructions coming soon).
-
-```
-NEXT_PUBLIC_JSON_RPC_PROVIDER=http://localhost:8545
-NEXT_PUBLIC_ETHERSCAN_URL="https://rinkeby.etherscan.io"
-NEXT_PUBLIC_OPENSEA_URL="https://testnets.opensea.io"
-```
-
-2. `yarn install`
-3. `yarn run dev`
+Coming soon after our deploy to mainnet.
 
 ### Tests
 
-`yarn run test`
+`yarn test`
 
 Note: you should expect to see `__tests/notifications/repository.ts` to fail if you do not have your local Docker postgres running
