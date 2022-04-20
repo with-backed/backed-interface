@@ -21,4 +21,5 @@ export const createPageFormSchema = Yup.object({
     .typeError('Duration must be a positive integer')
     .moreThan(0, 'Duration must be greater than 0.')
     .required(),
+  acceptHigherLoanAmounts: Yup.boolean(),
 });

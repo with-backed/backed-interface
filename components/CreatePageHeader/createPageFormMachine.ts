@@ -75,6 +75,7 @@ export const stateTargets: { [key: string]: string } = {
   mintBorrowerTicketSuccess: 'mintBorrowerTicket',
   mintBorrowerTicketFailure: 'mintBorrowerTicket',
   setLoanTerms: 'setLoanTerms',
+  acceptHigherLoanAmount: 'loanAmount',
 };
 
 export const createPageFormMachine = createMachine<Context>(
@@ -125,6 +126,7 @@ export const createPageFormMachine = createMachine<Context>(
           DURATION: { target: 'minimumDuration' },
           INTEREST_RATE: { target: 'maximumInterestRate' },
           REVIEW: { target: 'mintBorrowerTicket' },
+          ACCEPT_HIGHER_LOAN_AMOUNT: { target: 'acceptHigherLoanAmount' },
         },
       },
       denomination: {
@@ -140,6 +142,7 @@ export const createPageFormMachine = createMachine<Context>(
           LOAN_AMOUNT: { target: 'loanAmount' },
           DURATION: { target: 'minimumDuration' },
           INTEREST_RATE: { target: 'maximumInterestRate' },
+          ACCEPT_HIGHER_LOAN_AMOUNT: { target: 'acceptHigherLoanAmount' },
         },
       },
       loanAmount: {
@@ -155,6 +158,21 @@ export const createPageFormMachine = createMachine<Context>(
           DENOMINATION: { target: 'denomination' },
           DURATION: { target: 'minimumDuration' },
           INTEREST_RATE: { target: 'maximumInterestRate' },
+          ACCEPT_HIGHER_LOAN_AMOUNT: { target: 'acceptHigherLoanAmount' },
+        },
+      },
+      acceptHigherLoanAmount: {
+        on: {
+          UNFOCUS_EMPTY: {
+            target: 'loanFormUnfocused',
+          },
+          UNFOCUS_FULL: {
+            target: 'loanFormUnfocused',
+          },
+          DENOMINATION: { target: 'denomination' },
+          DURATION: { target: 'minimumDuration' },
+          INTEREST_RATE: { target: 'maximumInterestRate' },
+          LOAN_AMOUNT: { target: 'loanAmount' },
         },
       },
       minimumDuration: {
@@ -170,6 +188,7 @@ export const createPageFormMachine = createMachine<Context>(
           DENOMINATION: { target: 'denomination' },
           LOAN_AMOUNT: { target: 'loanAmount' },
           INTEREST_RATE: { target: 'maximumInterestRate' },
+          ACCEPT_HIGHER_LOAN_AMOUNT: { target: 'acceptHigherLoanAmount' },
         },
       },
       maximumInterestRate: {
@@ -186,6 +205,7 @@ export const createPageFormMachine = createMachine<Context>(
           DENOMINATION: { target: 'denomination' },
           LOAN_AMOUNT: { target: 'loanAmount' },
           DURATION: { target: 'minimumDuration' },
+          ACCEPT_HIGHER_LOAN_AMOUNT: { target: 'acceptHigherLoanAmount' },
         },
       },
       mintBorrowerTicket: {
