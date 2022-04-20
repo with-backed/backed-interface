@@ -24,6 +24,7 @@ export async function nodeLoanById(loanId: string): Promise<Loan> {
     durationSeconds,
     loanAmount,
     closed,
+    allowLoanAmountIncrease,
   } = loanInfo;
 
   const loanAssetContract = jsonRpcERC20Contract(loanAssetContractAddress);
@@ -69,5 +70,6 @@ export async function nodeLoanById(loanId: string): Promise<Loan> {
     interestOwed,
     endDateTimestamp,
     collateralTokenURI,
+    allowLoanAmountIncrease,
   };
 }
