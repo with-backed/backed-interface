@@ -123,6 +123,7 @@ export function LoanFormAwaiting({
             color="dark"
             unit={loan.loanAssetSymbol}
             aria-invalid={!!errors.loanAmount}
+            disabled={!loan.allowLoanAmountIncrease}
             onFocus={() => send('LOAN_AMOUNT')}
             {...register('loanAmount', {
               onBlur: handleBlur,
@@ -183,6 +184,7 @@ export function LoanFormAwaiting({
         form={form}
         state={current.toStrings()[0]}
         top={explainerTop}
+        loan={loan}
       />
     </>
   );
