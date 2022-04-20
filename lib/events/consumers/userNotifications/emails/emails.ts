@@ -21,6 +21,9 @@ import {
   getSubjectForGenericEmail,
 } from 'lib/events/consumers/userNotifications/emails/genericFormatter';
 import { Config } from 'lib/config';
+import { mainnet } from 'lib/chainEnv';
+import { incrementBackedMetric, Metric } from 'lib/metrics/repository';
+import { captureException } from '@sentry/nextjs';
 
 export async function sendEmailsForTriggerAndEntity(
   emailTrigger: NotificationTriggerType,
@@ -64,7 +67,21 @@ export async function sendEmailsForTriggerAndEntity(
       );
     });
 
-    await Promise.all(allEmailSends);
+    const emailCallResponses = await Promise.all(allEmailSends);
+    emailCallResponses.forEach((error) => {
+      if (!!error) {
+        captureException(error.message);
+      }
+    });
+    if (
+      emailTrigger !== 'LiquidationOccurring' &&
+      emailTrigger !== 'LiquidationOccurred'
+    ) {
+      await incrementBackedMetric(
+        Metric.EMAILS_PAST_DAY,
+        emailCallResponses.filter((e) => !e).length,
+      );
+    }
   }
 }
 

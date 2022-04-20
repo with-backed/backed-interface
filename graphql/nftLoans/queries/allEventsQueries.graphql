@@ -1,0 +1,44 @@
+query allCreateEvents($where: CreateEvent_filter) {
+  createEvents(where: $where) {
+    ...createEventProperties
+    loan {
+      ...allLoanProperties
+    }
+  }
+}
+
+query allBuyoutEvents($where: BuyoutEvent_filter) {
+  buyoutEvents(where: $where) {
+    ...buyoutEventProperties
+    loan {
+      ...allLoanProperties
+    }
+  }
+}
+
+query allLendEvents($where: LendEvent_filter) {
+  lendEvents(where: $where) {
+    ...lendEventProperties
+    loan {
+      ...allLoanProperties
+    }
+  }
+}
+
+query allRepaymentEvents($where: RepaymentEvent_filter) {
+  repaymentEvents(where: $where) {
+    ...repaymentEventProperties
+    loan {
+      ...allLoanProperties
+    }
+  }
+}
+
+query allCollateralSeizureEvents($where: CollateralSeizureEvent_filter) {
+  collateralSeizureEvents(where: $where) {
+    ...collateralSeizureEventProperties
+    loan {
+      ...allLoanProperties
+    }
+  }
+}
