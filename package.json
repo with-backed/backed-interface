@@ -23,7 +23,8 @@
     "prisma-migrate:test": "dotenv -e .env.test -- npx prisma migrate dev",
     "prisma-migrate:local": "dotenv -e .env.local -- npx prisma migrate dev",
     "prisma-migrate:prod": "dotenv -e .env.production.local -- npx prisma migrate deploy",
-    "prisma:studio": "dotenv -e .env.test npx prisma studio"
+    "prisma:studio:local": "dotenv -e .env.test npx prisma studio",
+    "prisma:studio:prod": "dotenv -e .env.production.local npx prisma studio"
   },
   "dependencies": {
     "@ethersproject/providers": "5.6.1",
