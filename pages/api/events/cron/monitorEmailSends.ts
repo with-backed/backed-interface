@@ -8,7 +8,11 @@ import {
 } from 'lib/eventsHelpers';
 import { getNotificationRequestsForAddress } from 'lib/events/consumers/userNotifications/repository';
 import { NotificationMethod } from 'lib/events/consumers/userNotifications/shared';
-import { getBackedMetric, Metric } from 'lib/metrics/repository';
+import {
+  getBackedMetric,
+  Metric,
+  resetBackedMetric,
+} from 'lib/metrics/repository';
 import { subgraphEventFromTxHash } from 'lib/eventsHelpers';
 import dayjs from 'dayjs';
 import { GenericEmailComponents } from 'lib/events/consumers/userNotifications/emails/genericFormatter';
@@ -79,6 +83,8 @@ Actual: ${actualNumEmails}
         .format('MM/DD/YYYY')}`,
       process.env.EMAIL_MONITOR_REPORT_TO!,
     );
+
+    await resetBackedMetric(Metric.EMAILS_PAST_DAY);
 
     res.status(200).json('email sends monitored successfully');
   } catch (e) {

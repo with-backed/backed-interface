@@ -19,7 +19,7 @@ import {
   NotificationMethod,
   NotificationTriggerType,
 } from 'lib/events/consumers/userNotifications/shared';
-import { getBackedMetric } from 'lib/metrics/repository';
+import { getBackedMetric, resetBackedMetric } from 'lib/metrics/repository';
 import { executeEmailSendWithSes } from 'lib/events/consumers/userNotifications/emails/ses';
 
 jest.mock('lib/eventsHelpers', () => ({
@@ -37,6 +37,7 @@ jest.mock('lib/events/consumers/userNotifications/repository', () => ({
 jest.mock('lib/metrics/repository', () => ({
   ...jest.requireActual('lib/metrics/repository'),
   getBackedMetric: jest.fn(),
+  resetBackedMetric: jest.fn(),
 }));
 
 jest.mock('lib/events/consumers/userNotifications/emails/ses', () => ({
@@ -68,6 +69,10 @@ const mockEventFromTxHash = subgraphEventFromTxHash as jest.MockedFunction<
 
 const mockGetMetric = getBackedMetric as jest.MockedFunction<
   typeof getBackedMetric
+>;
+
+const mockResetMetric = resetBackedMetric as jest.MockedFunction<
+  typeof resetBackedMetric
 >;
 
 const mockedSesEmailCall = executeEmailSendWithSes as jest.MockedFunction<
@@ -109,6 +114,7 @@ describe('/api/events/cron/monitorEmailSends', () => {
     ]);
     mockEventFromTxHash.mockResolvedValue(null);
     mockGetMetric.mockResolvedValue(14);
+    mockResetMetric.mockResolvedValue();
   });
 
   it('makes call to get subgraph events, gets notifications associated with addresses, and counts', async () => {
@@ -122,6 +128,7 @@ describe('/api/events/cron/monitorEmailSends', () => {
     expect(mockGetBuyouts).toHaveBeenCalledTimes(1);
     expect(mockGetRepayments).toHaveBeenCalledTimes(1);
     expect(mockGetCollateralSeizures).toHaveBeenCalledTimes(1);
+    expect(mockResetMetric).toHaveBeenCalledTimes(1);
 
     expect(mockedSesEmailCall).toHaveBeenCalledTimes(1);
     expect(mockedSesEmailCall).toHaveBeenCalledWith(
