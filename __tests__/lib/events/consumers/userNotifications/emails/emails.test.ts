@@ -25,6 +25,7 @@ import {
   generateHTMLForEventsEmail,
   generateHTMLForGenericEmail,
 } from 'lib/events/consumers/userNotifications/emails/mjml';
+import { incrementBackedMetric } from 'lib/metrics/repository';
 
 jest.mock('lib/events/consumers/userNotifications/emails/ses', () => ({
   executeEmailSendWithSes: jest.fn(),
@@ -51,17 +52,18 @@ jest.mock(
   }),
 );
 
-jest.mock('lib/events/consumers/userNotifications/emails/mjml', () => ({
-  generateHTMLForEventsEmail: jest.fn(),
-  generateHTMLForGenericEmail: jest.fn(),
-}));
-
 const mockGetSubjectCall = getEmailSubject as jest.MockedFunction<
   typeof getEmailSubject
 >;
 const mockGetComponentsCall = getEmailComponentsMap as jest.MockedFunction<
   typeof getEmailComponentsMap
 >;
+
+jest.mock('lib/events/consumers/userNotifications/emails/mjml', () => ({
+  generateHTMLForEventsEmail: jest.fn(),
+  generateHTMLForGenericEmail: jest.fn(),
+}));
+
 const mockGetMJMLForEventsEmailCall =
   generateHTMLForEventsEmail as jest.MockedFunction<
     typeof generateHTMLForEventsEmail
@@ -70,6 +72,15 @@ const mockGetMJMLForGenericEmailCall =
   generateHTMLForGenericEmail as jest.MockedFunction<
     typeof generateHTMLForGenericEmail
   >;
+
+jest.mock('lib/metrics/repository', () => ({
+  ...jest.requireActual('lib/metrics/repository'),
+  incrementBackedMetric: jest.fn(),
+}));
+
+const mockIncrementMetricCall = incrementBackedMetric as jest.MockedFunction<
+  typeof incrementBackedMetric
+>;
 
 const event: NotificationTriggerType = 'All';
 const notificationMethod = NotificationMethod.EMAIL;
@@ -124,7 +135,7 @@ describe('Sending emails with Amazon SES', () => {
       notificationReqOne,
       notificationReqTwo,
     ]); // two email addresses are subscribed to a particular eth addresses on-chain activity
-    mockedSesEmailCall.mockResolvedValue();
+    mockedSesEmailCall.mockResolvedValue(null);
     mockGetSubjectCall.mockReturnValue('');
     mockGetComponentsCall.mockResolvedValue({
       [subgraphLoanForEvents.borrowTicketHolder]: (_unsubscribeUuid: string) =>
@@ -134,6 +145,7 @@ describe('Sending emails with Amazon SES', () => {
     });
     mockGetMJMLForEventsEmailCall.mockReturnValue('');
     mockGetMJMLForGenericEmailCall.mockReturnValue('');
+    mockIncrementMetricCall.mockResolvedValue();
   });
 
   describe('Confirmation email', () => {

@@ -6,6 +6,9 @@ import {
 } from 'lib/metrics/repository';
 
 describe('Backed metrics repository', () => {
+  beforeEach(async () => {
+    await resetBackedMetrics();
+  });
   afterEach(async () => {
     await resetBackedMetrics();
   });
