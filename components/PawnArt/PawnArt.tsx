@@ -44,7 +44,7 @@ function PawnArt({ contract, tokenID }: PawnArtProps) {
   const { isLoading, metadata } = useTokenMetadata(tokenSpec);
 
   useEffect(() => {
-    // contract.tokenURI(tokenID).then(setTokenURI);
+    contract.tokenURI(tokenID).then(setTokenURI);
   }, [contract, tokenID]);
 
   if (isLoading || !metadata) {
