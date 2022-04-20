@@ -37,7 +37,12 @@ type CreatePageFormProps = {
   onBlur: (filled: boolean) => void;
   onError: () => void;
   onFocus: (
-    type: 'DENOMINATION' | 'LOAN_AMOUNT' | 'DURATION' | 'INTEREST_RATE',
+    type:
+      | 'DENOMINATION'
+      | 'LOAN_AMOUNT'
+      | 'DURATION'
+      | 'INTEREST_RATE'
+      | 'REVIEW',
   ) => void;
   onSubmit: () => void;
 };
@@ -249,7 +254,12 @@ export function CreatePageForm({
         />
       </label>
 
-      <LoanTermsDisclosure terms={watchAllFields} onClick={() => {}} />
+      <LoanTermsDisclosure
+        fields={watchAllFields}
+        onClick={() => {
+          onFocus('REVIEW');
+        }}
+      />
 
       <TransactionButton
         id="mintBorrowerTicket"

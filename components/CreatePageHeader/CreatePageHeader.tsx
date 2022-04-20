@@ -83,7 +83,14 @@ export function CreatePageHeader() {
   }, [send]);
 
   const onFocus = useCallback(
-    (type: 'DENOMINATION' | 'LOAN_AMOUNT' | 'DURATION' | 'INTEREST_RATE') => {
+    (
+      type:
+        | 'DENOMINATION'
+        | 'LOAN_AMOUNT'
+        | 'DURATION'
+        | 'INTEREST_RATE'
+        | 'REVIEW',
+    ) => {
       send({ type });
     },
     [send],

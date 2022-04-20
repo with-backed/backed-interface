@@ -119,12 +119,12 @@ export const createPageFormMachine = createMachine<Context>(
         },
       },
       loanFormUnfocused: {
-        always: { target: 'mintBorrowerTicket', cond: 'guardIsFilled' },
         on: {
           DENOMINATION: { target: 'denomination' },
           LOAN_AMOUNT: { target: 'loanAmount' },
           DURATION: { target: 'minimumDuration' },
           INTEREST_RATE: { target: 'maximumInterestRate' },
+          REVIEW: { target: 'mintBorrowerTicket' },
         },
       },
       denomination: {
