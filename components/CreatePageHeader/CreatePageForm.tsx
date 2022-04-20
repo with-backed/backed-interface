@@ -178,8 +178,6 @@ export function CreatePageForm({
     loadAssets();
   }, [loadAssets]);
 
-  console.log({ watchAllFields });
-
   return (
     <Form onSubmit={handleSubmit(mint)} id="form" autoComplete="off">
       <label htmlFor="loanAsset">
