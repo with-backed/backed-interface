@@ -3,6 +3,7 @@ import { TransactionButton } from 'components/Button';
 import { EtherscanTransactionLink } from 'components/EtherscanLink';
 import { Form } from 'components/Form';
 import { Input } from 'components/Input';
+import { LoanTermsDisclosure } from 'components/LoanTermsDisclosure';
 import { Select } from 'components/Select';
 import { ethers } from 'ethers';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
@@ -24,7 +25,7 @@ import React, {
   useState,
 } from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
-import { useAccount, useProvider, useSigner } from 'wagmi';
+import { useAccount, useSigner } from 'wagmi';
 import { CreateFormData } from './CreateFormData';
 
 type CreatePageFormProps = {
@@ -36,7 +37,12 @@ type CreatePageFormProps = {
   onBlur: (filled: boolean) => void;
   onError: () => void;
   onFocus: (
-    type: 'DENOMINATION' | 'LOAN_AMOUNT' | 'DURATION' | 'INTEREST_RATE',
+    type:
+      | 'DENOMINATION'
+      | 'LOAN_AMOUNT'
+      | 'DURATION'
+      | 'INTEREST_RATE'
+      | 'REVIEW',
   ) => void;
   onSubmit: () => void;
 };
@@ -67,6 +73,7 @@ export function CreatePageForm({
   const [txHash, setTxHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
   const [loanAssetOptions, setLoanAssetOptions] = useState<LoanAsset[]>([]);
+  const [hasReviewed, setHasReviewed] = useState(false);
 
   const watchAllFields = watch();
 
@@ -182,10 +189,12 @@ export function CreatePageForm({
             <Select
               id="denomination"
               onChange={onChange}
+              color="light"
               onBlur={() => {
                 handleSelectBlur(!!watchAllFields.denomination);
                 onBlur();
               }}
+              isDisabled={disabled}
               onFocus={() => onFocus('DENOMINATION')}
               options={
                 loanAssetOptions.map((asset) => ({
@@ -245,13 +254,21 @@ export function CreatePageForm({
         />
       </label>
 
+      <LoanTermsDisclosure
+        fields={watchAllFields}
+        onClick={() => {
+          onFocus('REVIEW');
+          setHasReviewed(true);
+        }}
+      />
+
       <TransactionButton
         id="mintBorrowerTicket"
         text={buttonText}
         type="submit"
         txHash={txHash}
         isPending={waitingForTx}
-        disabled={disabled || Object.keys(errors).length > 0}
+        disabled={!hasReviewed}
       />
     </Form>
   );

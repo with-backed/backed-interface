@@ -30,7 +30,7 @@ export function Select<
   }, [props]);
   const controlBackground =
     color === 'light'
-      ? 'var(--background-white)'
+      ? 'linear-gradient(180deg, var(--neutral-10) 5%, var(--neutral-5) 100%)'
       : 'var(--highlight-active-10)';
   return (
     <ReactSelect

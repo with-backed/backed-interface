@@ -21,6 +21,7 @@ import { createPageFormSchema } from './createPageFormSchema';
 import { NFTEntity } from 'types/NFT';
 import { useTokenMetadata } from 'hooks/useTokenMetadata';
 import { useAccount } from 'wagmi';
+import { Button } from 'components/Button';
 
 export function CreatePageHeader() {
   const form = useForm<CreateFormData>({
@@ -77,9 +78,19 @@ export function CreatePageHeader() {
   const onError = useCallback(() => {
     send({ type: 'FAILURE' });
   }, [send]);
+  const onSetLoanTerms = useCallback(() => {
+    send({ type: 'SET' });
+  }, [send]);
 
   const onFocus = useCallback(
-    (type: 'DENOMINATION' | 'LOAN_AMOUNT' | 'DURATION' | 'INTEREST_RATE') => {
+    (
+      type:
+        | 'DENOMINATION'
+        | 'LOAN_AMOUNT'
+        | 'DURATION'
+        | 'INTEREST_RATE'
+        | 'REVIEW',
+    ) => {
       send({ type });
     },
     [send],
@@ -134,6 +145,7 @@ export function CreatePageHeader() {
       'pendingMintBorrowerTicket',
       'mintBorrowerTicketSuccess',
       'mintBorrowerTicketFailure',
+      'setLoanTerms',
     ].some(current.matches);
   }, [current]);
 
@@ -146,6 +158,15 @@ export function CreatePageHeader() {
     }
     return 'active';
   }, [current, selectedNFT]);
+
+  const setTermsButtonIsDisabled = useMemo(() => {
+    return [
+      'noWallet',
+      'selectNFT',
+      'authorizeNFT',
+      'pendingAuthorization',
+    ].some(current.matches);
+  }, [current]);
 
   return (
     <div className={styles['create-page-header']}>
@@ -163,6 +184,13 @@ export function CreatePageHeader() {
             onError={onError}
             onSubmit={onSubmit}
           />
+          <Button
+            kind={current.matches('setLoanTerms') ? 'primary' : 'secondary'}
+            disabled={setTermsButtonIsDisabled}
+            id="setLoanTerms"
+            onClick={onSetLoanTerms}>
+            Set Loan Terms
+          </Button>
           <CreatePageForm
             collateralAddress={collateralAddress}
             collateralTokenID={collateralTokenID}

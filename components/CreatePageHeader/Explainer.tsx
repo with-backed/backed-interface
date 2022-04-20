@@ -21,15 +21,14 @@ export const explainers: {
   noWallet: NoWallet,
   selectNFT: SelectNFT,
   authorizeNFT: AuthorizeNFT,
-  pendingAuthorization: PendingAuthorization,
-  loanFormUnfocused: LoanFormUnfocused,
+  loanFormUnfocused: SetLoanTerms,
   denomination: Denomination,
   loanAmount: LoanAmount,
   minimumDuration: MinimumDuration,
   maximumInterestRate: MaximumInterestRate,
   mintBorrowerTicket: MintBorrowerTicket,
-  pendingMintBorrowerTicket: PendingMintBorrowerAuthorization,
   mintBorrowerTicketSuccess: MintBorrowerTicketSuccess,
+  setLoanTerms: SetLoanTerms,
 };
 
 export function Explainer({ form, state, top }: ExplainerProps) {
@@ -45,7 +44,11 @@ export function Explainer({ form, state, top }: ExplainerProps) {
   }, [context.denomination, setDecimals]);
 
   const error = Object.values(form.formState.errors)[0];
-  const Inner = explainers[state];
+  const Inner = explainers[state] || null;
+
+  if (!error && !Inner) {
+    return null;
+  }
 
   return (
     <ExplainerWrapper top={top} display={!!error ? 'error' : 'normal'}>
@@ -101,19 +104,6 @@ function AuthorizeNFT({ context }: InnerProps) {
     <div>
       This allows the Pawn Shop to move your NFT and to transfer it to the
       lender if you do not repay your loan.
-    </div>
-  );
-}
-
-function PendingAuthorization({ context }: InnerProps) {
-  return <div>This can take a few minutes.</div>;
-}
-
-function LoanFormUnfocused({ context }: InnerProps) {
-  return (
-    <div>
-      Set your loan terms. Any lender who wishes can meet these terms, and you
-      will automatically receive the loan amount minus a 1% origination fee.
     </div>
   );
 }
@@ -195,18 +185,35 @@ function EstimatedRepayment({
 function MintBorrowerTicket({ context }: InnerProps) {
   return (
     <div>
-      This is the last step of creating a loan. You will be issued an NFT
-      representing your rights and obligations as a borrower. This cannot be
-      undone without closing the loan and repaying any loan amount you&apos;ve
-      received and interest accrued.
+      <p style={{ marginTop: 0 }}>
+        This NFT will represent your loan offer. This cannot be undone without
+        closing the loan and repaying any amount you’ll receive from a lender,
+        plus interest.
+      </p>
+      <p style={{ marginBottom: 0 }}>
+        Your repayment can increase as lenders offer higher loan amounts or
+        longer durations.
+      </p>
     </div>
   );
 }
 
-function PendingMintBorrowerAuthorization({ context }: InnerProps) {
-  return <div>This can take a few more minutes.</div>;
-}
-
 function MintBorrowerTicketSuccess({ context }: InnerProps) {
   return <div>Your loan is created and available for lenders to see!</div>;
+}
+
+function SetLoanTerms({ context }: InnerProps) {
+  return (
+    <div>
+      <p style={{ marginTop: 0 }}>
+        When a lender meets these terms, you’ll immediately receive the loan
+        amount minus a 1% origination fee.
+      </p>
+      <p style={{ marginBottom: 0 }}>
+        Lenders can be &ldquo;bought out&rdquo; by new lenders offering better
+        terms (higher amount, lower rate, or longer duration). When this
+        happens, the new terms will instantly go into effect.
+      </p>
+    </div>
+  );
 }
