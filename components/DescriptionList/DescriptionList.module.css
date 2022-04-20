@@ -30,6 +30,11 @@
   letter-spacing: 0.12rem;
 }
 
+.vertical dt,
+.vertical dd {
+  line-height: 32px;
+}
+
 .horizontal dt {
   text-align: right;
 }
