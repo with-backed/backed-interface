@@ -13,9 +13,9 @@ type ContractDirectory = {
 };
 
 const rinkebyContracts: ContractDirectory = {
-  borrowTicket: '0xebd451381093FB24674c8269De653c911Fe981F2',
-  lendTicket: '0x1eBC1B94Cc6Fc4d54Ce1510EAF3DaabC33ab90cD',
-  loanFacilitator: '0x0baccdd07ad7224b73838bc0e3d3b303a111f997',
+  borrowTicket: '0xeF87894f0B37f8f1De2f23DB27d9aa43aCd50f51',
+  lendTicket: '0xE8a91e8C8A8ff8Cab9BbBC5527891b9BD89a5F8e',
+  loanFacilitator: '0x0baccdd01ff681b07334362387559ba140bd7b2a',
 };
 
 // TODO: @cnasc update to dispatch between test and mainnet based on env
