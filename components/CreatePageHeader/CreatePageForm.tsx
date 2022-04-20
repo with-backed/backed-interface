@@ -258,6 +258,7 @@ export function CreatePageForm({
         fields={watchAllFields}
         onClick={() => {
           onFocus('REVIEW');
+          setHasReviewed(true);
         }}
       />
 
@@ -267,7 +268,7 @@ export function CreatePageForm({
         type="submit"
         txHash={txHash}
         isPending={waitingForTx}
-        disabled={disabled || Object.keys(errors).length > 0}
+        disabled={!hasReviewed}
       />
     </Form>
   );

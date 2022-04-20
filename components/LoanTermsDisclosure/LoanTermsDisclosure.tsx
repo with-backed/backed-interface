@@ -98,7 +98,9 @@ function CreatePageTerms({ fields }: Pick<LoanTermsDisclosureProps, 'fields'>) {
         {symbol}
       </dd>
       <dt>Est. Repayment at Maturity</dt>
-      <dd>{humanRepayment}</dd>
+      <dd>
+        {humanRepayment} {symbol}
+      </dd>
     </DescriptionList>
   );
 }

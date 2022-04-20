@@ -185,10 +185,15 @@ function EstimatedRepayment({
 function MintBorrowerTicket({ context }: InnerProps) {
   return (
     <div>
-      This is the last step of creating a loan. You will be issued an NFT
-      representing your rights and obligations as a borrower. This cannot be
-      undone without closing the loan and repaying any loan amount you&apos;ve
-      received and interest accrued.
+      <p style={{ marginTop: 0 }}>
+        This NFT will represent your loan offer. This cannot be undone without
+        closing the loan and repaying any amount you’ll receive from a lender,
+        plus interest.
+      </p>
+      <p style={{ marginBottom: 0 }}>
+        Your repayment can increase as lenders offer higher loan amounts or
+        longer durations.
+      </p>
     </div>
   );
 }
@@ -200,12 +205,15 @@ function MintBorrowerTicketSuccess({ context }: InnerProps) {
 function SetLoanTerms({ context }: InnerProps) {
   return (
     <div>
-      When a lender meets these terms, you will immediately receive the loan
-      amount minus a 1% origination fee.
-      <br />
-      Lenders can be &ldquo;bought out&rdquo; by new lenders offering better
-      terms (higher amount, lower rate, or longer duration). When this happens,
-      the new terms will instantly go into effect.
+      <p style={{ marginTop: 0 }}>
+        When a lender meets these terms, you’ll immediately receive the loan
+        amount minus a 1% origination fee.
+      </p>
+      <p style={{ marginBottom: 0 }}>
+        Lenders can be &ldquo;bought out&rdquo; by new lenders offering better
+        terms (higher amount, lower rate, or longer duration). When this
+        happens, the new terms will instantly go into effect.
+      </p>
     </div>
   );
 }

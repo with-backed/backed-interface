@@ -160,7 +160,12 @@ export function CreatePageHeader() {
   }, [current, selectedNFT]);
 
   const setTermsButtonIsDisabled = useMemo(() => {
-    return ['noWallet', 'selectNFT', 'authorizeNFT'].some(current.matches);
+    return [
+      'noWallet',
+      'selectNFT',
+      'authorizeNFT',
+      'pendingAuthorization',
+    ].some(current.matches);
   }, [current]);
 
   return (
