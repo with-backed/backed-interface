@@ -1,8 +1,9 @@
 /* Note: this styling is not compatible with "multiple terms, single definition". */
 .horizontal {
   display: grid;
-  grid-template-columns: fit-content(50%) 1fr;
+  grid-template-columns: var(--column-width) 1fr;
   column-gap: var(--gap);
+  row-gap: calc(var(--gap) / 2);
   align-items: center;
 }
 
@@ -18,7 +19,6 @@
 .horizontal dd,
 .vertical dd {
   margin: 0;
-  line-height: 32px;
 }
 
 .horizontal dt,
@@ -28,7 +28,6 @@
   font-size: var(--font-small);
   font-family: var(--sans);
   letter-spacing: 0.12rem;
-  line-height: 32px;
 }
 
 .horizontal dt {
