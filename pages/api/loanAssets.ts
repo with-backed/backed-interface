@@ -3,7 +3,7 @@ import { captureException, withSentry } from '@sentry/nextjs';
 import type { LoanAsset } from 'lib/loanAssets';
 
 // TODO: we should almost certainly cache this
-const mainnetLoanAssetsURI = 'https://gateway.ipfs.io/ipns/tokens.uniswap.org';
+const mainnetLoanAssetsURI = 'https://tokens.1inch.eth.link/';
 
 async function handler(
   _req: NextApiRequest,
