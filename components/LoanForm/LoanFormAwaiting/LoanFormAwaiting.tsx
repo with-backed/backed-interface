@@ -14,7 +14,7 @@ import { ethers } from 'ethers';
 import { formattedAnnualRate } from 'lib/interest';
 import { secondsBigNumToDays } from 'lib/duration';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Balance } from '../Balance';
+import { LoanTermsDisclosure } from 'components/LoanTermsDisclosure';
 
 type LoanFormAwaitingProps = {
   balance: number;
@@ -43,6 +43,7 @@ export function LoanFormAwaiting({
     () => secondsBigNumToDays(loan.durationSeconds).toString(),
     [loan.durationSeconds],
   );
+  const [hasReviewed, setHasReviewed] = useState(false);
 
   const form = useForm<LoanFormData>({
     defaultValues: {
@@ -66,7 +67,8 @@ export function LoanFormAwaiting({
     register,
     watch,
   } = form;
-  const loanAmount = watch('loanAmount');
+
+  const watchAllFields = watch();
 
   const [current, send] = useMachine(loanFormAwaitingMachine);
 
@@ -165,18 +167,32 @@ export function LoanFormAwaiting({
           callback={() => setNeedsAllowance(false)}
           done={!needsAllowance}
         />
-        <Balance
+
+        <LoanTermsDisclosure
+          type="LEND"
+          fields={{
+            ...watchAllFields,
+            denomination: {
+              symbol: loan.loanAssetSymbol,
+              address: loan.loanAssetContractAddress,
+            },
+          }}
+          onClick={() => {
+            setHasReviewed(true);
+            send('REVIEW');
+          }}
           balance={balance}
-          loanAmount={parseFloat(loanAmount)}
-          symbol={loan.loanAssetSymbol}
         />
+
         <TransactionButton
           id="Lend"
           text="Mint Lending Ticket"
           type="submit"
           txHash={txHash}
           isPending={transactionPending}
-          disabled={needsAllowance || Object.keys(errors).length > 0}
+          disabled={
+            needsAllowance || Object.keys(errors).length > 0 || !hasReviewed
+          }
           onMouseEnter={() => send('LEND_HOVER')}
         />
       </Form>

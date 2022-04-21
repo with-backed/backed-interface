@@ -274,6 +274,7 @@ export function CreatePageForm({
       </label>
 
       <LoanTermsDisclosure
+        type="CREATE"
         fields={watchAllFields}
         onClick={() => {
           onFocus('REVIEW');
