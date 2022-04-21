@@ -13,6 +13,7 @@ import pepe from './pepe-bunny-line.png';
 import { useKonami } from 'hooks/useKonami';
 import Image from 'next/image';
 import { WrongNetwork } from 'components/Banner/messages';
+import { HeaderInfo } from 'components/HeaderInfo';
 
 type PawnShopHeaderProps = {
   isErrorPage?: boolean;
@@ -110,6 +111,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = (
           </ButtonLink>
         </div>
       </nav>
+      <HeaderInfo />
     </>
   );
 };
