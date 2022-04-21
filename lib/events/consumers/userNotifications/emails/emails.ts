@@ -20,7 +20,7 @@ import {
   GenericEmailType,
   getSubjectForGenericEmail,
 } from 'lib/events/consumers/userNotifications/emails/genericFormatter';
-import { mainnet } from 'lib/chainEnv';
+import { mainnet, siteUrl } from 'lib/chainEnv';
 
 export async function sendEmailsForTriggerAndEntity(
   emailTrigger: NotificationTriggerType,
@@ -81,7 +81,7 @@ export async function sendConfirmationEmail(
     mainMessage: `We've received your request to subscribe to the activity of ${await ensOrAddr(
       ethAddress,
     )}`,
-    footer: `https://rinkeby.withbacked.xyz/profile/${ethAddress}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+    footer: `https://${siteUrl()}/profile/${ethAddress}?unsubscribe=true&uuid=${unsubscribeUuid}`,
   };
 
   await executeEmailSendWithSes(
