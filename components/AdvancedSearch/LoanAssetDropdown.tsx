@@ -1,6 +1,6 @@
 import { Select } from 'components/Select';
-import { getLoanAssets, LoanAsset } from 'lib/loanAssets';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { LoanAsset } from 'lib/loanAssets';
+import { useCallback, useEffect, useState } from 'react';
 import styles from './AdvancedSearch.module.css';
 
 type LoanAssetDropdownProps = {
@@ -12,8 +12,11 @@ export default function LoanAssetDropdown({
 }: LoanAssetDropdownProps) {
   const [loanAssetOptions, setLoanAssetOptions] = useState<LoanAsset[]>([]);
   const loadAssets = useCallback(async () => {
-    const assets = await getLoanAssets();
-    setLoanAssetOptions(assets);
+    const response = await fetch('/api/loanAssets');
+    const tokens: LoanAsset[] | null = await response.json();
+    if (tokens) {
+      setLoanAssetOptions(tokens);
+    }
   }, []);
 
   useEffect(() => {
