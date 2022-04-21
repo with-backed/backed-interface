@@ -85,7 +85,11 @@ export function LoanFormAwaiting({
     const errorTarget = Object.keys(errors)[0];
     const stateTarget = current.toStrings()[0];
 
-    const targetID = errorTarget || stateTarget;
+    const targetID =
+      errorTarget ||
+      (stateTarget === 'LendTermsUnfocused'
+        ? 'loanFormDisclosureButton'
+        : stateTarget);
     const target = document.getElementById(targetID);
     const container = document.getElementById('container');
     if (!target || !container) {

@@ -16,9 +16,13 @@ export function LoanFormDisclosure({
   return (
     <>
       <div className={className}>
-        <DisclosureButton {...disclosure}>{title}</DisclosureButton>
+        <DisclosureButton {...disclosure} id="loanFormDisclosureButton">
+          {title}
+        </DisclosureButton>
       </div>
-      <DisclosureContent {...disclosure}>{children}</DisclosureContent>
+      <DisclosureContent {...disclosure}>
+        {(_props) => disclosure.visible && children}
+      </DisclosureContent>
     </>
   );
 }
