@@ -18,6 +18,7 @@ import { parseSubgraphLoan } from 'lib/loans/utils';
 import { formattedAnnualRate } from 'lib/interest';
 import { collateralToDiscordMessageEmbed } from './attachments';
 import { getNFTInfoForAttachment } from 'lib/events/consumers/getNftInfoForAttachment';
+import { siteUrl } from 'lib/chainEnv';
 
 export async function sendBotUpdateForTriggerAndEntity(
   trigger: NotificationTriggerType,
@@ -36,8 +37,8 @@ export async function sendBotUpdateForTriggerAndEntity(
     mostRecentTermsEvent,
   )}
 
-Loan: <https://rinkeby.withbacked.xyz/loans/${event.loan.id}>
-Event Tx: <https://rinkeby.etherscan.io/tx/${event.id}>
+Loan: <${siteUrl()}/loans/${event.loan.id}>
+Event Tx: <${process.env.NEXT_PUBLIC_ETHERSCAN_URL!}/tx/${event.id}>
 `;
 
   const messagedEmbed = await collateralToDiscordMessageEmbed(
