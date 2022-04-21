@@ -13,7 +13,7 @@ import { PawnShopHeader } from 'components/PawnShopHeader';
 import Head from 'next/head';
 import { LoadMoreButton } from 'components/HomePageLoans/HomePageLoans';
 
-const PAGE_LIMIT = 18;
+const PAGE_LIMIT = 9;
 
 export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
   return {
