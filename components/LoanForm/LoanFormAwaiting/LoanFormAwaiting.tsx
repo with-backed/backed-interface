@@ -1,7 +1,13 @@
 import { AllowButton, TransactionButton } from 'components/Button';
 import { useLoanUnderwriter } from 'hooks/useLoanUnderwriter';
 import { Loan } from 'types/Loan';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  FocusEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { Input } from 'components/Input';
 import { useForm } from 'react-hook-form';
 import { Form } from 'components/Form';
@@ -95,9 +101,14 @@ export function LoanFormAwaiting({
     }
   }, [current, errors, explainerTop]);
 
-  const handleBlur = useCallback(() => {
-    send('BLUR');
-  }, [send]);
+  const handleBlur = useCallback(
+    (e: FocusEvent<HTMLInputElement>) => {
+      if (e.relatedTarget?.getAttribute('id') !== 'review') {
+        send('BLUR');
+      }
+    },
+    [send],
+  );
 
   const { underwrite, transactionPending, txHash } = useLoanUnderwriter(
     loan,
@@ -193,7 +204,6 @@ export function LoanFormAwaiting({
           disabled={
             needsAllowance || Object.keys(errors).length > 0 || !hasReviewed
           }
-          onMouseEnter={() => send('LEND_HOVER')}
         />
       </Form>
       <Explainer
