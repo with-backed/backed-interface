@@ -16,7 +16,7 @@ import {
   jsonRpcLoanFacilitator,
   web3LoanFacilitator,
 } from 'lib/contracts';
-import { getLoanAssets, LoanAsset } from 'lib/loanAssets';
+import { LoanAsset } from 'lib/loanAssets';
 import React, {
   FocusEvent,
   useCallback,
@@ -158,8 +158,11 @@ export function CreatePageForm({
   );
 
   const loadAssets = useCallback(async () => {
-    const assets = await getLoanAssets();
-    setLoanAssetOptions(assets);
+    const response = await fetch('/api/loanAssets');
+    const tokens: LoanAsset[] | null = await response.json();
+    if (tokens) {
+      setLoanAssetOptions(tokens);
+    }
   }, []);
 
   const handleBlur = useCallback(
