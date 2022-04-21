@@ -32,8 +32,6 @@ export function Explainer({ form, state, top, loan }: ExplainerProps) {
   const error = Object.values(form.formState.errors)[0];
   const Inner = explainers[state];
 
-  console.log({ state });
-
   return (
     <ExplainerWrapper top={top} display={!!error ? 'error' : 'normal'}>
       {!!error && <Error error={error} />}

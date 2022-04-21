@@ -134,21 +134,19 @@ function LendPageTerms({
   const { symbol } = fields.denomination;
 
   return (
-    <>
-      <DescriptionList orientation="horizontal">
-        {balance && (
-          <Balance
-            balance={balance}
-            loanAmount={parseFloat(fields.loanAmount)}
-            symbol={symbol}
-          />
-        )}
-        <dt>Initial Loan Amount</dt>
-        <dd>
-          {fields.loanAmount} {symbol}
-        </dd>
-      </DescriptionList>
-    </>
+    <DescriptionList orientation="horizontal">
+      {balance && (
+        <Balance
+          balance={balance}
+          loanAmount={parseFloat(fields.loanAmount)}
+          symbol={symbol}
+        />
+      )}
+      <dt>Initial Loan Amount</dt>
+      <dd>
+        {fields.loanAmount} {symbol}
+      </dd>
+    </DescriptionList>
   );
 }
 
