@@ -42,7 +42,8 @@ type CreatePageFormProps = {
       | 'LOAN_AMOUNT'
       | 'DURATION'
       | 'INTEREST_RATE'
-      | 'REVIEW',
+      | 'REVIEW'
+      | 'ACCEPT_HIGHER_LOAN_AMOUNT',
   ) => void;
   onSubmit: () => void;
 };
@@ -93,6 +94,7 @@ export function CreatePageForm({
       interestRate,
       duration,
       denomination,
+      acceptHigherLoanAmounts,
     }: CreateFormData) => {
       const parsedInterestRate = parseFloat(interestRate);
       const parsedDuration = parseFloat(duration);
@@ -104,8 +106,6 @@ export function CreatePageForm({
           parsedInterestRate * 10 ** (INTEREST_RATE_PERCENT_DECIMALS - 2),
         ),
       );
-      // TODO: allow user to select
-      const allowLoanAmountIncrease = true;
 
       const contract = web3LoanFacilitator(signer!);
       onSubmit();
@@ -113,7 +113,7 @@ export function CreatePageForm({
         collateralTokenID,
         collateralAddress,
         annualInterestRate,
-        allowLoanAmountIncrease,
+        acceptHigherLoanAmounts,
         ethers.utils.parseUnits(loanAmount.toString(), loanAssetDecimals),
         denomination.address,
         durationInSeconds,
@@ -210,7 +210,11 @@ export function CreatePageForm({
       </label>
 
       <label htmlFor="loanAmount">
-        <span>Minimum Loan Amount</span>
+        <span>
+          {watchAllFields.acceptHigherLoanAmounts
+            ? 'Minimum Loan Amount'
+            : 'Loan Amount'}
+        </span>
         <Input
           id="loanAmount"
           placeholder="0"
@@ -221,6 +225,18 @@ export function CreatePageForm({
           onFocus={() => onFocus('LOAN_AMOUNT')}
           aria-invalid={!!errors.loanAmount}
           {...register('loanAmount', { onBlur: handleBlur })}
+        />
+      </label>
+
+      <label htmlFor="acceptHigherLoanAmounts">
+        <span>Accept Higher Loan Amounts</span>
+        <input
+          id="acceptHigherLoanAmounts"
+          type="checkbox"
+          disabled={disabled}
+          onFocus={() => onFocus('ACCEPT_HIGHER_LOAN_AMOUNT')}
+          aria-invalid={!!errors.acceptHigherLoanAmounts}
+          {...register('acceptHigherLoanAmounts', { onBlur: handleBlur })}
         />
       </label>
 

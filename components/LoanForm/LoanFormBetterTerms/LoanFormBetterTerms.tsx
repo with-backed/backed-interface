@@ -127,6 +127,7 @@ export function LoanFormBetterTerms({
             color="dark"
             unit={loan.loanAssetSymbol}
             aria-invalid={!!errors.loanAmount}
+            disabled={!loan.allowLoanAmountIncrease}
             onFocus={() => send('LOAN_AMOUNT')}
             {...register('loanAmount', {
               onBlur: handleBlur,

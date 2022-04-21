@@ -29,6 +29,7 @@ export const explainers: {
   mintBorrowerTicket: MintBorrowerTicket,
   mintBorrowerTicketSuccess: MintBorrowerTicketSuccess,
   setLoanTerms: SetLoanTerms,
+  acceptHigherLoanAmount: LoanAmount,
 };
 
 export function Explainer({ form, state, top }: ExplainerProps) {
@@ -117,10 +118,19 @@ function Denomination({ context }: InnerProps) {
 }
 
 function LoanAmount({ context }: InnerProps) {
+  if (context.acceptHigherLoanAmounts) {
+    return (
+      <div>
+        Lenders can give you a larger loan, but this is the minimum amount
+        you&apos;ll accept.
+      </div>
+    );
+  }
+
   return (
     <div>
-      Lenders can give you a larger loan, but this is the minimum amount
-      you&apos;ll accept.
+      Lenders will be able to offer improved interest rates and duration, but
+      loan amount will stay fixed.
     </div>
   );
 }

@@ -5,4 +5,5 @@ export type CreateFormData = {
   interestRate: string;
   denomination: LoanAsset;
   loanAmount: string;
+  acceptHigherLoanAmounts: boolean;
 };

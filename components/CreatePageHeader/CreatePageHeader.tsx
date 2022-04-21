@@ -27,6 +27,9 @@ export function CreatePageHeader() {
   const form = useForm<CreateFormData>({
     mode: 'all',
     resolver: yupResolver(createPageFormSchema),
+    defaultValues: {
+      acceptHigherLoanAmounts: true,
+    },
   });
   const [{ data }] = useAccount();
   const account = data?.address;
@@ -89,7 +92,8 @@ export function CreatePageHeader() {
         | 'LOAN_AMOUNT'
         | 'DURATION'
         | 'INTEREST_RATE'
-        | 'REVIEW',
+        | 'REVIEW'
+        | 'ACCEPT_HIGHER_LOAN_AMOUNT',
     ) => {
       send({ type });
     },

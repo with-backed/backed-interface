@@ -40,7 +40,7 @@ export function TransactionButton({
       <CompletedButton
         id={id}
         buttonText={text}
-        success
+        success={!isPending}
         message={
           <span>
             {message} {transactionLink}

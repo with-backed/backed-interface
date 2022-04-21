@@ -65,6 +65,7 @@ export const baseLoan: Loan = {
   lastAccumulatedTimestamp: ethers.BigNumber.from(0),
   interestOwed: ethers.BigNumber.from(0),
   collateralName: 'The Best NFT Ever',
+  allowLoanAmountIncrease: true,
 };
 
 export const loanWithLenderAccruing: Loan = {
