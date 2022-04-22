@@ -49,7 +49,7 @@ function Error({ error }: { error: FieldError }) {
   );
 }
 
-function Review() {
+export function Review() {
   return (
     <div>
       Before proceeding, verify the details of this NFT and ensure it is not a
