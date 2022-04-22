@@ -46,7 +46,7 @@ export function Footer() {
             </li>
           );
         })}
-        <li>🐾</li>
+        <li>🥕</li>
       </ul>
     </footer>
   );
