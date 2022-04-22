@@ -207,6 +207,7 @@ export function LoanFormBetterTerms({
           balance={balance}
           accrued={formattedInterestAccrued}
           totalPayback={formattedTotalPayback}
+          disclosureButtonDisabled={!termsAreImproved}
         />
         <TransactionButton
           id="Lend"

@@ -19,6 +19,7 @@ type LoanTermsDisclosureProps = {
   type: 'CREATE' | 'LEND' | 'BUYOUT';
   onClick: () => void;
   fields: LoanPageFields;
+  disclosureButtonDisabled: boolean;
   balance?: number;
   accrued?: string;
   totalPayback?: string;
@@ -26,6 +27,7 @@ type LoanTermsDisclosureProps = {
 export function LoanTermsDisclosure({
   type,
   fields,
+  disclosureButtonDisabled = false,
   onClick,
   balance,
   accrued,
@@ -38,7 +40,7 @@ export function LoanTermsDisclosure({
       <DisclosureButton
         id="review"
         onClick={onClick}
-        disabled={!fieldsAreFull(fields)}
+        disabled={!fieldsAreFull(fields) || disclosureButtonDisabled}
         {...disclosure}>
         Review
       </DisclosureButton>
