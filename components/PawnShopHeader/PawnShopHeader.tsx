@@ -15,6 +15,7 @@ import Image from 'next/image';
 import { WrongNetwork } from 'components/Banner/messages';
 import { HeaderInfo } from 'components/HeaderInfo';
 import { Chevron } from 'components/Icons/Chevron';
+import { useHasCollapsedHeaderInfo } from 'hooks/useHasCollapsedHeaderInfo';
 
 type PawnShopHeaderProps = {
   isErrorPage?: boolean;
@@ -32,11 +33,17 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
   const { pathname } = useRouter();
   const kind = pathname === CREATE_PATH ? 'secondary' : 'primary';
   const codeActive = useKonami();
-  const [isInfoCollapsed, setIsInfoCollapsed] = useState(!showInitialInfo);
+  const { hasCollapsed, onCollapse } = useHasCollapsedHeaderInfo();
+  const [isInfoCollapsed, setIsInfoCollapsed] = useState(
+    hasCollapsed ? true : !showInitialInfo,
+  );
 
   const toggleVisible = useCallback(() => {
+    if (!isInfoCollapsed) {
+      onCollapse();
+    }
     setIsInfoCollapsed((prev) => !prev);
-  }, []);
+  }, [isInfoCollapsed, onCollapse]);
 
   return (
     <>
