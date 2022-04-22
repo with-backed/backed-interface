@@ -2,6 +2,7 @@
   width: 100%;
   background: var(--background-white);
   position: relative;
+  overflow: hidden;
 }
 
 .info {
@@ -24,4 +25,10 @@
   stroke: var(--highlight-clickable-100);
   transform: rotate(180deg);
   margin-bottom: 0.15em;
+}
+
+@media screen and (max-width: 710px) {
+  .info {
+    grid-column: span 12;
+  }
 }

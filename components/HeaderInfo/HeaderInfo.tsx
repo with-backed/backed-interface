@@ -5,13 +5,23 @@ import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import borrowerBunny from './borrower-bunny.png';
 import investigativeBunny from './investigative-bunny.png';
 import lenderBunny from './lender-bunny.png';
-import { Button } from 'components/Button';
-import { Chevron } from 'components/Icons/Chevron';
+import { animated, useSpring } from 'react-spring';
+import useMeasure from 'react-use-measure';
 
-export function HeaderInfo() {
+type HeaderInfoProps = {
+  isCollapsed?: boolean;
+};
+
+export function HeaderInfo({ isCollapsed = true }: HeaderInfoProps) {
+  const [ref, bounds] = useMeasure();
+
+  const headerInfoAnimatedStyle = useSpring({
+    height: isCollapsed ? 0 : bounds.height || 'auto',
+  });
+
   return (
-    <div className={styles.wrapper}>
-      <TwelveColumn>
+    <animated.div style={headerInfoAnimatedStyle} className={styles.wrapper}>
+      <TwelveColumn ref={ref}>
         <div className={styles.info}>
           <Image
             src={borrowerBunny}
@@ -57,9 +67,6 @@ export function HeaderInfo() {
           </p>
         </div>
       </TwelveColumn>
-      <Button kind="circle">
-        <Chevron />
-      </Button>
-    </div>
+    </animated.div>
   );
 }

@@ -1,8 +1,8 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import Link from 'next/link';
 import { ConnectWallet } from 'components/ConnectWallet';
 import styles from './PawnShopHeader.module.css';
-import { ButtonLink } from 'components/Button';
+import { Button, ButtonLink } from 'components/Button';
 import { useRouter } from 'next/router';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
@@ -14,21 +14,25 @@ import { useKonami } from 'hooks/useKonami';
 import Image from 'next/image';
 import { WrongNetwork } from 'components/Banner/messages';
 import { HeaderInfo } from 'components/HeaderInfo';
+import { Chevron } from 'components/Icons/Chevron';
 
 type PawnShopHeaderProps = {
   isErrorPage?: boolean;
+  showInitialInfo?: boolean;
 };
 
 const expectedChainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID as string);
 const CREATE_PATH = '/loans/create';
 
-export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = (
-  props,
-) => {
+export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
+  isErrorPage,
+  showInitialInfo = false,
+}) => {
   const { messages, removeMessage } = useGlobalMessages();
   const { pathname } = useRouter();
   const kind = pathname === CREATE_PATH ? 'secondary' : 'primary';
   const codeActive = useKonami();
+  const [isInfoCollapsed, setIsInfoCollapsed] = useState(!showInitialInfo);
   return (
     <>
       <div className={styles['banner-container']}>
@@ -55,7 +59,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = (
             <a
               title="Backed"
               className={codeActive ? styles['flipped-link'] : styles.link}>
-              {props?.isErrorPage == true ? (
+              {isErrorPage == true ? (
                 <Image
                   src={borkedBunny}
                   alt="Error Bunny"
@@ -85,7 +89,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = (
       <nav className={styles['mobile-header']}>
         <Link href="/" passHref>
           <a title="Backed">
-            {props?.isErrorPage == true ? (
+            {isErrorPage == true ? (
               <Image
                 src={borkedBunny}
                 alt="Error Bunny"
@@ -111,7 +115,17 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = (
           </ButtonLink>
         </div>
       </nav>
-      <HeaderInfo />
+      <div className={styles['header-info-wrapper']}>
+        <HeaderInfo isCollapsed={isInfoCollapsed} />
+        {!isInfoCollapsed && (
+          <Button
+            aria-label="Close getting-started info"
+            kind="circle"
+            onClick={() => setIsInfoCollapsed(true)}>
+            <Chevron />
+          </Button>
+        )}
+      </div>
     </>
   );
 };
