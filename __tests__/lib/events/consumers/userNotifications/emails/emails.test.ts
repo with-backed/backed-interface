@@ -12,6 +12,7 @@ import {
 import {
   subgraphBuyoutEvent,
   subgraphCollateralSeizureEvent,
+  subgraphCreateEvent,
   subgraphLendEvent,
   subgraphLoanForEvents,
   subgraphRepaymentEvent,
@@ -159,6 +160,30 @@ describe('Sending emails with Amazon SES', () => {
   });
 
   describe('Event trigger emails', () => {
+    describe('CreateEvent', () => {
+      it('successfully calls SES send email method with correct params', async () => {
+        mockGetComponentsCall.mockResolvedValue({
+          [subgraphCreateEvent.creator]: (_unsubscribeUuid: string) =>
+            mockEmailComponents,
+        });
+        await sendEmailsForTriggerAndEntity(
+          'CreateEvent',
+          subgraphCreateEvent,
+          0,
+        );
+
+        expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
+        expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
+          subgraphLoanForEvents.borrowTicketHolder,
+        );
+        expect(mockedSesEmailCall).toBeCalledTimes(2);
+        expect(mockedSesEmailCall).toHaveBeenCalledWith(
+          '',
+          expect.anything(),
+          testRecipientOne,
+        );
+      });
+    });
     describe('BuyoutEvent', () => {
       beforeEach(() => {
         mockGetComponentsCall.mockResolvedValue({

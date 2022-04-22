@@ -44,6 +44,8 @@ export async function sendEmailsForTriggerAndEntity(
     return;
   }
 
+  console.log({ addressToEmailComponents });
+
   for (const ethAddress in addressToEmailComponents) {
     const notificationRequestsForEthAddresses =
       await getNotificationRequestsForAddress(ethAddress);
