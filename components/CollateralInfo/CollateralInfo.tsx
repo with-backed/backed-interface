@@ -8,7 +8,7 @@ import styles from './CollateralInfo.module.css';
 
 type CollateralInfoProps = {
   loan: Loan;
-  collateralSaleInfo: CollateralSaleInfo;
+  collateralSaleInfo: CollateralSaleInfo | null;
 };
 
 export const CollateralInfo = ({

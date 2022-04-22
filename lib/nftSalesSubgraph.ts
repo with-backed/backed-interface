@@ -41,7 +41,7 @@ const NFT_EXCHANGES = {
   '0xE7dd1252f50B3d845590Da0c5eADd985049a03ce': 'Zora',
 };
 
-const PAYMENT_TOKENS = {
+const PAYMENT_TOKENS: any = {
   '0xc778417e063141139fce010982780140aa0cd5ab': 'WETH',
   '0x6916577695D0774171De3ED95d03A3239139Eddb': 'DAI',
 };
@@ -61,7 +61,7 @@ export const generateFakeSaleForNFT = (
 ): NFTSale => {
   return {
     id: genRanHex(),
-    blockNumber: ethers.BigNumber.from(randomNumber(1000000)),
+    blockNumber: ethers.BigNumber.from(randomNumber(1000000)).toString(),
     buyer: genRanHex(),
     seller: genRanHex(),
     nftContractAddress,

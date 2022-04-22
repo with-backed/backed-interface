@@ -40,28 +40,32 @@ async function getMostRecentSale(
   nftContractAddress: string,
   tokenId: string,
 ): Promise<{ paymentToken: string; price: number } | null> {
-  if (!mainnet()) return generateFakeSaleForNFT(nftContractAddress, tokenId);
+  let sale: NFTSale | null = null;
 
-  const recentSaleFromGraph = await queryMostRecentSaleForNFT(
-    nftContractAddress,
-    tokenId,
-  );
-  if (!recentSaleFromGraph) {
-    return null;
+  if (!mainnet()) {
+    sale = generateFakeSaleForNFT(nftContractAddress, tokenId);
+  } else {
+    sale = await queryMostRecentSaleForNFT(nftContractAddress, tokenId);
+    if (!sale) {
+      return null;
+    }
   }
 
-  const erc20Contract = jsonRpcERC20Contract(recentSaleFromGraph.paymentToken);
+  const paymentTokenAddress = sale.paymentToken;
+  const price = sale.price;
 
-  const paymentToken = await erc20Contract.symbol();
+  const erc20Contract = jsonRpcERC20Contract(paymentTokenAddress);
+
+  const paymentTokenSymbol = await erc20Contract.symbol();
   const recentSaleTokenDecimals = await erc20Contract.decimals();
 
-  const price = ethers.utils
-    .parseUnits(recentSaleFromGraph.price, recentSaleTokenDecimals)
+  const formatttedPrice = ethers.utils
+    .parseUnits(price, recentSaleTokenDecimals)
     .toNumber();
 
   return {
-    paymentToken,
-    price,
+    paymentToken: paymentTokenSymbol,
+    price: formatttedPrice,
   };
 }
 
