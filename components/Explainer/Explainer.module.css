@@ -23,14 +23,6 @@
   position: relative;
 }
 
-.lend-terms-unfocused > div:not(:first-child) {
-  margin-top: var(--gap);
-}
-
-.lend-terms-unfocused > div:not(:last-child) {
-  margin-bottom: var(--gap);
-}
-
 /* TODO: come up with a way to provide explainer content in mobile view. */
 @media screen and (max-width: 700px) {
   .explainer {
