@@ -18,9 +18,9 @@ export type CollateralSaleInfo = {
   recentSale: {
     paymentToken: string;
     price: number;
-  };
+  } | null;
   collectionStats: CollectionStatistics;
-} | null;
+};
 
 export async function getCollateralSaleInfo(
   nftContractAddress: string,
@@ -28,36 +28,45 @@ export async function getCollateralSaleInfo(
 ): Promise<CollateralSaleInfo> {
   const recentSale = await getMostRecentSale(nftContractAddress, tokenId);
 
-  if (!recentSale) {
-    return null;
-  }
-
-  const erc20Contract = jsonRpcERC20Contract(recentSale.paymentToken);
-
-  const recentSaleToken = await erc20Contract.symbol();
-  const recentSaleTokenDecimals = await erc20Contract.decimals();
-
-  const recentSalePrice = ethers.utils
-    .parseUnits(recentSale.price, recentSaleTokenDecimals)
-    .toNumber();
-
   const collectionStats = await getCollectionStats(nftContractAddress);
 
   return {
     collectionStats,
-    recentSale: {
-      paymentToken: recentSaleToken,
-      price: recentSalePrice,
-    },
+    recentSale,
   };
 }
 
 async function getMostRecentSale(
   nftContractAddress: string,
   tokenId: string,
-): Promise<NFTSale | null> {
-  if (!mainnet()) return generateFakeSaleForNFT(nftContractAddress, tokenId);
-  return await queryMostRecentSaleForNFT(nftContractAddress, tokenId);
+): Promise<{ paymentToken: string; price: number } | null> {
+  let sale: NFTSale | null = null;
+
+  if (!mainnet()) {
+    sale = generateFakeSaleForNFT(nftContractAddress, tokenId);
+  } else {
+    sale = await queryMostRecentSaleForNFT(nftContractAddress, tokenId);
+    if (!sale) {
+      return null;
+    }
+  }
+
+  const paymentTokenAddress = sale.paymentToken;
+  const price = sale.price;
+
+  const erc20Contract = jsonRpcERC20Contract(paymentTokenAddress);
+
+  const paymentTokenSymbol = await erc20Contract.symbol();
+  const recentSaleTokenDecimals = await erc20Contract.decimals();
+
+  const formatttedPrice = ethers.utils
+    .parseUnits(price, recentSaleTokenDecimals)
+    .toNumber();
+
+  return {
+    paymentToken: paymentTokenSymbol,
+    price: formatttedPrice,
+  };
 }
 
 async function getCollectionStats(

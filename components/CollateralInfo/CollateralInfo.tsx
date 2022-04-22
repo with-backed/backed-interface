@@ -8,7 +8,7 @@ import styles from './CollateralInfo.module.css';
 
 type CollateralInfoProps = {
   loan: Loan;
-  collateralSaleInfo: CollateralSaleInfo;
+  collateralSaleInfo: CollateralSaleInfo | null;
 };
 
 export const CollateralInfo = ({
@@ -31,8 +31,6 @@ export const CollateralInfo = ({
             View on OpenSea
           </OpenSeaAddressLink>
         </dd>
-        <dt className={styles.label}>item&apos;s last sale</dt>
-        <dd>No recent sale info</dd>
       </Fieldset>
     );
   }
@@ -49,11 +47,21 @@ export const CollateralInfo = ({
           </OpenSeaAddressLink>
         </dd>
 
-        <dt className={styles.label}>item&apos;s last sale</dt>
-        <dd>
-          {collateralSaleInfo.recentSale.price}{' '}
-          {collateralSaleInfo.recentSale.paymentToken}
-        </dd>
+        {!collateralSaleInfo.recentSale && (
+          <>
+            <dt className={styles.label}>item&apos;s last sale</dt>
+            <dd>No recent sale info</dd>
+          </>
+        )}
+        {!!collateralSaleInfo.recentSale && (
+          <>
+            <dt className={styles.label}>item&apos;s last sale</dt>
+            <dd>
+              {collateralSaleInfo.recentSale.price}{' '}
+              {collateralSaleInfo.recentSale.paymentToken}
+            </dd>
+          </>
+        )}
 
         <dt className={styles.label}>collection</dt>
         <dd>{loan.collateralName}</dd>
