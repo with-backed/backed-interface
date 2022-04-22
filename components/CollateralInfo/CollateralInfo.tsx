@@ -83,7 +83,7 @@ export const CollateralInfo = ({
 
         <div className={styles.collectionInfoElement}>
           <dt className={styles.label}>volume</dt>
-          <dd>{collateralSaleInfo.collectionStats.volume} ETH</dd>
+          <dd>{collateralSaleInfo.collectionStats.volume.toFixed(4)} ETH</dd>
         </div>
       </DescriptionList>
     </Fieldset>
