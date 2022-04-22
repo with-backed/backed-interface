@@ -26,7 +26,9 @@ export function LoanOfferBetterTermsDisclosure({
         </Disclosure>
         , which will reset the loan duration.
       </div>
-      <DisclosureContent {...disclosure}>{children}</DisclosureContent>
+      <DisclosureContent {...disclosure}>
+        {(_props) => disclosure.visible && children}
+      </DisclosureContent>
     </>
   );
 }

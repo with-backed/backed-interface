@@ -6,6 +6,7 @@ import { formattedAnnualRate } from 'lib/interest';
 import React, { useCallback } from 'react';
 import { FieldError, UseFormReturn } from 'react-hook-form';
 import { Loan } from 'types/Loan';
+import { Review } from 'components/LoanForm/LoanFormAwaiting/Explainer';
 
 type ExplainerProps = {
   form: UseFormReturn<LoanFormData, object>;
@@ -23,6 +24,7 @@ const explainers: {
   [key: string]: (props: InnerProps) => JSX.Element;
 } = {
   Lend,
+  review: Review,
   LendPending,
   LendSuccess,
   LendTermsUnfocused,

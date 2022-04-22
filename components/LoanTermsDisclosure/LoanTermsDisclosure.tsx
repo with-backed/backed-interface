@@ -20,12 +20,16 @@ type LoanTermsDisclosureProps = {
   onClick: () => void;
   fields: LoanPageFields;
   balance?: number;
+  accrued?: string;
+  totalPayback?: string;
 };
 export function LoanTermsDisclosure({
   type,
   fields,
   onClick,
   balance,
+  accrued,
+  totalPayback,
 }: LoanTermsDisclosureProps) {
   const disclosure = useDisclosureState({ visible: false });
 
@@ -41,6 +45,14 @@ export function LoanTermsDisclosure({
       <DisclosureContent {...disclosure}>
         {type === 'CREATE' && <CreatePageTerms fields={fields} />}
         {type === 'LEND' && <LendPageTerms fields={fields} balance={balance} />}
+        {type === 'BUYOUT' && (
+          <BuyoutPageTerms
+            fields={fields}
+            balance={balance}
+            accrued={accrued}
+            totalPayback={totalPayback}
+          />
+        )}
       </DisclosureContent>
     </React.Fragment>
   );
@@ -146,6 +158,53 @@ function LendPageTerms({
       <dd>
         {fields.loanAmount} {symbol}
       </dd>
+    </DescriptionList>
+  );
+}
+
+function BuyoutPageTerms({
+  fields,
+  balance,
+  accrued,
+  totalPayback,
+}: Pick<LoanTermsDisclosureProps, 'fields'> &
+  Pick<LoanTermsDisclosureProps, 'balance'> &
+  Pick<LoanTermsDisclosureProps, 'accrued'> &
+  Pick<LoanTermsDisclosureProps, 'totalPayback'>) {
+  const [decimals, setDecimals] = useState<number | null>(null);
+  console.log('hereee');
+  useEffect(() => {
+    if (fields.denomination) {
+      const loanAssetContract = jsonRpcERC20Contract(
+        fields.denomination.address,
+      );
+      loanAssetContract.decimals().then(setDecimals);
+    }
+  }, [fields.denomination, setDecimals]);
+
+  if (!fieldsAreFull(fields) || !decimals) {
+    return null;
+  }
+
+  const { symbol } = fields.denomination;
+
+  return (
+    <DescriptionList orientation="horizontal">
+      {balance && (
+        <Balance
+          balance={balance}
+          loanAmount={parseFloat(fields.loanAmount)}
+          symbol={symbol}
+        />
+      )}
+      <dt>Principal</dt>
+      <dd>
+        {fields.loanAmount} {symbol}
+      </dd>
+      <dt>Interest Payout To Current Lender</dt>
+      <dd>{accrued}</dd>
+      <dt>Total Cost</dt>
+      <dd>{totalPayback}</dd>
     </DescriptionList>
   );
 }

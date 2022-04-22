@@ -1,7 +1,13 @@
 import { AllowButton, TransactionButton } from 'components/Button';
 import { useLoanUnderwriter } from 'hooks/useLoanUnderwriter';
 import { Loan } from 'types/Loan';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  FocusEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { Input } from 'components/Input';
 import { useForm } from 'react-hook-form';
 import { Form } from 'components/Form';
@@ -15,6 +21,8 @@ import { daysToSecondsBigNum, secondsBigNumToDays } from 'lib/duration';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Balance } from '../Balance';
 import { formattedAnnualRate } from 'lib/interest';
+import { LoanTermsDisclosure } from 'components/LoanTermsDisclosure';
+import { useLoanDetails } from 'hooks/useLoanDetails';
 
 type LoanFormBetterTermsProps = {
   balance: number;
@@ -43,6 +51,9 @@ export function LoanFormBetterTerms({
     () => secondsBigNumToDays(loan.durationSeconds).toString(),
     [loan.durationSeconds],
   );
+  const [hasReviewed, setHasReviewed] = useState(false);
+  const { formattedInterestAccrued, formattedTotalPayback } =
+    useLoanDetails(loan);
 
   const form = useForm<LoanFormData>({
     defaultValues: {
@@ -82,7 +93,11 @@ export function LoanFormBetterTerms({
     // when there's a form error, the explainer should float by the input with an error.
     const errorTarget = Object.keys(errors)[0];
     const stateTarget = current.toStrings()[0];
-    const targetID = errorTarget || stateTarget;
+    const targetID =
+      errorTarget ||
+      (stateTarget === 'LendTermsUnfocused'
+        ? 'loanFormDisclosureButton'
+        : stateTarget);
     const target = document.getElementById(targetID);
     const container = document.getElementById('container');
     if (!target || !container) {
@@ -97,9 +112,14 @@ export function LoanFormBetterTerms({
     }
   }, [current, errors, explainerTop]);
 
-  const handleBlur = useCallback(() => {
-    send('BLUR');
-  }, [send]);
+  const handleBlur = useCallback(
+    (e: FocusEvent<HTMLInputElement>) => {
+      if (e.relatedTarget?.getAttribute('id') !== 'review') {
+        send('BLUR');
+      }
+    },
+    [send],
+  );
 
   const { underwrite, transactionPending, txHash } = useLoanUnderwriter(
     loan,
@@ -169,10 +189,24 @@ export function LoanFormBetterTerms({
           callback={() => setNeedsAllowance(false)}
           done={!needsAllowance}
         />
-        <Balance
+        <LoanTermsDisclosure
+          type="BUYOUT"
+          fields={{
+            duration,
+            loanAmount,
+            interestRate,
+            denomination: {
+              symbol: loan.loanAssetSymbol,
+              address: loan.loanAssetContractAddress,
+            },
+          }}
+          onClick={() => {
+            setHasReviewed(true);
+            send('REVIEW');
+          }}
           balance={balance}
-          loanAmount={parseFloat(loanAmount)}
-          symbol={loan.loanAssetSymbol}
+          accrued={formattedInterestAccrued}
+          totalPayback={formattedTotalPayback}
         />
         <TransactionButton
           id="Lend"
@@ -183,7 +217,8 @@ export function LoanFormBetterTerms({
           disabled={
             needsAllowance ||
             Object.keys(errors).length > 0 ||
-            !termsAreImproved
+            !termsAreImproved ||
+            !hasReviewed
           }
           onMouseEnter={() => send('LEND_HOVER')}
         />

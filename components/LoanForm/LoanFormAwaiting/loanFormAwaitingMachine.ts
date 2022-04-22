@@ -62,6 +62,7 @@ export const loanFormAwaitingMachine = createMachine({
         BLUR: { target: 'LendTermsUnfocused' },
         LOAN_AMOUNT: { target: 'loanAmount' },
         DURATION: { target: 'duration' },
+        INTEREST_RATE: { target: 'interestRate' },
         SUBMITTED: { target: 'LendPending' },
       },
     },
