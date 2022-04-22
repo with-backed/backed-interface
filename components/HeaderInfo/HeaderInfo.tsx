@@ -64,7 +64,7 @@ export function HeaderInfo({ isCollapsed = true }: HeaderInfoProps) {
             priority
           />
           <p>
-            Read the <a>FAQ</a>. Follow on{' '}
+            Follow on{' '}
             <Link href={TWITTER_URL}>
               <a>Twitter</a>
             </Link>
