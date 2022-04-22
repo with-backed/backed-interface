@@ -18,6 +18,11 @@ import { WagmiProvider, chain } from 'wagmi';
 import { CachedRatesProvider } from 'hooks/useCachedRates/useCachedRates';
 import { HasCollapsedHeaderInfoProvider } from 'hooks/useHasCollapsedHeaderInfo';
 import { Footer } from 'components/Footer';
+import { useDialogState } from 'reakit/Dialog';
+import { Modal } from 'components/Modal';
+import { useCallback, useEffect } from 'react';
+import { Button } from 'components/Button';
+import { LS_TERMS_AGREEMENT } from 'lib/constants';
 
 const jsonRpcProvider = new providers.JsonRpcProvider(
   process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
@@ -38,6 +43,19 @@ const connectors = connectorsForWallets(wallets)({
 });
 
 export default function App({ Component, pageProps }: AppProps) {
+  const dialog = useDialogState();
+
+  const agree = useCallback(() => {
+    localStorage.setItem(LS_TERMS_AGREEMENT, 'yes');
+    dialog.hide();
+  }, [dialog]);
+
+  useEffect(() => {
+    const userHasAgreed = localStorage.getItem(LS_TERMS_AGREEMENT);
+    if (!userHasAgreed) {
+      dialog.show();
+    }
+  }, [dialog]);
   return (
     <GlobalMessagingProvider>
       <RainbowKitProvider theme={lightTheme()} chains={chains}>
@@ -50,6 +68,10 @@ export default function App({ Component, pageProps }: AppProps) {
               <HasCollapsedHeaderInfoProvider>
                 <AppWrapper>
                   <Component {...pageProps} />
+                  <Modal allowHide={false} dialog={dialog}>
+                    enforcement check
+                    <Button onClick={agree}>You got it, chief</Button>
+                  </Modal>
                   <Footer />
                 </AppWrapper>
               </HasCollapsedHeaderInfoProvider>
