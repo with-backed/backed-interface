@@ -10,7 +10,8 @@ export type ButtonKind =
   | 'tertiary'
   | 'quaternary'
   | 'highlight'
-  | 'white';
+  | 'white'
+  | 'circle';
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   kind?: ButtonKind;

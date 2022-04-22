@@ -16,6 +16,7 @@ import { TimestampProvider } from 'hooks/useTimestamp/useTimestamp';
 import { GlobalMessagingProvider } from 'hooks/useGlobalMessages';
 import { WagmiProvider, chain } from 'wagmi';
 import { CachedRatesProvider } from 'hooks/useCachedRates/useCachedRates';
+import { HasCollapsedHeaderInfoProvider } from 'hooks/useHasCollapsedHeaderInfo';
 
 const jsonRpcProvider = new providers.JsonRpcProvider(
   process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
@@ -45,9 +46,11 @@ export default function App({ Component, pageProps }: AppProps) {
           provider={jsonRpcProvider}>
           <TimestampProvider>
             <CachedRatesProvider>
-              <AppWrapper>
-                <Component {...pageProps} />
-              </AppWrapper>
+              <HasCollapsedHeaderInfoProvider>
+                <AppWrapper>
+                  <Component {...pageProps} />
+                </AppWrapper>
+              </HasCollapsedHeaderInfoProvider>
             </CachedRatesProvider>
           </TimestampProvider>
         </WagmiProvider>

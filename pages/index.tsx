@@ -52,7 +52,7 @@ export default function Home({ loans }: HomeProps) {
           content="Welcome to Backed protocol. View existing loans, lend against NFTs, or propose loan terms on your own NFTs."
         />
       </Head>
-      <PawnShopHeader />
+      <PawnShopHeader showInitialInfo />
       <TwelveColumn>
         <div className={searchStyles.wrapper}>
           <SearchHeader

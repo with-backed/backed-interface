@@ -23,6 +23,14 @@
   background: var(--highlight-clickable-10);
 }
 
+.circle {
+  composes: primary;
+  height: 36px;
+  width: 36px;
+  padding: 0;
+  border-radius: 36px;
+}
+
 .primary-dark-bg {
   composes: button;
   background: linear-gradient(
