@@ -11,7 +11,7 @@ type BalanceProps = {
 export const Balance = ({ balance, loanAmount, symbol }: BalanceProps) => {
   const insufficientFunds = loanAmount > balance;
   return (
-    <DescriptionList orientation="horizontal">
+    <>
       <dt>Current Balance</dt>
       <dd
         className={
@@ -19,6 +19,6 @@ export const Balance = ({ balance, loanAmount, symbol }: BalanceProps) => {
         }>
         {balance.toFixed(2)} {symbol}
       </dd>
-    </DescriptionList>
+    </>
   );
 };

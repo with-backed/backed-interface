@@ -1,5 +1,6 @@
 import { DisclosureButton } from 'components/Button';
 import { DescriptionList } from 'components/DescriptionList';
+import { Balance } from 'components/LoanForm/Balance';
 import { ethers } from 'ethers';
 import { jsonRpcERC20Contract } from 'lib/contracts';
 import { estimatedRepayment } from 'lib/loans/utils';
@@ -7,7 +8,7 @@ import React, { useEffect, useState } from 'react';
 import { useDisclosureState, DisclosureContent } from 'reakit/Disclosure';
 
 type Denomination = { address: string; symbol: string };
-type CreatePageFields = {
+type LoanPageFields = {
   denomination: Denomination;
   duration: string;
   interestRate: string;
@@ -15,25 +16,31 @@ type CreatePageFields = {
 };
 
 type LoanTermsDisclosureProps = {
+  type: 'CREATE' | 'LEND' | 'BUYOUT';
   onClick: () => void;
-  fields: CreatePageFields;
+  fields: LoanPageFields;
+  balance?: number;
 };
 export function LoanTermsDisclosure({
+  type,
   fields,
   onClick,
+  balance,
 }: LoanTermsDisclosureProps) {
   const disclosure = useDisclosureState({ visible: false });
 
   return (
     <React.Fragment>
       <DisclosureButton
+        id="review"
         onClick={onClick}
         disabled={!fieldsAreFull(fields)}
         {...disclosure}>
         Review
       </DisclosureButton>
       <DisclosureContent {...disclosure}>
-        <CreatePageTerms fields={fields} />
+        {type === 'CREATE' && <CreatePageTerms fields={fields} />}
+        {type === 'LEND' && <LendPageTerms fields={fields} balance={balance} />}
       </DisclosureContent>
     </React.Fragment>
   );
@@ -105,12 +112,50 @@ function CreatePageTerms({ fields }: Pick<LoanTermsDisclosureProps, 'fields'>) {
   );
 }
 
+function LendPageTerms({
+  fields,
+  balance,
+}: Pick<LoanTermsDisclosureProps, 'fields'> &
+  Pick<LoanTermsDisclosureProps, 'balance'>) {
+  const [decimals, setDecimals] = useState<number | null>(null);
+  useEffect(() => {
+    if (fields.denomination) {
+      const loanAssetContract = jsonRpcERC20Contract(
+        fields.denomination.address,
+      );
+      loanAssetContract.decimals().then(setDecimals);
+    }
+  }, [fields.denomination, setDecimals]);
+
+  if (!fieldsAreFull(fields) || !decimals) {
+    return null;
+  }
+
+  const { symbol } = fields.denomination;
+
+  return (
+    <DescriptionList orientation="horizontal">
+      {balance && (
+        <Balance
+          balance={balance}
+          loanAmount={parseFloat(fields.loanAmount)}
+          symbol={symbol}
+        />
+      )}
+      <dt>Initial Loan Amount</dt>
+      <dd>
+        {fields.loanAmount} {symbol}
+      </dd>
+    </DescriptionList>
+  );
+}
+
 function fieldsAreFull({
   denomination,
   duration,
   interestRate,
   loanAmount,
-}: CreatePageFields): boolean {
+}: LoanPageFields): boolean {
   return (
     !!denomination &&
     !!denomination.address &&

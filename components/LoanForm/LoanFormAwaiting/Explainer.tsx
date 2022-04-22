@@ -3,6 +3,7 @@ import { LoanFormData } from 'components/LoanForm/LoanFormData';
 import React from 'react';
 import { FieldError, UseFormReturn } from 'react-hook-form';
 import { Loan } from 'types/Loan';
+import styles from 'components/Explainer/Explainer.module.css';
 
 type ExplainerProps = {
   form: UseFormReturn<LoanFormData, object>;
@@ -18,9 +19,9 @@ type InnerProps = {
 const explainers: {
   [key: string]: (props: InnerProps) => JSX.Element;
 } = {
-  Lend,
   LendPending,
   LendSuccess,
+  review: Review,
   LendTermsUnfocused,
   loanAmount: Terms,
   duration: Terms,
@@ -48,29 +49,37 @@ function Error({ error }: { error: FieldError }) {
   );
 }
 
-function LendTermsUnfocused({ loan }: InnerProps) {
+function Review() {
   return (
     <div>
+      Before proceeding, verify the details of this NFT and ensure it is not a
+      fraud. Check its Collection stats and trading history on OpenSea to make
+      sure it&lsquo;s not a look-alike.
+    </div>
+  );
+}
+
+function LendTermsUnfocused({ loan }: InnerProps) {
+  return (
+    <div className={styles['lend-terms-unfocused']}>
       <p style={{ marginTop: 0 }}>
-        Meet the terms below to become the Lender on this loan. Your funds will
-        be transferred, interest will begin accruing immediately, and you will
-        receive a Lender Ticket (NFT) representing your position.
+        Meet the terms below to become the Lender on this loan.
       </p>
       {!loan.allowLoanAmountIncrease && (
         <p style={{ marginBottom: 0 }}>
           The borrower has locked the loan amount and it cannot be increased.
         </p>
       )}
-    </div>
-  );
-}
-
-function Lend() {
-  return (
-    <div>
-      Before you deposit funds, take a minute to verify that this NFT is legit.
-      Check its collection and trading history on <b>OpenSea</b> to make sure
-      it&apos;s not a fraud.
+      <p>
+        Your funds will be transferred, interest will begin accruing
+        immediately, and you will receive a Lender Ticket NFT representing your
+        position.
+      </p>
+      <p>
+        Later, if another lender buys out this loan by offering better terms,
+        you will receive the loan amount plus any interest accrued and your lend
+        ticket will be transferred to the new lender.
+      </p>
     </div>
   );
 }
