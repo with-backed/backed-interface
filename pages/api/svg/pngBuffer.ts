@@ -1,4 +1,3 @@
-import { captureException, withSentry } from '@sentry/nextjs';
 import Chromium from 'chrome-aws-lambda';
 import { NextApiRequest, NextApiResponse } from 'next';
 import nodeHtmlToImage from 'node-html-to-image';
@@ -30,9 +29,6 @@ async function handler(
 
     res.status(200).json({ pngBuffer });
   } catch (e) {
-    captureException(e);
     res.status(404);
   }
 }
-
-export default withSentry(handler);
