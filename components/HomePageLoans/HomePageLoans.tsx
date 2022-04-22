@@ -32,14 +32,13 @@ type LoadMoreButtonProps = {
 export function LoadMoreButton({
   isReachingEnd,
   onClick,
-  pageLimit,
 }: LoadMoreButtonProps) {
   return (
     <div className={styles['button-container']}>
       {isReachingEnd ? (
         <p>That&apos;s all, folks!</p>
       ) : (
-        <Button onClick={onClick}>Load {pageLimit} More</Button>
+        <Button onClick={onClick}>Load More</Button>
       )}
     </div>
   );
