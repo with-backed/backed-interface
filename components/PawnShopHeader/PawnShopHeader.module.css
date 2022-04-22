@@ -10,12 +10,10 @@
 .mobile-header {
   width: 100%;
   background: var(--background-white);
-  display: grid;
+  display: flex;
   align-items: center;
-  grid-template-columns: 70px 1fr;
-  padding: 1rem 0;
-  gap: 1.5rem;
-  overflow: hidden;
+  justify-content: space-between;
+  padding: 1rem 12px;
 }
 
 .link {
@@ -54,20 +52,6 @@
 .connect-wallet > button,
 .connect-wallet a {
   max-width: 50%;
-}
-
-.sausage-links {
-  display: flex;
-  overflow-x: auto;
-  gap: 1rem;
-}
-
-.sausage-links > * {
-  flex: 0 0 75%;
-}
-
-.sausage-links > div[class^='ConnectWallet'] {
-  overflow: hidden;
 }
 
 @media screen and (max-width: 955px) {
@@ -124,4 +108,8 @@
   stroke: var(--highlight-clickable-100);
   transform: rotate(180deg);
   margin-bottom: 0.15em;
+}
+
+.mobile-button-container > * {
+  margin: 0.25rem 0;
 }

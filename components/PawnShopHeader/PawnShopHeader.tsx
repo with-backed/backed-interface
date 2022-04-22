@@ -16,6 +16,8 @@ import { WrongNetwork } from 'components/Banner/messages';
 import { HeaderInfo } from 'components/HeaderInfo';
 import { Chevron } from 'components/Icons/Chevron';
 import { useHasCollapsedHeaderInfo } from 'hooks/useHasCollapsedHeaderInfo';
+import { slide as Menu } from 'react-burger-menu';
+import { burgerStyles } from './burgerStyles';
 
 type PawnShopHeaderProps = {
   isErrorPage?: boolean;
@@ -129,12 +131,28 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
             )}
           </a>
         </Link>
-        <div className={styles['sausage-links']}>
-          <ConnectWallet />
-          <ButtonLink kind={kind} href={CREATE_PATH}>
-            Create a Loan
-          </ButtonLink>
-        </div>
+        <Menu
+          styles={burgerStyles as any}
+          right
+          customBurgerIcon={
+            <div>
+              <Button kind="primary">🥕 Menu</Button>
+            </div>
+          }>
+          <div className={styles['mobile-button-container']}>
+            <ButtonLink kind={kind} href={CREATE_PATH}>
+              Create a Loan
+            </ButtonLink>
+            {isInfoCollapsed ? (
+              <Button onClick={toggleVisible}>📘 Info</Button>
+            ) : (
+              <Button kind="secondary" onClick={toggleVisible}>
+                📖 Info
+              </Button>
+            )}
+            <ConnectWallet />
+          </div>
+        </Menu>
       </nav>
       <div className={styles['header-info-wrapper']}>
         <HeaderInfo isCollapsed={isInfoCollapsed} />
