@@ -47,6 +47,7 @@ export function NFTCollateralPicker({
 
   const handleNFTClick = useCallback(
     (nft: NFTEntity) => {
+      window.pirsch('NFT Selected', { meta: { id: nft.id } });
       handleSetSelectedNFT(nft);
       dialog.setVisible(false);
     },
