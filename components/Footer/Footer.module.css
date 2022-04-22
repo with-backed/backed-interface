@@ -18,6 +18,10 @@
   flex-wrap: wrap;
 }
 
+.footer-links a {
+  color: var(--neutral-100);
+}
+
 @media screen and (max-width: 900px) {
   .footer-links {
     flex-direction: column;
