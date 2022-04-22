@@ -20,39 +20,13 @@ export type CollateralSaleInfo = {
     price: number;
   } | null;
   collectionStats: CollectionStatistics;
-} | null;
+};
 
 export async function getCollateralSaleInfo(
   nftContractAddress: string,
   tokenId: string,
 ): Promise<CollateralSaleInfo> {
-  let recentSale: {
-    paymentToken: string;
-    price: number;
-  } | null = null;
-
-  const recentSaleFromGraph = await getMostRecentSale(
-    nftContractAddress,
-    tokenId,
-  );
-
-  if (!!recentSaleFromGraph) {
-    const erc20Contract = jsonRpcERC20Contract(
-      recentSaleFromGraph.paymentToken,
-    );
-
-    const paymentToken = await erc20Contract.symbol();
-    const recentSaleTokenDecimals = await erc20Contract.decimals();
-
-    const price = ethers.utils
-      .parseUnits(recentSaleFromGraph.price, recentSaleTokenDecimals)
-      .toNumber();
-
-    recentSale = {
-      paymentToken,
-      price,
-    };
-  }
+  const recentSale = await getMostRecentSale(nftContractAddress, tokenId);
 
   const collectionStats = await getCollectionStats(nftContractAddress);
 
@@ -65,9 +39,30 @@ export async function getCollateralSaleInfo(
 async function getMostRecentSale(
   nftContractAddress: string,
   tokenId: string,
-): Promise<NFTSale | null> {
+): Promise<{ paymentToken: string; price: number } | null> {
   if (!mainnet()) return generateFakeSaleForNFT(nftContractAddress, tokenId);
-  return await queryMostRecentSaleForNFT(nftContractAddress, tokenId);
+
+  const recentSaleFromGraph = await queryMostRecentSaleForNFT(
+    nftContractAddress,
+    tokenId,
+  );
+  if (!recentSaleFromGraph) {
+    return null;
+  }
+
+  const erc20Contract = jsonRpcERC20Contract(recentSaleFromGraph.paymentToken);
+
+  const paymentToken = await erc20Contract.symbol();
+  const recentSaleTokenDecimals = await erc20Contract.decimals();
+
+  const price = ethers.utils
+    .parseUnits(recentSaleFromGraph.price, recentSaleTokenDecimals)
+    .toNumber();
+
+  return {
+    paymentToken,
+    price,
+  };
 }
 
 async function getCollectionStats(
