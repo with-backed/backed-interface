@@ -18,7 +18,7 @@ export type CollateralSaleInfo = {
   recentSale: {
     paymentToken: string;
     price: number;
-  };
+  } | null;
   collectionStats: CollectionStatistics;
 } | null;
 
@@ -26,29 +26,39 @@ export async function getCollateralSaleInfo(
   nftContractAddress: string,
   tokenId: string,
 ): Promise<CollateralSaleInfo> {
-  const recentSale = await getMostRecentSale(nftContractAddress, tokenId);
+  let recentSale: {
+    paymentToken: string;
+    price: number;
+  } | null = null;
 
-  if (!recentSale) {
-    return null;
+  const recentSaleFromGraph = await getMostRecentSale(
+    nftContractAddress,
+    tokenId,
+  );
+
+  if (!!recentSaleFromGraph) {
+    const erc20Contract = jsonRpcERC20Contract(
+      recentSaleFromGraph.paymentToken,
+    );
+
+    const paymentToken = await erc20Contract.symbol();
+    const recentSaleTokenDecimals = await erc20Contract.decimals();
+
+    const price = ethers.utils
+      .parseUnits(recentSaleFromGraph.price, recentSaleTokenDecimals)
+      .toNumber();
+
+    recentSale = {
+      paymentToken,
+      price,
+    };
   }
-
-  const erc20Contract = jsonRpcERC20Contract(recentSale.paymentToken);
-
-  const recentSaleToken = await erc20Contract.symbol();
-  const recentSaleTokenDecimals = await erc20Contract.decimals();
-
-  const recentSalePrice = ethers.utils
-    .parseUnits(recentSale.price, recentSaleTokenDecimals)
-    .toNumber();
 
   const collectionStats = await getCollectionStats(nftContractAddress);
 
   return {
     collectionStats,
-    recentSale: {
-      paymentToken: recentSaleToken,
-      price: recentSalePrice,
-    },
+    recentSale,
   };
 }
 
