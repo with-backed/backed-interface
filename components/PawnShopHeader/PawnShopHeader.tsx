@@ -87,7 +87,13 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
           </Link>
 
           <div className={styles['connect-wallet']}>
-            <Button onClick={toggleVisible}>📖 Info</Button>
+            {isInfoCollapsed ? (
+              <Button onClick={toggleVisible}>📘 Info</Button>
+            ) : (
+              <Button kind="secondary" onClick={toggleVisible}>
+                📖 Info
+              </Button>
+            )}
             <ConnectWallet />
           </div>
         </TwelveColumn>
