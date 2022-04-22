@@ -2,7 +2,7 @@ import Chromium from 'chrome-aws-lambda';
 import { NextApiRequest, NextApiResponse } from 'next';
 import nodeHtmlToImage from 'node-html-to-image';
 
-async function handler(
+export async function handler(
   req: NextApiRequest,
   res: NextApiResponse<{ pngBuffer: string } | string>,
 ) {
