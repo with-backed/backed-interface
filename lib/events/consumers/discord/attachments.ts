@@ -17,7 +17,7 @@ export async function collateralToDiscordMessageEmbed(
     const pngBuffer = await getPngBufferFromBase64SVG(nftResponseData!.image);
 
     rawBufferAttachment = new MessageAttachment(
-      pngBuffer as string,
+      Buffer.from(pngBuffer, 'base64'),
       `collateral.png`,
     );
     messageEmbed = new MessageEmbed()
