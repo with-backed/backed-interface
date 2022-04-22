@@ -2,8 +2,7 @@ import subgraphLoans from 'lib/loans/subgraph/subgraphLoans';
 import { parseSubgraphLoan } from 'lib/loans/utils';
 import { Loan as SubgraphLoan } from 'types/generated/graphql/nftLoans';
 import { GetServerSideProps } from 'next';
-import Link from 'next/link';
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { AdvancedSearch, SearchHeader } from 'components/AdvancedSearch';
 import searchStyles from '../components/AdvancedSearch/AdvancedSearch.module.css';
 import { usePaginatedLoans } from 'hooks/usePaginatedLoans';
@@ -12,6 +11,7 @@ import { SortOptionValue } from 'components/AdvancedSearch/SortDropdown';
 import { HomePageLoans } from 'components/HomePageLoans';
 import { PawnShopHeader } from 'components/PawnShopHeader';
 import Head from 'next/head';
+import { LoadMoreButton } from 'components/HomePageLoans/HomePageLoans';
 
 const PAGE_LIMIT = 18;
 
@@ -27,8 +27,6 @@ type HomeProps = {
   loans: SubgraphLoan[];
 };
 export default function Home({ loans }: HomeProps) {
-  const ref = useRef() as React.MutableRefObject<HTMLInputElement>;
-
   const [showSearch, setShowSearch] = useState<boolean>(false);
   const [searchActive, setSearchActive] = useState<boolean>(false);
   const [searchUrl, setSearchUrl] = useState<string>('');
@@ -37,13 +35,13 @@ export default function Home({ loans }: HomeProps) {
   );
   const [showGrid, setShowGrid] = useState(true);
 
-  const { paginatedLoans } = usePaginatedLoans(
-    searchActive ? searchUrl : '/api/loans/all?',
-    ref,
-    PAGE_LIMIT,
-    selectedSort,
-    loans,
-  );
+  const { paginatedLoans, loadMore, isReachingEnd, isLoadingMore } =
+    usePaginatedLoans(
+      searchActive ? searchUrl : '/api/loans/all?',
+      PAGE_LIMIT,
+      selectedSort,
+      loans,
+    );
 
   return (
     <>
@@ -76,16 +74,13 @@ export default function Home({ loans }: HomeProps) {
           loans={paginatedLoans.map(parseSubgraphLoan)}
           view={showGrid ? 'cards' : 'list'}
         />
-
-        <div ref={ref} style={{ gridColumn: 'span 12' }}>
-          <p>
-            Welcome! Homepage in progress, try{' '}
-            <Link href="/loans/create"> Creating a loan</Link>
-          </p>
-          {process.env.NEXT_PUBLIC_ENV === 'rinkeby' && (
-            <Link href="/test">Get Rinkeby DAI and an NFT!</Link>
-          )}
-        </div>
+        {!isLoadingMore && (
+          <LoadMoreButton
+            onClick={loadMore}
+            pageLimit={PAGE_LIMIT}
+            isReachingEnd={isReachingEnd}
+          />
+        )}
       </TwelveColumn>
     </>
   );
