@@ -172,7 +172,7 @@ function BuyoutPageTerms({
   Pick<LoanTermsDisclosureProps, 'accrued'> &
   Pick<LoanTermsDisclosureProps, 'totalPayback'>) {
   const [decimals, setDecimals] = useState<number | null>(null);
-  console.log('hereee');
+
   useEffect(() => {
     if (fields.denomination) {
       const loanAssetContract = jsonRpcERC20Contract(
