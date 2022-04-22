@@ -19,7 +19,7 @@ type LoanTermsDisclosureProps = {
   type: 'CREATE' | 'LEND' | 'BUYOUT';
   onClick: () => void;
   fields: LoanPageFields;
-  disclosureButtonDisabled: boolean;
+  disclosureButtonDisabled?: boolean;
   balance?: number;
   accrued?: string;
   totalPayback?: string;
