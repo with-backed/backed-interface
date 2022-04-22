@@ -5,6 +5,7 @@ import {
 import {
   subgraphBuyoutEvent,
   subgraphCollateralSeizureEvent,
+  subgraphCreateEvent,
   subgraphLendEvent,
   subgraphLoanForEvents,
   subgraphRepaymentEvent,
@@ -16,7 +17,54 @@ describe('Transforming on-chain events to email components', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
+  describe('CreateEvent', () => {
+    it('returns correct email components and subject for email', async () => {
+      const subject = getEmailSubject('CreateEvent', subgraphCreateEvent);
+      const emailComponentsMap = await getEmailComponentsMap(
+        'CreateEvent',
+        subgraphCreateEvent,
+        now,
+      );
 
+      expect(subject).toEqual('Loan #65 has been created');
+      expect(Object.keys(emailComponentsMap!).sort()).toEqual([
+        '0x0dd7d78ed27632839cd2a929ee570ead346c19fc',
+      ]);
+
+      const borrowerComponents =
+        emailComponentsMap![subgraphLendEvent.borrowTicketHolder](
+          'borrower-uuid',
+        );
+
+      expect(borrowerComponents.header).toEqual('Loan #65: monarchs');
+
+      expect(borrowerComponents.mainMessage).toEqual(
+        '0x0dd7d has created a loan with collateral: monarchs #147.',
+      );
+
+      expect(borrowerComponents.messageBeforeTerms).toEqual([]);
+
+      expect(borrowerComponents.terms).toEqual([
+        {
+          prefix: 'Their desired loan terms are:',
+          amount: '8192.0 DAI',
+          duration: '120 days',
+          interest: '2.0%',
+        },
+      ]);
+
+      expect(borrowerComponents.messageAfterTerms).toEqual([]);
+
+      expect(borrowerComponents.viewLinks).toEqual([
+        'https://rinkeby.withbacked.xyz/loans/65',
+        'https://rinkeby.etherscan.io/tx/0x7685d19b85fb80c03ac0c117ea542b77a6c8ecebea56744b121183cfb614bce6',
+      ]);
+
+      expect(borrowerComponents.footer).toEqual(
+        'https://rinkeby.withbacked.xyz/profile/0x0dd7d78ed27632839cd2a929ee570ead346c19fc?unsubscribe=true&uuid=borrower-uuid',
+      );
+    });
+  });
   describe('BuyoutEvent', () => {
     it('returns correct email components and subject for email', async () => {
       const subject = getEmailSubject('BuyoutEvent', subgraphBuyoutEvent);
@@ -139,7 +187,7 @@ describe('Transforming on-chain events to email components', () => {
         now,
       );
 
-      expect(subject).toEqual('Loan #65 has been fulfilled');
+      expect(subject).toEqual('Loan #65 has a lender');
       expect(Object.keys(emailComponentsMap!).sort()).toEqual([
         '0x0dd7d78ed27632839cd2a929ee570ead346c19fc',
         '0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866',
