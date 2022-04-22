@@ -2,7 +2,7 @@ import React, { FunctionComponent, useCallback, useRef, useState } from 'react';
 import Link from 'next/link';
 import { ConnectWallet } from 'components/ConnectWallet';
 import styles from './PawnShopHeader.module.css';
-import { Button, ButtonLink } from 'components/Button';
+import { Button, ButtonLink, TextButton } from 'components/Button';
 import { useRouter } from 'next/router';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
@@ -39,10 +39,8 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
     hasCollapsed ? true : !showInitialInfo,
   );
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const toggleMobileMenu = useCallback(
-    () => setMobileMenuOpen((prev) => !prev),
-    [],
-  );
+  const openMobileMenu = useCallback(() => setMobileMenuOpen(true), []);
+  const closeMobileMenu = useCallback(() => setMobileMenuOpen(false), []);
   const mobileMenuNode = useRef<HTMLElement>(null);
   useOnClickOutside(mobileMenuNode, () => setMobileMenuOpen(false));
 
@@ -138,26 +136,30 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
           </a>
         </Link>
         <Button
-          onClick={mobileMenuOpen ? undefined : toggleMobileMenu}
+          onClick={mobileMenuOpen ? closeMobileMenu : openMobileMenu}
           kind={mobileMenuOpen ? 'secondary' : 'primary'}>
-          🥕 Menu
+          🍔 Menu
         </Button>
         <nav
-          ref={mobileMenuNode}
           className={
             mobileMenuOpen ? styles['mobile-nav-open'] : styles['mobile-nav']
           }>
-          <ButtonLink kind={kind} href={CREATE_PATH}>
-            Create a Loan
-          </ButtonLink>
-          {isInfoCollapsed ? (
-            <Button onClick={toggleVisible}>📘 Info</Button>
-          ) : (
-            <Button kind="secondary" onClick={toggleVisible}>
-              📖 Info
-            </Button>
-          )}
-          <ConnectWallet />
+          <div
+            ref={mobileMenuNode as any}
+            className={styles['mobile-menu-buttons']}>
+            <ButtonLink kind={kind} href={CREATE_PATH}>
+              Create a Loan
+            </ButtonLink>
+            {isInfoCollapsed ? (
+              <Button onClick={toggleVisible}>📘 Info</Button>
+            ) : (
+              <Button kind="secondary" onClick={toggleVisible}>
+                📖 Info
+              </Button>
+            )}
+            <ConnectWallet />
+            <TextButton onClick={closeMobileMenu}>Close</TextButton>
+          </div>
         </nav>
       </nav>
       <div className={styles['header-info-wrapper']}>
