@@ -1,3 +1,4 @@
+import chromium from 'chrome-aws-lambda';
 import nodeHtmlToImage from 'node-html-to-image';
 
 export async function getPngBufferFromBase64SVG(base: string): Promise<string> {
@@ -6,7 +7,11 @@ export async function getPngBufferFromBase64SVG(base: string): Promise<string> {
     quality: 100,
     type: 'png',
     puppeteerArgs: {
-      args: ['--no-sandbox'],
+      args: [...chromium.args, '--hide-scrollbars', '--disable-web-security'],
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath,
+      headless: true,
+      ignoreHTTPSErrors: true,
     },
     encoding: 'base64',
   });
