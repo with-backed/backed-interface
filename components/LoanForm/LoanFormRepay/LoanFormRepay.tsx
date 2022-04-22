@@ -9,6 +9,7 @@ import { useSigner } from 'wagmi';
 import { captureException } from '@sentry/nextjs';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import { EtherscanTransactionLink } from 'components/EtherscanLink';
+import { Balance } from '../Balance';
 
 type LoanFormRepayProps = {
   loan: Loan;
@@ -22,6 +23,7 @@ export function LoanFormRepay({
   needsAllowance,
   setNeedsAllowance,
   refresh,
+  balance,
 }: LoanFormRepayProps) {
   const {
     formattedTotalPayback,
@@ -34,29 +36,43 @@ export function LoanFormRepay({
   const [waitingForTx, setWaitingForTx] = useState(false);
 
   const repay = useCallback(async () => {
-    const t = await web3LoanFacilitator(signer!).repayAndCloseLoan(loan.id);
-    setWaitingForTx(true);
-    setTxHash(t.hash);
-    t.wait()
-      .then(() => {
-        refresh();
-        setWaitingForTx(false);
-      })
-      .catch((err) => {
-        setWaitingForTx(false);
-        captureException(err);
-        addMessage({
-          kind: 'error',
-          message: (
-            <div>
-              Failed to repay loan #{loan.id.toString()}.{' '}
-              <EtherscanTransactionLink transactionHash={t.hash}>
-                View transaction
-              </EtherscanTransactionLink>
-            </div>
-          ),
+    try {
+      const t = await web3LoanFacilitator(signer!).repayAndCloseLoan(loan.id);
+      setWaitingForTx(true);
+      setTxHash(t.hash);
+      t.wait()
+        .then(() => {
+          refresh();
+          setWaitingForTx(false);
+        })
+        .catch((err) => {
+          setWaitingForTx(false);
+          captureException(err);
+          addMessage({
+            kind: 'error',
+            message: (
+              <div>
+                Failed to repay loan #{loan.id.toString()}.{' '}
+                <EtherscanTransactionLink transactionHash={t.hash}>
+                  View transaction
+                </EtherscanTransactionLink>
+              </div>
+            ),
+          });
         });
+    } catch (err) {
+      setWaitingForTx(false);
+      captureException(err);
+      addMessage({
+        kind: 'error',
+        message: (
+          <div>
+            Failed to initiate repayment for loan #{loan.id.toString()}.
+            Insufficient balance?
+          </div>
+        ),
       });
+    }
   }, [addMessage, loan.id, refresh, signer]);
 
   return (
@@ -72,6 +88,11 @@ export function LoanFormRepay({
           “Repay & Claim” will pay this amount, close the loan, and transfer the
           collateral to your wallet.
         </p>
+        <Balance
+          balance={balance}
+          loanAmount={parseFloat(formattedTotalPayback)}
+          symbol={loan.loanAssetSymbol}
+        />
         <AllowButton
           contractAddress={loan.loanAssetContractAddress}
           symbol={loan.loanAssetSymbol}
