@@ -28,6 +28,7 @@ export async function sendEmailsForTriggerAndEntity(
   now: number,
   mostRecentTermsEvent?: LendEvent,
 ) {
+  console.log({ emailTrigger });
   // we do not want to send LendEvent emails and BuyoutEvent emails
   if (emailTrigger === 'LendEvent' && !!mostRecentTermsEvent) {
     return;
@@ -44,6 +45,8 @@ export async function sendEmailsForTriggerAndEntity(
     return;
   }
 
+  console.log({ addressToEmailComponents });
+
   for (const ethAddress in addressToEmailComponents) {
     const notificationRequestsForEthAddresses =
       await getNotificationRequestsForAddress(ethAddress);
@@ -51,6 +54,8 @@ export async function sendEmailsForTriggerAndEntity(
     const emailRequests = notificationRequestsForEthAddresses.filter(
       (req) => req.deliveryMethod === NotificationMethod.EMAIL,
     );
+
+    console.log({ emailRequests });
 
     const allEmailSends = emailRequests.map((r) => {
       const emailComponentGenerator = addressToEmailComponents[ethAddress];
