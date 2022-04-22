@@ -187,7 +187,7 @@ describe('Transforming on-chain events to email components', () => {
         now,
       );
 
-      expect(subject).toEqual('Loan #65 has been fulfilled');
+      expect(subject).toEqual('Loan #65 has a lender');
       expect(Object.keys(emailComponentsMap!).sort()).toEqual([
         '0x0dd7d78ed27632839cd2a929ee570ead346c19fc',
         '0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866',

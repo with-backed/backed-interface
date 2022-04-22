@@ -225,7 +225,7 @@ const notificationEventToEmailMetadata: {
   },
   LendEvent: {
     getSubjectFromEntity: (entity: RawSubgraphEvent | Loan) =>
-      `Loan #${(entity as LendEvent).loan.id} has been fulfilled`,
+      `Loan #${(entity as LendEvent).loan.id} has a lender`,
     getComponentsFromEntity: async (
       entity: RawSubgraphEvent | Loan,
       _now: number,
