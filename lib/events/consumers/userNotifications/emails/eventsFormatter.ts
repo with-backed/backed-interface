@@ -3,6 +3,7 @@ import { ethers } from 'ethers';
 import {
   BuyoutEvent,
   CollateralSeizureEvent,
+  CreateEvent,
   LendEvent,
   Loan,
   RepaymentEvent,
@@ -88,6 +89,51 @@ const emailHeader = (loan: Loan): string =>
 const notificationEventToEmailMetadata: {
   [key: string]: EmailMetadataType;
 } = {
+  CreateEvent: {
+    getSubjectFromEntity: (entity: RawSubgraphEvent | Loan) =>
+      `Loan #${(entity as CreateEvent).loan.id} has been created`,
+    getComponentsFromEntity: async (
+      entity: RawSubgraphEvent | Loan,
+      _now: number,
+    ) => {
+      const event = entity as CreateEvent;
+      const borrower = await ensOrAddr(event.creator);
+
+      const sharedComponents: Partial<EventsEmailComponents> = {
+        header: emailHeader(event.loan),
+        mainMessage: `${borrower} has created a loan with collateral: ${event.loan.collateralName} #${event.loan.collateralTokenId}.`,
+        messageBeforeTerms: [],
+        terms: [
+          {
+            prefix: `Their desired loan terms are:`,
+            ...formattedLoanTerms(
+              event.loan.loanAmount,
+              event.loan.loanAssetDecimal,
+              event.loan.perAnumInterestRate,
+              event.loan.durationSeconds,
+              event.loan.loanAssetSymbol,
+            ),
+          },
+        ],
+        messageAfterTerms: [],
+        viewLinks: [
+          `${siteUrl()}/loans/${event.loan.id}`,
+          `${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/tx/${event.id}`,
+        ],
+      };
+
+      return {
+        [event.creator]: (unsubscribeUuid: string) =>
+          ({
+            ...sharedComponents,
+            footer: `${siteUrl()}/profile/${
+              event.creator
+            }?unsubscribe=true&uuid=${unsubscribeUuid}`,
+          } as EventsEmailComponents),
+      };
+    },
+  },
+
   BuyoutEvent: {
     getSubjectFromEntity: (entity: RawSubgraphEvent | Loan) =>
       `Loan #${(entity as BuyoutEvent).loan.id} has a new lender`,
