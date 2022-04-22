@@ -46,7 +46,7 @@ describe('CollateralInfo', () => {
     getByText('owners');
     getByText(collectionStats.owners);
     getByText('volume');
-    getByText(`${collectionStats.volume} ETH`);
+    getByText(`${collectionStats.volume.toFixed(4)} ETH`);
   });
 
   it('renders a Fieldset with a message when there is no recent sale info', () => {
