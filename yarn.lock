@@ -6134,12 +6134,12 @@ chownr@^2.0.0:
   resolved "https://registry.yarnpkg.com/chownr/-/chownr-2.0.0.tgz#15bfbe53d2eab4cf70f18a8cd68ebe5b3cb1dece"
   integrity sha512-bIomtDF5KGpdogkLd9VspvFzk9KfpyyGlS8YFVZl7TGPBHL5snIOnxeshwVgPteQ9b4Eydl+pVbIyE1DcvCWgQ==
 
-chrome-aws-lambda@^10.1.0:
-  version "10.1.0"
-  resolved "https://registry.yarnpkg.com/chrome-aws-lambda/-/chrome-aws-lambda-10.1.0.tgz#ac43b4cdfc1fbb2275c62effada560858099501e"
-  integrity sha512-NZQVf+J4kqG4sVhRm3WNmOfzY0OtTSm+S8rg77pwePa9RCYHzhnzRs8YvNI6L9tALIW6RpmefWiPURt3vURXcw==
+chrome-aws-lambda@5.4.0:
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/chrome-aws-lambda/-/chrome-aws-lambda-5.4.0.tgz#3627a23dda3e034a86c19ac7eeeee1f742c684aa"
+  integrity sha512-edlk3okaPwVJ7lLhmi0p1Xs0lx3ekloW5Lqq+q+V0jS/4dyXYLeA23SKdB+A6+hBf/n88yfR8ssb78tBD/C9CA==
   dependencies:
-    lambdafs "^2.0.3"
+    lambdafs "^2.0.0"
 
 chrome-trace-event@^1.0.2:
   version "1.0.3"
@@ -10875,7 +10875,7 @@ klona@^2.0.4:
   resolved "https://registry.yarnpkg.com/klona/-/klona-2.0.5.tgz#d166574d90076395d9963aa7a928fabb8d76afbc"
   integrity sha512-pJiBpiXMbt7dkzXe8Ghj/u4FfXOOa98fPW+bihOJ4SjnoijweJrNThJfd3ifXpXhREjpoF2mZVH1GfS9LV3kHQ==
 
-lambdafs@^2.0.3:
+lambdafs@^2.0.0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/lambdafs/-/lambdafs-2.1.1.tgz#4bf8d3037b6c61bbb4a22ab05c73ee47964c25ed"
   integrity sha512-x5k8JcoJWkWLvCVBzrl4pzvkEHSgSBqFjg3Dpsc4AcTMq7oUMym4cL/gRTZ6VM4mUMY+M0dIbQ+V1c1tsqqanQ==
@@ -13418,7 +13418,7 @@ puppeteer-cluster@^0.23.0:
   dependencies:
     debug "^4.3.3"
 
-puppeteer-core@^13.6.0:
+puppeteer-core@13.6.0:
   version "13.6.0"
   resolved "https://registry.yarnpkg.com/puppeteer-core/-/puppeteer-core-13.6.0.tgz#1626efbe789c19000a4c15309dbe55db5e936724"
   integrity sha512-n692xT9uOTxbFKcCRkfOT2Go5LL0YBCHrSpBdbNsjLhcxO5yuhj2/4jgAIK9bT1blY17Pb4I35eBSuDzJ54ERw==
