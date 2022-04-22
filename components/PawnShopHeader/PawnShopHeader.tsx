@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useCallback, useState } from 'react';
 import Link from 'next/link';
 import { ConnectWallet } from 'components/ConnectWallet';
 import styles from './PawnShopHeader.module.css';
@@ -33,6 +33,11 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
   const kind = pathname === CREATE_PATH ? 'secondary' : 'primary';
   const codeActive = useKonami();
   const [isInfoCollapsed, setIsInfoCollapsed] = useState(!showInitialInfo);
+
+  const toggleVisible = useCallback(() => {
+    setIsInfoCollapsed((prev) => !prev);
+  }, []);
+
   return (
     <>
       <div className={styles['banner-container']}>
@@ -82,6 +87,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
           </Link>
 
           <div className={styles['connect-wallet']}>
+            <Button onClick={toggleVisible}>📖 Info</Button>
             <ConnectWallet />
           </div>
         </TwelveColumn>
@@ -121,7 +127,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
           <Button
             aria-label="Close getting-started info"
             kind="circle"
-            onClick={() => setIsInfoCollapsed(true)}>
+            onClick={toggleVisible}>
             <Chevron />
           </Button>
         )}
