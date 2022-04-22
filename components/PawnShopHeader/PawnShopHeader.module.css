@@ -10,12 +10,15 @@
 .mobile-header {
   width: 100%;
   background: var(--background-white);
-  display: grid;
+  display: flex;
+  padding: 1rem 12px;
   align-items: center;
-  grid-template-columns: 70px 1fr;
-  padding: 1rem 0;
-  gap: 1.5rem;
+  justify-content: space-between;
   overflow: hidden;
+}
+
+.mobile-header > button {
+  width: auto;
 }
 
 .link {
@@ -54,20 +57,6 @@
 .connect-wallet > button,
 .connect-wallet a {
   max-width: 50%;
-}
-
-.sausage-links {
-  display: flex;
-  overflow-x: auto;
-  gap: 1rem;
-}
-
-.sausage-links > * {
-  flex: 0 0 75%;
-}
-
-.sausage-links > div[class^='ConnectWallet'] {
-  overflow: hidden;
 }
 
 @media screen and (max-width: 955px) {
@@ -124,4 +113,26 @@
   stroke: var(--highlight-clickable-100);
   transform: rotate(180deg);
   margin-bottom: 0.15em;
+}
+
+.mobile-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: var(--background-radial-gradient);
+  height: 100vh;
+  text-align: left;
+  padding: 2rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(-100%);
+}
+
+.mobile-nav-open {
+  composes: mobile-nav;
+  position: fixed;
+  transform: translateX(0);
 }

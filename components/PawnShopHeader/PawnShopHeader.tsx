@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useCallback, useState } from 'react';
+import React, { FunctionComponent, useCallback, useRef, useState } from 'react';
 import Link from 'next/link';
 import { ConnectWallet } from 'components/ConnectWallet';
 import styles from './PawnShopHeader.module.css';
@@ -16,6 +16,7 @@ import { WrongNetwork } from 'components/Banner/messages';
 import { HeaderInfo } from 'components/HeaderInfo';
 import { Chevron } from 'components/Icons/Chevron';
 import { useHasCollapsedHeaderInfo } from 'hooks/useHasCollapsedHeaderInfo';
+import { useOnClickOutside } from 'hooks/useOnClickOutside';
 
 type PawnShopHeaderProps = {
   isErrorPage?: boolean;
@@ -37,6 +38,13 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
   const [isInfoCollapsed, setIsInfoCollapsed] = useState(
     hasCollapsed ? true : !showInitialInfo,
   );
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const toggleMobileMenu = useCallback(
+    () => setMobileMenuOpen((prev) => !prev),
+    [],
+  );
+  const mobileMenuNode = useRef<HTMLElement>(null);
+  useOnClickOutside(mobileMenuNode, () => setMobileMenuOpen(false));
 
   const toggleVisible = useCallback(() => {
     if (!isInfoCollapsed) {
@@ -129,12 +137,28 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
             )}
           </a>
         </Link>
-        <div className={styles['sausage-links']}>
-          <ConnectWallet />
+        <Button
+          onClick={mobileMenuOpen ? undefined : toggleMobileMenu}
+          kind={mobileMenuOpen ? 'secondary' : 'primary'}>
+          🥕 Menu
+        </Button>
+        <nav
+          ref={mobileMenuNode}
+          className={
+            mobileMenuOpen ? styles['mobile-nav-open'] : styles['mobile-nav']
+          }>
           <ButtonLink kind={kind} href={CREATE_PATH}>
             Create a Loan
           </ButtonLink>
-        </div>
+          {isInfoCollapsed ? (
+            <Button onClick={toggleVisible}>📘 Info</Button>
+          ) : (
+            <Button kind="secondary" onClick={toggleVisible}>
+              📖 Info
+            </Button>
+          )}
+          <ConnectWallet />
+        </nav>
       </nav>
       <div className={styles['header-info-wrapper']}>
         <HeaderInfo isCollapsed={isInfoCollapsed} />
