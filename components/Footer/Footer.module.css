@@ -22,6 +22,10 @@
   color: var(--neutral-100);
 }
 
+.footer-links a:hover {
+  color: var(--highlight-clickable-100);
+}
+
 @media screen and (max-width: 900px) {
   .footer-links {
     flex-direction: column;
