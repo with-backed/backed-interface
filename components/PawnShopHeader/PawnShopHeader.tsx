@@ -60,6 +60,8 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
             </ButtonLink>
           </div>
 
+          <div className={styles.placeholder}></div>
+
           <Link href="/" passHref>
             <a
               title="Backed"

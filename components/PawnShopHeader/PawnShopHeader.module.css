@@ -39,7 +39,7 @@
 }
 
 .pawn {
-  grid-column: span 4;
+  grid-column: span 3;
   align-self: center;
 }
 
@@ -72,7 +72,7 @@
 
 @media screen and (max-width: 955px) {
   .link {
-    grid-column: span 4;
+    grid-column: span 3;
   }
 
   .pawn {
