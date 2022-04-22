@@ -9,7 +9,7 @@ export async function collectionStats(
   contractAddress: string,
 ): Promise<CollectionStatistics> {
   const headers = new Headers({
-    Authorization: `${process.env.NEXT_PUBLIC_NFT_PORT_API_KEY}`,
+    Authorization: `${process.env.NFT_PORT_API_KEY}`,
     'Content-Type': 'application/json',
   });
 
