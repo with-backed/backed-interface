@@ -17,6 +17,7 @@ import { GlobalMessagingProvider } from 'hooks/useGlobalMessages';
 import { WagmiProvider, chain } from 'wagmi';
 import { CachedRatesProvider } from 'hooks/useCachedRates/useCachedRates';
 import { HasCollapsedHeaderInfoProvider } from 'hooks/useHasCollapsedHeaderInfo';
+import { Footer } from 'components/Footer';
 
 const jsonRpcProvider = new providers.JsonRpcProvider(
   process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
@@ -49,6 +50,7 @@ export default function App({ Component, pageProps }: AppProps) {
               <HasCollapsedHeaderInfoProvider>
                 <AppWrapper>
                   <Component {...pageProps} />
+                  <Footer />
                 </AppWrapper>
               </HasCollapsedHeaderInfoProvider>
             </CachedRatesProvider>
