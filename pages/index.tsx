@@ -2,7 +2,6 @@ import subgraphLoans from 'lib/loans/subgraph/subgraphLoans';
 import { parseSubgraphLoan } from 'lib/loans/utils';
 import { Loan as SubgraphLoan } from 'types/generated/graphql/nftLoans';
 import { GetServerSideProps } from 'next';
-import Link from 'next/link';
 import React, { useState } from 'react';
 import { AdvancedSearch, SearchHeader } from 'components/AdvancedSearch';
 import searchStyles from '../components/AdvancedSearch/AdvancedSearch.module.css';
@@ -12,9 +11,9 @@ import { SortOptionValue } from 'components/AdvancedSearch/SortDropdown';
 import { HomePageLoans } from 'components/HomePageLoans';
 import { PawnShopHeader } from 'components/PawnShopHeader';
 import Head from 'next/head';
-import { Button } from 'components/Button';
+import { LoadMoreButton } from 'components/HomePageLoans/HomePageLoans';
 
-const PAGE_LIMIT = 9;
+const PAGE_LIMIT = 18;
 
 export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
   return {
@@ -75,28 +74,13 @@ export default function Home({ loans }: HomeProps) {
           loans={paginatedLoans.map(parseSubgraphLoan)}
           view={showGrid ? 'cards' : 'list'}
         />
-
-        {!isLoadingMore && !isReachingEnd && (
-          <div
-            style={{
-              gridColumn: 'span 3',
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-            }}>
-            <Button onClick={loadMore}>Load More</Button>
-          </div>
+        {!isLoadingMore && (
+          <LoadMoreButton
+            onClick={loadMore}
+            pageLimit={PAGE_LIMIT}
+            isReachingEnd={isReachingEnd}
+          />
         )}
-
-        <div style={{ gridColumn: 'span 12' }}>
-          <p>
-            Welcome! Homepage in progress, try{' '}
-            <Link href="/loans/create"> Creating a loan</Link>
-          </p>
-          {process.env.NEXT_PUBLIC_ENV === 'rinkeby' && (
-            <Link href="/test">Get Rinkeby DAI and an NFT!</Link>
-          )}
-        </div>
       </TwelveColumn>
     </>
   );
