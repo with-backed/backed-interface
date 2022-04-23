@@ -63,6 +63,12 @@ describe('Formatting events for tweet updates', () => {
         expect.stringContaining('2.0%'),
         undefined,
       );
+      expect(mockTweetCall).toHaveBeenCalledWith(
+        expect.stringContaining(
+          'Loan: https://rinkeby.withbacked.xyz/loans/65',
+        ),
+        undefined,
+      );
     });
   });
 
@@ -89,6 +95,12 @@ describe('Formatting events for tweet updates', () => {
       );
       expect(mockTweetCall).toHaveBeenCalledWith(
         expect.stringContaining('2.0%'),
+        undefined,
+      );
+      expect(mockTweetCall).toHaveBeenCalledWith(
+        expect.stringContaining(
+          'Loan: https://rinkeby.withbacked.xyz/loans/65',
+        ),
         undefined,
       );
     });
@@ -127,6 +139,12 @@ describe('Formatting events for tweet updates', () => {
         expect.stringContaining('8193.0 DAI'),
         undefined,
       );
+      expect(mockTweetCall).toHaveBeenCalledWith(
+        expect.stringContaining(
+          'Loan: https://rinkeby.withbacked.xyz/loans/65',
+        ),
+        undefined,
+      );
     });
   });
 
@@ -158,6 +176,12 @@ describe('Formatting events for tweet updates', () => {
         expect.stringContaining('2.0%'),
         undefined,
       );
+      expect(mockTweetCall).toHaveBeenCalledWith(
+        expect.stringContaining(
+          'Loan: https://rinkeby.withbacked.xyz/loans/65',
+        ),
+        undefined,
+      );
     });
   });
 
@@ -180,6 +204,12 @@ describe('Formatting events for tweet updates', () => {
       expect(mockTweetCall).toHaveBeenCalledWith(
         expect.stringContaining(
           "0x7e646 held the loan for 53 minutes. The loan became due on 01/01/1970 with a repayment cost of 8245.73952 DAI. 0x0dd7d did not repay, so 0x7e646 was able to seize the loan's collateral",
+        ),
+        undefined,
+      );
+      expect(mockTweetCall).toHaveBeenCalledWith(
+        expect.stringContaining(
+          'Loan: https://rinkeby.withbacked.xyz/loans/65',
         ),
         undefined,
       );

@@ -7,9 +7,9 @@ import {
   RepaymentEvent,
   CollateralSeizureEvent,
 } from 'types/generated/graphql/nftLoans';
-import { tweet } from './api';
-import { getNFTInfoForAttachment } from '../getNftInfoForAttachment';
-import { nftResponseDataToImageBuffer } from './attachments';
+import { tweet } from 'lib/events/consumers/twitter/api';
+import { getNFTInfoForAttachment } from 'lib/events/consumers/getNftInfoForAttachment';
+import { nftResponseDataToImageBuffer } from 'lib/events/consumers/twitter/attachments';
 import { ethers } from 'ethers';
 import { formattedAnnualRate } from 'lib/interest';
 import {
@@ -18,6 +18,7 @@ import {
   getEstimatedRepaymentAndMaturity,
 } from 'lib/events/consumers/formattingHelpers';
 import { parseSubgraphLoan } from 'lib/loans/utils';
+import { siteUrl } from 'lib/chainEnv';
 
 export async function sendTweetForTriggerAndEntity(
   trigger: NotificationTriggerType,
@@ -29,11 +30,14 @@ export async function sendTweetForTriggerAndEntity(
     return;
   }
 
-  const tweetContent = await generateContentStringForEvent(
+  const tweetContent = `${await generateContentStringForEvent(
     trigger,
     event,
     mostRecentTermsEvent,
-  );
+  )}
+
+Loan: ${siteUrl()}/loans/${event.loan.id}
+`;
 
   const attachmentImageBuffer = await nftResponseDataToImageBuffer(
     await getNFTInfoForAttachment(event.loan.collateralTokenURI),
