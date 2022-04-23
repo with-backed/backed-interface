@@ -19,7 +19,6 @@ import { Explainer } from './Explainer';
 import { ethers } from 'ethers';
 import { daysToSecondsBigNum, secondsBigNumToDays } from 'lib/duration';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Balance } from '../Balance';
 import { formattedAnnualRate } from 'lib/interest';
 import { LoanTermsDisclosure } from 'components/LoanTermsDisclosure';
 import { useLoanDetails } from 'hooks/useLoanDetails';
