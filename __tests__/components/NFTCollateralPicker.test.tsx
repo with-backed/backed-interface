@@ -83,6 +83,7 @@ const Picker = () => {
 describe('NFTCollateralPicker', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    window.pirsch = jest.fn();
   });
 
   it('renders an initial loading state', () => {
