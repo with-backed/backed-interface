@@ -65,7 +65,7 @@ describe('Formatting events for tweet updates', () => {
       );
       expect(mockTweetCall).toHaveBeenCalledWith(
         expect.stringContaining(
-          'Loan: <https://rinkeby.withbacked.xyz/loans/65>',
+          'Loan: https://rinkeby.withbacked.xyz/loans/65',
         ),
         undefined,
       );
@@ -99,7 +99,7 @@ describe('Formatting events for tweet updates', () => {
       );
       expect(mockTweetCall).toHaveBeenCalledWith(
         expect.stringContaining(
-          'Loan: <https://rinkeby.withbacked.xyz/loans/65>',
+          'Loan: https://rinkeby.withbacked.xyz/loans/65',
         ),
         undefined,
       );
@@ -141,7 +141,7 @@ describe('Formatting events for tweet updates', () => {
       );
       expect(mockTweetCall).toHaveBeenCalledWith(
         expect.stringContaining(
-          'Loan: <https://rinkeby.withbacked.xyz/loans/65>',
+          'Loan: https://rinkeby.withbacked.xyz/loans/65',
         ),
         undefined,
       );
@@ -178,7 +178,7 @@ describe('Formatting events for tweet updates', () => {
       );
       expect(mockTweetCall).toHaveBeenCalledWith(
         expect.stringContaining(
-          'Loan: <https://rinkeby.withbacked.xyz/loans/65>',
+          'Loan: https://rinkeby.withbacked.xyz/loans/65',
         ),
         undefined,
       );
@@ -209,7 +209,7 @@ describe('Formatting events for tweet updates', () => {
       );
       expect(mockTweetCall).toHaveBeenCalledWith(
         expect.stringContaining(
-          'Loan: <https://rinkeby.withbacked.xyz/loans/65>',
+          'Loan: https://rinkeby.withbacked.xyz/loans/65',
         ),
         undefined,
       );
