@@ -22,7 +22,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { formattedAnnualRate } from 'lib/interest';
 import { LoanTermsDisclosure } from 'components/LoanTermsDisclosure';
 import { useLoanDetails } from 'hooks/useLoanDetails';
-import { truncate } from 'lodash';
+import truncate from 'lodash/truncate';
 
 type LoanFormBetterTermsProps = {
   balance: number;
