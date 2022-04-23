@@ -1,10 +1,9 @@
 import { MessageAttachment, MessageEmbed } from 'discord.js';
 import ethers from 'ethers';
 import { NFTResponseData } from 'pages/api/nftInfo/[uri]';
-import sharp from 'sharp';
+import { getPngBufferFromBase64SVG } from 'lib/events/consumers/attachmentsHelper';
 
 const SVG_PREFIX = 'data:image/svg+xml;base64,';
-const JSON_PREFIX = 'data:application/json;base64,';
 
 export async function collateralToDiscordMessageEmbed(
   nftResponseData: NFTResponseData,
@@ -15,16 +14,12 @@ export async function collateralToDiscordMessageEmbed(
   let messageEmbed: MessageEmbed;
 
   if (nftResponseData!.image.startsWith(SVG_PREFIX)) {
-    const outputBuffer = await sharp(
-      Buffer.from(
-        nftResponseData!.image.substring(SVG_PREFIX.length),
-        'base64',
-      ),
-    )
-      .png()
-      .toBuffer();
+    const pngBuffer = await getPngBufferFromBase64SVG(nftResponseData!.image);
 
-    rawBufferAttachment = new MessageAttachment(outputBuffer, `collateral.png`);
+    rawBufferAttachment = new MessageAttachment(
+      Buffer.from(pngBuffer, 'base64'),
+      `collateral.png`,
+    );
     messageEmbed = new MessageEmbed()
       .setTitle(`${collateralName} #${collateralTokenId}`)
       .attachFiles([rawBufferAttachment])
