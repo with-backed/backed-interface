@@ -207,14 +207,13 @@ export function LoanFormBetterTerms({
           balance={balance}
           accrued={formattedInterestAccrued}
           totalPayback={[
-            truncate(
-              ethers.utils.formatUnits(
-                ethers.utils
-                  .parseUnits(loanAmount, loan.loanAssetDecimals)
-                  .add(loan.interestOwed),
-                loan.loanAssetDecimals,
-              ),
+            ethers.utils.formatUnits(
+              ethers.utils
+                .parseUnits(loanAmount, loan.loanAssetDecimals)
+                .add(loan.interestOwed),
+              loan.loanAssetDecimals,
             ),
+            ,
             loan.loanAssetSymbol,
           ].join(' ')}
           disclosureButtonDisabled={!termsAreImproved}
