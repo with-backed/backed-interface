@@ -149,7 +149,7 @@ function LendPageTerms({
 
   return (
     <DescriptionList orientation="horizontal">
-      {balance && (
+      {balance !== undefined && (
         <Balance
           balance={balance}
           loanAmount={parseFloat(fields.loanAmount)}
@@ -192,7 +192,7 @@ function BuyoutPageTerms({
 
   return (
     <DescriptionList orientation="horizontal">
-      {balance && (
+      {balance !== undefined && (
         <Balance
           balance={balance}
           loanAmount={parseFloat(fields.loanAmount)}
