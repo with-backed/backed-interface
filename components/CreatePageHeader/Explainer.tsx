@@ -160,7 +160,16 @@ function EstimatedRepayment({
   context: { denomination, duration, interestRate, loanAmount },
   decimals,
 }: InnerProps) {
-  if (interestRate && loanAmount && duration && denomination && decimals) {
+  if (
+    interestRate &&
+    !isNaN(parseFloat(interestRate)) &&
+    loanAmount &&
+    !isNaN(parseFloat(loanAmount)) &&
+    duration &&
+    !isNaN(parseFloat(duration)) &&
+    denomination &&
+    decimals
+  ) {
     const parsedLoanAmount = ethers.utils.parseUnits(
       parseFloat(loanAmount).toFixed(decimals),
       decimals,
