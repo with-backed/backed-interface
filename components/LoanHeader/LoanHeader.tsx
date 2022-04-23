@@ -25,6 +25,19 @@ const listComponentLookup: {
   'Accruing interest': LoanHeaderAccruingList,
 };
 
+const NonOverflowDD: React.FunctionComponent = ({ children }) => {
+  return (
+    <dd
+      style={{
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+      }}>
+      {children}
+    </dd>
+  );
+};
+
 export function LoanHeader({
   collateralMedia,
   loan,
@@ -134,7 +147,7 @@ function LoanHeaderClosedList({
       <dt>Status</dt>
       <dd className={styles.red}>{formattedStatus}</dd>
       <dt>Accrued</dt>
-      <dd>{longFormattedInterestAccrued}</dd>
+      <NonOverflowDD>{longFormattedInterestAccrued}</NonOverflowDD>
       <dt>Duration</dt>
       <dd>{formattedTotalDuration}</dd>
       <dt>Remaining</dt>
@@ -168,7 +181,7 @@ function LoanHeaderAccruingList({
       <dt>Status</dt>
       <dd>{formattedStatus}</dd>
       <dt>Accrued</dt>
-      <dd>{longFormattedInterestAccrued}</dd>
+      <NonOverflowDD>{longFormattedInterestAccrued}</NonOverflowDD>
       <dt>Duration</dt>
       <dd>{formattedTotalDuration}</dd>
       <dt>Remaining</dt>
@@ -201,7 +214,7 @@ function LoanHeaderPastDueList({
       <dt>Status</dt>
       <dd className={styles.red}>{formattedStatus}</dd>
       <dt>Accrued</dt>
-      <dd>{longFormattedInterestAccrued}</dd>
+      <NonOverflowDD>{longFormattedInterestAccrued}</NonOverflowDD>
       <dt>Duration</dt>
       <dd>{formattedTotalDuration}</dd>
       <dt>Remaining</dt>
