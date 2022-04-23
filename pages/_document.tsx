@@ -41,6 +41,13 @@ export default function Document() {
           id="pirschjs"
           key="pirschjs"
           data-code={process.env.NEXT_PUBLIC_PIRSCH_CODE}></script>
+        <script
+          defer
+          type="text/javascript"
+          src="https://api.pirsch.io/pirsch-events.js"
+          id="pirscheventsjs"
+          key="pirscheventsjs"
+          data-code={process.env.NEXT_PUBLIC_PIRSCH_CODE}></script>
       </Head>
       <body>
         <Main />
