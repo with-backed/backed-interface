@@ -222,7 +222,10 @@ function fieldsAreFull({
     !!denomination.address &&
     !!denomination.symbol &&
     !!duration &&
+    !isNaN(parseFloat(duration)) &&
     !!interestRate &&
-    !!loanAmount
+    !isNaN(parseFloat(interestRate)) &&
+    !!loanAmount &&
+    !isNaN(parseFloat(loanAmount))
   );
 }
