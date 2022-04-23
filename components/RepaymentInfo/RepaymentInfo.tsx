@@ -10,19 +10,19 @@ type RepaymentInfoProps = {
 
 export function RepaymentInfo({ loan }: RepaymentInfoProps) {
   const {
-    formattedPrincipal,
-    formattedInterestRate,
-    formattedEstimatedPaybackAtMaturity,
+    longFormattedPrincipal,
+    longFormattedInterestRate,
+    longFormattedEstimatedPaybackAtMaturity,
   } = useLoanDetails(loan);
   return (
     <Fieldset legend="💰 Repayment">
       <DescriptionList orientation="horizontal">
         <dt>Principal</dt>
-        <dd>{formattedPrincipal}</dd>
+        <dd>{longFormattedPrincipal}</dd>
         <dt>Interest Rate</dt>
-        <dd>{formattedInterestRate}</dd>
+        <dd>{longFormattedInterestRate}</dd>
         <dt>Payback at maturity</dt>
-        <dd>{formattedEstimatedPaybackAtMaturity}</dd>
+        <dd>{longFormattedEstimatedPaybackAtMaturity}</dd>
       </DescriptionList>
     </Fieldset>
   );

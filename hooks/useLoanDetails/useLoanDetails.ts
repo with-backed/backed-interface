@@ -82,8 +82,17 @@ export function useLoanDetails(loan: Loan) {
       loanAssetSymbol,
     ].join(' ');
   }, [loanAmount, loanAssetDecimals, loanAssetSymbol]);
+  const longFormattedPrincipal = useMemo(() => {
+    return [
+      ethers.utils.formatUnits(loanAmount, loanAssetDecimals),
+      loanAssetSymbol,
+    ].join(' ');
+  }, [loanAmount, loanAssetDecimals, loanAssetSymbol]);
   const formattedInterestRate = useMemo(() => {
     return [truncate(formattedAnnualRate(perAnumInterestRate)), '%'].join('');
+  }, [perAnumInterestRate]);
+  const longFormattedInterestRate = useMemo(() => {
+    return [formattedAnnualRate(perAnumInterestRate), '%'].join('');
   }, [perAnumInterestRate]);
   const formattedTotalDuration = useMemo(() => {
     return truncate(secondsBigNumToDays(durationSeconds), 2) + ' days';
@@ -91,6 +100,12 @@ export function useLoanDetails(loan: Loan) {
   const formattedInterestAccrued = useMemo(() => {
     return [
       truncate(ethers.utils.formatUnits(interestOwed, loanAssetDecimals)),
+      loanAssetSymbol,
+    ].join(' ');
+  }, [interestOwed, loanAssetDecimals, loanAssetSymbol]);
+  const longFormattedInterestAccrued = useMemo(() => {
+    return [
+      ethers.utils.formatUnits(interestOwed, loanAssetDecimals),
       loanAssetSymbol,
     ].join(' ');
   }, [interestOwed, loanAssetDecimals, loanAssetSymbol]);
@@ -108,7 +123,38 @@ export function useLoanDetails(loan: Loan) {
       loanAssetSymbol,
     ].join(' ');
   }, [loanAmount, interestOwed, loanAssetDecimals, loanAssetSymbol]);
+  const longFormattedTotalPayback = useMemo(() => {
+    return [
+      truncate(
+        ethers.utils.formatUnits(
+          loanAmount.add(interestOwed),
+          loanAssetDecimals,
+        ),
+      ),
+      loanAssetSymbol,
+    ].join(' ');
+  }, [loanAmount, interestOwed, loanAssetDecimals, loanAssetSymbol]);
   const formattedEstimatedPaybackAtMaturity = useMemo(() => {
+    const totalInterest = interestOverTerm(
+      perAnumInterestRate,
+      ethers.BigNumber.from(secondsBigNumToDaysBigNum(durationSeconds)),
+      loanAmount,
+    );
+    const estimate = accumulatedInterest.add(loanAmount).add(totalInterest);
+
+    return [
+      truncate(ethers.utils.formatUnits(estimate, loanAssetDecimals)),
+      loanAssetSymbol,
+    ].join(' ');
+  }, [
+    accumulatedInterest,
+    durationSeconds,
+    loanAssetSymbol,
+    loanAmount,
+    loanAssetDecimals,
+    perAnumInterestRate,
+  ]);
+  const longFormattedEstimatedPaybackAtMaturity = useMemo(() => {
     const totalInterest = interestOverTerm(
       perAnumInterestRate,
       ethers.BigNumber.from(secondsBigNumToDaysBigNum(durationSeconds)),
@@ -144,6 +190,11 @@ export function useLoanDetails(loan: Loan) {
   }, [endDateTimestamp, timestamp]);
 
   return {
+    longFormattedEstimatedPaybackAtMaturity,
+    longFormattedInterestAccrued,
+    longFormattedInterestRate,
+    longFormattedPrincipal,
+    longFormattedTotalPayback,
     formattedInterestAccrued,
     formattedInterestRate,
     formattedLoanID,

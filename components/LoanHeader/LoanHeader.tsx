@@ -66,9 +66,9 @@ function LoanHeaderLoadingList({
   details: {
     formattedStatus,
     formattedTotalDuration,
-    formattedInterestRate,
+    longFormattedInterestRate,
     formattedLoanID,
-    formattedPrincipal,
+    longFormattedPrincipal,
   },
 }: ListProps) {
   return (
@@ -76,9 +76,9 @@ function LoanHeaderLoadingList({
       <dt>Loan ID</dt>
       <dd>{formattedLoanID}</dd>
       <dt>Loan Amount</dt>
-      <dd>{formattedPrincipal}</dd>
+      <dd>{longFormattedPrincipal}</dd>
       <dt>Interest Rate</dt>
-      <dd>{formattedInterestRate}</dd>
+      <dd>{longFormattedInterestRate}</dd>
       <dt>Duration</dt>
       <dd>{formattedTotalDuration}</dd>
       <dt>Status</dt>
@@ -90,9 +90,9 @@ function LoanHeaderLoadingList({
 function LoanHeaderAwaitingList({
   details: {
     formattedStatus,
-    formattedInterestRate,
+    longFormattedInterestRate,
     formattedLoanID,
-    formattedPrincipal,
+    longFormattedPrincipal,
     formattedTotalDuration,
   },
 }: ListProps) {
@@ -101,9 +101,9 @@ function LoanHeaderAwaitingList({
       <dt>Loan ID</dt>
       <dd>{formattedLoanID}</dd>
       <dt>Loan Amount</dt>
-      <dd>{formattedPrincipal}</dd>
+      <dd>{longFormattedPrincipal}</dd>
       <dt>Interest Rate</dt>
-      <dd>{formattedInterestRate}</dd>
+      <dd>{longFormattedInterestRate}</dd>
       <dt>Duration</dt>
       <dd>{formattedTotalDuration}</dd>
       <dt>Status</dt>
@@ -116,11 +116,11 @@ function LoanHeaderClosedList({
   details: {
     formattedStatus,
     formattedTotalDuration,
-    formattedInterestRate,
+    longFormattedInterestRate,
     formattedLoanID,
-    formattedPrincipal,
-    formattedInterestAccrued,
-    formattedTotalPayback,
+    longFormattedPrincipal,
+    longFormattedInterestAccrued,
+    longFormattedTotalPayback,
   },
 }: ListProps) {
   return (
@@ -128,19 +128,19 @@ function LoanHeaderClosedList({
       <dt>Loan ID</dt>
       <dd>{formattedLoanID}</dd>
       <dt>Loan Amount</dt>
-      <dd>{formattedPrincipal}</dd>
+      <dd>{longFormattedPrincipal}</dd>
       <dt>Interest Rate</dt>
-      <dd>{formattedInterestRate}</dd>
+      <dd>{longFormattedInterestRate}</dd>
       <dt>Status</dt>
       <dd className={styles.red}>{formattedStatus}</dd>
       <dt>Accrued</dt>
-      <dd>{formattedInterestAccrued}</dd>
+      <dd>{longFormattedInterestAccrued}</dd>
       <dt>Duration</dt>
       <dd>{formattedTotalDuration}</dd>
       <dt>Remaining</dt>
       <dd>0 days</dd>
       <dt>Total Payback</dt>
-      <dd>{formattedTotalPayback}</dd>
+      <dd>{longFormattedTotalPayback}</dd>
     </DescriptionList>
   );
 }
@@ -149,11 +149,11 @@ function LoanHeaderAccruingList({
   details: {
     formattedStatus,
     formattedTotalDuration,
-    formattedInterestRate,
+    longFormattedInterestRate,
     formattedLoanID,
-    formattedPrincipal,
-    formattedInterestAccrued,
-    formattedEstimatedPaybackAtMaturity,
+    longFormattedPrincipal,
+    longFormattedInterestAccrued,
+    longFormattedEstimatedPaybackAtMaturity,
     formattedTimeRemaining,
   },
 }: ListProps) {
@@ -162,19 +162,19 @@ function LoanHeaderAccruingList({
       <dt>Loan ID</dt>
       <dd>{formattedLoanID}</dd>
       <dt>Loan Amount</dt>
-      <dd>{formattedPrincipal}</dd>
+      <dd>{longFormattedPrincipal}</dd>
       <dt>Interest Rate</dt>
-      <dd>{formattedInterestRate}</dd>
+      <dd>{longFormattedInterestRate}</dd>
       <dt>Status</dt>
       <dd>{formattedStatus}</dd>
       <dt>Accrued</dt>
-      <dd>{formattedInterestAccrued}</dd>
+      <dd>{longFormattedInterestAccrued}</dd>
       <dt>Duration</dt>
       <dd>{formattedTotalDuration}</dd>
       <dt>Remaining</dt>
       <dd>{formattedTimeRemaining}</dd>
       <dt>Est. Payback</dt>
-      <dd>{formattedEstimatedPaybackAtMaturity}</dd>
+      <dd>{longFormattedEstimatedPaybackAtMaturity}</dd>
     </DescriptionList>
   );
 }
@@ -183,11 +183,11 @@ function LoanHeaderPastDueList({
   details: {
     formattedStatus,
     formattedTotalDuration,
-    formattedInterestRate,
+    longFormattedInterestRate,
     formattedLoanID,
-    formattedPrincipal,
-    formattedInterestAccrued,
-    formattedEstimatedPaybackAtMaturity,
+    longFormattedPrincipal,
+    longFormattedInterestAccrued,
+    longFormattedEstimatedPaybackAtMaturity,
   },
 }: ListProps) {
   return (
@@ -195,19 +195,19 @@ function LoanHeaderPastDueList({
       <dt>Loan ID</dt>
       <dd>{formattedLoanID}</dd>
       <dt>Loan Amount</dt>
-      <dd>{formattedPrincipal}</dd>
+      <dd>{longFormattedPrincipal}</dd>
       <dt>Interest Rate</dt>
-      <dd>{formattedInterestRate}</dd>
+      <dd>{longFormattedInterestRate}</dd>
       <dt>Status</dt>
       <dd className={styles.red}>{formattedStatus}</dd>
       <dt>Accrued</dt>
-      <dd>{formattedInterestAccrued}</dd>
+      <dd>{longFormattedInterestAccrued}</dd>
       <dt>Duration</dt>
       <dd>{formattedTotalDuration}</dd>
       <dt>Remaining</dt>
       <dd>0 days</dd>
       <dt>Est. Payback</dt>
-      <dd>{formattedEstimatedPaybackAtMaturity}</dd>
+      <dd>{longFormattedEstimatedPaybackAtMaturity}</dd>
     </DescriptionList>
   );
 }
