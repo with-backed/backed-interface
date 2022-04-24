@@ -22,10 +22,10 @@ export async function collectionStats(
   const statsResJson: any = await statsRes.json();
 
   return {
-    floor: statsResJson.statistics?.floor_price || 0,
-    items: statsResJson.statistics?.total_supply || 0,
-    owners: statsResJson.statistics?.num_owners || 0,
-    volume: statsResJson.statistics?.total_volume || 0,
+    floor: statsResJson.statistics?.floor_price,
+    items: statsResJson.statistics?.total_supply,
+    owners: statsResJson.statistics?.num_owners,
+    volume: statsResJson.statistics?.total_volume,
   };
 }
 
