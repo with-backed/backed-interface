@@ -46,7 +46,9 @@ export async function nodeLoanById(loanId: string): Promise<Loan> {
   const collateralAssetContract = jsonRpcERC721Contract(
     collateralContractAddress,
   );
-  const collateralTokenURI = await collateralAssetContract.tokenURI(id);
+  const collateralTokenURI = await collateralAssetContract.tokenURI(
+    collateralTokenId,
+  );
   const collateralName = await collateralAssetContract.name();
 
   return {
