@@ -26,12 +26,10 @@ export async function getNFTInfoFromTokenInfo(
       return null;
     }
 
-    const mediaUrl =
-      !NFTInfo.animation_url || forceImage
-        ? NFTInfo.image
-        : NFTInfo.animation_url;
-
-    const mediaMimeType = await getMimeType(mediaUrl);
+    const { mediaUrl, mediaMimeType } = await supportedMedia(
+      NFTInfo,
+      forceImage,
+    );
 
     return {
       id: tokenId,
@@ -58,4 +56,22 @@ async function getMimeType(mediaUrl: string) {
     captureException(e);
     return defaultMimeType;
   }
+}
+
+async function supportedMedia(
+  nft: NFTResponseData,
+  forceImage?: boolean,
+): Promise<{ mediaUrl: string; mediaMimeType: string }> {
+  const { animation_url, image } = nft!;
+
+  const [animationMimeType, imageMimeType] = await Promise.all([
+    getMimeType(animation_url || ''),
+    getMimeType(image || ''),
+  ]);
+
+  if (forceImage || !animation_url || animationMimeType.includes('text')) {
+    return { mediaUrl: image, mediaMimeType: imageMimeType };
+  }
+
+  return { mediaUrl: animation_url, mediaMimeType: animationMimeType };
 }
