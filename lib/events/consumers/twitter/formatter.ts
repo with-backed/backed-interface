@@ -36,7 +36,7 @@ export async function sendTweetForTriggerAndEntity(
     mostRecentTermsEvent,
   )}
 
-Loan: ${siteUrl()}/loans/${event.loan.id}
+${siteUrl()}/loans/${event.loan.id}
 `;
 
   const attachmentImageBuffer = await nftResponseDataToImageBuffer(
