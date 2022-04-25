@@ -68,22 +68,24 @@ export const CollateralInfo = ({
 
         <div className={styles.collectionInfoElement}>
           <dt className={styles.label}>items</dt>
-          <dd>{collateralSaleInfo.collectionStats.items}</dd>
+          <dd>{collateralSaleInfo.collectionStats.items || '--'}</dd>
         </div>
 
         <div className={styles.collectionInfoElement}>
           <dt className={styles.label}>floor price</dt>
-          <dd>{collateralSaleInfo.collectionStats.floor} ETH</dd>
+          <dd>{collateralSaleInfo.collectionStats.floor || '--'} ETH</dd>
         </div>
 
         <div className={styles.collectionInfoElement}>
           <dt className={styles.label}>owners</dt>
-          <dd>{collateralSaleInfo.collectionStats.owners}</dd>
+          <dd>{collateralSaleInfo.collectionStats.owners || '--'}</dd>
         </div>
 
         <div className={styles.collectionInfoElement}>
           <dt className={styles.label}>volume</dt>
-          <dd>{collateralSaleInfo.collectionStats.volume.toFixed(4)} ETH</dd>
+          <dd>
+            {collateralSaleInfo.collectionStats.volume?.toFixed(4) || '--'} ETH
+          </dd>
         </div>
       </DescriptionList>
     </Fieldset>
