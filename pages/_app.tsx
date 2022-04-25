@@ -33,6 +33,8 @@ const wallets = getDefaultWallets({
     chain.mainnet.rpcUrls[0],
 });
 
+wallets[0].wallets.sort((a, b) => a.id.localeCompare(b.id));
+
 const connectors = connectorsForWallets(wallets)({
   chainId: parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || '1'),
 });
