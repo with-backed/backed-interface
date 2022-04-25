@@ -44,7 +44,7 @@ export async function getNFTInfoFromTokenInfo(
   }
 }
 
-async function getMimeType(mediaUrl: string) {
+export async function getMimeType(mediaUrl: string) {
   const defaultMimeType = 'application/octet-stream';
   try {
     const res = await fetch(mediaUrl, { method: 'HEAD' });
@@ -62,16 +62,15 @@ async function supportedMedia(
   nft: NFTResponseData,
   forceImage?: boolean,
 ): Promise<{ mediaUrl: string; mediaMimeType: string }> {
-  const { animation_url, image } = nft!;
+  const { animation, image } = nft!;
 
-  const [animationMimeType, imageMimeType] = await Promise.all([
-    getMimeType(animation_url || ''),
-    getMimeType(image || ''),
-  ]);
-
-  if (forceImage || !animation_url || animationMimeType.includes('text')) {
-    return { mediaUrl: image, mediaMimeType: imageMimeType };
+  if (!animation && !image) {
+    throw new Error(`No media associated with ${nft?.name}`);
   }
 
-  return { mediaUrl: animation_url, mediaMimeType: animationMimeType };
+  if (forceImage || !animation || animation.mediaMimeType.includes('text')) {
+    return image!;
+  }
+
+  return animation!;
 }
