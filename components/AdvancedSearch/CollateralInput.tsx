@@ -1,20 +1,20 @@
 import styles from './AdvancedSearch.module.css';
 import { Input } from 'components/Input';
-import { ChangeEvent, useCallback } from 'react';
+import { ChangeEvent, useCallback, useState } from 'react';
 
 type CollateralSearchInputProps = {
   collectionAddress: string;
   collectionName: string;
   setCollectionAddress: (address: string) => void;
   setCollectionName: (name: string) => void;
-  error?: string;
 };
 
 export default function CollateralSearchInput({
   setCollectionAddress,
   setCollectionName,
-  error,
 }: CollateralSearchInputProps) {
+  const [error, setError] = useState('');
+
   const handleChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       const newValue = event.target.value.trim();
@@ -24,6 +24,10 @@ export default function CollateralSearchInput({
         setCollectionAddress('');
       } else {
         if (newValue.substring(0, 2) == '0x') {
+          if (newValue.length % 2 !== 0) {
+            setError('Invalid address inputted');
+            return;
+          }
           setCollectionAddress(newValue);
           setCollectionName('');
         } else {

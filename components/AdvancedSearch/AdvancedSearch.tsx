@@ -3,11 +3,7 @@ import { DEFAULT_ASSET_DECIMALS } from 'lib/loanAssets';
 import { LoanAmountInputType } from 'lib/loans/subgraph/subgraphLoans';
 import { isEqual } from 'lodash';
 import { useEffect, useState } from 'react';
-import {
-  Loan,
-  LoanStatus,
-  Loan_OrderBy,
-} from 'types/generated/graphql/nftLoans';
+import { LoanStatus } from 'types/generated/graphql/nftLoans';
 import styles from './AdvancedSearch.module.css';
 import CollateralSearchInput from './CollateralInput';
 import LoanAssetDropdown from './LoanAssetDropdown';
@@ -22,10 +18,6 @@ type AdvancedSearchProps = {
   setSearchUrl: (url: string) => void;
   loanAssetDecimalsForSearch?: number; // based on results of search, set loanAssetDecimal so we know how to parse loanAmountMin and loanAmountMax
 };
-
-const BYTES_INVALID_ERROR = 'Invalid address inputted';
-const areBytesInvalid = (bytes: string[]) =>
-  bytes.filter((b) => b.length % 2 !== 0).length > 0;
 
 const isSearchActive = (statuses: LoanStatus[], ...args: any[]) => {
   return (
@@ -65,14 +57,6 @@ export function AdvancedSearch({
   const [loanDurationMin, setLoanDurationMin] = useState<number>(0);
   const [loanDurationMax, setLoanDurationMax] = useState<number>(0);
 
-  const loanTokenSearchInvalid =
-    (!!loanAmountMin.nominal || !!loanAmountMax.nominal) && !loanAsset;
-  const bytesSearchInvalid = areBytesInvalid([
-    borrowerAddress,
-    lenderAddress,
-    collectionAddress,
-  ]);
-
   useEffect(() => {
     setSearchActive(
       isSearchActive(
@@ -88,9 +72,7 @@ export function AdvancedSearch({
         loanInterestMax,
         loanDurationMin,
         loanDurationMax,
-      ) &&
-        !bytesSearchInvalid &&
-        !loanTokenSearchInvalid,
+      ),
     );
     setSearchUrl(
       `/api/loans/search?statuses=${statuses}&collectionAddress=${collectionAddress}&collectionName=${collectionName}&loanAsset=${loanAsset}&borrowerAddress=${borrowerAddress}&lenderAddress=${lenderAddress}&loanAmountMin=${loanAmountMin.nominal}&loanAmountMinDecimals=${loanAmountMin.loanAssetDecimal}&loanAmountMax=${loanAmountMax.nominal}&loanAmountMaxDecimals=${loanAmountMax.loanAssetDecimal}&loanInterestMin=${loanInterestMin}&loanInterestMax=${loanInterestMax}&loanDurationMin=${loanDurationMin}&loanDurationMax=${loanDurationMax}&`,
@@ -111,8 +93,6 @@ export function AdvancedSearch({
     setSearchActive,
     searchActive,
     setSearchUrl,
-    bytesSearchInvalid,
-    loanTokenSearchInvalid,
   ]);
 
   return (
@@ -144,11 +124,6 @@ export function AdvancedSearch({
             collectionName={collectionName}
             setCollectionAddress={setCollectionAddress}
             setCollectionName={setCollectionName}
-            error={
-              areBytesInvalid([collectionAddress])
-                ? BYTES_INVALID_ERROR
-                : undefined
-            }
           />
         </div>
         <div
@@ -167,13 +142,9 @@ export function AdvancedSearch({
           }`}>
           <SearchTextInput
             label="Borrower"
+            isAddress
             placeholder="Enter 0x..."
             setTextValue={setBorrowerAddress}
-            error={
-              areBytesInvalid([borrowerAddress])
-                ? BYTES_INVALID_ERROR
-                : undefined
-            }
           />
         </div>
         <div
@@ -184,11 +155,9 @@ export function AdvancedSearch({
           }`}>
           <SearchTextInput
             label="Lender"
+            isAddress
             placeholder="Enter 0x..."
             setTextValue={setLenderAddress}
-            error={
-              areBytesInvalid([lenderAddress]) ? BYTES_INVALID_ERROR : undefined
-            }
           />
         </div>
         <div
@@ -199,22 +168,19 @@ export function AdvancedSearch({
           }`}>
           <LoanNumericInput
             label="Loan Amount"
+            loanAssetRequired
             setMin={(nominal: number) =>
               setLoanAmountMin({
                 loanAssetDecimal: loanAssetDecimalsForSearch,
                 nominal,
               })
             }
+            loanAsset={loanAsset}
             setMax={(nominal: number) =>
               setLoanAmountMax({
                 loanAssetDecimal: loanAssetDecimalsForSearch,
                 nominal,
               })
-            }
-            error={
-              loanTokenSearchInvalid
-                ? 'First, enter a symbol for the loan token'
-                : undefined
             }
           />
         </div>
@@ -226,6 +192,7 @@ export function AdvancedSearch({
           }`}>
           <LoanNumericInput
             label="Interest Rate"
+            loanAssetRequired={false}
             setMin={setLoanInterestMin}
             setMax={setLoanInterestMax}
           />
@@ -238,6 +205,7 @@ export function AdvancedSearch({
           }`}>
           <LoanNumericInput
             label="Duration"
+            loanAssetRequired={false}
             setMin={setLoanDurationMin}
             setMax={setLoanDurationMax}
           />
