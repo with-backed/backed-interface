@@ -110,7 +110,7 @@ function CreatePageTerms({ fields }: Pick<LoanTermsDisclosureProps, 'fields'>) {
       <dd>
         {ethers.utils.formatUnits(originationFee, decimals)} {symbol}
       </dd>
-      <dt>You&lsquo;ll Receive</dt>
+      <dt>You&apos;ll Receive</dt>
       <dd>
         {ethers.utils.formatUnits(
           parsedLoanAmount.sub(originationFee),
