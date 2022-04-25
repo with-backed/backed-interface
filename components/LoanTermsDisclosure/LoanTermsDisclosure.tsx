@@ -110,7 +110,7 @@ function CreatePageTerms({ fields }: Pick<LoanTermsDisclosureProps, 'fields'>) {
       <dd>
         {ethers.utils.formatUnits(originationFee, decimals)} {symbol}
       </dd>
-      <dt>Payment Once Loan is Met</dt>
+      <dt>You&apos;ll Receive</dt>
       <dd>
         {ethers.utils.formatUnits(
           parsedLoanAmount.sub(originationFee),
@@ -156,7 +156,7 @@ function LendPageTerms({
           symbol={symbol}
         />
       )}
-      <dt>Initial Loan Amount</dt>
+      <dt>Total Cost</dt>
       <dd>
         {fields.loanAmount} {symbol}
       </dd>
