@@ -1,8 +1,8 @@
 export type CollectionStatistics = {
-  floor: number;
-  items: number;
-  owners: number;
-  volume: number;
+  floor: number | null;
+  items: number | null;
+  owners: number | null;
+  volume: number | null;
 };
 
 export async function collectionStats(
@@ -22,10 +22,10 @@ export async function collectionStats(
   const statsResJson: any = await statsRes.json();
 
   return {
-    floor: statsResJson.statistics?.floor_price,
-    items: statsResJson.statistics?.total_supply,
-    owners: statsResJson.statistics?.num_owners,
-    volume: statsResJson.statistics?.total_volume,
+    floor: statsResJson.statistics?.floor_price || null,
+    items: statsResJson.statistics?.total_supply || null,
+    owners: statsResJson.statistics?.num_owners || null,
+    volume: statsResJson.statistics?.total_volume || null,
   };
 }
 
