@@ -57,14 +57,6 @@ export function AdvancedSearch({
   const [loanDurationMin, setLoanDurationMin] = useState<number>(0);
   const [loanDurationMax, setLoanDurationMax] = useState<number>(0);
 
-  const numericSearchInvalid =
-    loanAmountMin.nominal < 0 ||
-    loanAmountMax.nominal < 0 ||
-    loanInterestMin < 0 ||
-    loanInterestMax < 0 ||
-    loanDurationMin < 0 ||
-    loanDurationMax < 0;
-
   useEffect(() => {
     setSearchActive(
       isSearchActive(
@@ -80,7 +72,7 @@ export function AdvancedSearch({
         loanInterestMax,
         loanDurationMin,
         loanDurationMax,
-      ) && !numericSearchInvalid,
+      ),
     );
     setSearchUrl(
       `/api/loans/search?statuses=${statuses}&collectionAddress=${collectionAddress}&collectionName=${collectionName}&loanAsset=${loanAsset}&borrowerAddress=${borrowerAddress}&lenderAddress=${lenderAddress}&loanAmountMin=${loanAmountMin.nominal}&loanAmountMinDecimals=${loanAmountMin.loanAssetDecimal}&loanAmountMax=${loanAmountMax.nominal}&loanAmountMaxDecimals=${loanAmountMax.loanAssetDecimal}&loanInterestMin=${loanInterestMin}&loanInterestMax=${loanInterestMax}&loanDurationMin=${loanDurationMin}&loanDurationMax=${loanDurationMax}&`,
