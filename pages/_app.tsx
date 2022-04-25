@@ -28,9 +28,7 @@ const chains: Chain[] = [{ ...chain.rinkeby, name: 'Rinkeby' }];
 const wallets = getDefaultWallets({
   chains,
   appName: 'Backed',
-  jsonRpcUrl: ({ chainId }) =>
-    chains.find((x) => x.id === chainId)?.rpcUrls?.[0] ??
-    chain.mainnet.rpcUrls[0],
+  jsonRpcUrl: process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER!,
 });
 
 wallets[0].wallets.sort((a, b) => a.id.localeCompare(b.id));
