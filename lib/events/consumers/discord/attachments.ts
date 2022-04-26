@@ -13,8 +13,10 @@ export async function collateralToDiscordMessageEmbed(
   let rawBufferAttachment: MessageAttachment | undefined = undefined;
   let messageEmbed: MessageEmbed;
 
-  if (nftResponseData!.image.startsWith(SVG_PREFIX)) {
-    const pngBuffer = await getPngBufferFromBase64SVG(nftResponseData!.image);
+  if (nftResponseData?.image?.mediaUrl.startsWith(SVG_PREFIX)) {
+    const pngBuffer = await getPngBufferFromBase64SVG(
+      nftResponseData!.image!.mediaUrl,
+    );
 
     rawBufferAttachment = new MessageAttachment(
       Buffer.from(pngBuffer, 'base64'),
@@ -27,7 +29,7 @@ export async function collateralToDiscordMessageEmbed(
   } else {
     messageEmbed = new MessageEmbed()
       .setTitle(`${collateralName} #${collateralTokenId}`)
-      .setImage(nftResponseData!.image);
+      .setImage(nftResponseData!.image!.mediaUrl);
   }
 
   return messageEmbed;

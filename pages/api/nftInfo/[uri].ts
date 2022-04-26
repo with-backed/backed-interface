@@ -1,15 +1,18 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import IPFSGatewayTools from '@pinata/ipfs-gateway-tools/dist/node';
 import { captureException, withSentry } from '@sentry/nextjs';
+import { getMimeType } from 'lib/getNFTInfo';
 
 const ipfsGatewayTools = new IPFSGatewayTools();
+
+type Media = { mediaUrl: string; mediaMimeType: string } | null;
 
 export type NFTResponseData = {
   name: string;
   description: string;
   tokenId: number;
-  image: string;
-  animation_url: string;
+  image: Media;
+  animation: Media;
   external_url: string;
 } | null;
 
@@ -21,6 +24,11 @@ async function handler(
     const { uri } = req.query;
     const decodedUri = decodeURIComponent(uri as string);
     const resolvedUri = convertIPFS(decodedUri);
+
+    if (!resolvedUri) {
+      throw new Error(`Could not resolve ${decodedUri}`);
+    }
+
     const tokenURIRes = await fetch(resolvedUri);
     const {
       name,
@@ -32,12 +40,24 @@ async function handler(
       external_url,
     } = await tokenURIRes.json();
 
+    const finalImage = convertIPFS(image || image_url);
+    const finalAnimation = convertIPFS(animation_url);
+
+    const [animationMimeType, imageMimeType] = await Promise.all([
+      getMimeType(animation_url || ''),
+      getMimeType(image || ''),
+    ]);
+
     res.status(200).json({
       name,
       description,
       tokenId,
-      image: convertIPFS(image) || convertIPFS(image_url),
-      animation_url: convertIPFS(animation_url),
+      image: finalImage
+        ? { mediaUrl: finalImage, mediaMimeType: imageMimeType }
+        : null,
+      animation: finalAnimation
+        ? { mediaUrl: finalAnimation, mediaMimeType: animationMimeType }
+        : null,
       external_url,
     });
   } catch (e) {
@@ -49,7 +69,11 @@ async function handler(
 /**
  * If `uri` is an IPFS uri, convert to use our gateway. Otherwise return it untouched.
  */
-function convertIPFS(uri: string) {
+function convertIPFS(uri?: string): string | undefined {
+  if (!uri) {
+    return uri;
+  }
+
   try {
     if (ipfsGatewayTools.containsCID(uri).containsCid) {
       return ipfsGatewayTools.convertToDesiredGateway(
