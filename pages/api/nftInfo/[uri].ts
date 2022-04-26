@@ -41,7 +41,16 @@ async function handler(
       external_url,
     });
   } catch (e) {
-    captureException(e);
+    if (e instanceof Error) {
+      if (
+        e.name === 'FetchError' &&
+        e.message.startsWith('invalid json response body')
+      ) {
+        // this happens when the root CID exists but the child file does not. No way to get the file, do nothing.
+      } else {
+        captureException(e);
+      }
+    }
     return res.status(404).json(null);
   }
 }
