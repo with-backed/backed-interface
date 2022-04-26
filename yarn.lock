@@ -9391,6 +9391,14 @@ iconv-lite@0.4.24, iconv-lite@^0.4.24, iconv-lite@^0.4.4:
   dependencies:
     safer-buffer ">= 2.1.2 < 3"
 
+ics@^2.35.0:
+  version "2.35.0"
+  resolved "https://registry.yarnpkg.com/ics/-/ics-2.35.0.tgz#9cf3d7bcc9526f78d838b119613adb2a3baf19b8"
+  integrity sha512-uxHoiu9VnE/1RUIWoUqn9GVswUzrejHFa5Gk20gGySw+2FO8xzgJe7GLFk+hzmevHViG/6zANLhjVY6kFWctKQ==
+  dependencies:
+    nanoid "^3.1.23"
+    yup "^0.32.9"
+
 icss-utils@^4.0.0, icss-utils@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/icss-utils/-/icss-utils-4.1.1.tgz#21170b53789ee27447c2f47dd683081403f9a467"
@@ -16822,7 +16830,7 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-yup@0.32.11:
+yup@0.32.11, yup@^0.32.9:
   version "0.32.11"
   resolved "https://registry.yarnpkg.com/yup/-/yup-0.32.11.tgz#d67fb83eefa4698607982e63f7ca4c5ed3cf18c5"
   integrity sha512-Z2Fe1bn+eLstG8DRR6FTavGD+MeAwyfmouhHsIUgaADz8jvFKbO/fXc2trJKZg+5EBjh4gGm3iU/t3onKlXHIg==
