@@ -28,6 +28,7 @@ const chains: Chain[] = [{ ...chain.rinkeby, name: 'Rinkeby' }];
 const wallets = getDefaultWallets({
   chains,
   appName: 'Backed',
+  infuraId: process.env.NEXT_PUBLIC_INFURA_ID,
   jsonRpcUrl: process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER!,
 });
 
