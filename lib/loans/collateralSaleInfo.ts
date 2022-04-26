@@ -46,10 +46,7 @@ async function getMostRecentSale(
     sale = generateFakeSaleForNFT(nftContractAddress, tokenId);
   } else {
     sale = await queryMostRecentSaleForNFT(nftContractAddress, tokenId);
-    if (
-      !sale ||
-      sale.paymentToken === '0x0000000000000000000000000000000000000000'
-    ) {
+    if (!sale) {
       return null;
     }
   }
@@ -59,16 +56,24 @@ async function getMostRecentSale(
 
   const erc20Contract = jsonRpcERC20Contract(paymentTokenAddress);
 
-  const paymentTokenSymbol = await erc20Contract.symbol();
-  const recentSaleTokenDecimals = await erc20Contract.decimals();
+  let paymentTokenSymbol: string;
+  let recentSaleTokenDecimals: number;
+  if (paymentTokenAddress === '0x0000000000000000000000000000000000000000') {
+    paymentTokenSymbol = 'ETH';
+    recentSaleTokenDecimals = 18;
+  } else {
+    paymentTokenSymbol = await erc20Contract.symbol();
+    recentSaleTokenDecimals = await erc20Contract.decimals();
+  }
 
-  const formatttedPrice = ethers.utils
-    .parseUnits(price, recentSaleTokenDecimals)
-    .toNumber();
+  const formatttedPrice = ethers.utils.formatUnits(
+    ethers.BigNumber.from(price),
+    recentSaleTokenDecimals,
+  );
 
   return {
     paymentToken: paymentTokenSymbol,
-    price: formatttedPrice,
+    price: parseFloat(formatttedPrice),
   };
 }
 
