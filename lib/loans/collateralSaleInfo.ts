@@ -46,7 +46,10 @@ async function getMostRecentSale(
     sale = generateFakeSaleForNFT(nftContractAddress, tokenId);
   } else {
     sale = await queryMostRecentSaleForNFT(nftContractAddress, tokenId);
-    if (!sale) {
+    if (
+      !sale ||
+      sale.paymentToken === '0x0000000000000000000000000000000000000000'
+    ) {
       return null;
     }
   }
