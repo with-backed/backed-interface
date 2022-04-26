@@ -42,7 +42,6 @@ export function RepaymentInfo({ loan }: RepaymentInfoProps) {
       icalendar.download();
     } else {
       const googleCalendar = new GoogleCalendar(config);
-
       const link = googleCalendar.render();
       window.open(link, '_blank');
     }
@@ -57,13 +56,17 @@ export function RepaymentInfo({ loan }: RepaymentInfoProps) {
         <dd>{longFormattedInterestRate}</dd>
         <dt>Payback at maturity</dt>
         <dd>{longFormattedEstimatedPaybackAtMaturity}</dd>
-        <dt>Maturity Date</dt>
-        <dd className={styles['maturity-date']}>
-          <div>
-            {maturityDate}
-            <img src={'/cal-icon.svg'} onClick={createCalEvent} />
-          </div>
-        </dd>
+        {!!loan.endDateTimestamp && (
+          <>
+            <dt>Maturity Date</dt>
+            <dd className={styles['maturity-date']}>
+              <div>
+                {maturityDate}
+                <img src={'/cal-icon.svg'} onClick={createCalEvent} />
+              </div>
+            </dd>
+          </>
+        )}
       </DescriptionList>
     </Fieldset>
   );
