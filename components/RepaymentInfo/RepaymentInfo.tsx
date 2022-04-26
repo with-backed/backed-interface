@@ -4,8 +4,8 @@ import { useLoanDetails } from 'hooks/useLoanDetails';
 import { Loan } from 'types/Loan';
 import React, { useCallback, useMemo } from 'react';
 import dayjs from 'dayjs';
-import { EventAttributes, createEvent } from 'ics';
-import { captureException } from '@sentry/nextjs';
+import { CalendarOptions, GoogleCalendar, ICalendar } from 'datebook';
+import styles from './RepaymentInfo.module.css';
 
 type RepaymentInfoProps = {
   loan: Loan;
@@ -26,34 +26,26 @@ export function RepaymentInfo({ loan }: RepaymentInfoProps) {
     [loan],
   );
 
-  const createICSEvent = useCallback(() => {
-    const endDate = dayjs.unix(loan.endDateTimestamp!);
-    const start: [number, number, number] = [
-      endDate.year(),
-      endDate.day(),
-      endDate.month(),
-    ];
-
-    const event: EventAttributes = {
-      start,
-      title: `Loan ${loan.id}: ${loan.collateralName} ${loan.collateralTokenId} due`,
-      description: 'Loan repayment for backed is due',
-      url: `http://www.withbacked.xyz/loans/${loan.id}`,
-      duration: {
-        days: 1,
-      },
+  const createCalEvent = useCallback(() => {
+    const config: CalendarOptions = {
+      title: `Backed: Loan #${loan.id} ${loan.collateralName} due`,
+      description: `Loan repayment of ${longFormattedEstimatedPaybackAtMaturity} is due: https://www.withbacked.xyz/loans/${loan.id}`,
+      start: new Date(loan.endDateTimestamp! * 1000),
     };
 
-    let returnValue: string = '';
-    createEvent(event, (error, value) => {
-      if (error) {
-        captureException(error);
-      }
+    if (
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent,
+      )
+    ) {
+      const icalendar = new ICalendar(config);
+      icalendar.download();
+    } else {
+      const googleCalendar = new GoogleCalendar(config);
 
-      returnValue = value;
-    });
-
-    return returnValue;
+      const link = googleCalendar.render();
+      window.open(link, '_blank');
+    }
   }, [loan]);
 
   return (
@@ -66,12 +58,11 @@ export function RepaymentInfo({ loan }: RepaymentInfoProps) {
         <dt>Payback at maturity</dt>
         <dd>{longFormattedEstimatedPaybackAtMaturity}</dd>
         <dt>Maturity Date</dt>
-        <dd>
-          {maturityDate}{' '}
-          <img
-            src={'/cal-icon.svg'}
-            onClick={() => window.open(createICSEvent(), '_blank')}
-          />
+        <dd className={styles['maturity-date']}>
+          <div>
+            {maturityDate}
+            <img src={'/cal-icon.svg'} onClick={createCalEvent} />
+          </div>
         </dd>
       </DescriptionList>
     </Fieldset>
