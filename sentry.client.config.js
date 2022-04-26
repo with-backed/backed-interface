@@ -4,7 +4,8 @@
 
 import * as Sentry from '@sentry/nextjs';
 
-const shouldInitialize = !process.env.GITHUB_ACTIONS;
+const shouldInitialize =
+  !process.env.GITHUB_ACTIONS && process.env.NEXT_PUBLIC_ENV === 'mainnet';
 const SENTRY_DSN = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN;
 
 shouldInitialize &&
