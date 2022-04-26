@@ -80,7 +80,6 @@ export const LoanCard = memo(
 );
 
 LoanCard.displayName = 'LoanCard';
-//LoanCard.whyDidYouRender = true;
 
 type LoanCardLoadedProps = {
   id: string;
