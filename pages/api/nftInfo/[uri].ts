@@ -51,6 +51,7 @@ async function handler(
         captureException(e);
       }
     }
+    // TODO: we could respond with a failure reason and surface that in the UI.
     return res.status(404).json(null);
   }
 }
