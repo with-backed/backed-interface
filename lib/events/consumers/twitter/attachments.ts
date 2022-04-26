@@ -7,10 +7,10 @@ const SVG_PREFIX = 'data:image/svg+xml;base64,';
 export async function nftResponseDataToImageBuffer(
   nftResponseData: NFTResponseData,
 ): Promise<string | undefined> {
-  if (nftResponseData!.image.startsWith(SVG_PREFIX)) {
-    return await getPngBufferFromBase64SVG(nftResponseData!.image);
+  if (nftResponseData?.image?.mediaUrl.startsWith(SVG_PREFIX)) {
+    return await getPngBufferFromBase64SVG(nftResponseData!.image!.mediaUrl);
   } else {
-    const imageUrlRes = await fetch(nftResponseData!.image);
+    const imageUrlRes = await fetch(nftResponseData!.image!.mediaUrl);
     const arraybuffer = await imageUrlRes.arrayBuffer();
     const outputBuffer = Buffer.from(arraybuffer);
     return outputBuffer.toString('base64');
