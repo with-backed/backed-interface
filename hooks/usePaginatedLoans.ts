@@ -1,10 +1,11 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Loan as SubgraphLoan,
   Loan_OrderBy,
 } from 'types/generated/graphql/nftLoans';
 import useSWRInfinite from 'swr/infinite';
 import { SortOptionValue } from 'components/AdvancedSearch/SortDropdown';
+import { parseSubgraphLoan } from 'lib/loans/utils';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -14,6 +15,9 @@ export function usePaginatedLoans(
   selectedSort: SortOptionValue | undefined,
   initialLoans: SubgraphLoan[] = [],
 ) {
+  const [paginatedLoans, setPaginatedLoans] = useState(
+    initialLoans.map(parseSubgraphLoan),
+  );
   const { data, error, size, setSize } = useSWRInfinite(
     (index) =>
       `${url}limit=${pageSize}&page=${index + 1}&sort=${
@@ -22,7 +26,11 @@ export function usePaginatedLoans(
     fetcher,
   );
 
-  const paginatedLoans = data ? [].concat(...data) : initialLoans;
+  useEffect(() => {
+    if (data) {
+      setPaginatedLoans([].concat(...data).map(parseSubgraphLoan));
+    }
+  }, [data]);
 
   useEffect(() => {
     if (!selectedSort) return;
