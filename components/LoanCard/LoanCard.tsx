@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import Link from 'next/link';
-import React, { useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 import styles from './LoanCard.module.css';
 import { TokenURIAndID, useTokenMetadata } from 'hooks/useTokenMetadata';
 import { Media } from 'components/Media';
@@ -16,55 +16,70 @@ type LoanCardProps = {
   display?: 'expanded' | 'compact';
 };
 
-export function LoanCard({
-  loan,
-  selectedAddress,
-  display = 'expanded',
-}: LoanCardProps) {
-  const title = `View loan #${loan.id}`;
+export const LoanCard = memo(
+  ({ loan, selectedAddress, display = 'expanded' }: LoanCardProps) => {
+    const title = `View loan #${loan.id}`;
 
-  const tokenSpec: TokenURIAndID = useMemo(
-    () => ({
-      tokenURI: loan.collateralTokenURI,
-      tokenID: ethers.BigNumber.from(loan.collateralTokenId),
-      forceImage: true,
-    }),
-    [loan.collateralTokenId, loan.collateralTokenURI],
-  );
-
-  const maybeMetadata = useTokenMetadata(tokenSpec);
-
-  const relationship =
-    selectedAddress === loan.borrower ? 'borrower' : 'lender';
-  const attributes = useMemo(
-    () =>
-      display === 'expanded' ? (
-        <ExpandedAttributes loan={loan} />
-      ) : (
-        <CompactAttributes loan={loan} />
-      ),
-    [display, loan],
-  );
-
-  if (maybeMetadata.isLoading) {
-    return (
-      <LoanCardLoading id={loan.id.toString()}>
-        {selectedAddress && <Relationship>{relationship}</Relationship>}
-        {attributes}
-      </LoanCardLoading>
+    const tokenSpec: TokenURIAndID = useMemo(
+      () => ({
+        tokenURI: loan.collateralTokenURI,
+        tokenID: ethers.BigNumber.from(loan.collateralTokenId),
+        forceImage: true,
+      }),
+      [loan.collateralTokenId, loan.collateralTokenURI],
     );
-  } else {
-    return (
-      <LoanCardLoaded
-        id={loan.id.toString()}
-        title={title}
-        metadata={maybeMetadata.metadata}>
-        {selectedAddress && <Relationship>{relationship}</Relationship>}
-        {attributes}
-      </LoanCardLoaded>
+
+    const maybeMetadata = useTokenMetadata(tokenSpec);
+
+    const relationship =
+      selectedAddress === loan.borrower ? 'borrower' : 'lender';
+    const attributes = useMemo(
+      () =>
+        display === 'expanded' ? (
+          <ExpandedAttributes loan={loan} />
+        ) : (
+          <CompactAttributes loan={loan} />
+        ),
+      [display, loan],
     );
-  }
-}
+
+    if (maybeMetadata.isLoading) {
+      return (
+        <LoanCardLoading id={loan.id.toString()}>
+          {selectedAddress && <Relationship>{relationship}</Relationship>}
+          {attributes}
+        </LoanCardLoading>
+      );
+    } else {
+      return (
+        <LoanCardLoaded
+          id={loan.id.toString()}
+          title={title}
+          metadata={maybeMetadata.metadata}>
+          {selectedAddress && <Relationship>{relationship}</Relationship>}
+          {attributes}
+        </LoanCardLoaded>
+      );
+    }
+  },
+  (prevProps, nextProps) => {
+    if (prevProps.display !== nextProps.display) {
+      return false;
+    }
+
+    if (prevProps.selectedAddress !== nextProps.selectedAddress) {
+      return false;
+    }
+
+    if (!prevProps.loan.id.eq(nextProps.loan.id)) {
+      return false;
+    }
+
+    return true;
+  },
+);
+
+LoanCard.displayName = 'LoanCard';
 
 type LoanCardLoadedProps = {
   id: string;

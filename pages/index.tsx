@@ -1,19 +1,19 @@
 import subgraphLoans from 'lib/loans/subgraph/subgraphLoans';
-import { parseSubgraphLoan } from 'lib/loans/utils';
 import { Loan as SubgraphLoan } from 'types/generated/graphql/nftLoans';
 import { GetServerSideProps } from 'next';
 import React, { useState } from 'react';
 import { AdvancedSearch, SearchHeader } from 'components/AdvancedSearch';
-import searchStyles from '../components/AdvancedSearch/AdvancedSearch.module.css';
+import searchStyles from 'components/AdvancedSearch/AdvancedSearch.module.css';
 import { usePaginatedLoans } from 'hooks/usePaginatedLoans';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { SortOptionValue } from 'components/AdvancedSearch/SortDropdown';
-import { HomePageLoans } from 'components/HomePageLoans';
 import { PawnShopHeader } from 'components/PawnShopHeader';
 import Head from 'next/head';
-import { LoadMoreButton } from 'components/HomePageLoans/HomePageLoans';
+import { LoanTable } from 'components/LoanTable';
+import { LoanCard } from 'components/LoanCard';
+import { LoanGalleryLoadMore } from 'components/LoanGalleryLoadMore';
 
-const PAGE_LIMIT = 18;
+const PAGE_LIMIT = 12;
 
 export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
   return {
@@ -66,21 +66,23 @@ export default function Home({ loans }: HomeProps) {
             searchActive={searchActive}
             setSearchActive={setSearchActive}
             setSearchUrl={setSearchUrl}
-            loanAssetDecimalsForSearch={paginatedLoans[0]?.loanAssetDecimal}
+            loanAssetDecimalsForSearch={paginatedLoans[0]?.loanAssetDecimals}
           />
         </div>
 
-        <HomePageLoans
-          loans={paginatedLoans.map(parseSubgraphLoan)}
-          view={showGrid ? 'cards' : 'list'}
-        />
-        {!isLoadingMore && (
-          <LoadMoreButton
-            onClick={loadMore}
-            pageLimit={PAGE_LIMIT}
-            isReachingEnd={isReachingEnd}
-          />
+        {showGrid ? (
+          paginatedLoans.map((loan) => (
+            <LoanCard loan={loan} display="compact" key={loan.id.toString()} />
+          ))
+        ) : (
+          <LoanTable loans={paginatedLoans} />
         )}
+
+        <LoanGalleryLoadMore
+          isLoadingMore={isLoadingMore}
+          isReachingEnd={isReachingEnd}
+          loadMore={loadMore}
+        />
       </TwelveColumn>
     </>
   );
