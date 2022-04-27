@@ -64,7 +64,7 @@ export async function getMimeType(mediaUrl: string) {
   }
 }
 
-function supportedMedia(
+export function supportedMedia(
   nft: NFTResponseData,
   forceImage?: boolean,
 ): { mediaUrl: string; mediaMimeType: string } {
@@ -132,11 +132,7 @@ export function convertIPFS(uri?: string): string | undefined {
       );
     }
   } catch (e) {
-    if ((e as any).message !== 'url is not string') {
-      // got an annoying false positive message here; uri would definitely be
-      // type string but the error would be raised anyway. Skipping those.
-      captureException(e);
-    }
+    captureException(e);
   }
   return uri;
 }
