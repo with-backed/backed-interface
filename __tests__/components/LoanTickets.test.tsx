@@ -14,6 +14,8 @@ jest.mock('lib/account', () => ({
   addressToENS: jest.fn(),
 }));
 
+jest.mock('lib/getNFTInfo');
+
 const mockAddressToENS = addressToENS as jest.MockedFunction<
   typeof addressToENS
 >;
