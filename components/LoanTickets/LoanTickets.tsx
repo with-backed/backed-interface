@@ -2,39 +2,48 @@ import { DescriptionList } from 'components/DescriptionList';
 import { Fieldset } from 'components/Fieldset';
 import { Fallback } from 'components/Media/Fallback';
 import { OpenSeaAddressLink } from 'components/OpenSeaLink';
-import { PawnLoanArt, PawnTicketArt } from 'components/PawnArt';
 import { DisplayAddress } from 'components/DisplayAddress';
 import { useLoanDetails } from 'hooks/useLoanDetails';
-import { contractDirectory, jsonRpcERC721Contract } from 'lib/contracts';
+import { contractDirectory } from 'lib/contracts';
 import { Loan } from 'types/Loan';
 import React from 'react';
 import styles from './LoanTickets.module.css';
 import Link from 'next/link';
+import { Asset } from 'nft-react';
+import { ethers } from 'ethers';
 
 type LoanTicketsProps = {
   loan: Loan;
 };
 
-type BorrowerColumnProps = LoanTicketsProps;
+type BorrowerColumnProps = {
+  loanId: ethers.BigNumber;
+  borrower: string;
+  formattedTotalPayback: string;
+};
 
-function BorrowerColumn({ loan }: BorrowerColumnProps) {
-  const { formattedTotalPayback } = useLoanDetails(loan);
-  const BORROW_CONTRACT = jsonRpcERC721Contract(contractDirectory.borrowTicket);
-
+function BorrowerColumn({
+  loanId,
+  borrower,
+  formattedTotalPayback,
+}: BorrowerColumnProps) {
   return (
     <div className={styles.column}>
-      <PawnTicketArt tokenID={loan.id} />
+      <Asset
+        address={contractDirectory.borrowTicket}
+        tokenId={loanId.toString()}
+      />
       <OpenSeaAddressLink
-        assetId={loan.id.toString()}
-        contractAddress={BORROW_CONTRACT.address}>
+        assetId={loanId.toString()}
+        contractAddress={contractDirectory.borrowTicket}>
         View on OpenSea
       </OpenSeaAddressLink>
       <DescriptionList>
         <dt>Borrower</dt>
-        <dd title={loan.borrower}>
-          <Link href={`/profile/${loan.borrower}`}>
+        <dd title={borrower}>
+          <Link href={`/profile/${borrower}`}>
             <a>
-              <DisplayAddress address={loan.borrower} />
+              <DisplayAddress address={borrower} />
             </a>
           </Link>
         </dd>
@@ -45,13 +54,18 @@ function BorrowerColumn({ loan }: BorrowerColumnProps) {
   );
 }
 
-type LenderColumnProps = LoanTicketsProps;
+type LenderColumnProps = {
+  loanId: ethers.BigNumber;
+  lender: string | null;
+  formattedInterestAccrued: string;
+};
 
-function LenderColumn({ loan }: LenderColumnProps) {
-  const { formattedInterestAccrued } = useLoanDetails(loan);
-  const LEND_CONTRACT = jsonRpcERC721Contract(contractDirectory.lendTicket);
-
-  if (!loan.lender) {
+function LenderColumn({
+  loanId,
+  lender,
+  formattedInterestAccrued,
+}: LenderColumnProps) {
+  if (!lender) {
     return (
       <div className={styles.column}>
         <Fallback animated={false} />
@@ -67,18 +81,21 @@ function LenderColumn({ loan }: LenderColumnProps) {
 
   return (
     <div className={styles.column}>
-      <PawnLoanArt tokenID={loan.id} />
+      <Asset
+        address={contractDirectory.lendTicket}
+        tokenId={loanId.toString()}
+      />
       <OpenSeaAddressLink
-        assetId={loan.id.toString()}
-        contractAddress={LEND_CONTRACT.address}>
+        assetId={loanId.toString()}
+        contractAddress={contractDirectory.lendTicket}>
         View on OpenSea
       </OpenSeaAddressLink>
       <DescriptionList>
         <dt>Lender</dt>
         <dd>
-          <Link href={`/profile/${loan.lender}`}>
+          <Link href={`/profile/${lender}`}>
             <a>
-              <DisplayAddress address={loan.lender} />
+              <DisplayAddress address={lender} />
             </a>
           </Link>
         </dd>
@@ -90,11 +107,21 @@ function LenderColumn({ loan }: LenderColumnProps) {
 }
 
 export function LoanTickets({ loan }: LoanTicketsProps) {
+  const { formattedTotalPayback, formattedInterestAccrued } =
+    useLoanDetails(loan);
   return (
     <Fieldset legend="🖇️ Loan tickets">
       <div className={styles.wrapper}>
-        <BorrowerColumn loan={loan} />
-        <LenderColumn loan={loan} />
+        <BorrowerColumn
+          loanId={loan.id}
+          borrower={loan.borrower}
+          formattedTotalPayback={formattedTotalPayback}
+        />
+        <LenderColumn
+          loanId={loan.id}
+          lender={loan.lender}
+          formattedInterestAccrued={formattedInterestAccrued}
+        />
       </div>
     </Fieldset>
   );

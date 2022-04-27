@@ -18,6 +18,7 @@ import { WagmiProvider, chain } from 'wagmi';
 import { CachedRatesProvider } from 'hooks/useCachedRates/useCachedRates';
 import { HasCollapsedHeaderInfoProvider } from 'hooks/useHasCollapsedHeaderInfo';
 import { Footer } from 'components/Footer';
+import { CenterProvider } from 'nft-react';
 
 const jsonRpcProvider = new providers.JsonRpcProvider(
   process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
@@ -49,10 +50,14 @@ export default function App({ Component, pageProps }: AppProps) {
           <TimestampProvider>
             <CachedRatesProvider>
               <HasCollapsedHeaderInfoProvider>
-                <AppWrapper>
-                  <Component {...pageProps} />
-                  <Footer />
-                </AppWrapper>
+                <CenterProvider
+                  network={process.env.NEXT_PUBLIC_CENTER_NETWORK}
+                  apiKey={process.env.NEXT_PUBLIC_CENTER_CODE}>
+                  <AppWrapper>
+                    <Component {...pageProps} />
+                    <Footer />
+                  </AppWrapper>
+                </CenterProvider>
               </HasCollapsedHeaderInfoProvider>
             </CachedRatesProvider>
           </TimestampProvider>
