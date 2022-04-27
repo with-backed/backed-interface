@@ -1,6 +1,9 @@
 import { captureException } from '@sentry/nextjs';
 import { ethers } from 'ethers';
 import { NFTResponseData } from 'pages/api/nftInfo/[uri]';
+import IPFSGatewayTools from '@pinata/ipfs-gateway-tools/dist/node';
+
+const ipfsGatewayTools = new IPFSGatewayTools();
 
 export interface GetNFTInfoResponse {
   name: string;
@@ -26,10 +29,13 @@ export async function getNFTInfoFromTokenInfo(
       return null;
     }
 
-    const { mediaUrl, mediaMimeType } = await supportedMedia(
-      NFTInfo,
-      forceImage,
-    );
+    if (isDataUri) {
+      // TODO: make this type safe. Since this is a data URI, it hasn't been
+      // transformed the way the API does the non-data ones.
+      Object.assign(NFTInfo, await getMedia(NFTInfo as any));
+    }
+
+    const { mediaUrl, mediaMimeType } = supportedMedia(NFTInfo, forceImage);
 
     return {
       id: tokenId,
@@ -58,10 +64,10 @@ export async function getMimeType(mediaUrl: string) {
   }
 }
 
-async function supportedMedia(
+export function supportedMedia(
   nft: NFTResponseData,
   forceImage?: boolean,
-): Promise<{ mediaUrl: string; mediaMimeType: string }> {
+): { mediaUrl: string; mediaMimeType: string } {
   const { animation, image } = nft!;
 
   if (!animation && !image) {
@@ -73,4 +79,60 @@ async function supportedMedia(
   }
 
   return animation!;
+}
+
+export type Media = { mediaUrl: string; mediaMimeType: string } | null;
+
+interface TokenInfo {
+  image?: string;
+  image_url?: string;
+  animation_url?: string;
+}
+
+/**
+ * Given the object returned from fetching a token URI, return the media links
+ * and mime types associated with it (if any).
+ */
+export async function getMedia({
+  animation_url,
+  image,
+  image_url,
+}: TokenInfo): Promise<{ image: Media; animation: Media }> {
+  const finalImage = convertIPFS(image || image_url);
+  const finalAnimation = convertIPFS(animation_url);
+
+  const [animationMimeType, imageMimeType] = await Promise.all([
+    getMimeType(animation_url || ''),
+    getMimeType(image || ''),
+  ]);
+
+  return {
+    image: finalImage
+      ? { mediaUrl: finalImage, mediaMimeType: imageMimeType }
+      : null,
+    animation: finalAnimation
+      ? { mediaUrl: finalAnimation, mediaMimeType: animationMimeType }
+      : null,
+  };
+}
+
+/**
+ * If `uri` is an IPFS uri, convert to use our gateway. Otherwise return it untouched.
+ */
+export function convertIPFS(uri?: string): string | undefined {
+  if (!uri) {
+    return uri;
+  }
+
+  try {
+    if (ipfsGatewayTools.containsCID(uri).containsCid) {
+      return ipfsGatewayTools.convertToDesiredGateway(
+        uri,
+        'https://nftpawnshop.mypinata.cloud',
+      );
+    }
+  } catch (e) {
+    captureException(e);
+  }
+  return uri;
 }
