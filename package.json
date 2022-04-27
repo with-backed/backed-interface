@@ -46,6 +46,7 @@
     "lodash": "4.17.21",
     "mjml": "4.12.0",
     "next": "12.1.0",
+    "nft-react": "0.5.2",
     "normalize.css": "8.0.1",
     "prisma": "3.11.0",
     "react": "17.0.2",
