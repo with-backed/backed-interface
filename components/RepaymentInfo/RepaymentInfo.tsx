@@ -4,7 +4,7 @@ import { useLoanDetails } from 'hooks/useLoanDetails';
 import { Loan } from 'types/Loan';
 import React, { useCallback, useMemo } from 'react';
 import dayjs from 'dayjs';
-import { CalendarOptions, GoogleCalendar, ICalendar } from 'datebook';
+import { CalendarOptions, GoogleCalendar } from 'datebook';
 import styles from './RepaymentInfo.module.css';
 
 type RepaymentInfoProps = {
@@ -29,22 +29,13 @@ export function RepaymentInfo({ loan }: RepaymentInfoProps) {
   const createCalEvent = useCallback(() => {
     const config: CalendarOptions = {
       title: `Backed: Loan #${loan.id} ${loan.collateralName} due`,
-      description: `Loan repayment of ${longFormattedEstimatedPaybackAtMaturity} is due: https://www.withbacked.xyz/loans/${loan.id}`,
+      description: `Loan repayment of ${longFormattedEstimatedPaybackAtMaturity} is due: https://www.withbacked.xyz/loans/${loan.id}. Note that this due date could change if the loan is bought out.`,
       start: new Date(loan.endDateTimestamp! * 1000),
     };
 
-    if (
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        navigator.userAgent,
-      )
-    ) {
-      const icalendar = new ICalendar(config);
-      icalendar.download();
-    } else {
-      const googleCalendar = new GoogleCalendar(config);
-      const link = googleCalendar.render();
-      window.open(link, '_blank');
-    }
+    const googleCalendar = new GoogleCalendar(config);
+    const link = googleCalendar.render();
+    window.open(link, '_blank');
   }, [loan]);
 
   return (
