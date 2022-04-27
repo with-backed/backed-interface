@@ -3,7 +3,7 @@ import { Loan as SubgraphLoan } from 'types/generated/graphql/nftLoans';
 import { GetServerSideProps } from 'next';
 import React, { useState } from 'react';
 import { AdvancedSearch, SearchHeader } from 'components/AdvancedSearch';
-import searchStyles from '../components/AdvancedSearch/AdvancedSearch.module.css';
+import searchStyles from 'components/AdvancedSearch/AdvancedSearch.module.css';
 import { usePaginatedLoans } from 'hooks/usePaginatedLoans';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { SortOptionValue } from 'components/AdvancedSearch/SortDropdown';
@@ -11,7 +11,7 @@ import { PawnShopHeader } from 'components/PawnShopHeader';
 import Head from 'next/head';
 import { LoanTable } from 'components/LoanTable';
 import { LoanCard } from 'components/LoanCard';
-import { Button } from 'components/Button';
+import { LoanGalleryLoadMore } from 'components/LoanGalleryLoadMore';
 
 const PAGE_LIMIT = 12;
 
@@ -78,9 +78,11 @@ export default function Home({ loans }: HomeProps) {
           <LoanTable loans={paginatedLoans} />
         )}
 
-        {!isLoadingMore && !isReachingEnd && (
-          <Button onClick={loadMore}>Load More</Button>
-        )}
+        <LoanGalleryLoadMore
+          isLoadingMore={isLoadingMore}
+          isReachingEnd={isReachingEnd}
+          loadMore={loadMore}
+        />
       </TwelveColumn>
     </>
   );
