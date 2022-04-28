@@ -16,7 +16,6 @@ import { Carousel } from 'components/Carousel';
 
 type HeaderInfoProps = {
   isCollapsed?: boolean;
-  showHowItWorks: () => void;
 };
 
 export function HeaderInfo({ isCollapsed = true }: HeaderInfoProps) {
