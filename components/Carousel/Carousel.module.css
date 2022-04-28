@@ -1,6 +1,5 @@
 .carousel {
   width: 100%;
-  padding: var(--gap);
   display: flex;
   flex-direction: column;
   align-items: center;

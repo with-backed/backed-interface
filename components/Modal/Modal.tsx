@@ -19,7 +19,7 @@ export const Modal: FunctionComponent<ModalProps> = ({
       aria-label={!!heading ? heading : ''}
       className={`${styles.dialog} ${styles[width]}`}
       {...dialog}
-      modal={false}>
+      modal>
       {Boolean(heading) && <h3 className={styles.heading}>{heading}</h3>}
       <div className={styles['scroll-box']}>{children}</div>
     </Dialog>
