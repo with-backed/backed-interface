@@ -13,10 +13,11 @@ import SearchTextInput from './SearchTextInput';
 
 type AdvancedSearchProps = {
   showSearch: boolean;
-  searchActive: boolean;
   setSearchActive: (active: boolean) => void;
   setSearchUrl: (url: string) => void;
   loanAssetDecimalsForSearch?: number; // based on results of search, set loanAssetDecimal so we know how to parse loanAmountMin and loanAmountMax
+  statuses: LoanStatus[];
+  setStatuses: React.Dispatch<React.SetStateAction<LoanStatus[]>>;
 };
 
 const isSearchActive = (statuses: LoanStatus[], ...args: any[]) => {
@@ -30,13 +31,12 @@ const INITIAL_STATUSES = [LoanStatus.AwaitingLender, LoanStatus.Active];
 
 export function AdvancedSearch({
   showSearch,
-  searchActive,
   setSearchActive,
   setSearchUrl,
+  statuses,
+  setStatuses,
   loanAssetDecimalsForSearch = DEFAULT_ASSET_DECIMALS,
 }: AdvancedSearchProps) {
-  const [statuses, setStatuses] = useState<LoanStatus[]>(INITIAL_STATUSES);
-
   const [collectionAddress, setCollectionAddress] = useState<string>('');
   const [collectionName, setCollectionName] = useState<string>('');
   const [loanAsset, setLoanAsset] = useState<string>('');
@@ -91,7 +91,6 @@ export function AdvancedSearch({
     loanDurationMin,
     loanDurationMax,
     setSearchActive,
-    searchActive,
     setSearchUrl,
   ]);
 
