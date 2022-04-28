@@ -134,7 +134,9 @@ export function LoanCardLoading({
     <Link href={`/loans/${id}`}>
       <a className={styles['profile-link']}>
         <div className={styles['profile-card']}>
-          <Fallback />
+          <div className={styles.media}>
+            <Fallback />
+          </div>
           <div className={styles['profile-card-attributes']}>
             <span>loading name</span>
             {children}
