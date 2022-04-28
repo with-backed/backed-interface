@@ -1,5 +1,8 @@
 import subgraphLoans from 'lib/loans/subgraph/subgraphLoans';
-import { Loan as SubgraphLoan } from 'types/generated/graphql/nftLoans';
+import {
+  Loan as SubgraphLoan,
+  LoanStatus,
+} from 'types/generated/graphql/nftLoans';
 import { GetServerSideProps } from 'next';
 import React, { useState } from 'react';
 import { AdvancedSearch, SearchHeader } from 'components/AdvancedSearch';
@@ -33,6 +36,11 @@ export default function Home({ loans }: HomeProps) {
   const [selectedSort, setSelectedSort] = useState<SortOptionValue | undefined>(
     undefined,
   );
+  const [statuses, setStatuses] = useState<LoanStatus[]>([
+    LoanStatus.AwaitingLender,
+    LoanStatus.Active,
+  ]);
+
   const [showGrid, setShowGrid] = useState(true);
 
   const { paginatedLoans, loadMore, isReachingEnd, isLoadingMore } =
@@ -56,6 +64,7 @@ export default function Home({ loans }: HomeProps) {
       <TwelveColumn>
         <div className={searchStyles.wrapper}>
           <SearchHeader
+            setStatuses={setStatuses}
             setSelectedSort={setSelectedSort}
             showSearch={showSearch}
             setShowSearch={setShowSearch}
@@ -63,10 +72,11 @@ export default function Home({ loans }: HomeProps) {
           />
           <AdvancedSearch
             showSearch={showSearch}
-            searchActive={searchActive}
             setSearchActive={setSearchActive}
             setSearchUrl={setSearchUrl}
             loanAssetDecimalsForSearch={paginatedLoans[0]?.loanAssetDecimals}
+            statuses={statuses}
+            setStatuses={setStatuses}
           />
         </div>
 

@@ -1,11 +1,14 @@
 import { Button } from 'components/Button';
 import { GridListSelector } from 'components/GridListSelector';
+import { LoanStatus } from 'types/generated/graphql/nftLoans';
 import styles from './AdvancedSearch.module.css';
+import LendabilityDropdown from './LendabilityDropdown';
 import SortDropdown, { SortOptionValue } from './SortDropdown';
 
 type SearchHeaderProps = {
   handleViewChange: (checked: boolean) => void;
   setSelectedSort: (sort: SortOptionValue) => void;
+  setStatuses: React.Dispatch<React.SetStateAction<LoanStatus[]>>;
   showSearch: boolean;
   setShowSearch: (showSearch: boolean) => void;
 };
@@ -13,6 +16,7 @@ type SearchHeaderProps = {
 export function SearchHeader({
   handleViewChange,
   setSelectedSort,
+  setStatuses,
   showSearch,
   setShowSearch,
 }: SearchHeaderProps) {
@@ -26,6 +30,7 @@ export function SearchHeader({
           &#x1F50D; Search
         </Button>
       </div>
+      <LendabilityDropdown setStatuses={setStatuses} />
       <SortDropdown setSelectedSort={setSelectedSort} />
     </div>
   );
