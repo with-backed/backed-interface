@@ -1,0 +1,78 @@
+.carousel {
+  width: 100%;
+  padding: var(--gap);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap);
+}
+
+.controls {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--gap);
+  min-height: 120px;
+}
+
+.controls > p {
+  margin: 0;
+}
+
+.arrow-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.arrow-button > svg {
+  fill: var(--neutral-50);
+}
+
+.arrow-button:hover > svg {
+  fill: var(--neutral-100);
+}
+
+.arrow-button-right {
+  composes: arrow-button;
+}
+
+.arrow-button-right > svg {
+  transform: rotate(180deg);
+}
+
+.arrow-button-disabled {
+  cursor: not-allowed;
+}
+
+.arrow-button-disabled > svg {
+  fill: var(--neutral-10);
+}
+
+.media {
+  position: relative;
+  width: 100%;
+  height: 320px;
+}
+
+.progress {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16px, 1fr));
+  gap: 2px;
+}
+
+.indicator {
+  height: 8px;
+  width: 100%;
+  border-radius: 8px;
+  background-color: var(--highlight-clickable-100);
+}
+
+.indicator-awaiting {
+  composes: indicator;
+  background-color: var(--highlight-clickable-20);
+}
