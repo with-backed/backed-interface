@@ -1,4 +1,4 @@
-import { Dialog, DialogStateReturn } from 'reakit/Dialog';
+import { Dialog, DialogBackdrop, DialogStateReturn } from 'reakit/Dialog';
 import styles from './Modal.module.css';
 import React, { FunctionComponent } from 'react';
 
@@ -14,14 +14,16 @@ export const Modal: FunctionComponent<ModalProps> = ({
   width = 'regular',
 }) => {
   return (
-    <Dialog
-      tabIndex={0}
-      aria-label={!!heading ? heading : ''}
-      className={`${styles.dialog} ${styles[width]}`}
-      {...dialog}
-      modal>
-      {Boolean(heading) && <h3 className={styles.heading}>{heading}</h3>}
-      <div className={styles['scroll-box']}>{children}</div>
-    </Dialog>
+    <DialogBackdrop className={styles.backdrop} {...dialog}>
+      <Dialog
+        tabIndex={0}
+        aria-label={!!heading ? heading : ''}
+        className={`${styles.dialog} ${styles[width]}`}
+        {...dialog}
+        modal>
+        {Boolean(heading) && <h3 className={styles.heading}>{heading}</h3>}
+        <div className={styles['scroll-box']}>{children}</div>
+      </Dialog>
+    </DialogBackdrop>
   );
 };
