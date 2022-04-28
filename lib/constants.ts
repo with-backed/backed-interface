@@ -13,3 +13,5 @@ export const DISCORD_URL = 'https://discord.gg/ZCxGuE6Ytk';
 export const DISCORD_ERROR_CHANNEL = '#🪲bug-reports';
 export const TWITTER_URL = 'https://twitter.com/backed_xyz';
 export const GITHUB_URL = 'https://github.com/with-backed';
+export const FAQ_URL =
+  'https://with-backed.notion.site/FAQ-df65a5002100406eb6c5211fb8e105cf';

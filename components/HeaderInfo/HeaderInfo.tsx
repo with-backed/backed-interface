@@ -8,7 +8,7 @@ import lenderBunny from './lender-bunny.png';
 import { animated, useSpring } from 'react-spring';
 import useMeasure from 'react-use-measure';
 import Link from 'next/link';
-import { DISCORD_URL, TWITTER_URL } from 'lib/constants';
+import { DISCORD_URL, FAQ_URL, TWITTER_URL } from 'lib/constants';
 
 type HeaderInfoProps = {
   isCollapsed?: boolean;
@@ -64,13 +64,17 @@ export function HeaderInfo({ isCollapsed = true }: HeaderInfoProps) {
             priority
           />
           <p>
-            Follow on{' '}
+            Read the{' '}
+            <Link href={FAQ_URL}>
+              <a target="_blank">FAQ</a>
+            </Link>
+            . Follow on{' '}
             <Link href={TWITTER_URL}>
-              <a>Twitter</a>
+              <a target="_blank">Twitter</a>
             </Link>
             . Join the community on{' '}
             <Link href={DISCORD_URL}>
-              <a>Discord</a>
+              <a target="_blank">Discord</a>
             </Link>
             .
           </p>
