@@ -58,7 +58,11 @@ export function RepaymentInfo({ loan }: RepaymentInfoProps) {
               <div>
                 {maturityDate}
                 <Link href={calEventLink} passHref>
-                  <a target="_blank" rel="noreferrer">
+                  <a
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label="Add the end date of this loan to your Google Calendar"
+                    title="Add the end date of this loan to your Google Calendar">
                     <img src={'/cal-icon.svg'} />
                   </a>
                 </Link>
