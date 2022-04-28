@@ -2,10 +2,11 @@ import { DescriptionList } from 'components/DescriptionList';
 import { Fieldset } from 'components/Fieldset';
 import { useLoanDetails } from 'hooks/useLoanDetails';
 import { Loan } from 'types/Loan';
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import dayjs from 'dayjs';
 import { CalendarOptions, GoogleCalendar } from 'datebook';
 import styles from './RepaymentInfo.module.css';
+import Link from 'next/link';
 
 type RepaymentInfoProps = {
   loan: Loan;
@@ -26,7 +27,10 @@ export function RepaymentInfo({ loan }: RepaymentInfoProps) {
     [loan],
   );
 
-  const createCalEvent = useCallback(() => {
+  const calEventLink = useMemo(() => {
+    if (!loan.endDateTimestamp) {
+      return '';
+    }
     const config: CalendarOptions = {
       title: `Backed: Loan #${loan.id} ${loan.collateralName} due`,
       description: `Loan repayment of ${longFormattedEstimatedPaybackAtMaturity} is due: https://www.withbacked.xyz/loans/${loan.id}. Note that this due date could change if the loan is bought out.`,
@@ -35,7 +39,7 @@ export function RepaymentInfo({ loan }: RepaymentInfoProps) {
 
     const googleCalendar = new GoogleCalendar(config);
     const link = googleCalendar.render();
-    window.open(link, '_blank');
+    return link;
   }, [loan]);
 
   return (
@@ -53,7 +57,11 @@ export function RepaymentInfo({ loan }: RepaymentInfoProps) {
             <dd className={styles['maturity-date']}>
               <div>
                 {maturityDate}
-                <img src={'/cal-icon.svg'} onClick={createCalEvent} />
+                <Link href={calEventLink} passHref>
+                  <a target="_blank" rel="noreferrer">
+                    <img src={'/cal-icon.svg'} />
+                  </a>
+                </Link>
               </div>
             </dd>
           </>
