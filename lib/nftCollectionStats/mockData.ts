@@ -1,3 +1,13 @@
+export function collectionStatsRinkeby() {
+  const [items, owners] = getFakeItemsAndOwners();
+  return {
+    floor: getFakeFloor(),
+    items,
+    owners,
+    volume: getFakeVolume(),
+  };
+}
+
 // MOCK METHODS TO GENERATE FAKE STATS FOR RINKEBY
 export function getFakeFloor(): number {
   return Math.floor(Math.random() * (20 + 1));
