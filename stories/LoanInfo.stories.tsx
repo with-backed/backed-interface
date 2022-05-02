@@ -2,12 +2,12 @@ import React from 'react';
 import { LoanInfo } from 'components/LoanInfo';
 import { baseLoan, loanWithLenderAccruing } from 'lib/mockData';
 import { CollateralSaleInfo } from 'lib/loans/collateralSaleInfo';
+import { generateFakeSaleForNFT } from 'lib/nftSalesSubgraph';
 import {
   getFakeFloor,
   getFakeItemsAndOwners,
   getFakeVolume,
-} from 'lib/nftCollectionStats/nftPort';
-import { generateFakeSaleForNFT } from 'lib/nftSalesSubgraph';
+} from 'lib/nftCollectionStats/mockData';
 
 export default {
   title: 'components/LoanInfo',
