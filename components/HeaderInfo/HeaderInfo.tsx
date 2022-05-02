@@ -72,7 +72,7 @@ export function HeaderInfo({ isCollapsed = true }: HeaderInfoProps) {
             <p>
               Launch a quick explanation of{' '}
               <TextButton onClick={dialog.show} kind="clickable">
-                PERPETUAL BUYOUTS
+                how it works
               </TextButton>
               .
               <br />
