@@ -14,7 +14,7 @@ export type CollectionStatistics = {
   volume: number | null;
 };
 
-export async function collectionStats(
+export async function getCollectionStats(
   contractAddress: string,
 ): Promise<CollectionStatistics> {
   switch (true) {

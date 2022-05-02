@@ -1,7 +1,10 @@
 import { ethers } from 'ethers';
 import { mainnet, optimism, rinkeby } from 'lib/chainEnv';
 import { jsonRpcERC20Contract } from 'lib/contracts';
-import { CollectionStatistics, collectionStats } from 'lib/nftCollectionStats';
+import {
+  CollectionStatistics,
+  getCollectionStats,
+} from 'lib/nftCollectionStats';
 import {
   generateFakeSaleForNFT,
   queryMostRecentSaleForNFT,
@@ -22,10 +25,10 @@ export async function getCollateralSaleInfo(
 ): Promise<CollateralSaleInfo> {
   const recentSale = await getMostRecentSale(nftContractAddress, tokenId);
 
-  const stats = await collectionStats(nftContractAddress);
+  const collectionStats = await getCollectionStats(nftContractAddress);
 
   return {
-    collectionStats: stats,
+    collectionStats,
     recentSale,
   };
 }
