@@ -1,13 +1,7 @@
 import { ethers } from 'ethers';
-import { mainnet } from 'lib/chainEnv';
+import { mainnet, optimism, rinkeby } from 'lib/chainEnv';
 import { jsonRpcERC20Contract } from 'lib/contracts';
-import {
-  CollectionStatistics,
-  collectionStats,
-  getFakeFloor,
-  getFakeItemsAndOwners,
-  getFakeVolume,
-} from 'lib/nftPort';
+import { CollectionStatistics, collectionStats } from 'lib/nftCollectionStats';
 import {
   generateFakeSaleForNFT,
   queryMostRecentSaleForNFT,
@@ -28,10 +22,10 @@ export async function getCollateralSaleInfo(
 ): Promise<CollateralSaleInfo> {
   const recentSale = await getMostRecentSale(nftContractAddress, tokenId);
 
-  const collectionStats = await getCollectionStats(nftContractAddress);
+  const stats = await collectionStats(nftContractAddress);
 
   return {
-    collectionStats,
+    collectionStats: stats,
     recentSale,
   };
 }
@@ -42,13 +36,18 @@ async function getMostRecentSale(
 ): Promise<{ paymentToken: string; price: number } | null> {
   let sale: NFTSale | null = null;
 
-  if (!mainnet()) {
-    sale = generateFakeSaleForNFT(nftContractAddress, tokenId);
-  } else {
-    sale = await queryMostRecentSaleForNFT(nftContractAddress, tokenId);
-    if (!sale) {
+  switch (true) {
+    case mainnet():
+      sale = await queryMostRecentSaleForNFT(nftContractAddress, tokenId);
+      if (!sale) return null;
+      break;
+    case optimism():
+      // TODO(adamgobes): follow up with Quixotic team on when they will release API to get most recent sale. it is not available for now
       return null;
-    }
+    case rinkeby():
+      sale = generateFakeSaleForNFT(nftContractAddress, tokenId);
+    default:
+      return null;
   }
 
   const paymentTokenAddress = sale.paymentToken;
@@ -75,19 +74,4 @@ async function getMostRecentSale(
     paymentToken: paymentTokenSymbol,
     price: parseFloat(formatttedPrice),
   };
-}
-
-async function getCollectionStats(
-  nftContractAddress: string,
-): Promise<CollectionStatistics> {
-  if (!mainnet()) {
-    const [items, owners] = getFakeItemsAndOwners();
-    return {
-      floor: getFakeFloor(),
-      items,
-      owners,
-      volume: getFakeVolume(),
-    };
-  }
-  return await collectionStats(nftContractAddress);
 }

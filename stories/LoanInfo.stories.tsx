@@ -6,7 +6,7 @@ import {
   getFakeFloor,
   getFakeItemsAndOwners,
   getFakeVolume,
-} from 'lib/nftPort';
+} from 'lib/nftCollectionStats/nftPort';
 import { generateFakeSaleForNFT } from 'lib/nftSalesSubgraph';
 
 export default {
