@@ -30,7 +30,11 @@ export function Carousel() {
       </div>
       <div className={styles.progress}>
         {slides.map((_, i) => (
-          <ProgressIndicator key={i} done={i <= index} />
+          <ProgressIndicator
+            key={i}
+            done={i <= index}
+            onClick={() => setIndex(i)}
+          />
         ))}
       </div>
     </div>
@@ -66,9 +70,13 @@ function ArrowButton({ disabled, onClick, orientation }: ArrowButtonProps) {
 
 type ProgressIndicatorProps = {
   done?: boolean;
+  onClick?: () => void;
 };
-function ProgressIndicator({ done }: ProgressIndicatorProps) {
+function ProgressIndicator({ done, onClick }: ProgressIndicatorProps) {
   return (
-    <div className={done ? styles.indicator : styles['indicator-awaiting']} />
+    <div
+      onClick={onClick}
+      className={done ? styles.indicator : styles['indicator-awaiting']}
+    />
   );
 }

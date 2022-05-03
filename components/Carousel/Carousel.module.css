@@ -55,14 +55,15 @@
   width: 100%;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(16px, 1fr));
-  gap: 2px;
+  gap: 4px;
 }
 
 .indicator {
-  height: 8px;
+  height: 6px;
   width: 100%;
-  border-radius: 8px;
+  border-radius: 3px;
   background-color: var(--highlight-clickable-100);
+  cursor: pointer;
 }
 
 .indicator-awaiting {
