@@ -20,7 +20,7 @@ import {
   GenericEmailType,
   getSubjectForGenericEmail,
 } from 'lib/events/consumers/userNotifications/emails/genericFormatter';
-import { mainnet, siteUrl } from 'lib/chainEnv';
+import { onMainnet, siteUrl } from 'lib/chainEnv';
 
 export async function sendEmailsForTriggerAndEntity(
   emailTrigger: NotificationTriggerType,
@@ -57,7 +57,7 @@ export async function sendEmailsForTriggerAndEntity(
 
       return executeEmailSendWithSes(
         generateHTMLForEventsEmail(emailComponentGenerator(r.id)),
-        mainnet()
+        onMainnet
           ? getEmailSubject(emailTrigger, entity)
           : `[TESTNET]: ${getEmailSubject(emailTrigger, entity)}`,
         r.deliveryDestination,
