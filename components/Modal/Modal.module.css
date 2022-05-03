@@ -7,7 +7,7 @@
   background: var(--background-white);
   border-radius: var(--border-radius-large);
   box-shadow: var(--box-shadow);
-  margin: 0 auto 1rem;
+  margin: 0 auto;
 }
 
 .regular {
@@ -30,25 +30,6 @@
   text-align: center;
 }
 
-@media screen and (max-width: 700px) {
-  .regular,
-  .narrow {
-    width: 100vw;
-  }
-
-  .dialog {
-    top: 0;
-    bottom: 0;
-    margin: 0;
-    border-radius: 0;
-    display: flex;
-  }
-
-  .scroll-box {
-    height: auto;
-  }
-}
-
 .backdrop {
   background-color: rgba(255, 255, 255, 0.65);
   position: fixed;
@@ -58,8 +39,46 @@
   z-index: 1000;
 }
 
-.dialog > button {
+.desktop-close-button {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 0;
+  right: -50px;
+}
+
+.desktop-close-button > button {
+  font-size: 26px;
+  line-height: 1;
+}
+
+.mobile-close-button {
+  display: none;
+}
+
+@media screen and (max-width: 700px) {
+  .regular,
+  .narrow {
+    width: 100vw;
+  }
+
+  .dialog {
+    top: 0;
+    bottom: 0;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .scroll-box {
+    height: auto;
+    margin-top: 0;
+    flex: 1;
+  }
+
+  .mobile-close-button {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+  }
 }
