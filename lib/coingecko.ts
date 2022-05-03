@@ -1,10 +1,10 @@
-import { mainnet } from './chainEnv';
+import { onMainnet } from './chainEnv';
 
 export async function getUnitPriceForCoin(
   tokenAddress: string,
   toCurrency: string,
 ): Promise<number | undefined> {
-  if (!mainnet()) {
+  if (!onMainnet) {
     return 1.01;
   }
 

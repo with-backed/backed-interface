@@ -1,4 +1,4 @@
-import { mainnet, optimism, rinkeby } from 'lib/chainEnv';
+import { onMainnet, onOptimism, onRinkeby } from 'lib/chainEnv';
 import { collectionStatsEthMainnet } from 'lib/nftCollectionStats/nftPort';
 import { collectionStatsOptimism } from 'lib/nftCollectionStats/quixotic';
 import { collectionStatsRinkeby } from 'lib/nftCollectionStats/mockData';
@@ -14,11 +14,11 @@ export async function getCollectionStats(
   contractAddress: string,
 ): Promise<CollectionStatistics> {
   switch (true) {
-    case mainnet():
+    case onMainnet:
       return collectionStatsEthMainnet(contractAddress);
-    case optimism():
+    case onOptimism:
       return collectionStatsOptimism(contractAddress);
-    case rinkeby():
+    case onRinkeby:
       return collectionStatsRinkeby();
     default:
       return nullCollectionStats;
