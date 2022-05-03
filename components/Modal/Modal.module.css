@@ -1,6 +1,6 @@
 .dialog {
   position: absolute;
-  top: 160px;
+  top: 100px;
   left: 50%;
   transform: translate(-50%, 0);
   z-index: 1000;
@@ -21,7 +21,7 @@
 .scroll-box {
   height: 100%;
   overflow-y: auto;
-  max-height: var(--modal-height);
+  max-height: 100vh;
   margin: var(--padding-container);
 }
 
@@ -34,6 +34,13 @@
   .regular,
   .narrow {
     width: 100vw;
+  }
+
+  .dialog {
+    top: 0;
+    bottom: 0;
+    margin: 0;
+    border-radius: 0;
   }
 }
 
