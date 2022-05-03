@@ -4,29 +4,38 @@ import { Button } from 'reakit/Button';
 import styles from './Carousel.module.css';
 import { slides } from './slides';
 
+/**
+ * The `%` operator in JS doesn't do what you want with negative numbers.
+ */
+function mod(n: number, m: number) {
+  return ((n % m) + m) % m;
+}
+
 export function Carousel() {
   const [index, setIndex] = useState(0);
 
-  const goBack = useCallback(() => setIndex((prev) => Math.max(--prev, 0)), []);
+  const goBack = useCallback(
+    () => setIndex((prev) => mod(--prev, slides.length)),
+    [],
+  );
   const goForward = useCallback(
-    () => setIndex((prev) => Math.min(++prev, slides.length - 1)),
+    () => setIndex((prev) => mod(++prev, slides.length)),
     [],
   );
   return (
     <div className={styles.carousel}>
       <img className={styles.image} src={slides[index].image} alt="" />
-      <div className={styles.controls}>
-        <ArrowButton
-          orientation="left"
-          onClick={goBack}
-          disabled={index === 0}
-        />
+      <div className={styles['mobile-controls']}>
+        <div>
+          <ArrowButton orientation="left" onClick={goBack} />
+          <ArrowButton orientation="right" onClick={goForward} />
+        </div>
         <p>{slides[index].text}</p>
-        <ArrowButton
-          orientation="right"
-          onClick={goForward}
-          disabled={index === slides.length - 1}
-        />
+      </div>
+      <div className={styles.controls}>
+        <ArrowButton orientation="left" onClick={goBack} />
+        <p>{slides[index].text}</p>
+        <ArrowButton orientation="right" onClick={goForward} />
       </div>
       <div className={styles.progress}>
         {slides.map((_, i) => (
@@ -42,27 +51,25 @@ export function Carousel() {
 }
 
 type ArrowButtonProps = {
-  disabled?: boolean;
   onClick: () => void;
   orientation: 'left' | 'right';
 };
-function ArrowButton({ disabled, onClick, orientation }: ArrowButtonProps) {
+function ArrowButton({ onClick, orientation }: ArrowButtonProps) {
   const className = useMemo(() => {
     let classes: string[] = [styles['arrow-button']];
-
-    if (disabled) {
-      classes.push(styles['arrow-button-disabled']);
-    }
 
     if (orientation === 'right') {
       classes.push(styles['arrow-button-right']);
     }
 
     return classes.join(' ');
-  }, [disabled, orientation]);
+  }, [orientation]);
 
   return (
-    <Button onClick={onClick} disabled={disabled} className={className}>
+    <Button
+      aria-label={`Advance slide ${orientation}`}
+      onClick={onClick}
+      className={className}>
       <Arrow />
     </Button>
   );
