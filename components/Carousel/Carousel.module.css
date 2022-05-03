@@ -51,12 +51,6 @@
   fill: var(--neutral-10);
 }
 
-.media {
-  position: relative;
-  width: 100%;
-  height: 320px;
-}
-
 .progress {
   width: 100%;
   display: grid;
@@ -74,4 +68,11 @@
 .indicator-awaiting {
   composes: indicator;
   background-color: var(--highlight-clickable-20);
+}
+
+.image {
+  width: 100%;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
 }

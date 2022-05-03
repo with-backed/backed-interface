@@ -1,5 +1,4 @@
 import { Arrow } from 'components/Icons/Arrow';
-import Image from 'next/image';
 import React, { useCallback, useMemo, useState } from 'react';
 import { Button } from 'reakit/Button';
 import styles from './Carousel.module.css';
@@ -15,14 +14,7 @@ export function Carousel() {
   );
   return (
     <div className={styles.carousel}>
-      <div className={styles.media}>
-        <Image
-          src={slides[index].image}
-          alt=""
-          layout="fill"
-          objectFit="contain"
-        />
-      </div>
+      <img className={styles.image} src={slides[index].image} alt="" />
       <div className={styles.controls}>
         <ArrowButton
           orientation="left"
