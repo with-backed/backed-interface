@@ -74,9 +74,7 @@ export function HeaderInfo({ isCollapsed = true }: HeaderInfoProps) {
               <TextButton onClick={dialog.show} kind="clickable">
                 how it works
               </TextButton>
-              .
-              <br />
-              Read the{' '}
+              . Read the{' '}
               <Link href={FAQ_URL}>
                 <a target="_blank">FAQ</a>
               </Link>
