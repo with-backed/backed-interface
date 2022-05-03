@@ -1,6 +1,7 @@
 import { Dialog, DialogBackdrop, DialogStateReturn } from 'reakit/Dialog';
 import styles from './Modal.module.css';
 import React, { FunctionComponent } from 'react';
+import { Button } from 'components/Button';
 
 type ModalProps = {
   dialog: DialogStateReturn;
@@ -22,6 +23,9 @@ export const Modal: FunctionComponent<ModalProps> = ({
         {...dialog}
         modal>
         {Boolean(heading) && <h3 className={styles.heading}>{heading}</h3>}
+        <Button aria-label="Close modal" kind="circle" onClick={dialog.hide}>
+          ×
+        </Button>
         <div className={styles['scroll-box']}>{children}</div>
       </Dialog>
     </DialogBackdrop>
