@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
 import { contractDirectory, jsonRpcERC20Contract } from 'lib/contracts';
+import { config } from 'lib/config';
 
 export async function getAccountLoanAssetBalance(
   account: string,
@@ -40,17 +41,13 @@ export function waitForApproval(account: string, contractAddress: string) {
 }
 
 export function resolveEns(address: string) {
-  const provider = new ethers.providers.JsonRpcProvider(
-    process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
-  );
+  const provider = new ethers.providers.JsonRpcProvider(config.jsonRpcProvider);
 
   return provider.resolveName(address);
 }
 
 export function addressToENS(address: string) {
-  const provider = new ethers.providers.JsonRpcProvider(
-    process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
-  );
+  const provider = new ethers.providers.JsonRpcProvider(config.jsonRpcProvider);
 
   return provider.lookupAddress(address);
 }

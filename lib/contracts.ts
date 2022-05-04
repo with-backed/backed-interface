@@ -5,6 +5,7 @@ import {
   ERC721__factory,
   NFTLoanFacilitator__factory,
 } from 'types/generated/abis';
+import { config } from 'lib/config';
 
 type ContractDirectory = {
   loanFacilitator: string;
@@ -22,7 +23,7 @@ const rinkebyContracts: ContractDirectory = {
 export const contractDirectory: ContractDirectory = rinkebyContracts;
 
 const jsonRpcProvider = new ethers.providers.JsonRpcProvider(
-  process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
+  config.jsonRpcProvider,
 );
 
 export function web3LoanFacilitator(signer: Signer) {

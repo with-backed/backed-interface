@@ -20,7 +20,7 @@ import {
   GenericEmailType,
   getSubjectForGenericEmail,
 } from 'lib/events/consumers/userNotifications/emails/genericFormatter';
-import { onMainnet, siteUrl } from 'lib/chainEnv';
+import { config } from 'lib/config';
 
 export async function sendEmailsForTriggerAndEntity(
   emailTrigger: NotificationTriggerType,
@@ -57,7 +57,8 @@ export async function sendEmailsForTriggerAndEntity(
 
       return executeEmailSendWithSes(
         generateHTMLForEventsEmail(emailComponentGenerator(r.id)),
-        onMainnet
+        // TODO: this is not a binary choice
+        config.onEthereumMainnet
           ? getEmailSubject(emailTrigger, entity)
           : `[TESTNET]: ${getEmailSubject(emailTrigger, entity)}`,
         r.deliveryDestination,
@@ -81,7 +82,7 @@ export async function sendConfirmationEmail(
     mainMessage: `We've received your request to subscribe to the activity of ${await ensOrAddr(
       ethAddress,
     )}`,
-    footer: `https://${siteUrl()}/profile/${ethAddress}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+    footer: `https://${config.siteUrl}/profile/${ethAddress}?unsubscribe=true&uuid=${unsubscribeUuid}`,
   };
 
   await executeEmailSendWithSes(

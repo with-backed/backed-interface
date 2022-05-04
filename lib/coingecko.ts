@@ -1,10 +1,11 @@
-import { onMainnet } from './chainEnv';
+import { config } from 'lib/config';
 
 export async function getUnitPriceForCoin(
   tokenAddress: string,
   toCurrency: string,
 ): Promise<number | undefined> {
-  if (!onMainnet) {
+  // TODO: this is not a binary choice
+  if (!config.onEthereumMainnet) {
     return 1.01;
   }
 

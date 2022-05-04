@@ -18,24 +18,23 @@ import { WagmiProvider, chain } from 'wagmi';
 import { CachedRatesProvider } from 'hooks/useCachedRates/useCachedRates';
 import { HasCollapsedHeaderInfoProvider } from 'hooks/useHasCollapsedHeaderInfo';
 import { Footer } from 'components/Footer';
+import { config } from 'lib/config';
 
-const jsonRpcProvider = new providers.JsonRpcProvider(
-  process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
-);
+const jsonRpcProvider = new providers.JsonRpcProvider(config.jsonRpcProvider);
 
 const chains: Chain[] = [{ ...chain.rinkeby, name: 'Rinkeby' }];
 
 const wallets = getDefaultWallets({
   chains,
   appName: 'Backed',
-  infuraId: process.env.NEXT_PUBLIC_INFURA_ID,
-  jsonRpcUrl: process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER!,
+  infuraId: config.infuraId,
+  jsonRpcUrl: config.jsonRpcProvider,
 });
 
 wallets[0].wallets.sort((a, b) => a.id.localeCompare(b.id));
 
 const connectors = connectorsForWallets(wallets)({
-  chainId: parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || '1'),
+  chainId: config.chainId,
 });
 
 export default function App({ Component, pageProps }: AppProps) {

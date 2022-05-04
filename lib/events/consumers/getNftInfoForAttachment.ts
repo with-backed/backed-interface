@@ -1,4 +1,4 @@
-import { siteUrl } from 'lib/chainEnv';
+import { config } from 'lib/config';
 import { getMedia } from 'lib/getNFTInfo';
 import { NFTResponseData } from 'pages/api/nftInfo/[uri]';
 
@@ -26,7 +26,9 @@ export async function getNFTInfoForAttachment(
     const tokenURIRes = await fetch(
       isDataUri
         ? collateralTokenURI
-        : `${siteUrl()}/api/nftInfo/${encodeURIComponent(collateralTokenURI)}`,
+        : `${config.siteUrl}/api/nftInfo/${encodeURIComponent(
+            collateralTokenURI,
+          )}`,
     );
     NFTInfo = await tokenURIRes.json();
   }

@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { onMainnet, onOptimism, onRinkeby } from 'lib/chainEnv';
+import { config } from 'lib/config';
 import { jsonRpcERC20Contract } from 'lib/contracts';
 import {
   CollectionStatistics,
@@ -40,14 +40,14 @@ async function getMostRecentSale(
   let sale: NFTSale | null = null;
 
   switch (true) {
-    case onMainnet:
+    case config.onEthereumMainnet:
       sale = await queryMostRecentSaleForNFT(nftContractAddress, tokenId);
       if (!sale) return null;
       break;
-    case onOptimism:
+    case config.onOptimismMainnet:
       // TODO(adamgobes): follow up with Quixotic team on when they will release API to get most recent sale. it is not available for now
       return null;
-    case onRinkeby:
+    case config.onEthereumRinkeby:
       sale = generateFakeSaleForNFT(nftContractAddress, tokenId);
     default:
       return null;

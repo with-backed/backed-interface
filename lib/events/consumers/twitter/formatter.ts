@@ -18,7 +18,7 @@ import {
   getEstimatedRepaymentAndMaturity,
 } from 'lib/events/consumers/formattingHelpers';
 import { parseSubgraphLoan } from 'lib/loans/utils';
-import { siteUrl } from 'lib/chainEnv';
+import { config } from 'lib/config';
 
 export async function sendTweetForTriggerAndEntity(
   trigger: NotificationTriggerType,
@@ -36,7 +36,7 @@ export async function sendTweetForTriggerAndEntity(
     mostRecentTermsEvent,
   )}
 
-${siteUrl()}/loans/${event.loan.id}
+${config.siteUrl}/loans/${event.loan.id}
 `;
 
   const attachmentImageBuffer = await nftResponseDataToImageBuffer(

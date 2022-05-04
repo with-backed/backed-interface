@@ -1,8 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { captureException, withSentry } from '@sentry/nextjs';
 import type { LoanAsset } from 'lib/loanAssets';
+import { config } from 'lib/config';
 
 // TODO: we should almost certainly cache this
+// TODO: optimism
 const mainnetLoanAssetsURI = 'https://tokens.1inch.eth.link/';
 
 async function handler(
@@ -11,8 +13,8 @@ async function handler(
 ) {
   try {
     let assets: LoanAsset[] = [];
-    switch (process.env.NEXT_PUBLIC_ENV) {
-      case 'rinkeby':
+    switch (true) {
+      case config.onEthereumRinkeby:
         assets = [
           {
             address: '0x6916577695D0774171De3ED95d03A3239139Eddb',
@@ -20,13 +22,12 @@ async function handler(
           },
         ];
         break;
-      case 'mainnet':
+      case config.onEthereumMainnet:
         assets = await loadJson(mainnetLoanAssetsURI);
         break;
     }
     return res.status(200).json(assets);
   } catch (e) {
-    console.log({ e });
     captureException(e);
     return res.status(404).json(null);
   }

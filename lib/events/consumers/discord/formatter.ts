@@ -18,7 +18,7 @@ import { parseSubgraphLoan } from 'lib/loans/utils';
 import { formattedAnnualRate } from 'lib/interest';
 import { collateralToDiscordMessageEmbed } from './attachments';
 import { getNFTInfoForAttachment } from 'lib/events/consumers/getNftInfoForAttachment';
-import { siteUrl } from 'lib/chainEnv';
+import { config } from 'lib/config';
 
 export async function sendBotUpdateForTriggerAndEntity(
   trigger: NotificationTriggerType,
@@ -37,8 +37,8 @@ export async function sendBotUpdateForTriggerAndEntity(
     mostRecentTermsEvent,
   )}
 
-Loan: <${siteUrl()}/loans/${event.loan.id}>
-Event Tx: <${process.env.NEXT_PUBLIC_ETHERSCAN_URL!}/tx/${event.id}>
+Loan: <${config.siteUrl}/loans/${event.loan.id}>
+Event Tx: <${config.etherscanUrl}/tx/${event.id}>
 `;
 
   const messagedEmbed = await collateralToDiscordMessageEmbed(

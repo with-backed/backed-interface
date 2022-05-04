@@ -17,13 +17,13 @@ import { HeaderInfo } from 'components/HeaderInfo';
 import { Chevron } from 'components/Icons/Chevron';
 import { useHasCollapsedHeaderInfo } from 'hooks/useHasCollapsedHeaderInfo';
 import { useOnClickOutside } from 'hooks/useOnClickOutside';
+import { config } from 'lib/config';
 
 type PawnShopHeaderProps = {
   isErrorPage?: boolean;
   showInitialInfo?: boolean;
 };
 
-const expectedChainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID as string);
 const CREATE_PATH = '/loans/create';
 
 export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
@@ -54,7 +54,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
   return (
     <>
       <div className={styles['banner-container']}>
-        <WrongNetwork expectedChainId={expectedChainId} />
+        <WrongNetwork expectedChainId={config.chainId} />
         {messages.map((m) => {
           const close = () => removeMessage(m);
           return (

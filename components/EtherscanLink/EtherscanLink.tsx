@@ -1,3 +1,4 @@
+import { config } from 'lib/config';
 import React, { AnchorHTMLAttributes, FunctionComponent } from 'react';
 
 interface EtherscanLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
@@ -8,7 +9,8 @@ const EtherscanLink: FunctionComponent<EtherscanLinkProps> = ({
   path,
   ...props
 }) => {
-  const href = `${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/${path}`;
+  // TODO: will it always be etherscan? maybe polygonscan? need to see if URL formats are always the same.
+  const href = `${config.etherscanUrl}/${path}`;
   return (
     <a target="_blank" rel="noreferrer" {...props} href={href}>
       {children}

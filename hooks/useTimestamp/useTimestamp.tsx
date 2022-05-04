@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { config } from 'lib/config';
 import React, {
   createContext,
   PropsWithChildren,
@@ -7,9 +8,7 @@ import React, {
   useState,
 } from 'react';
 
-const _provider = new ethers.providers.JsonRpcProvider(
-  process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
-);
+const _provider = new ethers.providers.JsonRpcProvider(config.jsonRpcProvider);
 
 const TIMESTAMP_POLL_INTERVAL = 14000;
 

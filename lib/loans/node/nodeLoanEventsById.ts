@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { config } from 'lib/config';
 import { jsonRpcLoanFacilitator } from 'lib/contracts';
 import {
   BuyoutEvent,
@@ -47,10 +48,7 @@ export async function nodeLoanEventsById(loanIdString: string) {
     seizeCollateralEvents,
   ] = await Promise.all(
     filters.map((filter) => {
-      return contract.queryFilter(
-        filter,
-        parseInt(process.env.NEXT_PUBLIC_FACILITATOR_START_BLOCK || ''),
-      );
+      return contract.queryFilter(filter, config.facilitatorStartBlock);
     }),
   );
 
