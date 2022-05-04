@@ -1,7 +1,7 @@
 import { DescriptionList } from 'components/DescriptionList';
 import { Fieldset } from 'components/Fieldset';
 import { Fallback } from 'components/Media/Fallback';
-import { OpenSeaAddressLink } from 'components/OpenSeaLink';
+import { NFTExchangeAddressLink } from 'components/NFTExchangeLink';
 import { PawnLoanArt, PawnTicketArt } from 'components/PawnArt';
 import { DisplayAddress } from 'components/DisplayAddress';
 import { useLoanDetails } from 'hooks/useLoanDetails';
@@ -24,11 +24,11 @@ function BorrowerColumn({ loan }: BorrowerColumnProps) {
   return (
     <div className={styles.column}>
       <PawnTicketArt tokenID={loan.id} />
-      <OpenSeaAddressLink
+      <NFTExchangeAddressLink
         assetId={loan.id.toString()}
-        contractAddress={BORROW_CONTRACT.address}>
-        View on OpenSea
-      </OpenSeaAddressLink>
+        contractAddress={BORROW_CONTRACT.address}
+      />
+
       <DescriptionList>
         <dt>Borrower</dt>
         <dd title={loan.borrower}>
@@ -68,11 +68,11 @@ function LenderColumn({ loan }: LenderColumnProps) {
   return (
     <div className={styles.column}>
       <PawnLoanArt tokenID={loan.id} />
-      <OpenSeaAddressLink
+      <NFTExchangeAddressLink
         assetId={loan.id.toString()}
-        contractAddress={LEND_CONTRACT.address}>
-        View on OpenSea
-      </OpenSeaAddressLink>
+        contractAddress={LEND_CONTRACT.address}
+      />
+
       <DescriptionList>
         <dt>Lender</dt>
         <dd>

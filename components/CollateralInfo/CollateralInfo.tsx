@@ -1,6 +1,6 @@
 import { DescriptionList } from 'components/DescriptionList';
 import { Fieldset } from 'components/Fieldset';
-import { OpenSeaAddressLink } from 'components/OpenSeaLink';
+import { NFTExchangeAddressLink } from 'components/NFTExchangeLink';
 import { Loan } from 'types/Loan';
 import React, { useMemo } from 'react';
 import { CollateralSaleInfo } from 'lib/loans/collateralSaleInfo';
@@ -25,11 +25,10 @@ export const CollateralInfo = ({
       <Fieldset legend="🖼️ Collateral">
         <dd>#{tokenId}</dd>
         <dd>
-          <OpenSeaAddressLink
+          <NFTExchangeAddressLink
             contractAddress={loan.collateralContractAddress}
-            assetId={tokenId}>
-            View on OpenSea
-          </OpenSeaAddressLink>
+            assetId={tokenId}
+          />
         </dd>
       </Fieldset>
     );
@@ -40,11 +39,10 @@ export const CollateralInfo = ({
       <DescriptionList>
         <dd>#{tokenId}</dd>
         <dd>
-          <OpenSeaAddressLink
+          <NFTExchangeAddressLink
             contractAddress={loan.collateralContractAddress}
-            assetId={tokenId}>
-            View on OpenSea
-          </OpenSeaAddressLink>
+            assetId={tokenId}
+          />
         </dd>
 
         {!collateralSaleInfo.recentSale && (
