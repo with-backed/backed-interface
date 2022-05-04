@@ -1,13 +1,11 @@
 .dialog {
-  position: absolute;
-  top: 100px;
-  left: 50%;
-  transform: translate(-50%, 0);
   z-index: 1000;
   background: var(--background-white);
   border-radius: var(--border-radius-large);
   box-shadow: var(--box-shadow);
-  margin: 0 auto;
+  margin: 75px auto;
+  max-height: calc(100vh - 150px);
+  overflow-y: auto;
 }
 
 .regular {
@@ -19,15 +17,15 @@
 }
 
 .scroll-box {
-  height: 100%;
-  overflow-y: auto;
-  max-height: 100vh;
   margin: var(--padding-container);
 }
 
 .heading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100%;
-  text-align: center;
+  position: relative;
 }
 
 .backdrop {
@@ -41,8 +39,7 @@
 
 .desktop-close-button {
   position: absolute;
-  top: 0;
-  right: -50px;
+  right: 12px;
 }
 
 .desktop-close-button > button {
@@ -66,6 +63,9 @@
     border-radius: 0;
     display: flex;
     flex-direction: column;
+    margin: 0;
+    max-height: 100vh;
+    height: 100vh;
   }
 
   .scroll-box {
@@ -80,5 +80,9 @@
     justify-content: center;
     align-items: center;
     padding: 1rem;
+  }
+
+  .desktop-close-button {
+    display: none;
   }
 }

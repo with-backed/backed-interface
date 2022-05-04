@@ -22,12 +22,18 @@ export const Modal: FunctionComponent<ModalProps> = ({
         className={`${styles.dialog} ${styles[width]}`}
         {...dialog}
         modal>
-        {Boolean(heading) && <h3 className={styles.heading}>{heading}</h3>}
-        <div className={styles['desktop-close-button']}>
-          <Button aria-label="Close modal" kind="circle" onClick={dialog.hide}>
-            ×
-          </Button>
+        <div className={styles.heading}>
+          {Boolean(heading) && <h3>{heading}</h3>}
+          <div className={styles['desktop-close-button']}>
+            <Button
+              aria-label="Close modal"
+              kind="circle"
+              onClick={dialog.hide}>
+              ×
+            </Button>
+          </div>
         </div>
+
         <div className={styles['mobile-close-button']}>
           <TextButton onClick={dialog.hide} aria-label="Close modal">
             Close
