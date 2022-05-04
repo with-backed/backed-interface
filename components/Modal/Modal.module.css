@@ -18,6 +18,7 @@
 
 .scroll-box {
   margin: var(--padding-container);
+  margin-top: 0;
 }
 
 .heading {
@@ -26,6 +27,7 @@
   align-items: center;
   width: 100%;
   position: relative;
+  min-height: 64px;
 }
 
 .backdrop {
@@ -79,7 +81,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 1rem;
+    padding: 0 1rem 1rem;
   }
 
   .desktop-close-button {

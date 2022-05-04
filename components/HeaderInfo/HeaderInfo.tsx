@@ -91,7 +91,7 @@ export function HeaderInfo({ isCollapsed = true }: HeaderInfoProps) {
           </div>
         </TwelveColumn>
       </animated.div>
-      <Modal dialog={dialog}>
+      <Modal heading="🖼️ How It Works 🐇" dialog={dialog}>
         <Carousel />
       </Modal>
     </>
