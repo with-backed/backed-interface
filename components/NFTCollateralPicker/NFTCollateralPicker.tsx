@@ -121,7 +121,9 @@ function NFTGroup({ nftCollectionName, nfts, handleNFTClick }: NFTGroupProps) {
         <span className={styles['nft-count']}>{nfts.length}</span>
       </Button>
       {isOpen && (
-        <div className={styles['nft-list']}>
+        <div
+          data-testid={`nft-list-${nftCollectionName}`}
+          className={styles['nft-list']}>
           {nfts.map((nft) => (
             <NFT nft={nft} handleNFTClick={handleNFTClick} key={nft.id} />
           ))}
