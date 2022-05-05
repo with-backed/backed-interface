@@ -18,6 +18,11 @@ import { WagmiProvider, chain } from 'wagmi';
 import { CachedRatesProvider } from 'hooks/useCachedRates/useCachedRates';
 import { HasCollapsedHeaderInfoProvider } from 'hooks/useHasCollapsedHeaderInfo';
 import { Footer } from 'components/Footer';
+import { ConfigProvider } from 'hooks/useConfig';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { SupportedNetwork } from 'lib/config';
+import { isSupportedNetwork } from 'lib/validatePath';
 
 const jsonRpcProvider = new providers.JsonRpcProvider(
   process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
@@ -39,6 +44,23 @@ const connectors = connectorsForWallets(wallets)({
 });
 
 export default function App({ Component, pageProps }: AppProps) {
+  const { query } = useRouter();
+  const [network, setNetwork] = useState<SupportedNetwork>(
+    isSupportedNetwork(query.network as string)
+      ? (query.network as SupportedNetwork)
+      : 'ethereum',
+  );
+
+  useEffect(() => {
+    if (query.network) {
+      if (query.network !== network) {
+        if (isSupportedNetwork(query.network as string)) {
+          setNetwork(query.network as SupportedNetwork);
+        }
+      }
+    }
+  }, [network, query.network]);
+
   return (
     <GlobalMessagingProvider>
       <RainbowKitProvider theme={lightTheme()} chains={chains}>
@@ -49,10 +71,12 @@ export default function App({ Component, pageProps }: AppProps) {
           <TimestampProvider>
             <CachedRatesProvider>
               <HasCollapsedHeaderInfoProvider>
-                <AppWrapper>
-                  <Component {...pageProps} />
-                  <Footer />
-                </AppWrapper>
+                <ConfigProvider network={network}>
+                  <AppWrapper>
+                    <Component {...pageProps} />
+                    <Footer />
+                  </AppWrapper>
+                </ConfigProvider>
               </HasCollapsedHeaderInfoProvider>
             </CachedRatesProvider>
           </TimestampProvider>
