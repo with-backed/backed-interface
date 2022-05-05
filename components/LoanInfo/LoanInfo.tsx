@@ -15,7 +15,7 @@ type LoanInfoProps = {
 };
 
 function addressStringToHSL(address: string) {
-  address = ethers.utils.getAddress(address);
+  address = address.toLowerCase();
   const hash = ethers.utils.keccak256(Buffer.from(address));
   const bytes = ethers.utils.arrayify(hash);
 
