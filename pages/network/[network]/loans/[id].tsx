@@ -18,6 +18,8 @@ import Link from 'next/link';
 import { PawnShopHeader } from 'components/PawnShopHeader';
 import Head from 'next/head';
 import { useTokenMetadata, TokenURIAndID } from 'hooks/useTokenMetadata';
+import { validateNetwork } from 'lib/validatePath';
+import { captureException } from '@sentry/nextjs';
 
 export type LoanPageProps = {
   loanInfoJson: string;
@@ -30,6 +32,14 @@ export type LoanPageProps = {
 export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
   context,
 ) => {
+  try {
+    validateNetwork(context.params!);
+  } catch (e) {
+    captureException(e);
+    return {
+      notFound: true,
+    };
+  }
   const id = context.params?.id as string;
   const [loan, history] = await Promise.all([
     loanById(id),
