@@ -12,6 +12,26 @@ const moduleExports = {
   images: {
     domains: ['nftpawnshop.mypinata.cloud'],
   },
+  async redirects() {
+    return [
+      { source: '/', destination: '/network/ethereum', permanent: false },
+      {
+        source: '/loans/:id',
+        destination: '/network/ethereum/loans/:id',
+        permanent: false,
+      },
+      {
+        source: '/loans/create',
+        destination: '/network/ethereum/loans/create',
+        permanent: false,
+      },
+      {
+        source: '/profile/:address',
+        destination: '/network/ethereum/profile/:address',
+        permanent: false,
+      },
+    ];
+  },
 };
 
 const shouldInitializeSentry = !process.env.GITHUB_ACTIONS;
