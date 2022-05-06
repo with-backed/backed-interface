@@ -9,6 +9,18 @@ import { useAccount, useSigner } from 'wagmi';
 import { PawnShopHeader } from 'components/PawnShopHeader';
 import Head from 'next/head';
 import { captureException } from '@sentry/nextjs';
+import { GetServerSideProps } from 'next';
+
+export const getServerSideProps: GetServerSideProps<{}> = async (context) => {
+  if (context.params?.network !== 'rinkeby') {
+    return {
+      notFound: true,
+    };
+  }
+  return {
+    props: {},
+  };
+};
 
 export default function Test() {
   const [{ data }] = useAccount();
