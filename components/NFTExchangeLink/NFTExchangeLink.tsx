@@ -1,14 +1,15 @@
+import { useConfig } from 'hooks/useConfig';
 import React, { AnchorHTMLAttributes, FunctionComponent } from 'react';
 
 const ADDRESS_LINK_TEXT: { [key: string]: string } = {
   rinkeby: 'View on OpenSea',
-  mainnet: 'View on OpenSea',
+  ethereum: 'View on OpenSea',
   optimism: 'View on Quixotic',
 };
 
 const ADDRESS_LINK_PATH_PREFIX: { [key: string]: string } = {
   rinkeby: 'assets',
-  mainnet: 'assets',
+  ethereum: 'assets',
   optimism: 'asset',
 };
 
@@ -20,7 +21,8 @@ const NFTExchangeLink: FunctionComponent<ExchangeLinkProps> = ({
   path,
   ...props
 }) => {
-  const href = `${process.env.NEXT_PUBLIC_OPENSEA_URL}/${path}`;
+  const { openSeaUrl } = useConfig();
+  const href = `${openSeaUrl}/${path}`;
   return (
     <a target="_blank" rel="noreferrer" {...props} href={href}>
       {children}
@@ -35,13 +37,12 @@ interface NFTExchangeLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
 export const NFTExchangeAddressLink: FunctionComponent<
   NFTExchangeLinkProps
 > = ({ assetId, contractAddress, ...props }) => {
+  const { network } = useConfig();
   return (
     <NFTExchangeLink
-      path={`/${
-        ADDRESS_LINK_PATH_PREFIX[process.env.NEXT_PUBLIC_ENV!]
-      }/${contractAddress}/${assetId}`}
+      path={`/${ADDRESS_LINK_PATH_PREFIX[network]}/${contractAddress}/${assetId}`}
       {...props}>
-      {ADDRESS_LINK_TEXT[process.env.NEXT_PUBLIC_ENV!]}
+      {ADDRESS_LINK_TEXT[network]}
     </NFTExchangeLink>
   );
 };

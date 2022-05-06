@@ -17,19 +17,20 @@ import { HeaderInfo } from 'components/HeaderInfo';
 import { Chevron } from 'components/Icons/Chevron';
 import { useHasCollapsedHeaderInfo } from 'hooks/useHasCollapsedHeaderInfo';
 import { useOnClickOutside } from 'hooks/useOnClickOutside';
+import { useConfig } from 'hooks/useConfig';
 
 type PawnShopHeaderProps = {
   isErrorPage?: boolean;
   showInitialInfo?: boolean;
 };
 
-const expectedChainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID as string);
 const CREATE_PATH = '/loans/create';
 
 export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
   isErrorPage,
   showInitialInfo = false,
 }) => {
+  const { chainId } = useConfig();
   const { messages, removeMessage } = useGlobalMessages();
   const { pathname } = useRouter();
   const kind = pathname === CREATE_PATH ? 'secondary' : 'primary';
@@ -54,7 +55,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
   return (
     <>
       <div className={styles['banner-container']}>
-        <WrongNetwork expectedChainId={expectedChainId} />
+        <WrongNetwork expectedChainId={chainId} />
         {messages.map((m) => {
           const close = () => removeMessage(m);
           return (
