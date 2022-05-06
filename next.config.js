@@ -30,6 +30,11 @@ const moduleExports = {
         destination: '/network/ethereum/profile/:address',
         permanent: false,
       },
+      {
+        source: '/test',
+        destination: '/network/rinkeby/test',
+        permanent: false,
+      },
     ];
   },
 };
