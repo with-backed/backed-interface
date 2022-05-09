@@ -16,7 +16,7 @@ import { ProfileLoans } from 'components/Profile/ProfileLoans';
 import styles from './[address].module.css';
 import { PawnShopHeader } from 'components/PawnShopHeader';
 import Head from 'next/head';
-import { validateNetwork } from 'lib/validatePath';
+import { validateNetwork } from 'lib/config';
 import { captureException } from '@sentry/nextjs';
 
 export type ProfilePageProps = {

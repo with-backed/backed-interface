@@ -3,7 +3,7 @@ import { CreatePageHeader } from 'components/CreatePageHeader';
 import { PawnShopHeader } from 'components/PawnShopHeader';
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
-import { validateNetwork } from 'lib/validatePath';
+import { validateNetwork } from 'lib/config';
 import { captureException } from '@sentry/nextjs';
 
 export const getServerSideProps: GetServerSideProps<{}> = async (context) => {

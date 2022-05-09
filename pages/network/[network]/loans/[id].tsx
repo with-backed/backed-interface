@@ -18,8 +18,8 @@ import Link from 'next/link';
 import { PawnShopHeader } from 'components/PawnShopHeader';
 import Head from 'next/head';
 import { useTokenMetadata, TokenURIAndID } from 'hooks/useTokenMetadata';
-import { validateNetwork } from 'lib/validatePath';
 import { captureException } from '@sentry/nextjs';
+import { validateNetwork } from 'lib/config';
 
 export type LoanPageProps = {
   loanInfoJson: string;

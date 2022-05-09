@@ -8,8 +8,7 @@ import { Footer } from 'components/Footer';
 import { ConfigProvider } from 'hooks/useConfig';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { SupportedNetwork } from 'lib/config';
-import { isSupportedNetwork } from 'lib/validatePath';
+import { SupportedNetwork, isSupportedNetwork } from 'lib/config';
 import { ApplicationProviders } from 'components/ApplicationProviders';
 
 export default function App({ Component, pageProps }: AppProps) {
