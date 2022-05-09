@@ -60,12 +60,7 @@ export async function sendEmailsForTriggerAndEntity(
 
       return executeEmailSendWithSes(
         generateHTMLForEventsEmail(emailComponentGenerator(r.id)),
-        onMainnet
-          ? getEmailSubject(emailTrigger, entity)
-          : `${config.emailSubjectPrefix} ${getEmailSubject(
-              emailTrigger,
-              entity,
-            )}`,
+        `${config.emailSubjectPrefix} ${getEmailSubject(emailTrigger, entity)}`,
         r.deliveryDestination,
       );
     });

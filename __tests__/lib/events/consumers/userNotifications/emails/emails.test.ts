@@ -26,6 +26,7 @@ import {
   generateHTMLForEventsEmail,
   generateHTMLForGenericEmail,
 } from 'lib/events/consumers/userNotifications/emails/mjml';
+import { configs } from 'lib/config';
 
 jest.mock('lib/events/consumers/userNotifications/emails/ses', () => ({
   executeEmailSendWithSes: jest.fn(),
@@ -170,6 +171,7 @@ describe('Sending emails with Amazon SES', () => {
           'CreateEvent',
           subgraphCreateEvent,
           0,
+          configs.rinkeby,
         );
 
         expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(1);
@@ -201,6 +203,7 @@ describe('Sending emails with Amazon SES', () => {
           'BuyoutEvent',
           subgraphBuyoutEvent,
           0,
+          configs.rinkeby,
         );
 
         expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(3);
@@ -228,7 +231,12 @@ describe('Sending emails with Amazon SES', () => {
     });
     describe('LendEvent', () => {
       it('successfully calls SES send email method with correct params', async () => {
-        await sendEmailsForTriggerAndEntity('LendEvent', subgraphLendEvent, 0);
+        await sendEmailsForTriggerAndEntity(
+          'LendEvent',
+          subgraphLendEvent,
+          0,
+          configs.rinkeby,
+        );
 
         expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(2);
         expect(mockedGetNotificationsCall).toHaveBeenCalledWith(
@@ -256,6 +264,7 @@ describe('Sending emails with Amazon SES', () => {
           'LendEvent',
           subgraphLendEvent,
           0,
+          configs.rinkeby,
           subgraphLendEvent,
         );
 
@@ -269,6 +278,7 @@ describe('Sending emails with Amazon SES', () => {
           'RepaymentEvent',
           subgraphRepaymentEvent,
           0,
+          configs.rinkeby,
         );
 
         expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(2);
@@ -298,6 +308,7 @@ describe('Sending emails with Amazon SES', () => {
           'CollateralSeizureEvent',
           subgraphCollateralSeizureEvent,
           0,
+          configs.rinkeby,
         );
 
         expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(2);
@@ -327,6 +338,7 @@ describe('Sending emails with Amazon SES', () => {
           'LiquidationOccurring',
           subgraphLoanForEvents,
           0,
+          configs.rinkeby,
         );
 
         expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(2);
@@ -356,6 +368,7 @@ describe('Sending emails with Amazon SES', () => {
           'LiquidationOccurred',
           subgraphLoanForEvents,
           0,
+          configs.rinkeby,
         );
 
         expect(mockedGetNotificationsCall).toHaveBeenCalledTimes(2);
