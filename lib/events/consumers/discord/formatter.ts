@@ -40,8 +40,8 @@ export async function sendBotUpdateForTriggerAndEntity(
     mostRecentTermsEvent,
   )}
 
-Loan: <${siteUrl()}/loans/${event.loan.id}>
-Event Tx: <${process.env.NEXT_PUBLIC_ETHERSCAN_URL!}/tx/${event.id}>
+Loan: <${config.siteUrl}/loans/${event.loan.id}>
+Event Tx: <${config.etherscanUrl}/tx/${event.id}>
 `;
 
   const messagedEmbed = await collateralToDiscordMessageEmbed(

@@ -8,8 +8,6 @@ const baseConfig = {
   facilitatorStartBlock: 0,
 };
 
-export type NetworkName = 'ethereum-rinkeby' | 'ethereum-mainnet';
-
 export type Config = {
   // things that aren't guaranteed to exist in all configs should be declared here
   nftSalesSubgraph: string | null;
@@ -82,15 +80,4 @@ export function validateNetwork(query: ParsedUrlQuery) {
   }
 
   return true;
-}
-
-export function configFromNetworkName(name: NetworkName): Config {
-  switch (name) {
-    case 'ethereum-mainnet':
-      return ethereum;
-    case 'ethereum-rinkeby':
-      return rinkeby;
-    default:
-      return ethereum;
-  }
 }

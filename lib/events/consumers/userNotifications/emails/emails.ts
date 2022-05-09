@@ -40,6 +40,7 @@ export async function sendEmailsForTriggerAndEntity(
     emailTrigger,
     entity,
     now,
+    config,
     mostRecentTermsEvent,
   );
   if (!addressToEmailComponents) {
