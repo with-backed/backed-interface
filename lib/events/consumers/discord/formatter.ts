@@ -19,11 +19,13 @@ import { formattedAnnualRate } from 'lib/interest';
 import { collateralToDiscordMessageEmbed } from './attachments';
 import { getNFTInfoForAttachment } from 'lib/events/consumers/getNftInfoForAttachment';
 import { siteUrl } from 'lib/chainEnv';
+import { Config } from 'lib/config';
+import capitalize from 'lodash/capitalize';
 
 export async function sendBotUpdateForTriggerAndEntity(
   trigger: NotificationTriggerType,
   event: RawSubgraphEvent,
-  now: number,
+  config: Config,
   mostRecentTermsEvent?: LendEvent,
 ): Promise<void> {
   // we do not want to send LendEvent bot messages and BuyoutEvent bot messages
@@ -34,6 +36,7 @@ export async function sendBotUpdateForTriggerAndEntity(
   const botMessageContent = `${await generateContentStringForEvent(
     trigger,
     event,
+    capitalize(config.network),
     mostRecentTermsEvent,
   )}
 
@@ -53,6 +56,7 @@ Event Tx: <${process.env.NEXT_PUBLIC_ETHERSCAN_URL!}/tx/${event.id}>
 async function generateContentStringForEvent(
   trigger: NotificationTriggerType,
   event: RawSubgraphEvent,
+  networkName: string,
   mostRecentTermsEvent?: LendEvent,
 ): Promise<string> {
   let duration: string;
@@ -62,7 +66,7 @@ async function generateContentStringForEvent(
     case 'CreateEvent':
       const createEvent = event as CreateEvent;
 
-      return `**New Loan Created**
+      return `**New Loan Created on ${networkName}**
 ${await ensOrAddr(createEvent.creator)} has created a loan with collateral: ${
         createEvent.loan.collateralName
       } #${createEvent.loan.collateralTokenId}
@@ -78,7 +82,7 @@ ${formatTermsForBot(
     case 'LendEvent':
       const lendEvent = event as LendEvent;
 
-      return `**Loan Lent To**
+      return `**Loan Lent To on ${networkName}**
 Loan #${lendEvent.loan.id}: ${
         lendEvent.loan.collateralName
       } has been lent to by ${await ensOrAddr(lendEvent.lender)}
@@ -104,7 +108,7 @@ ${formatTermsForBot(
         buyoutEvent.loan.loanAssetDecimal,
       );
 
-      return `**Loan Bought Out**
+      return `**Loan Bought Out on ${networkName}**
 Loan #${buyoutEvent.loan.id}: ${
         buyoutEvent.loan.collateralName
       } has been bought out by ${newLender}
@@ -139,7 +143,7 @@ ${formatTermsForBot(
         repaymentEvent.loan.loanAssetDecimal,
       );
 
-      return `**Loan Repaid**
+      return `**Loan Repaid on ${networkName}**
 Loan #${repaymentEvent.loan.id}: ${
         repaymentEvent.loan.collateralName
       } has been repaid by ${await ensOrAddr(repaymentEvent.repayer)}
@@ -171,7 +175,7 @@ ${formatTermsForBot(
         parseSubgraphLoan(collateralSeizureEvent.loan),
       );
 
-      return `**Loan Collateral Seized**
+      return `**Loan Collateral Seized on ${networkName}**
 Loan #${collateralSeizureEvent.loan.id}: ${collateralSeizureEvent.loan.collateralName} has had its collateral seized
 ${lender} held the loan for ${duration}. The loan became due on ${maturity} with a repayment cost of ${repayment} ${collateralSeizureEvent.loan.loanAssetSymbol}. ${borrower} did not repay, so ${lender} was able to seize the loan's collateral`;
     default:

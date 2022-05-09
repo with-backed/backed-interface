@@ -5,6 +5,7 @@ import { createMocks } from 'node-mocks-http';
 import handler from 'pages/api/events/consumers/userNotifications';
 import fetchMock from 'jest-fetch-mock';
 import { subgraphLendEvent } from 'lib/mockSubgraphEventsData';
+import { configs } from 'lib/config';
 
 const subgraphLoanCopy = {
   ...subgraphLoan,
@@ -65,6 +66,7 @@ describe('/api/events/consumers/userNotifications', () => {
               loan: subgraphLoanCopy,
             },
             mostRecentTermsEvent: subgraphLendEvent,
+            network: 'ethereum-rinkeby',
           }),
         },
       });
@@ -80,6 +82,7 @@ describe('/api/events/consumers/userNotifications', () => {
           loan: subgraphLoanCopy,
         }),
         expect.anything(),
+        configs.rinkeby,
         subgraphLendEvent,
       );
 
@@ -102,6 +105,7 @@ describe('/api/events/consumers/userNotifications', () => {
               loan: subgraphLoanCopy,
             },
             mostRecentTermsEvent: undefined,
+            network: 'ethereum-rinkeby',
           }),
         },
       });
@@ -117,6 +121,7 @@ describe('/api/events/consumers/userNotifications', () => {
           loan: subgraphLoanCopy,
         }),
         expect.anything(),
+        configs.rinkeby,
         undefined,
       );
 
@@ -137,6 +142,7 @@ describe('/api/events/consumers/userNotifications', () => {
               loan: subgraphLoanCopy,
             },
             mostRecentTermsEvent: undefined,
+            network: 'ethereum-rinkeby',
           }),
         },
       });
@@ -152,6 +158,7 @@ describe('/api/events/consumers/userNotifications', () => {
           loan: subgraphLoanCopy,
         }),
         expect.anything(),
+        configs.rinkeby,
         undefined,
       );
 
@@ -174,6 +181,7 @@ describe('/api/events/consumers/userNotifications', () => {
               loan: subgraphLoanCopy,
             },
             mostRecentTermsEvent: undefined,
+            network: 'ethereum-rinkeby',
           }),
         },
       });
@@ -189,6 +197,7 @@ describe('/api/events/consumers/userNotifications', () => {
           loan: subgraphLoanCopy,
         }),
         expect.anything(),
+        configs.rinkeby,
         undefined,
       );
 
@@ -211,6 +220,7 @@ describe('/api/events/consumers/userNotifications', () => {
               loan: subgraphLoanCopy,
             },
             mostRecentTermsEvent: undefined,
+            network: 'ethereum-rinkeby',
           }),
         },
       });
@@ -226,6 +236,7 @@ describe('/api/events/consumers/userNotifications', () => {
           loan: subgraphLoanCopy,
         }),
         expect.anything(),
+        configs.rinkeby,
         undefined,
       );
 
