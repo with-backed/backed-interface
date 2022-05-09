@@ -3,9 +3,10 @@ import { subgraphLoan } from 'lib/mockData';
 import { main } from 'lib/events/sqs/consumer';
 import { pushEventForProcessing } from 'lib/events/sns/push';
 import { deleteMessage, receiveMessages } from 'lib/events/sqs/helpers';
-import { nftBackedLoansClient } from 'lib/urql';
+import { nftBackedLoansClientFromConfig } from 'lib/urql';
 import { subgraphLendEvent } from 'lib/mockSubgraphEventsData';
 import { getMostRecentTermsForLoan } from 'lib/loans/subgraph/subgraphLoans';
+import { configs } from 'lib/config';
 
 const subgraphLoanCopy = {
   ...subgraphLoan,
@@ -25,15 +26,19 @@ jest.mock('lib/events/sns/push', () => ({
 
 jest.mock('lib/urql', () => ({
   ...jest.requireActual('lib/urql'),
-  nftBackedLoansClient: {
+  nftBackedLoansClientFromConfig: jest.fn(() => ({
     query: jest.fn(),
-  },
+  })),
 }));
 
-const mockedNftBackedLoansClientQuery =
-  nftBackedLoansClient.query as jest.MockedFunction<
-    typeof nftBackedLoansClient.query
+const client = nftBackedLoansClientFromConfig(configs.rinkeby);
+
+const mockedNFTBackedLoansClientFromConfig =
+  nftBackedLoansClientFromConfig as jest.MockedFunction<
+    typeof nftBackedLoansClientFromConfig
   >;
+
+const mockedQuery = client.query as jest.MockedFunction<typeof client.query>;
 
 const mockedSqsReceiveCall = receiveMessages as jest.MockedFunction<
   typeof receiveMessages
@@ -56,6 +61,7 @@ const mockedRecentTermsEvent = getMostRecentTermsForLoan as jest.MockedFunction<
 describe('SQS consumer', () => {
   beforeEach(async () => {
     jest.clearAllMocks();
+    mockedNFTBackedLoansClientFromConfig.mockReturnValue(client);
     mockedSnsPushCall.mockResolvedValue(true);
     mockedRecentTermsEvent.mockResolvedValue(undefined);
   });
@@ -77,6 +83,7 @@ describe('SQS consumer', () => {
             eventName: 'BuyoutEvent',
             txHash: 'random-tx-hash',
             receiptHandle: 'random-receipt-handle',
+            network: 'rinkeby',
           },
         ]);
         mockedRecentTermsEvent.mockResolvedValue({
@@ -86,7 +93,7 @@ describe('SQS consumer', () => {
         });
       });
       it('does not make call to deleteMessage or pushEventForProcessing if graph is still not in sync', async () => {
-        mockedNftBackedLoansClientQuery.mockReturnValueOnce({
+        mockedQuery.mockReturnValueOnce({
           toPromise: async () => ({
             data: {
               buyoutEvent: null,
@@ -99,7 +106,7 @@ describe('SQS consumer', () => {
       });
 
       it('makes calls to SNS and deletes SQS message if graph is in sync', async () => {
-        mockedNftBackedLoansClientQuery.mockReturnValueOnce({
+        mockedQuery.mockReturnValueOnce({
           toPromise: async () => ({
             data: {
               buyoutEvent: {
@@ -122,6 +129,7 @@ describe('SQS consumer', () => {
             loanAmount: '8000000000000000000000',
             timestamp: subgraphLendEvent.timestamp - 86400 * 2,
           },
+          network: 'rinkeby',
         });
 
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledTimes(1);
@@ -131,7 +139,7 @@ describe('SQS consumer', () => {
       });
 
       it('does not make call to deleteMessage if push to SNS failed', async () => {
-        mockedNftBackedLoansClientQuery.mockReturnValueOnce({
+        mockedQuery.mockReturnValueOnce({
           toPromise: async () => ({
             data: {
               buyoutEvent: {
@@ -156,11 +164,12 @@ describe('SQS consumer', () => {
             eventName: 'LendEvent',
             txHash: 'random-tx-hash',
             receiptHandle: 'random-receipt-handle',
+            network: 'rinkeby',
           },
         ]);
       });
       it('does not make call to deleteMessage or pushEventForProcessing if graph is still not in sync', async () => {
-        mockedNftBackedLoansClientQuery.mockReturnValueOnce({
+        mockedQuery.mockReturnValueOnce({
           toPromise: async () => ({
             data: {
               lendEvent: null,
@@ -173,7 +182,7 @@ describe('SQS consumer', () => {
       });
 
       it('makes calls to SNS and deletes SQS message if graph is in sync', async () => {
-        mockedNftBackedLoansClientQuery.mockReturnValueOnce({
+        mockedQuery.mockReturnValueOnce({
           toPromise: async () => ({
             data: {
               lendEvent: {
@@ -192,6 +201,7 @@ describe('SQS consumer', () => {
             loan: subgraphLoanCopy,
           }),
           mostRecentTermsEvent: undefined,
+          network: 'rinkeby',
         });
 
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledTimes(1);
@@ -207,11 +217,12 @@ describe('SQS consumer', () => {
             eventName: 'RepaymentEvent',
             txHash: 'random-tx-hash',
             receiptHandle: 'random-receipt-handle',
+            network: 'rinkeby',
           },
         ]);
       });
       it('does not make call to deleteMessage or pushEventForProcessing if graph is still not in sync', async () => {
-        mockedNftBackedLoansClientQuery.mockReturnValueOnce({
+        mockedQuery.mockReturnValueOnce({
           toPromise: async () => ({
             data: {
               repaymentEvent: null,
@@ -224,7 +235,7 @@ describe('SQS consumer', () => {
       });
 
       it('makes calls to SNS and deletes SQS message if graph is in sync', async () => {
-        mockedNftBackedLoansClientQuery.mockReturnValueOnce({
+        mockedQuery.mockReturnValueOnce({
           toPromise: async () => ({
             data: {
               repaymentEvent: {
@@ -243,6 +254,7 @@ describe('SQS consumer', () => {
             loan: subgraphLoanCopy,
           }),
           mostRecentTermsEvent: undefined,
+          network: 'rinkeby',
         });
 
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledTimes(1);
@@ -258,11 +270,12 @@ describe('SQS consumer', () => {
             eventName: 'CollateralSeizureEvent',
             txHash: 'random-tx-hash',
             receiptHandle: 'random-receipt-handle',
+            network: 'rinkeby',
           },
         ]);
       });
       it('does not make call to deleteMessage or pushEventForProcessing if graph is still not in sync', async () => {
-        mockedNftBackedLoansClientQuery.mockReturnValueOnce({
+        mockedQuery.mockReturnValueOnce({
           toPromise: async () => ({
             data: {
               collateralSeizureEvent: null,
@@ -275,7 +288,7 @@ describe('SQS consumer', () => {
       });
 
       it('makes calls to SNS and deletes SQS message if graph is in sync', async () => {
-        mockedNftBackedLoansClientQuery.mockReturnValueOnce({
+        mockedQuery.mockReturnValueOnce({
           toPromise: async () => ({
             data: {
               collateralSeizureEvent: {
@@ -294,6 +307,7 @@ describe('SQS consumer', () => {
             loan: subgraphLoanCopy,
           }),
           mostRecentTermsEvent: undefined,
+          network: 'rinkeby',
         });
 
         expect(mockedSqsDeleteMessageCall).toHaveBeenCalledTimes(1);
