@@ -1,11 +1,13 @@
 import { SQS } from 'aws-sdk';
 import { awsConfig } from 'lib/aws/config';
+import { NetworkName } from 'lib/config';
 import { RawEventNameType } from 'types/RawEvent';
 
 export type FormattedNotificationEventMessageType = {
   eventName: RawEventNameType;
   txHash: string;
   receiptHandle: string;
+  network: NetworkName;
 };
 
 export async function receiveMessages(): Promise<
@@ -16,8 +18,11 @@ export async function receiveMessages(): Promise<
 
   const response = await sqs.receiveMessage({ QueueUrl: queueUrl }).promise();
   return response.Messages?.map((message) => {
-    const messageBody: { txHash: string; eventName: RawEventNameType } =
-      JSON.parse(message.Body!);
+    const messageBody: {
+      txHash: string;
+      eventName: RawEventNameType;
+      network: NetworkName;
+    } = JSON.parse(message.Body!);
     return {
       ...messageBody,
       receiptHandle: message.ReceiptHandle!,
