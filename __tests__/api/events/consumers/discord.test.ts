@@ -66,7 +66,7 @@ describe('/api/events/consumers/discord', () => {
               loan: subgraphLoanCopy,
             },
             mostRecentTermsEvent: subgraphLendEvent,
-            network: 'ethereum-rinkeby',
+            network: 'rinkeby',
           }),
         },
       });
@@ -104,7 +104,7 @@ describe('/api/events/consumers/discord', () => {
               loan: subgraphLoanCopy,
             },
             mostRecentTermsEvent: undefined,
-            network: 'ethereum-rinkeby',
+            network: 'rinkeby',
           }),
         },
       });
@@ -140,7 +140,7 @@ describe('/api/events/consumers/discord', () => {
               loan: subgraphLoanCopy,
             },
             mostRecentTermsEvent: undefined,
-            network: 'ethereum-rinkeby',
+            network: 'rinkeby',
           }),
         },
       });
@@ -178,7 +178,7 @@ describe('/api/events/consumers/discord', () => {
               loan: subgraphLoanCopy,
             },
             mostRecentTermsEvent: undefined,
-            network: 'ethereum-rinkeby',
+            network: 'rinkeby',
           }),
         },
       });
@@ -216,7 +216,7 @@ describe('/api/events/consumers/discord', () => {
               loan: subgraphLoanCopy,
             },
             mostRecentTermsEvent: undefined,
-            network: 'ethereum-rinkeby',
+            network: 'rinkeby',
           }),
         },
       });
