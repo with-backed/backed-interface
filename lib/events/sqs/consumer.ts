@@ -2,7 +2,7 @@ import { subgraphEventFromTxHash } from 'lib/eventsHelpers';
 import { getMostRecentTermsForLoan } from 'lib/loans/subgraph/subgraphLoans';
 import { pushEventForProcessing } from 'lib/events/sns/push';
 import { deleteMessage, receiveMessages } from './helpers';
-import { configFromNetworkName } from 'lib/config';
+import { configs } from 'lib/config';
 
 export async function main() {
   let notificationEventMessages = await receiveMessages();
@@ -16,7 +16,7 @@ export async function main() {
       const network = message.network;
 
       const event = await subgraphEventFromTxHash(
-        configFromNetworkName(network),
+        configs[network],
         message.eventName,
         message.txHash,
       );

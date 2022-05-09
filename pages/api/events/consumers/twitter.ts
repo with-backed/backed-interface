@@ -5,7 +5,7 @@ import {
 } from 'lib/events/sns/helpers';
 import { sendTweetForTriggerAndEntity } from 'lib/events/consumers/twitter/formatter';
 import { captureException, withSentry } from '@sentry/nextjs';
-import { configFromNetworkName } from 'lib/config';
+import { configs } from 'lib/config';
 
 async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
   if (req.method != 'POST') {
@@ -28,7 +28,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
     await sendTweetForTriggerAndEntity(
       eventName,
       event,
-      configFromNetworkName(network),
+      configs[network],
       mostRecentTermsEvent,
     );
 

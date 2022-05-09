@@ -5,7 +5,7 @@ import {
 } from 'lib/events/sns/helpers';
 import { sendBotUpdateForTriggerAndEntity } from 'lib/events/consumers/discord/formatter';
 import { captureException, withSentry } from '@sentry/nextjs';
-import { configFromNetworkName } from 'lib/config';
+import { configs } from 'lib/config';
 
 async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
   if (req.method != 'POST') {
@@ -29,7 +29,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
     await sendBotUpdateForTriggerAndEntity(
       eventName,
       event,
-      configFromNetworkName(network),
+      configs[network],
       mostRecentTermsEvent,
     );
 
