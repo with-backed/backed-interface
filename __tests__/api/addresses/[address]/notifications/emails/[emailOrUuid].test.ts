@@ -11,7 +11,7 @@ import {
   NotificationMethod,
 } from 'lib/events/consumers/userNotifications/shared';
 import { createMocks } from 'node-mocks-http';
-import handler from 'pages/api/addresses/[address]/notifications/emails/[emailOrUuid]';
+import handler from 'pages/api/network/[network]/addresses/[address]/notifications/emails/[emailOrUuid]';
 
 const event: NotificationTriggerType = 'All';
 const notificationMethod = NotificationMethod.EMAIL;

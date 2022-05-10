@@ -3,7 +3,7 @@ import { subgraphLoan } from 'lib/mockData';
 import { getLiquidatedLoansForTimestamp } from 'lib/events/timely/timely';
 import { sendEmailsForTriggerAndEntity } from 'lib/events/consumers/userNotifications/emails/emails';
 import { createMocks } from 'node-mocks-http';
-import handler from 'pages/api/events/cron/processTimelyEvents';
+import handler from 'pages/api/network/[network]/events/cron/processTimelyEvents';
 import { configs } from 'lib/config';
 
 const aboutToExpireLoan = {

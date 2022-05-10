@@ -18,7 +18,6 @@ import { parseSubgraphLoan } from 'lib/loans/utils';
 import { formattedAnnualRate } from 'lib/interest';
 import { collateralToDiscordMessageEmbed } from './attachments';
 import { getNFTInfoForAttachment } from 'lib/events/consumers/getNftInfoForAttachment';
-import { siteUrl } from 'lib/chainEnv';
 import { Config } from 'lib/config';
 import capitalize from 'lodash/capitalize';
 

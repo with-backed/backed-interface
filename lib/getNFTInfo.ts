@@ -1,9 +1,17 @@
 import { captureException } from '@sentry/nextjs';
 import { ethers } from 'ethers';
-import { NFTResponseData } from 'pages/api/nftInfo/[uri]';
 import IPFSGatewayTools from '@pinata/ipfs-gateway-tools/dist/node';
 
 const ipfsGatewayTools = new IPFSGatewayTools();
+
+export type NFTResponseData = {
+  name: string;
+  description: string;
+  tokenId: number;
+  image: Media;
+  animation: Media;
+  external_url: string;
+} | null;
 
 export interface GetNFTInfoResponse {
   name: string;

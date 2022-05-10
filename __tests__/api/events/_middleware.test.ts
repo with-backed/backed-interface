@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import middleware from 'pages/api/events/_middleware';
+import middleware from 'pages/api/network/[network]/events/_middleware';
 
 describe('/api/events/_middleware', () => {
   it('should return 200 for authenticated calls', () => {

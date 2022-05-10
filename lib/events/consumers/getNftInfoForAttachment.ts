@@ -1,6 +1,6 @@
 import { siteUrl } from 'lib/chainEnv';
 import { getMedia } from 'lib/getNFTInfo';
-import { NFTResponseData } from 'pages/api/nftInfo/[uri]';
+import { NFTResponseData } from 'lib/getNFTInfo';
 
 const JSON_PREFIX = 'data:application/json;base64,';
 

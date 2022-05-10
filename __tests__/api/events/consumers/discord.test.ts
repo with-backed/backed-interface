@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { subgraphLoan } from 'lib/mockData';
 import { createMocks } from 'node-mocks-http';
-import handler from 'pages/api/events/consumers/discord';
+import handler from 'pages/api/network/[network]/events/consumers/discord';
 import fetchMock from 'jest-fetch-mock';
 import { subgraphLendEvent } from 'lib/mockSubgraphEventsData';
 import { sendBotUpdateForTriggerAndEntity } from 'lib/events/consumers/discord/formatter';

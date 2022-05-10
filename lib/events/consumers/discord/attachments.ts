@@ -1,6 +1,6 @@
 import { MessageAttachment, MessageEmbed } from 'discord.js';
 import ethers from 'ethers';
-import { NFTResponseData } from 'pages/api/nftInfo/[uri]';
+import { NFTResponseData } from 'lib/getNFTInfo';
 import { getPngBufferFromBase64SVG } from 'lib/events/consumers/attachmentsHelper';
 
 const SVG_PREFIX = 'data:image/svg+xml;base64,';
