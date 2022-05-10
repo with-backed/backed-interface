@@ -69,7 +69,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
       <nav className={styles.header}>
         <TwelveColumn>
           <div className={styles.pawn}>
-            <ButtonLink kind={kind} href={CREATE_PATH}>
+            <ButtonLink kind={kind} href={`/network/${network}${CREATE_PATH}`}>
               Create a Loan
             </ButtonLink>
           </div>
@@ -148,7 +148,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
           <div
             ref={mobileMenuNode as any}
             className={styles['mobile-menu-buttons']}>
-            <ButtonLink kind={kind} href={CREATE_PATH}>
+            <ButtonLink kind={kind} href={`/network/${network}${CREATE_PATH}`}>
               Create a Loan
             </ButtonLink>
             {isInfoCollapsed ? (
