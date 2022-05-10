@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { subgraphLoan } from 'lib/mockData';
 import { createMocks } from 'node-mocks-http';
-import handler from 'pages/api/network/[network]/events/consumers/twitter';
+import handler from 'pages/api/events/consumers/twitter';
 import fetchMock from 'jest-fetch-mock';
 import { subgraphLendEvent } from 'lib/mockSubgraphEventsData';
 import { sendTweetForTriggerAndEntity } from 'lib/events/consumers/twitter/formatter';

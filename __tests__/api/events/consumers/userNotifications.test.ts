@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 import { subgraphLoan } from 'lib/mockData';
 import { sendEmailsForTriggerAndEntity } from 'lib/events/consumers/userNotifications/emails/emails';
 import { createMocks } from 'node-mocks-http';
-import handler from 'pages/api/network/[network]/events/consumers/userNotifications';
+import handler from 'pages/api/events/consumers/userNotifications';
 import fetchMock from 'jest-fetch-mock';
 import { subgraphLendEvent } from 'lib/mockSubgraphEventsData';
 import { configs } from 'lib/config';
