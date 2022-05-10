@@ -17,6 +17,7 @@ import { LoanCard } from 'components/LoanCard';
 import { LoanGalleryLoadMore } from 'components/LoanGalleryLoadMore';
 import { captureException } from '@sentry/nextjs';
 import { configs, SupportedNetwork, validateNetwork } from 'lib/config';
+import { useConfig } from 'hooks/useConfig';
 
 const PAGE_LIMIT = 12;
 
@@ -44,6 +45,7 @@ type HomeProps = {
   loans: SubgraphLoan[];
 };
 export default function Home({ loans }: HomeProps) {
+  const { network } = useConfig();
   const [showSearch, setShowSearch] = useState<boolean>(false);
   const [searchActive, setSearchActive] = useState<boolean>(false);
   const [searchUrl, setSearchUrl] = useState<string>('');
@@ -59,7 +61,7 @@ export default function Home({ loans }: HomeProps) {
 
   const { paginatedLoans, loadMore, isReachingEnd, isLoadingMore } =
     usePaginatedLoans(
-      searchActive ? searchUrl : '/api/loans/all?',
+      searchActive ? searchUrl : `/api/network/${network}/loans/all?`,
       PAGE_LIMIT,
       selectedSort,
       loans,

@@ -1,4 +1,6 @@
 import { ethers } from 'ethers';
+import { useConfig } from 'hooks/useConfig';
+import { SupportedNetwork } from 'lib/config';
 import { getNFTInfoFromTokenInfo, GetNFTInfoResponse } from 'lib/getNFTInfo';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -27,6 +29,7 @@ type ResolvedNFTMetadata = {
 export type MaybeNFTMetadata = LoadingNFTMetadata | ResolvedNFTMetadata;
 
 export function useTokenMetadata(spec: TokenURIAndID): MaybeNFTMetadata {
+  const { network } = useConfig();
   const [result, setResult] = useState<MaybeNFTMetadata>({
     isLoading: true,
     metadata: null,
@@ -44,6 +47,7 @@ export function useTokenMetadata(spec: TokenURIAndID): MaybeNFTMetadata {
     fetchedMetadata = await getNFTInfoFromTokenInfo(
       spec.tokenID,
       spec.tokenURI,
+      network as SupportedNetwork,
       spec.forceImage,
     );
 
@@ -51,7 +55,7 @@ export function useTokenMetadata(spec: TokenURIAndID): MaybeNFTMetadata {
       METADATA_CACHE[cacheKey] = fetchedMetadata;
     }
     setResult({ isLoading: false, metadata: fetchedMetadata });
-  }, [spec]);
+  }, [network, spec]);
 
   useEffect(() => {
     getMetadata();

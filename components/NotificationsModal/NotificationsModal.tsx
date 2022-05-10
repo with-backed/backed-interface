@@ -2,6 +2,7 @@ import { Button } from 'components/Button';
 import { Form } from 'components/Form';
 import { Input } from 'components/Input';
 import { Modal } from 'components/Modal';
+import { useConfig } from 'hooks/useConfig';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import React, { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -24,6 +25,7 @@ export const NotificationsModal = ({
   profileAddress,
   dialog,
 }: NotificationsModalProps) => {
+  const { network } = useConfig();
   const { addMessage } = useGlobalMessages();
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -41,7 +43,7 @@ export const NotificationsModal = ({
   const subscribeEmail = useCallback(async () => {
     setLoading(true);
     const response = await fetch(
-      `/api/addresses/${profileAddress}/notifications/emails/${emailAddress}`,
+      `/api/network/${network}/addresses/${profileAddress}/notifications/emails/${emailAddress}`,
       {
         method: 'POST',
       },
@@ -60,7 +62,7 @@ export const NotificationsModal = ({
       setError(message);
     }
     setLoading(false);
-  }, [profileAddress, addMessage, setValue, dialog, emailAddress]);
+  }, [profileAddress, addMessage, setValue, dialog, emailAddress, network]);
 
   return (
     <Modal heading="🔔 Subscribe to updates 📪️" dialog={dialog}>

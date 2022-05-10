@@ -67,7 +67,7 @@ export function CreatePageForm({
     watch,
     formState: { errors },
   } = form;
-  const { jsonRpcProvider } = useConfig();
+  const { jsonRpcProvider, network } = useConfig();
   const { addMessage } = useGlobalMessages();
   const [{ data }] = useAccount();
   const [{ data: signer }] = useSigner();
@@ -86,9 +86,11 @@ export function CreatePageForm({
     contract.once(filter, (id) => {
       onApproved();
       setWaitingForTx(false);
-      window.location.assign(`/loans/${id.toString()}?newLoan=true`);
+      window.location.assign(
+        `/network/${network}/loans/${id.toString()}?newLoan=true`,
+      );
     });
-  }, [account, jsonRpcProvider, onApproved]);
+  }, [account, jsonRpcProvider, network, onApproved]);
 
   const mint = useCallback(
     async ({
@@ -164,12 +166,12 @@ export function CreatePageForm({
   );
 
   const loadAssets = useCallback(async () => {
-    const response = await fetch('/api/loanAssets');
+    const response = await fetch(`/api/network/${network}/loanAssets`);
     const tokens: LoanAsset[] | null = await response.json();
     if (tokens) {
       setLoanAssetOptions(tokens);
     }
-  }, []);
+  }, [network]);
 
   const handleBlur = useCallback(
     (event: FocusEvent<HTMLInputElement>) => {

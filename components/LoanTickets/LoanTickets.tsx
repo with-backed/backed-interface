@@ -19,7 +19,7 @@ type LoanTicketsProps = {
 type BorrowerColumnProps = LoanTicketsProps;
 
 function BorrowerColumn({ loan }: BorrowerColumnProps) {
-  const { jsonRpcProvider } = useConfig();
+  const { jsonRpcProvider, network } = useConfig();
   const { formattedTotalPayback } = useLoanDetails(loan);
   const BORROW_CONTRACT = jsonRpcERC721Contract(
     contractDirectory.borrowTicket,
@@ -37,7 +37,7 @@ function BorrowerColumn({ loan }: BorrowerColumnProps) {
       <DescriptionList>
         <dt>Borrower</dt>
         <dd title={loan.borrower}>
-          <Link href={`/profile/${loan.borrower}`}>
+          <Link href={`/network/${network}/profile/${loan.borrower}`}>
             <a>
               <DisplayAddress address={loan.borrower} />
             </a>
@@ -54,7 +54,7 @@ type LenderColumnProps = LoanTicketsProps;
 
 function LenderColumn({ loan }: LenderColumnProps) {
   const { formattedInterestAccrued } = useLoanDetails(loan);
-  const { jsonRpcProvider } = useConfig();
+  const { jsonRpcProvider, network } = useConfig();
   const LEND_CONTRACT = jsonRpcERC721Contract(
     contractDirectory.lendTicket,
     jsonRpcProvider,
@@ -85,7 +85,7 @@ function LenderColumn({ loan }: LenderColumnProps) {
       <DescriptionList>
         <dt>Lender</dt>
         <dd>
-          <Link href={`/profile/${loan.lender}`}>
+          <Link href={`/network/${network}/profile/${loan.lender}`}>
             <a>
               <DisplayAddress address={loan.lender} />
             </a>

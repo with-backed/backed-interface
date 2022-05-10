@@ -18,7 +18,7 @@ import { parseSubgraphLoan } from 'lib/loans/utils';
 import { formattedAnnualRate } from 'lib/interest';
 import { collateralToDiscordMessageEmbed } from './attachments';
 import { getNFTInfoForAttachment } from 'lib/events/consumers/getNftInfoForAttachment';
-import { Config } from 'lib/config';
+import { Config, SupportedNetwork } from 'lib/config';
 import capitalize from 'lodash/capitalize';
 
 export async function sendBotUpdateForTriggerAndEntity(
@@ -48,6 +48,7 @@ Event Tx: <${config.etherscanUrl}/tx/${event.id}>
     await getNFTInfoForAttachment(
       event.loan.collateralTokenURI,
       config.siteUrl,
+      config.network as SupportedNetwork,
     ),
     event.loan.collateralName,
     event.loan.collateralTokenId,

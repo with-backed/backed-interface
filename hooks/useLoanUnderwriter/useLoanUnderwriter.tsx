@@ -9,6 +9,7 @@ import { captureException } from '@sentry/nextjs';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import { EtherscanTransactionLink } from 'components/EtherscanLink';
 import Link from 'next/link';
+import { useConfig } from 'hooks/useConfig';
 
 // Annoyingly, the form data gets automatically parsed into numbers, so we can't use the LoanFormData type
 type Values = { interestRate: number; duration: number; loanAmount: number };
@@ -17,6 +18,7 @@ export function useLoanUnderwriter(
   { id, loanAssetDecimals }: Loan,
   refresh: () => void,
 ) {
+  const { network } = useConfig();
   const { addMessage } = useGlobalMessages();
   const [txHash, setTxHash] = useState('');
   const [transactionPending, setTransactionPending] = useState(false);
@@ -55,7 +57,11 @@ export function useLoanUnderwriter(
                 {
                   '💸 You are now the Lender on this loan! Subscribe to activity notifications from your'
                 }
-                <Link href={`/profile/${account}`}> profile page</Link>.
+                <Link href={`/network/${network}/profile/${account}`}>
+                  {' '}
+                  profile page
+                </Link>
+                .
               </p>
             ),
           });
@@ -76,7 +82,7 @@ export function useLoanUnderwriter(
           });
         });
     },
-    [account, addMessage, id, signer, loanAssetDecimals, refresh],
+    [account, addMessage, id, signer, loanAssetDecimals, network, refresh],
   );
 
   return {

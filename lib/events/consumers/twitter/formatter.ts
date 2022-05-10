@@ -18,7 +18,7 @@ import {
   getEstimatedRepaymentAndMaturity,
 } from 'lib/events/consumers/formattingHelpers';
 import { parseSubgraphLoan } from 'lib/loans/utils';
-import { Config } from 'lib/config';
+import { Config, SupportedNetwork } from 'lib/config';
 import capitalize from 'lodash/capitalize';
 
 export async function sendTweetForTriggerAndEntity(
@@ -47,6 +47,7 @@ ${config.siteUrl}/loans/${event.loan.id}
     await getNFTInfoForAttachment(
       event.loan.collateralTokenURI,
       config.siteUrl,
+      config.network as SupportedNetwork,
     ),
   );
 

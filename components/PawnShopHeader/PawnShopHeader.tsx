@@ -30,10 +30,10 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
   isErrorPage,
   showInitialInfo = false,
 }) => {
-  const { chainId } = useConfig();
+  const { chainId, network } = useConfig();
   const { messages, removeMessage } = useGlobalMessages();
   const { pathname } = useRouter();
-  const kind = pathname === CREATE_PATH ? 'secondary' : 'primary';
+  const kind = pathname.endsWith(CREATE_PATH) ? 'secondary' : 'primary';
   const codeActive = useKonami();
   const { hasCollapsed, onCollapse } = useHasCollapsedHeaderInfo();
   const [isInfoCollapsed, setIsInfoCollapsed] = useState(
@@ -76,7 +76,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
 
           <div className={styles.placeholder}></div>
 
-          <Link href="/" passHref>
+          <Link href={`/network/${network}/`} passHref>
             <a
               title="Backed"
               className={codeActive ? styles['flipped-link'] : styles.link}>
@@ -115,7 +115,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
         </TwelveColumn>
       </nav>
       <nav className={styles['mobile-header']}>
-        <Link href="/" passHref>
+        <Link href={`/network/${network}/`} passHref>
           <a title="Backed">
             {isErrorPage == true ? (
               <Image

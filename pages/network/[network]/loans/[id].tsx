@@ -70,7 +70,7 @@ export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
         config.jsonRpcProvider,
       ),
       fallback: {
-        [`/api/loans/history/${id}`]: historyJson,
+        [`/api/network/${network}/loans/history/${id}`]: historyJson,
       },
     },
   };
@@ -110,7 +110,7 @@ function LoansInner({
   serverLoan: Loan;
   collateralSaleInfo: CollateralSaleInfo;
 }) {
-  const { jsonRpcProvider } = useConfig();
+  const { jsonRpcProvider, network } = useConfig();
   const { mutate } = useSWRConfig();
   const [loan, setLoan] = useState(serverLoan);
   const tokenSpec: TokenURIAndID = useMemo(
@@ -123,13 +123,13 @@ function LoansInner({
   const metadata = useTokenMetadata(tokenSpec);
 
   const refresh = useCallback(() => {
-    mutate(`/api/loans/history/${loan.id}`);
+    mutate(`/api/network/${network}/loans/history/${loan.id}`);
     nodeLoanById(loan.id.toString(), jsonRpcProvider).then((loan) => {
       if (loan) {
         setLoan(loan);
       }
     });
-  }, [jsonRpcProvider, loan.id, mutate]);
+  }, [jsonRpcProvider, loan.id, mutate, network]);
 
   const router = useRouter();
   const { addMessage } = useGlobalMessages();
@@ -143,8 +143,11 @@ function LoansInner({
         message: (
           <p>
             {`You've successfully created loan #${loan.id}! To get notifications on its activity, go to the`}
-            <Link href={`/profile/${loan.borrower}`}> profile page</Link> of
-            address{' '}
+            <Link href={`/network/${network}/profile/${loan.borrower}`}>
+              {' '}
+              profile page
+            </Link>{' '}
+            of address{' '}
             <span title={loan.borrower}>
               {loan.borrower.substring(0, 7)}...
             </span>
@@ -153,7 +156,14 @@ function LoansInner({
       });
       router.replace(`/loans/${loan.id}`, undefined, { shallow: true });
     }
-  }, [addMessage, loan.borrower, loan.id, router, router.query.newLoan]);
+  }, [
+    addMessage,
+    loan.borrower,
+    loan.id,
+    network,
+    router,
+    router.query.newLoan,
+  ]);
 
   return (
     <>
