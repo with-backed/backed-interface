@@ -7,12 +7,17 @@ import {
   SaleType,
   Sale_OrderBy,
 } from 'types/generated/graphql/nftSales';
-import { nftSalesClient } from './urql';
+import { clientFromUrl } from './urql';
 
 export async function queryMostRecentSaleForNFT(
   nftContractAddress: string,
   nftTokenId: string,
+  nftSalesSubgraph: string | null,
 ): Promise<NFTSale | null> {
+  if (!nftSalesSubgraph) {
+    return null;
+  }
+  const nftSalesClient = clientFromUrl(nftSalesSubgraph);
   const { data, error } = await nftSalesClient
     .query<SalesByAddressQuery>(SalesByAddressDocument, {
       nftContractAddress,

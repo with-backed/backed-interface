@@ -3,7 +3,7 @@ import { subgraphLoan } from 'lib/mockData';
 import { main } from 'lib/events/sqs/consumer';
 import { pushEventForProcessing } from 'lib/events/sns/push';
 import { deleteMessage, receiveMessages } from 'lib/events/sqs/helpers';
-import { nftBackedLoansClientFromConfig } from 'lib/urql';
+import { clientFromUrl } from 'lib/urql';
 import { subgraphLendEvent } from 'lib/mockSubgraphEventsData';
 import { getMostRecentTermsForLoan } from 'lib/loans/subgraph/subgraphLoans';
 import { configs } from 'lib/config';
@@ -26,17 +26,16 @@ jest.mock('lib/events/sns/push', () => ({
 
 jest.mock('lib/urql', () => ({
   ...jest.requireActual('lib/urql'),
-  nftBackedLoansClientFromConfig: jest.fn(() => ({
+  clientFromUrl: jest.fn(() => ({
     query: jest.fn(),
   })),
 }));
 
-const client = nftBackedLoansClientFromConfig(configs.rinkeby);
+const client = clientFromUrl(configs.rinkeby.nftBackedLoansSubgraph);
 
-const mockedNFTBackedLoansClientFromConfig =
-  nftBackedLoansClientFromConfig as jest.MockedFunction<
-    typeof nftBackedLoansClientFromConfig
-  >;
+const mockedclientFromUrl = clientFromUrl as jest.MockedFunction<
+  typeof clientFromUrl
+>;
 
 const mockedQuery = client.query as jest.MockedFunction<typeof client.query>;
 
@@ -61,7 +60,7 @@ const mockedRecentTermsEvent = getMostRecentTermsForLoan as jest.MockedFunction<
 describe('SQS consumer', () => {
   beforeEach(async () => {
     jest.clearAllMocks();
-    mockedNFTBackedLoansClientFromConfig.mockReturnValue(client);
+    mockedclientFromUrl.mockReturnValue(client);
     mockedSnsPushCall.mockResolvedValue(true);
     mockedRecentTermsEvent.mockResolvedValue(undefined);
   });

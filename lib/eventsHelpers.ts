@@ -1,4 +1,4 @@
-import { nftBackedLoansClientFromConfig } from 'lib/urql';
+import { clientFromUrl } from 'lib/urql';
 import {
   CreateByTransactionHashDocument,
   CreateByTransactionHashQuery,
@@ -20,7 +20,7 @@ export async function subgraphEventFromTxHash(
   eventName: RawEventNameType,
   txHash: string,
 ): Promise<RawSubgraphEvent | undefined | null> {
-  const nftBackedLoansClient = nftBackedLoansClientFromConfig(config);
+  const nftBackedLoansClient = clientFromUrl(config.nftBackedLoansSubgraph);
 
   switch (eventName) {
     case 'CreateEvent':

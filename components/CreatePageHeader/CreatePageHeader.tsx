@@ -5,7 +5,7 @@ import { NFTMedia } from 'components/Media/NFTMedia';
 import { NFTCollateralPicker } from 'components/NFTCollateralPicker/NFTCollateralPicker';
 import { ethers } from 'ethers';
 import { getNftContractAddress, HIDDEN_NFT_ADDRESSES } from 'lib/eip721Subraph';
-import { eip721Client } from 'lib/urql';
+import { clientFromUrl } from 'lib/urql';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDialogState } from 'reakit/Dialog';
@@ -22,6 +22,7 @@ import { NFTEntity } from 'types/NFT';
 import { useTokenMetadata } from 'hooks/useTokenMetadata';
 import { useAccount } from 'wagmi';
 import { Button } from 'components/Button';
+import { useConfig } from 'hooks/useConfig';
 
 export function CreatePageHeader() {
   const form = useForm<CreateFormData>({
@@ -31,6 +32,7 @@ export function CreatePageHeader() {
       acceptHigherLoanAmounts: true,
     },
   });
+  const { eip721Subgraph } = useConfig();
   const [{ data }] = useAccount();
   const account = data?.address;
   const [current, send] = useMachine(createPageFormMachine);
@@ -171,6 +173,10 @@ export function CreatePageHeader() {
       'pendingAuthorization',
     ].some(current.matches);
   }, [current]);
+
+  const eip721Client = useMemo(() => {
+    return clientFromUrl(eip721Subgraph);
+  }, [eip721Subgraph]);
 
   return (
     <div className={styles['create-page-header']}>

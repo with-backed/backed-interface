@@ -2,6 +2,7 @@ import { subgraphLoanById } from 'lib/loans/subgraph/subgraphLoanById';
 import { LoanByIdQuery } from 'types/generated/graphql/nftLoans';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { captureException, withSentry } from '@sentry/nextjs';
+import { configs, SupportedNetwork, validateNetwork } from 'lib/config';
 
 // TODO: Should probably not just relying on
 // the subgraph, but fall back to the node, if the call didn't work
@@ -11,10 +12,15 @@ async function handler(
   res: NextApiResponse<LoanByIdQuery['loan'] | null>,
 ) {
   try {
-    const { id } = req.query;
+    validateNetwork(req.query);
+    const { id, network } = req.query;
+    const config = configs[network as SupportedNetwork];
     const idString: string = Array.isArray(id) ? id[0] : id;
 
-    const loan = await subgraphLoanById(idString);
+    const loan = await subgraphLoanById(
+      idString,
+      config.nftBackedLoansSubgraph,
+    );
     res.status(200).json(loan);
   } catch (e) {
     captureException(e);

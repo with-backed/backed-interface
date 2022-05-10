@@ -1,17 +1,22 @@
 import { ethers } from 'ethers';
-import { parse } from 'path';
 import { Loan } from 'types/Loan';
 import { nodeLoanById } from './node/nodeLoanById';
 import { subgraphLoanById } from './subgraph/subgraphLoanById';
 import { parseSubgraphLoan } from './utils';
 
-export async function loanById(id: string): Promise<Loan | null> {
+export async function loanById(
+  id: string,
+  nftBackedLoansSubgraph: string,
+): Promise<Loan | null> {
   if (parseInt(id).toString() != id) {
     // the path /loans/create was calling this with a bad arg
     return null;
   }
 
-  const loanInfoFromGraphQL = await subgraphLoanById(id);
+  const loanInfoFromGraphQL = await subgraphLoanById(
+    id,
+    nftBackedLoansSubgraph,
+  );
 
   // The Graph has indexed this loan. Fetch the interest owed and send it on its way.
   if (

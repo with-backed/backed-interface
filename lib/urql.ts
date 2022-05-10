@@ -1,5 +1,4 @@
 import { createClient } from '@urql/core';
-import { Config } from 'lib/config';
 
 // The local document cache is not very useful in our use case, because it
 // caches everything and only invalidates when there's a mutation. We never
@@ -7,24 +6,9 @@ import { Config } from 'lib/config';
 // be invalidated.
 const requestPolicy = 'network-only';
 
-export function nftBackedLoansClientFromConfig(config: Config) {
+export function clientFromUrl(url: string) {
   return createClient({
-    url: config.nftBackedLoansSubgraph,
+    url,
     requestPolicy,
   });
 }
-
-export const nftBackedLoansClient = createClient({
-  url: process.env.NEXT_PUBLIC_NFT_BACKED_LOANS_SUBGRAPH || '',
-  requestPolicy,
-});
-
-export const eip721Client = createClient({
-  url: process.env.NEXT_PUBLIC_EIP721_SUBGRAPH || '',
-  requestPolicy,
-});
-
-export const nftSalesClient = createClient({
-  url: process.env.NEXT_PUBLIC_NFT_SALES_SUBGRAPH || '',
-  requestPolicy,
-});

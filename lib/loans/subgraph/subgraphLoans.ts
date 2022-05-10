@@ -1,4 +1,4 @@
-import { nftBackedLoansClient } from '../../urql';
+import { clientFromUrl } from 'lib/urql';
 import {
   QueryLoansArgs,
   Loan,
@@ -26,6 +26,7 @@ import { captureException } from '@sentry/nextjs';
 // take an arguments and return a cursor to return paginated results
 export default async function subgraphLoans(
   first: number,
+  nftBackedLoansSubgraph: string,
   page: number = 1,
   sort: Loan_OrderBy = Loan_OrderBy.CreatedAtTimestamp,
   sortDirection: OrderDirection = OrderDirection.Desc,
@@ -43,6 +44,8 @@ export default async function subgraphLoans(
     orderBy: sort,
     orderDirection: sortDirection,
   };
+
+  const nftBackedLoansClient = clientFromUrl(nftBackedLoansSubgraph);
 
   const { data, error } = await nftBackedLoansClient
     .query<AllLoansQuery>(AllLoansDocument, queryArgs)
@@ -74,6 +77,7 @@ export async function searchLoans(
   selectedSort: Loan_OrderBy,
   sortDirection: OrderDirection,
   first: number,
+  nftBackedLoansSubgraph: string,
   page: number = 1,
 ): Promise<Loan[]> {
   const where = {
@@ -107,6 +111,8 @@ export async function searchLoans(
 
   let data: HomepageSearchQuery | HomepageSearchWithoutLenderQuery | undefined;
   let error: CombinedError | undefined;
+
+  const nftBackedLoansClient = clientFromUrl(nftBackedLoansSubgraph);
 
   if (lendTicketHolder === '') {
     ({ data, error } = await nftBackedLoansClient
@@ -142,11 +148,14 @@ const formatInterestForGraph = (interest: number): string => {
 export async function getLoansExpiringWithin(
   timeOne: number,
   timeTwo: number,
+  nftBackedLoansSubgraph: string,
 ): Promise<Loan[]> {
   const where: Loan_Filter = {
     endDateTimestamp_gt: timeOne,
     endDateTimestamp_lt: timeTwo,
   };
+
+  const nftBackedLoansClient = clientFromUrl(nftBackedLoansSubgraph);
 
   const { data, error } = await nftBackedLoansClient
     .query<AllLoansQuery>(AllLoansDocument, {
@@ -161,7 +170,9 @@ export async function getLoansExpiringWithin(
 
 export async function getMostRecentTermsForLoan(
   loanId: string,
+  nftBackedLoansSubgraph: string,
 ): Promise<LendEvent | undefined> {
+  const nftBackedLoansClient = clientFromUrl(nftBackedLoansSubgraph);
   const { data, error } = await nftBackedLoansClient
     .query<EventsForLoanQuery>(EventsForLoanDocument, { id: loanId })
     .toPromise();
@@ -176,10 +187,14 @@ export async function getMostRecentTermsForLoan(
   return lendEvents.sort((a, b) => b.blockNumber - a.blockNumber)[1];
 }
 
-export async function getCreatedLoansSince(timestamp: number) {
+export async function getCreatedLoansSince(
+  timestamp: number,
+  nftBackedLoansSubgraph: string,
+) {
   const where: Loan_Filter = {
     createdAtTimestamp_gt: timestamp,
   };
+  const nftBackedLoansClient = clientFromUrl(nftBackedLoansSubgraph);
 
   const { data, error } = await nftBackedLoansClient
     .query<AllLoansQuery>(AllLoansDocument, {
@@ -193,10 +208,15 @@ export async function getCreatedLoansSince(timestamp: number) {
   return data?.loans || [];
 }
 
-export async function getLentToLoansSince(timestamp: number) {
+export async function getLentToLoansSince(
+  timestamp: number,
+  nftBackedLoansSubgraph: string,
+) {
   const where: Loan_Filter = {
     lastAccumulatedTimestamp_gt: timestamp,
   };
+
+  const nftBackedLoansClient = clientFromUrl(nftBackedLoansSubgraph);
 
   const { data, error } = await nftBackedLoansClient
     .query<AllLoansQuery>(AllLoansDocument, {

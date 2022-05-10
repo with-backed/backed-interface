@@ -22,8 +22,13 @@ export type CollateralSaleInfo = {
 export async function getCollateralSaleInfo(
   nftContractAddress: string,
   tokenId: string,
+  nftSalesSubgraph: string | null,
 ): Promise<CollateralSaleInfo> {
-  const recentSale = await getMostRecentSale(nftContractAddress, tokenId);
+  const recentSale = await getMostRecentSale(
+    nftContractAddress,
+    tokenId,
+    nftSalesSubgraph,
+  );
 
   const collectionStats = await getCollectionStats(nftContractAddress);
 
@@ -36,12 +41,17 @@ export async function getCollateralSaleInfo(
 async function getMostRecentSale(
   nftContractAddress: string,
   tokenId: string,
+  nftSalesSubgraph: string | null,
 ): Promise<{ paymentToken: string; price: number } | null> {
   let sale: NFTSale | null = null;
 
   switch (true) {
     case onMainnet:
-      sale = await queryMostRecentSaleForNFT(nftContractAddress, tokenId);
+      sale = await queryMostRecentSaleForNFT(
+        nftContractAddress,
+        tokenId,
+        nftSalesSubgraph,
+      );
       if (!sale) return null;
       break;
     case onOptimism:

@@ -1,4 +1,5 @@
-import { nftBackedLoansClient } from 'lib/urql';
+import { configs } from 'lib/config';
+import { clientFromUrl } from 'lib/urql';
 import React from 'react';
 import { Provider, useQuery } from 'urql';
 
@@ -42,7 +43,7 @@ const Querier = () => {
 
 const Wrapper = () => {
   return (
-    <Provider value={nftBackedLoansClient}>
+    <Provider value={clientFromUrl(configs.rinkeby.nftBackedLoansSubgraph)}>
       <Querier />
     </Provider>
   );

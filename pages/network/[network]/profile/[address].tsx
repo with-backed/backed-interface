@@ -16,7 +16,7 @@ import { ProfileLoans } from 'components/Profile/ProfileLoans';
 import styles from './[address].module.css';
 import { PawnShopHeader } from 'components/PawnShopHeader';
 import Head from 'next/head';
-import { validateNetwork } from 'lib/config';
+import { configs, SupportedNetwork, validateNetwork } from 'lib/config';
 import { captureException } from '@sentry/nextjs';
 
 export type ProfilePageProps = {
@@ -39,10 +39,11 @@ export const getServerSideProps: GetServerSideProps<ProfilePageProps> = async (
   const rawAddress = context.params?.address as string;
 
   const address = (await resolveEns(rawAddress)) || rawAddress;
-
+  const network = context.params?.network as SupportedNetwork;
+  const config = configs[network];
   const [events, loans] = await Promise.all([
-    getAllEventsForAddress(address),
-    getAllActiveLoansForAddress(address),
+    getAllEventsForAddress(address, config.nftBackedLoansSubgraph),
+    getAllActiveLoansForAddress(address, config.nftBackedLoansSubgraph),
   ]);
 
   const eventsList = Object.entries(events)

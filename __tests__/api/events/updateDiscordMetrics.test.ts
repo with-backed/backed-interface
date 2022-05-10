@@ -57,6 +57,9 @@ describe('/api/events/updateDiscordMetrics', () => {
   it('calls updateWatcher with correct values', async () => {
     const { req, res } = createMocks({
       method: 'POST',
+      query: {
+        network: 'rinkeby',
+      },
     });
 
     await handler(req, res);

@@ -14,6 +14,7 @@ type LiquidatedLoans = {
 
 export async function getLiquidatedLoansForTimestamp(
   currentTimestamp: number,
+  nftBackedLoansSubgraph: string,
 ): Promise<LiquidatedLoans> {
   const notificationsFreq = parseInt(
     process.env.NEXT_PUBLIC_NOTIFICATIONS_FREQUENCY_HOURS!,
@@ -35,15 +36,19 @@ export async function getLiquidatedLoansForTimestamp(
   // in a perfect world, currentTimestamp === currentRunTimestamp, but with inconsistincies in our cron or anything else, they may differ
   const currentRunTimestamp = pastTimestamp + notificationsFreq * 3600;
 
-  const liquidationOccurringLoans = await getLoansExpiringWithin(
-    currentRunTimestamp + HOURS_IN_DAY * 3600,
-    currentRunTimestamp + (HOURS_IN_DAY + notificationsFreq) * 3600,
-  );
-
-  const liquidationOccurredLoans = await getLoansExpiringWithin(
-    currentRunTimestamp - notificationsFreq * 3600,
-    currentRunTimestamp,
-  );
+  const [liquidationOccurringLoans, liquidationOccurredLoans] =
+    await Promise.all([
+      getLoansExpiringWithin(
+        currentRunTimestamp + HOURS_IN_DAY * 3600,
+        currentRunTimestamp + (HOURS_IN_DAY + notificationsFreq) * 3600,
+        nftBackedLoansSubgraph,
+      ),
+      getLoansExpiringWithin(
+        currentRunTimestamp - notificationsFreq * 3600,
+        currentRunTimestamp,
+        nftBackedLoansSubgraph,
+      ),
+    ]);
 
   await overrideLastWrittenTimestamp(currentTimestamp);
 

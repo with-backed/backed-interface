@@ -19,7 +19,7 @@ import { PawnShopHeader } from 'components/PawnShopHeader';
 import Head from 'next/head';
 import { useTokenMetadata, TokenURIAndID } from 'hooks/useTokenMetadata';
 import { captureException } from '@sentry/nextjs';
-import { validateNetwork } from 'lib/config';
+import { configs, SupportedNetwork, validateNetwork } from 'lib/config';
 
 export type LoanPageProps = {
   loanInfoJson: string;
@@ -41,9 +41,11 @@ export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
     };
   }
   const id = context.params?.id as string;
+  const network = context.params?.network as SupportedNetwork;
+  const config = configs[network];
   const [loan, history] = await Promise.all([
-    loanById(id),
-    subgraphLoanHistoryById(id),
+    loanById(id, config.nftBackedLoansSubgraph),
+    subgraphLoanHistoryById(id, config.nftBackedLoansSubgraph),
   ]);
 
   // The Graph didn't have loan, and fallback call errored.
@@ -62,6 +64,7 @@ export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
       collateralSaleInfo: await getCollateralSaleInfo(
         loan.collateralContractAddress,
         loan.collateralTokenId.toString(),
+        config.nftSalesSubgraph,
       ),
       fallback: {
         [`/api/loans/history/${id}`]: historyJson,

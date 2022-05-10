@@ -49,6 +49,9 @@ describe('/api/events/cron/processTimelyEvents', () => {
   it('makes call to get liquidated loans, gets notifications associated with addresses, and sends emails', async () => {
     const { req, res } = createMocks({
       method: 'POST',
+      query: {
+        network: 'rinkeby',
+      },
     });
 
     await handler(req, res);
