@@ -21,6 +21,7 @@ import {
 export async function nodeLoanEventsById(
   loanIdString: string,
   jsonRpcProvider: string,
+  startBlock: number,
 ) {
   const loanId = ethers.BigNumber.from(loanIdString);
   const contract = jsonRpcLoanFacilitator(jsonRpcProvider);
@@ -50,10 +51,7 @@ export async function nodeLoanEventsById(
     seizeCollateralEvents,
   ] = await Promise.all(
     filters.map((filter) => {
-      return contract.queryFilter(
-        filter,
-        parseInt(process.env.NEXT_PUBLIC_FACILITATOR_START_BLOCK || ''),
-      );
+      return contract.queryFilter(filter, startBlock);
     }),
   );
 

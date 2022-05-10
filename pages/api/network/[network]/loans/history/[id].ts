@@ -17,7 +17,11 @@ async function handler(
     const idString: string = Array.isArray(id) ? id[0] : id;
     const config = configs[network];
 
-    const events = await nodeLoanEventsById(idString, config.jsonRpcProvider);
+    const events = await nodeLoanEventsById(
+      idString,
+      config.jsonRpcProvider,
+      config.facilitatorStartBlock,
+    );
 
     res.status(200).json(events);
   } catch (e) {
