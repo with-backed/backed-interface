@@ -37,10 +37,12 @@ export const getServerSideProps: GetServerSideProps<ProfilePageProps> = async (
     };
   }
   const rawAddress = context.params?.address as string;
-
-  const address = (await resolveEns(rawAddress)) || rawAddress;
   const network = context.params?.network as SupportedNetwork;
   const config = configs[network];
+
+  const address =
+    (await resolveEns(rawAddress, config.jsonRpcProvider)) || rawAddress;
+
   const [events, loans] = await Promise.all([
     getAllEventsForAddress(address, config.nftBackedLoansSubgraph),
     getAllActiveLoansForAddress(address, config.nftBackedLoansSubgraph),

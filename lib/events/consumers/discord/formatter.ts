@@ -36,6 +36,7 @@ export async function sendBotUpdateForTriggerAndEntity(
     trigger,
     event,
     capitalize(config.network),
+    config.jsonRpcProvider,
     mostRecentTermsEvent,
   )}
 
@@ -59,6 +60,7 @@ async function generateContentStringForEvent(
   trigger: NotificationTriggerType,
   event: RawSubgraphEvent,
   networkName: string,
+  jsonRpcProvider: string,
   mostRecentTermsEvent?: LendEvent,
 ): Promise<string> {
   let duration: string;
@@ -69,9 +71,12 @@ async function generateContentStringForEvent(
       const createEvent = event as CreateEvent;
 
       return `**New Loan Created on ${networkName}**
-${await ensOrAddr(createEvent.creator)} has created a loan with collateral: ${
-        createEvent.loan.collateralName
-      } #${createEvent.loan.collateralTokenId}
+${await ensOrAddr(
+  createEvent.creator,
+  jsonRpcProvider,
+)} has created a loan with collateral: ${createEvent.loan.collateralName} #${
+        createEvent.loan.collateralTokenId
+      }
 
 Their desired loans terms are:
 ${formatTermsForBot(
@@ -87,7 +92,10 @@ ${formatTermsForBot(
       return `**Loan Lent To on ${networkName}**
 Loan #${lendEvent.loan.id}: ${
         lendEvent.loan.collateralName
-      } has been lent to by ${await ensOrAddr(lendEvent.lender)}
+      } has been lent to by ${await ensOrAddr(
+        lendEvent.lender,
+        jsonRpcProvider,
+      )}
 
 Their loans terms are: 
 ${formatTermsForBot(
@@ -100,8 +108,11 @@ ${formatTermsForBot(
     case 'BuyoutEvent':
       const buyoutEvent = event as BuyoutEvent;
 
-      const newLender = await ensOrAddr(buyoutEvent.newLender);
-      const oldLender = await ensOrAddr(buyoutEvent.lendTicketHolder);
+      const newLender = await ensOrAddr(buyoutEvent.newLender, jsonRpcProvider);
+      const oldLender = await ensOrAddr(
+        buyoutEvent.lendTicketHolder,
+        jsonRpcProvider,
+      );
       duration = formattedDuration(
         buyoutEvent.timestamp - mostRecentTermsEvent!.timestamp,
       );
@@ -148,9 +159,13 @@ ${formatTermsForBot(
       return `**Loan Repaid on ${networkName}**
 Loan #${repaymentEvent.loan.id}: ${
         repaymentEvent.loan.collateralName
-      } has been repaid by ${await ensOrAddr(repaymentEvent.repayer)}
+      } has been repaid by ${await ensOrAddr(
+        repaymentEvent.repayer,
+        jsonRpcProvider,
+      )}
 ${await ensOrAddr(
   repaymentEvent.lendTicketHolder,
+  jsonRpcProvider,
 )} held the loan for ${duration} and earned ${formattedInterestEarned} ${
         repaymentEvent.loan.loanAssetSymbol
       } over that time
@@ -167,8 +182,12 @@ ${formatTermsForBot(
       const collateralSeizureEvent = event as CollateralSeizureEvent;
       const borrower = await ensOrAddr(
         collateralSeizureEvent.borrowTicketHolder,
+        jsonRpcProvider,
       );
-      const lender = await ensOrAddr(collateralSeizureEvent.lendTicketHolder);
+      const lender = await ensOrAddr(
+        collateralSeizureEvent.lendTicketHolder,
+        jsonRpcProvider,
+      );
       duration = formattedDuration(
         collateralSeizureEvent.timestamp -
           collateralSeizureEvent.loan.lastAccumulatedTimestamp,

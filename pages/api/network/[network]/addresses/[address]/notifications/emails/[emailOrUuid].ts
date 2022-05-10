@@ -72,6 +72,7 @@ async function handler(
         address,
         notificationRequest.id,
         config.siteUrl,
+        config.jsonRpcProvider,
       );
 
       res.status(200).json(notificationRequest);

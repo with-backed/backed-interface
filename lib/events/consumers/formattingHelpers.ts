@@ -9,8 +9,11 @@ import { Loan as ParsedLoan } from 'types/Loan';
 
 dayjs.extend(duration);
 
-export const ensOrAddr = async (rawAddress: string): Promise<string> => {
-  const ens = await addressToENS(rawAddress);
+export const ensOrAddr = async (
+  rawAddress: string,
+  jsonRpcProvider: string,
+): Promise<string> => {
+  const ens = await addressToENS(rawAddress, jsonRpcProvider);
   if (ens === null) {
     return rawAddress.substring(0, 7);
   }

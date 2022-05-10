@@ -4,6 +4,7 @@ import {
   getAccountLoanAssetBalance,
   resolveEns,
 } from 'lib/account';
+import { configs } from 'lib/config';
 
 jest.mock('lib/contracts', () => ({
   ...jest.requireActual('lib/contracts'),
@@ -51,7 +52,10 @@ describe('account utilities', () => {
 
   describe('resolveEns', () => {
     it('returns the value the provider resolves', async () => {
-      const value = await resolveEns('0xaddress');
+      const value = await resolveEns(
+        '0xaddress',
+        configs.rinkeby.jsonRpcProvider,
+      );
       expect(value).toEqual('address.eth');
     });
   });
