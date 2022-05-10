@@ -1,10 +1,10 @@
 import { ethers } from 'ethers';
 import { subgraphLoan } from 'lib/mockData';
 import { createMocks } from 'node-mocks-http';
-import handler from 'pages/api/events/consumers/discord';
+import handler from 'pages/api/events/consumers/twitter';
 import fetchMock from 'jest-fetch-mock';
 import { subgraphLendEvent } from 'lib/mockSubgraphEventsData';
-import { sendBotUpdateForTriggerAndEntity } from 'lib/events/consumers/discord/formatter';
+import { sendTweetForTriggerAndEntity } from 'lib/events/consumers/twitter/formatter';
 import { configs } from 'lib/config';
 
 const subgraphLoanCopy = {
@@ -14,19 +14,18 @@ const subgraphLoanCopy = {
 subgraphLoanCopy.lendTicketHolder =
   ethers.Wallet.createRandom().address.toLowerCase();
 
-jest.mock('lib/events/consumers/discord/formatter', () => ({
-  sendBotUpdateForTriggerAndEntity: jest.fn(),
+jest.mock('lib/events/consumers/twitter/formatter', () => ({
+  sendTweetForTriggerAndEntity: jest.fn(),
 }));
 
-const mockSendDiscordBotMessageCall =
-  sendBotUpdateForTriggerAndEntity as jest.MockedFunction<
-    typeof sendBotUpdateForTriggerAndEntity
-  >;
+const mockSendTweetCall = sendTweetForTriggerAndEntity as jest.MockedFunction<
+  typeof sendTweetForTriggerAndEntity
+>;
 
-describe('/api/events/consumers/discord', () => {
+describe('/api/events/consumers/twitter', () => {
   beforeEach(async () => {
     jest.clearAllMocks();
-    mockSendDiscordBotMessageCall.mockResolvedValue();
+    mockSendTweetCall.mockResolvedValue();
   });
 
   describe('SNS subscription confirmation', () => {
@@ -47,7 +46,7 @@ describe('/api/events/consumers/discord', () => {
       expect(fetchMock).toHaveBeenCalledWith('https://example.com', {
         method: 'GET',
       });
-      expect(sendBotUpdateForTriggerAndEntity).not.toHaveBeenCalled;
+      expect(sendTweetForTriggerAndEntity).not.toHaveBeenCalled;
 
       expect(res._getStatusCode()).toBe(200);
       expect(res._getData()).toEqual(`subscription successful`);
@@ -74,8 +73,8 @@ describe('/api/events/consumers/discord', () => {
 
       await handler(req, res);
 
-      expect(sendBotUpdateForTriggerAndEntity).toHaveBeenCalledTimes(1);
-      expect(sendBotUpdateForTriggerAndEntity).toHaveBeenCalledWith(
+      expect(sendTweetForTriggerAndEntity).toHaveBeenCalledTimes(1);
+      expect(sendTweetForTriggerAndEntity).toHaveBeenCalledWith(
         'BuyoutEvent',
         expect.objectContaining({
           lendTicketHolder: subgraphLoanCopy.lendTicketHolder,
@@ -86,9 +85,7 @@ describe('/api/events/consumers/discord', () => {
       );
 
       expect(res._getStatusCode()).toBe(200);
-      expect(JSON.parse(res._getData())).toEqual(
-        `discord bot messages successfully sent`,
-      );
+      expect(JSON.parse(res._getData())).toEqual(`tweet successfully sent`);
     });
   });
 
@@ -112,8 +109,8 @@ describe('/api/events/consumers/discord', () => {
 
       await handler(req, res);
 
-      expect(sendBotUpdateForTriggerAndEntity).toHaveBeenCalledTimes(1);
-      expect(sendBotUpdateForTriggerAndEntity).toHaveBeenCalledWith(
+      expect(sendTweetForTriggerAndEntity).toHaveBeenCalledTimes(1);
+      expect(sendTweetForTriggerAndEntity).toHaveBeenCalledWith(
         'LendEvent',
         expect.objectContaining({
           borrowTicketHolder: subgraphLoanCopy.borrowTicketHolder,
@@ -124,9 +121,7 @@ describe('/api/events/consumers/discord', () => {
       );
 
       expect(res._getStatusCode()).toBe(200);
-      expect(JSON.parse(res._getData())).toEqual(
-        `discord bot messages successfully sent`,
-      );
+      expect(JSON.parse(res._getData())).toEqual(`tweet successfully sent`);
     });
 
     it('gets notifications associated with address, and sends email when loan does previous lender', async () => {
@@ -148,8 +143,8 @@ describe('/api/events/consumers/discord', () => {
 
       await handler(req, res);
 
-      expect(sendBotUpdateForTriggerAndEntity).toHaveBeenCalledTimes(1);
-      expect(sendBotUpdateForTriggerAndEntity).toHaveBeenCalledWith(
+      expect(sendTweetForTriggerAndEntity).toHaveBeenCalledTimes(1);
+      expect(sendTweetForTriggerAndEntity).toHaveBeenCalledWith(
         'LendEvent',
         expect.objectContaining({
           lendTicketHolder: subgraphLoanCopy.borrowTicketHolder,
@@ -160,9 +155,7 @@ describe('/api/events/consumers/discord', () => {
       );
 
       expect(res._getStatusCode()).toBe(200);
-      expect(JSON.parse(res._getData())).toEqual(
-        `discord bot messages successfully sent`,
-      );
+      expect(JSON.parse(res._getData())).toEqual(`tweet successfully sent`);
     });
   });
 
@@ -186,8 +179,8 @@ describe('/api/events/consumers/discord', () => {
 
       await handler(req, res);
 
-      expect(sendBotUpdateForTriggerAndEntity).toHaveBeenCalledTimes(1);
-      expect(sendBotUpdateForTriggerAndEntity).toHaveBeenCalledWith(
+      expect(sendTweetForTriggerAndEntity).toHaveBeenCalledTimes(1);
+      expect(sendTweetForTriggerAndEntity).toHaveBeenCalledWith(
         'RepaymentEvent',
         expect.objectContaining({
           lendTicketHolder: subgraphLoanCopy.lendTicketHolder,
@@ -198,9 +191,7 @@ describe('/api/events/consumers/discord', () => {
       );
 
       expect(res._getStatusCode()).toBe(200);
-      expect(JSON.parse(res._getData())).toEqual(
-        `discord bot messages successfully sent`,
-      );
+      expect(JSON.parse(res._getData())).toEqual(`tweet successfully sent`);
     });
   });
 
@@ -224,8 +215,8 @@ describe('/api/events/consumers/discord', () => {
 
       await handler(req, res);
 
-      expect(sendBotUpdateForTriggerAndEntity).toHaveBeenCalledTimes(1);
-      expect(sendBotUpdateForTriggerAndEntity).toHaveBeenCalledWith(
+      expect(sendTweetForTriggerAndEntity).toHaveBeenCalledTimes(1);
+      expect(sendTweetForTriggerAndEntity).toHaveBeenCalledWith(
         'CollateralSeizureEvent',
         expect.objectContaining({
           lendTicketHolder: subgraphLoanCopy.borrowTicketHolder,
@@ -236,9 +227,7 @@ describe('/api/events/consumers/discord', () => {
       );
 
       expect(res._getStatusCode()).toBe(200);
-      expect(JSON.parse(res._getData())).toEqual(
-        `discord bot messages successfully sent`,
-      );
+      expect(JSON.parse(res._getData())).toEqual(`tweet successfully sent`);
     });
   });
 });

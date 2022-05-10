@@ -31,6 +31,7 @@ const rinkeby: Config = {
   nftSalesSubgraph: null,
   siteUrl: 'https://rinkeby.withbacked.xyz',
   network: 'rinkeby',
+  emailSubjectPrefix: '[Testnet]:',
 };
 
 const ethereum = {
@@ -51,6 +52,7 @@ const ethereum = {
     'https://eth-mainnet.alchemyapi.io/v2/De3LMv_8CYuN9WzVEgoOI5w7ltnGIhnH',
   siteUrl: 'https://withbacked.xyz',
   network: 'ethereum',
+  emailSubjectPrefix: '[Ethereum]:',
 };
 
 export const configs = {

@@ -21,11 +21,13 @@ import {
   getSubjectForGenericEmail,
 } from 'lib/events/consumers/userNotifications/emails/genericFormatter';
 import { onMainnet, siteUrl } from 'lib/chainEnv';
+import { Config } from 'lib/config';
 
 export async function sendEmailsForTriggerAndEntity(
   emailTrigger: NotificationTriggerType,
   entity: RawSubgraphEvent | Loan,
   now: number,
+  config: Config,
   mostRecentTermsEvent?: LendEvent,
 ) {
   // we do not want to send LendEvent emails and BuyoutEvent emails
@@ -38,6 +40,7 @@ export async function sendEmailsForTriggerAndEntity(
     emailTrigger,
     entity,
     now,
+    config,
     mostRecentTermsEvent,
   );
   if (!addressToEmailComponents) {
@@ -57,9 +60,7 @@ export async function sendEmailsForTriggerAndEntity(
 
       return executeEmailSendWithSes(
         generateHTMLForEventsEmail(emailComponentGenerator(r.id)),
-        onMainnet
-          ? getEmailSubject(emailTrigger, entity)
-          : `[TESTNET]: ${getEmailSubject(emailTrigger, entity)}`,
+        `${config.emailSubjectPrefix} ${getEmailSubject(emailTrigger, entity)}`,
         r.deliveryDestination,
       );
     });

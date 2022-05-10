@@ -9,6 +9,7 @@ import { tweet } from 'lib/events/consumers/twitter/api';
 import { sendTweetForTriggerAndEntity } from 'lib/events/consumers/twitter/formatter';
 import { nftResponseDataToImageBuffer } from 'lib/events/consumers/twitter/attachments';
 import { getNFTInfoForAttachment } from 'lib/events/consumers/getNftInfoForAttachment';
+import { configs } from 'lib/config';
 
 jest.mock('lib/events/consumers/twitter/api', () => ({
   tweet: jest.fn(),
@@ -42,7 +43,11 @@ describe('Formatting events for tweet updates', () => {
 
   describe('CreateEvent', () => {
     it('Correctly formats event for tweet', async () => {
-      await sendTweetForTriggerAndEntity('CreateEvent', subgraphCreateEvent);
+      await sendTweetForTriggerAndEntity(
+        'CreateEvent',
+        subgraphCreateEvent,
+        configs.rinkeby,
+      );
 
       expect(mockTweetCall).toHaveBeenCalledTimes(1);
       expect(mockTweetCall).toHaveBeenCalledWith(
@@ -72,7 +77,11 @@ describe('Formatting events for tweet updates', () => {
 
   describe('LendEvent', () => {
     it('Correctly formats event for tweet', async () => {
-      await sendTweetForTriggerAndEntity('LendEvent', subgraphLendEvent);
+      await sendTweetForTriggerAndEntity(
+        'LendEvent',
+        subgraphLendEvent,
+        configs.rinkeby,
+      );
 
       expect(mockTweetCall).toHaveBeenCalledTimes(1);
       expect(mockTweetCall).toHaveBeenCalledWith(
@@ -104,11 +113,16 @@ describe('Formatting events for tweet updates', () => {
 
   describe('BuyoutEvent', () => {
     it('Correctly formats event for tweet', async () => {
-      await sendTweetForTriggerAndEntity('BuyoutEvent', subgraphBuyoutEvent, {
-        ...subgraphLendEvent,
-        loanAmount: '8000000000000000000000',
-        timestamp: subgraphLendEvent.timestamp - 86400 * 2,
-      });
+      await sendTweetForTriggerAndEntity(
+        'BuyoutEvent',
+        subgraphBuyoutEvent,
+        configs.rinkeby,
+        {
+          ...subgraphLendEvent,
+          loanAmount: '8000000000000000000000',
+          timestamp: subgraphLendEvent.timestamp - 86400 * 2,
+        },
+      );
 
       expect(mockTweetCall).toHaveBeenCalledTimes(1);
       expect(mockTweetCall).toHaveBeenCalledWith(
@@ -147,6 +161,7 @@ describe('Formatting events for tweet updates', () => {
       await sendTweetForTriggerAndEntity(
         'RepaymentEvent',
         subgraphRepaymentEvent,
+        configs.rinkeby,
       );
 
       expect(mockTweetCall).toHaveBeenCalledTimes(1);
@@ -182,6 +197,7 @@ describe('Formatting events for tweet updates', () => {
       await sendTweetForTriggerAndEntity(
         'CollateralSeizureEvent',
         subgraphCollateralSeizureEvent,
+        configs.rinkeby,
       );
 
       expect(mockTweetCall).toHaveBeenCalledTimes(1);

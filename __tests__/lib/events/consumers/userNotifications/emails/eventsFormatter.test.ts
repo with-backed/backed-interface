@@ -1,3 +1,4 @@
+import { configs } from 'lib/config';
 import {
   getEmailComponentsMap,
   getEmailSubject,
@@ -24,6 +25,7 @@ describe('Transforming on-chain events to email components', () => {
         'CreateEvent',
         subgraphCreateEvent,
         now,
+        configs.rinkeby,
       );
 
       expect(subject).toEqual('Loan #65 has been created');
@@ -72,6 +74,7 @@ describe('Transforming on-chain events to email components', () => {
         'BuyoutEvent',
         subgraphBuyoutEvent,
         now,
+        configs.rinkeby,
         {
           ...subgraphLendEvent,
           loanAmount: '8000000000000000000000',
@@ -185,6 +188,7 @@ describe('Transforming on-chain events to email components', () => {
         'LendEvent',
         subgraphLendEvent,
         now,
+        configs.rinkeby,
       );
 
       expect(subject).toEqual('Loan #65 has a lender');
@@ -253,6 +257,7 @@ describe('Transforming on-chain events to email components', () => {
         'RepaymentEvent',
         subgraphRepaymentEvent,
         now,
+        configs.rinkeby,
       );
 
       expect(subject).toEqual('Loan #65 has been repaid');
@@ -322,6 +327,7 @@ describe('Transforming on-chain events to email components', () => {
         'CollateralSeizureEvent',
         subgraphCollateralSeizureEvent,
         now,
+        configs.rinkeby,
       );
 
       expect(subject).toEqual('Loan #65 collateral has been seized');
@@ -390,6 +396,7 @@ describe('Transforming on-chain events to email components', () => {
         'LiquidationOccurring',
         subgraphLoanForEvents,
         now,
+        configs.rinkeby,
       );
 
       expect(subject).toEqual('Loan #65 is approaching due');
@@ -465,6 +472,7 @@ describe('Transforming on-chain events to email components', () => {
         'LiquidationOccurred',
         expiredLoan,
         now,
+        configs.rinkeby,
       );
 
       expect(subject).toEqual('Loan #65 is past due');

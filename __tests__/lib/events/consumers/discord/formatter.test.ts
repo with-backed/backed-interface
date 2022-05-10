@@ -9,6 +9,7 @@ import {
 } from 'lib/mockSubgraphEventsData';
 import { collateralToDiscordMessageEmbed } from 'lib/events/consumers/discord/attachments';
 import { getNFTInfoForAttachment } from 'lib/events/consumers/getNftInfoForAttachment';
+import { configs } from 'lib/config';
 
 jest.mock('lib/events/consumers/discord/bot', () => ({
   sendBotMessage: jest.fn(),
@@ -35,8 +36,6 @@ const mockMessageEmbedCall =
     typeof collateralToDiscordMessageEmbed
   >;
 
-const now = 1647357808;
-
 describe('Formatting events for discord bot messages', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -50,7 +49,7 @@ describe('Formatting events for discord bot messages', () => {
       await sendBotUpdateForTriggerAndEntity(
         'CreateEvent',
         subgraphCreateEvent,
-        now,
+        configs.rinkeby,
       );
 
       expect(mockSendBotUpdateCall).toHaveBeenCalledTimes(1);
@@ -92,7 +91,7 @@ describe('Formatting events for discord bot messages', () => {
       await sendBotUpdateForTriggerAndEntity(
         'LendEvent',
         subgraphLendEvent,
-        now,
+        configs.rinkeby,
       );
 
       expect(mockSendBotUpdateCall).toHaveBeenCalledTimes(1);
@@ -134,7 +133,7 @@ describe('Formatting events for discord bot messages', () => {
       await sendBotUpdateForTriggerAndEntity(
         'BuyoutEvent',
         subgraphBuyoutEvent,
-        now,
+        configs.rinkeby,
         {
           ...subgraphLendEvent,
           loanAmount: '8000000000000000000000',
@@ -191,7 +190,7 @@ describe('Formatting events for discord bot messages', () => {
       await sendBotUpdateForTriggerAndEntity(
         'RepaymentEvent',
         subgraphRepaymentEvent,
-        now,
+        configs.rinkeby,
       );
 
       expect(mockSendBotUpdateCall).toHaveBeenCalledTimes(1);
@@ -233,7 +232,7 @@ describe('Formatting events for discord bot messages', () => {
       await sendBotUpdateForTriggerAndEntity(
         'CollateralSeizureEvent',
         subgraphCollateralSeizureEvent,
-        now,
+        configs.rinkeby,
       );
 
       expect(mockSendBotUpdateCall).toHaveBeenCalledTimes(1);

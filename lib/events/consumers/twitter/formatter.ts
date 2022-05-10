@@ -19,10 +19,13 @@ import {
 } from 'lib/events/consumers/formattingHelpers';
 import { parseSubgraphLoan } from 'lib/loans/utils';
 import { siteUrl } from 'lib/chainEnv';
+import { Config } from 'lib/config';
+import capitalize from 'lodash/capitalize';
 
 export async function sendTweetForTriggerAndEntity(
   trigger: NotificationTriggerType,
   event: RawSubgraphEvent,
+  config: Config,
   mostRecentTermsEvent?: LendEvent,
 ) {
   // we do not want to tweet for LendEvent bot messages and BuyoutEvent bot messages
@@ -33,10 +36,11 @@ export async function sendTweetForTriggerAndEntity(
   const tweetContent = `${await generateContentStringForEvent(
     trigger,
     event,
+    capitalize(config.network),
     mostRecentTermsEvent,
   )}
 
-${siteUrl()}/loans/${event.loan.id}
+${config.siteUrl}/loans/${event.loan.id}
 `;
 
   const attachmentImageBuffer = await nftResponseDataToImageBuffer(
@@ -49,6 +53,7 @@ ${siteUrl()}/loans/${event.loan.id}
 async function generateContentStringForEvent(
   trigger: NotificationTriggerType,
   event: RawSubgraphEvent,
+  networkName: string,
   mostRecentTermsEvent?: LendEvent,
 ): Promise<string> {
   let duration: string;
@@ -58,7 +63,7 @@ async function generateContentStringForEvent(
     case 'CreateEvent':
       const createEvent = event as CreateEvent;
 
-      return `New Loan Created
+      return `New Loan Created on ${networkName}
 ${await ensOrAddr(createEvent.creator)} has created a loan with collateral: ${
         createEvent.loan.collateralName
       } #${createEvent.loan.collateralTokenId}
@@ -74,7 +79,7 @@ ${formatTermsForBot(
     case 'LendEvent':
       const lendEvent = event as LendEvent;
 
-      return `Loan Lent To
+      return `Loan Lent To on ${networkName}
 ${truncatedLoanName(
   event.loan.id,
   event.loan.collateralName,
@@ -102,7 +107,7 @@ ${formatTermsForBot(
         buyoutEvent.loan.loanAssetDecimal,
       );
 
-      return `Loan Bought Out
+      return `Loan Bought Out on ${networkName}
 ${truncatedLoanName(
   event.loan.id,
   event.loan.collateralName,
@@ -136,7 +141,7 @@ ${formatTermsForBot(
         repaymentEvent.loan.loanAssetDecimal,
       );
 
-      return `Loan Repaid
+      return `Loan Repaid on ${networkName}
 ${truncatedLoanName(
   event.loan.id,
   event.loan.collateralName,
@@ -170,7 +175,7 @@ ${formatTermsForBot(
         parseSubgraphLoan(collateralSeizureEvent.loan),
       );
 
-      return `Loan Collateral Seized
+      return `Loan Collateral Seized on ${networkName}
 ${truncatedLoanName(
   event.loan.id,
   event.loan.collateralName,
