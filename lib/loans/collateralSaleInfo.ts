@@ -24,12 +24,14 @@ export async function getCollateralSaleInfo(
   tokenId: string,
   nftSalesSubgraph: string | null,
   network: SupportedNetwork,
+  jsonRpcProvider: string,
 ): Promise<CollateralSaleInfo> {
   const recentSale = await getMostRecentSale(
     nftContractAddress,
     tokenId,
     nftSalesSubgraph,
     network,
+    jsonRpcProvider,
   );
 
   const collectionStats = await getCollectionStats(nftContractAddress, network);
@@ -45,6 +47,7 @@ async function getMostRecentSale(
   tokenId: string,
   nftSalesSubgraph: string | null,
   network: SupportedNetwork,
+  jsonRpcProvider: string,
 ): Promise<{ paymentToken: string; price: number } | null> {
   let sale: NFTSale | null = null;
 
@@ -67,7 +70,10 @@ async function getMostRecentSale(
   const paymentTokenAddress = sale.paymentToken;
   const price = sale.price;
 
-  const erc20Contract = jsonRpcERC20Contract(paymentTokenAddress);
+  const erc20Contract = jsonRpcERC20Contract(
+    paymentTokenAddress,
+    jsonRpcProvider,
+  );
 
   let paymentTokenSymbol: string;
   let recentSaleTokenDecimals: number;

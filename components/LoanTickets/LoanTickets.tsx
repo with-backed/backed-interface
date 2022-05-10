@@ -10,6 +10,7 @@ import { Loan } from 'types/Loan';
 import React from 'react';
 import styles from './LoanTickets.module.css';
 import Link from 'next/link';
+import { useConfig } from 'hooks/useConfig';
 
 type LoanTicketsProps = {
   loan: Loan;
@@ -18,8 +19,12 @@ type LoanTicketsProps = {
 type BorrowerColumnProps = LoanTicketsProps;
 
 function BorrowerColumn({ loan }: BorrowerColumnProps) {
+  const { jsonRpcProvider } = useConfig();
   const { formattedTotalPayback } = useLoanDetails(loan);
-  const BORROW_CONTRACT = jsonRpcERC721Contract(contractDirectory.borrowTicket);
+  const BORROW_CONTRACT = jsonRpcERC721Contract(
+    contractDirectory.borrowTicket,
+    jsonRpcProvider,
+  );
 
   return (
     <div className={styles.column}>
@@ -49,7 +54,11 @@ type LenderColumnProps = LoanTicketsProps;
 
 function LenderColumn({ loan }: LenderColumnProps) {
   const { formattedInterestAccrued } = useLoanDetails(loan);
-  const LEND_CONTRACT = jsonRpcERC721Contract(contractDirectory.lendTicket);
+  const { jsonRpcProvider } = useConfig();
+  const LEND_CONTRACT = jsonRpcERC721Contract(
+    contractDirectory.lendTicket,
+    jsonRpcProvider,
+  );
 
   if (!loan.lender) {
     return (

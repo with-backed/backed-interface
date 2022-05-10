@@ -6,6 +6,7 @@ import { Input } from 'components/Input';
 import { LoanTermsDisclosure } from 'components/LoanTermsDisclosure';
 import { Select } from 'components/Select';
 import { ethers } from 'ethers';
+import { useConfig } from 'hooks/useConfig';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import {
   INTEREST_RATE_PERCENT_DECIMALS,
@@ -66,6 +67,7 @@ export function CreatePageForm({
     watch,
     formState: { errors },
   } = form;
+  const { jsonRpcProvider } = useConfig();
   const { addMessage } = useGlobalMessages();
   const [{ data }] = useAccount();
   const [{ data: signer }] = useSigner();
@@ -79,14 +81,14 @@ export function CreatePageForm({
   const watchAllFields = watch();
 
   const wait = useCallback(async () => {
-    const contract = jsonRpcLoanFacilitator();
+    const contract = jsonRpcLoanFacilitator(jsonRpcProvider);
     const filter = contract.filters.CreateLoan(null, account, null, null, null);
     contract.once(filter, (id) => {
       onApproved();
       setWaitingForTx(false);
       window.location.assign(`/loans/${id.toString()}?newLoan=true`);
     });
-  }, [account, onApproved]);
+  }, [account, jsonRpcProvider, onApproved]);
 
   const mint = useCallback(
     async ({
@@ -98,7 +100,10 @@ export function CreatePageForm({
     }: CreateFormData) => {
       const parsedInterestRate = parseFloat(interestRate);
       const parsedDuration = parseFloat(duration);
-      const assetContract = jsonRpcERC20Contract(denomination.address);
+      const assetContract = jsonRpcERC20Contract(
+        denomination.address,
+        jsonRpcProvider,
+      );
       const loanAssetDecimals = await assetContract.decimals();
       const durationInSeconds = Math.ceil(parsedDuration * SECONDS_IN_A_DAY);
       const annualInterestRate = ethers.BigNumber.from(
@@ -150,6 +155,7 @@ export function CreatePageForm({
       addMessage,
       collateralAddress,
       collateralTokenID,
+      jsonRpcProvider,
       onError,
       onSubmit,
       signer,

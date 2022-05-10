@@ -18,9 +18,12 @@ import {
   SeizeCollateralEvent,
 } from 'types/generated/abis/NFTLoanFacilitator';
 
-export async function nodeLoanEventsById(loanIdString: string) {
+export async function nodeLoanEventsById(
+  loanIdString: string,
+  jsonRpcProvider: string,
+) {
   const loanId = ethers.BigNumber.from(loanIdString);
-  const contract = jsonRpcLoanFacilitator();
+  const contract = jsonRpcLoanFacilitator(jsonRpcProvider);
 
   const createLoanFilter = contract.filters.CreateLoan(loanId, null);
   const closeFilter = contract.filters.Close(loanId);

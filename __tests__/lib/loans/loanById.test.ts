@@ -24,6 +24,7 @@ const mockedNodeLoanById = nodeLoanById as jest.MockedFunction<
 >;
 const loanId = '65';
 const nftBackedLoansSubgraph = configs.rinkeby.nftBackedLoansSubgraph;
+const provider = configs.rinkeby.jsonRpcProvider;
 const parsedLoan: Loan = parseSubgraphLoan(subgraphLoan);
 
 describe('loanById', () => {
@@ -34,7 +35,7 @@ describe('loanById', () => {
   });
 
   it('checks the subgraph for the loan, returning that data parsed if present', async () => {
-    const loan = await loanById(loanId, nftBackedLoansSubgraph);
+    const loan = await loanById(loanId, nftBackedLoansSubgraph, provider);
     expect(mockedSubgraphLoanById).toHaveBeenCalledWith(
       loanId,
       nftBackedLoansSubgraph,
@@ -45,13 +46,13 @@ describe('loanById', () => {
 
   it('falls back to the node when there is no subgraph data', async () => {
     mockedSubgraphLoanById.mockResolvedValue(null);
-    const loan = await loanById(loanId, nftBackedLoansSubgraph);
+    const loan = await loanById(loanId, nftBackedLoansSubgraph, provider);
     expect(mockedSubgraphLoanById).toHaveBeenCalledWith(
       loanId,
       nftBackedLoansSubgraph,
     );
     expect(loan?.id).toEqual(ethers.BigNumber.from(loanId));
-    expect(mockedNodeLoanById).toHaveBeenCalledWith(loanId);
+    expect(mockedNodeLoanById).toHaveBeenCalledWith(loanId, provider);
   });
 
   it('returns null when we get an invalid value from the node', async () => {
@@ -60,7 +61,7 @@ describe('loanById', () => {
       ...parsedLoan,
       loanAssetContractAddress: '0',
     });
-    const loan = await loanById(loanId, nftBackedLoansSubgraph);
+    const loan = await loanById(loanId, nftBackedLoansSubgraph, provider);
     expect(loan).toBeNull();
   });
 
@@ -69,7 +70,7 @@ describe('loanById', () => {
     mockedNodeLoanById.mockImplementation(() => {
       throw new Error('fail');
     });
-    const loan = await loanById(loanId, nftBackedLoansSubgraph);
+    const loan = await loanById(loanId, nftBackedLoansSubgraph, provider);
     expect(loan).toBeNull();
   });
 });

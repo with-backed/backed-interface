@@ -7,6 +7,7 @@ import { parseSubgraphLoan } from './utils';
 export async function loanById(
   id: string,
   nftBackedLoansSubgraph: string,
+  jsonRpcProvider: string,
 ): Promise<Loan | null> {
   if (parseInt(id).toString() != id) {
     // the path /loans/create was calling this with a bad arg
@@ -31,7 +32,7 @@ export async function loanById(
 
   // The Graph has not indexed this loan, but it may exist.
   try {
-    const loanInfo = await nodeLoanById(id);
+    const loanInfo = await nodeLoanById(id, jsonRpcProvider);
 
     if (ethers.BigNumber.from(loanInfo.loanAssetContractAddress).isZero()) {
       // Solidity initializes all the loan structs,

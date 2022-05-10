@@ -35,6 +35,7 @@ describe('account utilities', () => {
         '0xaccount',
         '0xcontract',
         ethers.BigNumber.from(8),
+        configs.rinkeby.jsonRpcProvider,
       );
       expect(value).toEqual(100);
     });
@@ -45,6 +46,7 @@ describe('account utilities', () => {
       const value = await getAccountLoanAssetAllowance(
         '0xaccount',
         '0xcontract',
+        configs.rinkeby.jsonRpcProvider,
       );
       expect(value).toEqual(10000000000);
     });

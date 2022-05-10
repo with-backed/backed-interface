@@ -20,6 +20,7 @@ import Head from 'next/head';
 import { useTokenMetadata, TokenURIAndID } from 'hooks/useTokenMetadata';
 import { captureException } from '@sentry/nextjs';
 import { configs, SupportedNetwork, validateNetwork } from 'lib/config';
+import { useConfig } from 'hooks/useConfig';
 
 export type LoanPageProps = {
   loanInfoJson: string;
@@ -44,7 +45,7 @@ export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
   const network = context.params?.network as SupportedNetwork;
   const config = configs[network];
   const [loan, history] = await Promise.all([
-    loanById(id, config.nftBackedLoansSubgraph),
+    loanById(id, config.nftBackedLoansSubgraph, config.jsonRpcProvider),
     subgraphLoanHistoryById(id, config.nftBackedLoansSubgraph),
   ]);
 
@@ -66,6 +67,7 @@ export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
         loan.collateralTokenId.toString(),
         config.nftSalesSubgraph,
         network,
+        config.jsonRpcProvider,
       ),
       fallback: {
         [`/api/loans/history/${id}`]: historyJson,
@@ -108,6 +110,7 @@ function LoansInner({
   serverLoan: Loan;
   collateralSaleInfo: CollateralSaleInfo;
 }) {
+  const { jsonRpcProvider } = useConfig();
   const { mutate } = useSWRConfig();
   const [loan, setLoan] = useState(serverLoan);
   const tokenSpec: TokenURIAndID = useMemo(
@@ -121,12 +124,12 @@ function LoansInner({
 
   const refresh = useCallback(() => {
     mutate(`/api/loans/history/${loan.id}`);
-    nodeLoanById(loan.id.toString()).then((loan) => {
+    nodeLoanById(loan.id.toString(), jsonRpcProvider).then((loan) => {
       if (loan) {
         setLoan(loan);
       }
     });
-  }, [loan.id, mutate]);
+  }, [jsonRpcProvider, loan.id, mutate]);
 
   const router = useRouter();
   const { addMessage } = useGlobalMessages();
