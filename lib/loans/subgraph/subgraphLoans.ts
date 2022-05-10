@@ -1,4 +1,4 @@
-import { nftBackedLoansClient } from '../../urql';
+import { nftBackedLoansClient, nftBackedLoansClientFromConfig } from 'lib/urql';
 import {
   QueryLoansArgs,
   Loan,
@@ -21,6 +21,7 @@ import { daysToSecondsBigNum } from 'lib/duration';
 import { CombinedError } from 'urql';
 import { INTEREST_RATE_PERCENT_DECIMALS } from 'lib/constants';
 import { captureException } from '@sentry/nextjs';
+import { Config } from 'lib/config';
 
 // TODO(Wilson): this is a temp fix just for this query. We should generalize this method to
 // take an arguments and return a cursor to return paginated results
@@ -142,7 +143,10 @@ const formatInterestForGraph = (interest: number): string => {
 export async function getLoansExpiringWithin(
   timeOne: number,
   timeTwo: number,
+  config: Config,
 ): Promise<Loan[]> {
+  const nftBackedLoansClient = nftBackedLoansClientFromConfig(config);
+
   const where: Loan_Filter = {
     endDateTimestamp_gt: timeOne,
     endDateTimestamp_lt: timeTwo,

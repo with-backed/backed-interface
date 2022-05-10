@@ -53,6 +53,12 @@ describe('/api/events/cron/processTimelyEvents', () => {
 
     await handler(req, res);
 
+    expect(mockedGetLiquidatedLoansCall).toHaveBeenCalledTimes(1);
+    expect(mockedGetLiquidatedLoansCall).toHaveBeenCalledWith(
+      expect.anything(),
+      configs.rinkeby,
+    );
+
     expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledTimes(2);
     expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledWith(
       'LiquidationOccurring',

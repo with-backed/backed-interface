@@ -1,3 +1,4 @@
+import { Config } from 'lib/config';
 import { getLoansExpiringWithin } from 'lib/loans/subgraph/subgraphLoans';
 import { Loan } from 'types/generated/graphql/nftLoans';
 import {
@@ -14,6 +15,7 @@ type LiquidatedLoans = {
 
 export async function getLiquidatedLoansForTimestamp(
   currentTimestamp: number,
+  config: Config,
 ): Promise<LiquidatedLoans> {
   const notificationsFreq = parseInt(
     process.env.NEXT_PUBLIC_NOTIFICATIONS_FREQUENCY_HOURS!,
@@ -38,11 +40,13 @@ export async function getLiquidatedLoansForTimestamp(
   const liquidationOccurringLoans = await getLoansExpiringWithin(
     currentRunTimestamp + HOURS_IN_DAY * 3600,
     currentRunTimestamp + (HOURS_IN_DAY + notificationsFreq) * 3600,
+    config,
   );
 
   const liquidationOccurredLoans = await getLoansExpiringWithin(
     currentRunTimestamp - notificationsFreq * 3600,
     currentRunTimestamp,
+    config,
   );
 
   await overrideLastWrittenTimestamp(currentTimestamp);

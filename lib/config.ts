@@ -60,6 +60,10 @@ export const configs = {
   rinkeby,
 };
 
+export const prodConfigs = [ethereum];
+
+export const devConfigs = [rinkeby];
+
 const SUPPORTED_NETWORKS = new Set(Object.keys(configs));
 
 export function isSupportedNetwork(
