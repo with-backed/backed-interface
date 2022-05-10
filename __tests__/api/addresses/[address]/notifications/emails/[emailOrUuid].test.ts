@@ -73,6 +73,7 @@ describe('/api/addresses/[address]/notifications/emails/[email]', () => {
         query: {
           address,
           emailOrUuid: notificationDestination,
+          network: 'rinkeby',
         },
       });
 
@@ -99,6 +100,7 @@ describe('/api/addresses/[address]/notifications/emails/[email]', () => {
         query: {
           address,
           emailOrUuid: 'some-uuid',
+          network: 'rinkeby',
         },
         body: {
           signedMessage: sig,
@@ -123,6 +125,7 @@ describe('/api/addresses/[address]/notifications/emails/[email]', () => {
         query: {
           address,
           emailOrUuid: notificationDestination,
+          network: 'rinkeby',
         },
         body: {
           signedMessage: sig,
