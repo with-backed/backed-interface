@@ -3,7 +3,7 @@ import { SupportedNetwork } from './config';
 export async function getUnitPriceForCoin(
   tokenAddress: string,
   toCurrency: string,
-  network: SupportedNetwork,
+  network?: SupportedNetwork,
 ): Promise<number | undefined> {
   if (network !== 'ethereum') {
     return undefined;

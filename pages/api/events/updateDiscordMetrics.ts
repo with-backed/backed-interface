@@ -1,7 +1,6 @@
 import { captureException, withSentry } from '@sentry/nextjs';
 import { ethers } from 'ethers';
 import { getUnitPriceForCoin } from 'lib/coingecko';
-import { configs, SupportedNetwork, validateNetwork } from 'lib/config';
 import { updateWatcher } from 'lib/events/consumers/discord/bot';
 import { DiscordMetric } from 'lib/events/consumers/discord/shared';
 import {
@@ -20,16 +19,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   }
 
   try {
-    validateNetwork(req.query);
-    const { network } = req.query;
-    const config = configs[network as SupportedNetwork];
     const createdLoansThisWeek = await getCreatedLoansSince(
       oneWeekAgoTimestamp(),
-      config.nftBackedLoansSubgraph,
     );
     const lentToLoansThisWeek = await getLentToLoansSince(
       oneWeekAgoTimestamp(),
-      config.nftBackedLoansSubgraph,
     );
 
     const lentToLoansDollarValues = await Promise.all(
@@ -38,11 +32,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
           parseFloat(
             ethers.utils.formatUnits(loan.loanAmount, loan.loanAssetDecimal),
           ) *
-          ((await getUnitPriceForCoin(
-            loan.loanAssetContractAddress,
-            'usd',
-            config.network as SupportedNetwork,
-          )) || 0),
+          ((await getUnitPriceForCoin(loan.loanAssetContractAddress, 'usd')) ||
+            0),
       ),
     );
 

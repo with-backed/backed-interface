@@ -189,8 +189,12 @@ export async function getMostRecentTermsForLoan(
 
 export async function getCreatedLoansSince(
   timestamp: number,
-  nftBackedLoansSubgraph: string,
+  nftBackedLoansSubgraph?: string,
 ) {
+  // TODO: fix
+  if (!nftBackedLoansSubgraph) {
+    return [];
+  }
   const where: Loan_Filter = {
     createdAtTimestamp_gt: timestamp,
   };
@@ -210,8 +214,12 @@ export async function getCreatedLoansSince(
 
 export async function getLentToLoansSince(
   timestamp: number,
-  nftBackedLoansSubgraph: string,
+  nftBackedLoansSubgraph?: string,
 ) {
+  // TODO: fix
+  if (!nftBackedLoansSubgraph) {
+    return [];
+  }
   const where: Loan_Filter = {
     lastAccumulatedTimestamp_gt: timestamp,
   };

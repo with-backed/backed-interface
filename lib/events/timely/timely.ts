@@ -14,8 +14,15 @@ type LiquidatedLoans = {
 
 export async function getLiquidatedLoansForTimestamp(
   currentTimestamp: number,
-  nftBackedLoansSubgraph: string,
+  nftBackedLoansSubgraph?: string,
 ): Promise<LiquidatedLoans> {
+  // TODO: fix
+  if (!nftBackedLoansSubgraph) {
+    return {
+      liquidationOccurredLoans: [],
+      liquidationOccurringLoans: [],
+    };
+  }
   const notificationsFreq = parseInt(
     process.env.NEXT_PUBLIC_NOTIFICATIONS_FREQUENCY_HOURS!,
   );
