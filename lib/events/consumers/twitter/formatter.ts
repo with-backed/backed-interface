@@ -18,7 +18,6 @@ import {
   getEstimatedRepaymentAndMaturity,
 } from 'lib/events/consumers/formattingHelpers';
 import { parseSubgraphLoan } from 'lib/loans/utils';
-import { siteUrl } from 'lib/chainEnv';
 import { Config } from 'lib/config';
 import capitalize from 'lodash/capitalize';
 
@@ -44,7 +43,10 @@ ${config.siteUrl}/loans/${event.loan.id}
 `;
 
   const attachmentImageBuffer = await nftResponseDataToImageBuffer(
-    await getNFTInfoForAttachment(event.loan.collateralTokenURI),
+    await getNFTInfoForAttachment(
+      event.loan.collateralTokenURI,
+      config.siteUrl,
+    ),
   );
 
   await tweet(tweetContent, attachmentImageBuffer);

@@ -1,11 +1,12 @@
-import { onMainnet } from './chainEnv';
+import { SupportedNetwork } from './config';
 
 export async function getUnitPriceForCoin(
   tokenAddress: string,
   toCurrency: string,
+  network: SupportedNetwork,
 ): Promise<number | undefined> {
-  if (!onMainnet) {
-    return 1.01;
+  if (network !== 'ethereum') {
+    return undefined;
   }
 
   const statsRes = await fetch(

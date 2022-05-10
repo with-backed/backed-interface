@@ -20,7 +20,6 @@ import {
   GenericEmailType,
   getSubjectForGenericEmail,
 } from 'lib/events/consumers/userNotifications/emails/genericFormatter';
-import { onMainnet, siteUrl } from 'lib/chainEnv';
 import { Config } from 'lib/config';
 
 export async function sendEmailsForTriggerAndEntity(
@@ -73,6 +72,7 @@ export async function sendConfirmationEmail(
   destination: string,
   ethAddress: string,
   unsubscribeUuid: string,
+  siteUrl: string,
 ) {
   if (!process.env.VERCEL_ENV) {
     return;
@@ -82,7 +82,7 @@ export async function sendConfirmationEmail(
     mainMessage: `We've received your request to subscribe to the activity of ${await ensOrAddr(
       ethAddress,
     )}`,
-    footer: `https://${siteUrl()}/profile/${ethAddress}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+    footer: `https://${siteUrl}/profile/${ethAddress}?unsubscribe=true&uuid=${unsubscribeUuid}`,
   };
 
   await executeEmailSendWithSes(

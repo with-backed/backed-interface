@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { onMainnet, onOptimism, onRinkeby } from 'lib/chainEnv';
+import { SupportedNetwork } from 'lib/config';
 import { jsonRpcERC20Contract } from 'lib/contracts';
 import {
   CollectionStatistics,
@@ -23,14 +23,16 @@ export async function getCollateralSaleInfo(
   nftContractAddress: string,
   tokenId: string,
   nftSalesSubgraph: string | null,
+  network: SupportedNetwork,
 ): Promise<CollateralSaleInfo> {
   const recentSale = await getMostRecentSale(
     nftContractAddress,
     tokenId,
     nftSalesSubgraph,
+    network,
   );
 
-  const collectionStats = await getCollectionStats(nftContractAddress);
+  const collectionStats = await getCollectionStats(nftContractAddress, network);
 
   return {
     collectionStats,
@@ -42,11 +44,12 @@ async function getMostRecentSale(
   nftContractAddress: string,
   tokenId: string,
   nftSalesSubgraph: string | null,
+  network: SupportedNetwork,
 ): Promise<{ paymentToken: string; price: number } | null> {
   let sale: NFTSale | null = null;
 
-  switch (true) {
-    case onMainnet:
+  switch (network) {
+    case 'ethereum':
       sale = await queryMostRecentSaleForNFT(
         nftContractAddress,
         tokenId,
@@ -54,12 +57,10 @@ async function getMostRecentSale(
       );
       if (!sale) return null;
       break;
-    case onOptimism:
-      // TODO(adamgobes): follow up with Quixotic team on when they will release API to get most recent sale. it is not available for now
-      return null;
-    case onRinkeby:
+    case 'rinkeby':
       sale = generateFakeSaleForNFT(nftContractAddress, tokenId);
     default:
+      // TODO(adamgobes): follow up with Quixotic team on when they will release API to get most recent sale. it is not available for now
       return null;
   }
 

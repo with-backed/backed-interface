@@ -65,6 +65,7 @@ export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
         loan.collateralContractAddress,
         loan.collateralTokenId.toString(),
         config.nftSalesSubgraph,
+        network,
       ),
       fallback: {
         [`/api/loans/history/${id}`]: historyJson,

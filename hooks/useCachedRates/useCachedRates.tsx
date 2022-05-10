@@ -1,10 +1,11 @@
+import { useConfig } from 'hooks/useConfig';
 import { getUnitPriceForCoin } from 'lib/coingecko';
+import { SupportedNetwork } from 'lib/config';
 import {
   createContext,
   PropsWithChildren,
   useCallback,
   useContext,
-  useEffect,
   useState,
 } from 'react';
 
@@ -24,6 +25,7 @@ export const CachedRatesContext = createContext<CachedRatesAccessor>({
 });
 
 export function CachedRatesProvider({ children }: PropsWithChildren<{}>) {
+  const { network } = useConfig();
   const [rateCache, setRateCache] = useState<CurrentCachedRates>({});
   const setKeyValueForCache = useCallback(
     (newKey: string, newValue: { nominal: number; expiry: number }) => {
@@ -44,7 +46,11 @@ export function CachedRatesProvider({ children }: PropsWithChildren<{}>) {
       if (rateCache[key] && now < rateCache[key].expiry) {
         rate = rateCache[key].nominal;
       } else {
-        rate = await getUnitPriceForCoin(erc20Address, fiat);
+        rate = await getUnitPriceForCoin(
+          erc20Address,
+          fiat,
+          network as SupportedNetwork,
+        );
 
         if (!rate) return null;
 
@@ -55,7 +61,7 @@ export function CachedRatesProvider({ children }: PropsWithChildren<{}>) {
       }
       return rate;
     },
-    [rateCache, setKeyValueForCache],
+    [network, rateCache, setKeyValueForCache],
   );
 
   return (

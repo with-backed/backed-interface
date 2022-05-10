@@ -1,4 +1,3 @@
-import { siteUrl } from 'lib/chainEnv';
 import { getMedia } from 'lib/getNFTInfo';
 import { NFTResponseData } from 'lib/getNFTInfo';
 
@@ -6,6 +5,7 @@ const JSON_PREFIX = 'data:application/json;base64,';
 
 export async function getNFTInfoForAttachment(
   collateralTokenURI: string,
+  siteUrl: string,
 ): Promise<NFTResponseData> {
   let NFTInfo: NFTResponseData;
 
@@ -26,7 +26,7 @@ export async function getNFTInfoForAttachment(
     const tokenURIRes = await fetch(
       isDataUri
         ? collateralTokenURI
-        : `${siteUrl()}/api/nftInfo/${encodeURIComponent(collateralTokenURI)}`,
+        : `${siteUrl}/api/nftInfo/${encodeURIComponent(collateralTokenURI)}`,
     );
     NFTInfo = await tokenURIRes.json();
   }

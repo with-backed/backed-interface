@@ -38,8 +38,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
           parseFloat(
             ethers.utils.formatUnits(loan.loanAmount, loan.loanAssetDecimal),
           ) *
-          ((await getUnitPriceForCoin(loan.loanAssetContractAddress, 'usd')) ||
-            0),
+          ((await getUnitPriceForCoin(
+            loan.loanAssetContractAddress,
+            'usd',
+            config.network as SupportedNetwork,
+          )) || 0),
       ),
     );
 
