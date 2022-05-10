@@ -7,7 +7,7 @@ import {
 } from 'lib/loans/subgraph/subgraphLoans';
 import { subgraphLoan } from 'lib/mockData';
 import { createMocks } from 'node-mocks-http';
-import handler from 'pages/api/network/[network]/events/updateDiscordMetrics';
+import handler from 'pages/api/events/updateDiscordMetrics';
 
 jest.mock('lib/events/consumers/discord/bot', () => ({
   updateWatcher: jest.fn(),
@@ -57,9 +57,6 @@ describe('/api/events/updateDiscordMetrics', () => {
   it('calls updateWatcher with correct values', async () => {
     const { req, res } = createMocks({
       method: 'POST',
-      query: {
-        network: 'rinkeby',
-      },
     });
 
     await handler(req, res);

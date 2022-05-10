@@ -1,6 +1,6 @@
 import { main } from 'lib/events/sqs/consumer';
 import { createMocks } from 'node-mocks-http';
-import handler from 'pages/api//events/cron/processNewOnchainEvents';
+import handler from 'pages/api/events/cron/processNewOnchainEvents';
 
 jest.mock('lib/events/sqs/consumer', () => ({
   main: jest.fn(),
