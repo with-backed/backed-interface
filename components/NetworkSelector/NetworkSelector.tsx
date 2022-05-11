@@ -2,6 +2,7 @@ import { Select } from 'components/Select';
 import { useConfig } from 'hooks/useConfig';
 import { configs } from 'lib/config';
 import capitalize from 'lodash/capitalize';
+import { useRouter } from 'next/router';
 import React, { useCallback, useMemo } from 'react';
 import { SingleValue } from 'react-select';
 
@@ -16,14 +17,15 @@ const options: Option[] = Object.keys(configs).map((network) => ({
 
 export const NetworkSelector = () => {
   const { network } = useConfig();
+  const router = useRouter();
 
   const onChange = useCallback(
     (option: SingleValue<Option>) => {
       if (option && option.value !== network) {
-        window.location.assign('/network/' + option.value);
+        router.push('/network/' + option.value);
       }
     },
-    [network],
+    [network, router],
   );
 
   const defaultValue = useMemo(

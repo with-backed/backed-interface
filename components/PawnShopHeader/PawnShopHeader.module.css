@@ -55,9 +55,9 @@
   gap: 18px;
 }
 
-.connect-wallet > button {
-  flex: 0;
+.connect-wallet > * {
   white-space: nowrap;
+  max-width: 50%;
 }
 
 @media screen and (max-width: 955px) {
