@@ -4,8 +4,6 @@
   border-radius: var(--border-radius-large);
   box-shadow: var(--box-shadow);
   margin: 75px auto;
-  max-height: calc(100vh - 150px);
-  overflow-y: auto;
 }
 
 .regular {
@@ -18,6 +16,7 @@
 
 .scroll-box {
   margin: var(--padding-container);
+  padding-bottom: var(--gap);
   margin-top: 0;
 }
 
@@ -37,6 +36,7 @@
   height: 100vh;
   width: 100vw;
   z-index: 1000;
+  overflow-y: auto;
 }
 
 .desktop-close-button {
