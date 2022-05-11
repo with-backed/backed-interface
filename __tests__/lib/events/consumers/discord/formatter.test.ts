@@ -73,7 +73,7 @@ describe('Formatting events for discord bot messages', () => {
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
         expect.stringContaining(
-          'Loan: <https://rinkeby.withbacked.xyz/loans/65>',
+          'Loan: <https://staging.withbacked.xyz/network/rinkeby/loans/65>',
         ),
         undefined,
       );
@@ -115,7 +115,7 @@ describe('Formatting events for discord bot messages', () => {
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
         expect.stringContaining(
-          'Loan: <https://rinkeby.withbacked.xyz/loans/65>',
+          'Loan: <https://staging.withbacked.xyz/network/rinkeby/loans/65>',
         ),
         undefined,
       );
@@ -172,7 +172,7 @@ describe('Formatting events for discord bot messages', () => {
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
         expect.stringContaining(
-          'Loan: <https://rinkeby.withbacked.xyz/loans/65>',
+          'Loan: <https://staging.withbacked.xyz/network/rinkeby/loans/65>',
         ),
         undefined,
       );
@@ -214,7 +214,7 @@ describe('Formatting events for discord bot messages', () => {
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
         expect.stringContaining(
-          'Loan: <https://rinkeby.withbacked.xyz/loans/65>',
+          'Loan: <https://staging.withbacked.xyz/network/rinkeby/loans/65>',
         ),
         undefined,
       );
@@ -250,7 +250,7 @@ describe('Formatting events for discord bot messages', () => {
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
         expect.stringContaining(
-          'Loan: <https://rinkeby.withbacked.xyz/loans/65>',
+          'Loan: <https://staging.withbacked.xyz/network/rinkeby/loans/65>',
         ),
         undefined,
       );

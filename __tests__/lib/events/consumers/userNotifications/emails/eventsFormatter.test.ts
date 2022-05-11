@@ -58,12 +58,12 @@ describe('Transforming on-chain events to email components', () => {
       expect(borrowerComponents.messageAfterTerms).toEqual([]);
 
       expect(borrowerComponents.viewLinks).toEqual([
-        'https://rinkeby.withbacked.xyz/loans/65',
+        'https://staging.withbacked.xyz/network/rinkeby/loans/65',
         'https://rinkeby.etherscan.io/tx/0x7685d19b85fb80c03ac0c117ea542b77a6c8ecebea56744b121183cfb614bce6',
       ]);
 
       expect(borrowerComponents.footer).toEqual(
-        'https://rinkeby.withbacked.xyz/profile/0x0dd7d78ed27632839cd2a929ee570ead346c19fc?unsubscribe=true&uuid=borrower-uuid',
+        'https://staging.withbacked.xyz/profile/network/rinkeby/0x0dd7d78ed27632839cd2a929ee570ead346c19fc?unsubscribe=true&uuid=borrower-uuid',
       );
     });
   });
@@ -149,7 +149,7 @@ describe('Transforming on-chain events to email components', () => {
       ]);
 
       expect(borrowerComponents.viewLinks).toEqual([
-        'https://rinkeby.withbacked.xyz/loans/65',
+        'https://staging.withbacked.xyz/network/rinkeby/loans/65',
         'https://rinkeby.etherscan.io/tx/0x7685d19b85fb80c03ac0c117ea542b77a6c8ecebea56744b121183cfb614bce6',
       ]);
       expect([
@@ -171,13 +171,13 @@ describe('Transforming on-chain events to email components', () => {
       );
 
       expect(borrowerComponents.footer).toEqual(
-        'https://rinkeby.withbacked.xyz/profile/0x0dd7d78ed27632839cd2a929ee570ead346c19fc?unsubscribe=true&uuid=borrower-uuid',
+        'https://staging.withbacked.xyz/profile/network/rinkeby/0x0dd7d78ed27632839cd2a929ee570ead346c19fc?unsubscribe=true&uuid=borrower-uuid',
       );
       expect(oldLenderComponents.footer).toEqual(
-        'https://rinkeby.withbacked.xyz/profile/0x10359616ab170c1bd6c478a40c6715a49ba25efc?unsubscribe=true&uuid=old-lender-uuid',
+        'https://staging.withbacked.xyz/profile/network/rinkeby/0x10359616ab170c1bd6c478a40c6715a49ba25efc?unsubscribe=true&uuid=old-lender-uuid',
       );
       expect(newLenderComponents.footer).toEqual(
-        'https://rinkeby.withbacked.xyz/profile/0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866?unsubscribe=true&uuid=lender-uuid',
+        'https://staging.withbacked.xyz/profile/network/rinkeby/0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866?unsubscribe=true&uuid=lender-uuid',
       );
     });
   });
@@ -237,16 +237,16 @@ describe('Transforming on-chain events to email components', () => {
       );
 
       expect(borrowerComponents.viewLinks).toEqual([
-        'https://rinkeby.withbacked.xyz/loans/65',
+        'https://staging.withbacked.xyz/network/rinkeby/loans/65',
         'https://rinkeby.etherscan.io/tx/0x7685d19b85fb80c03ac0c117ea542b77a6c8ecebea56744b121183cfb614bce6',
       ]);
       expect(borrowerComponents.viewLinks).toEqual(lenderComponents.viewLinks);
 
       expect(borrowerComponents.footer).toEqual(
-        'https://rinkeby.withbacked.xyz/profile/0x0dd7d78ed27632839cd2a929ee570ead346c19fc?unsubscribe=true&uuid=borrower-uuid',
+        'https://staging.withbacked.xyz/profile/network/rinkeby/0x0dd7d78ed27632839cd2a929ee570ead346c19fc?unsubscribe=true&uuid=borrower-uuid',
       );
       expect(lenderComponents.footer).toEqual(
-        'https://rinkeby.withbacked.xyz/profile/0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866?unsubscribe=true&uuid=lender-uuid',
+        'https://staging.withbacked.xyz/profile/network/rinkeby/0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866?unsubscribe=true&uuid=lender-uuid',
       );
     });
   });
@@ -304,16 +304,16 @@ describe('Transforming on-chain events to email components', () => {
       );
 
       expect(borrowerComponents.viewLinks).toEqual([
-        'https://rinkeby.withbacked.xyz/loans/65',
+        'https://staging.withbacked.xyz/network/rinkeby/loans/65',
         'https://rinkeby.etherscan.io/tx/0x7685d19b85fb80c03ac0c117ea542b77a6c8ecebea56744b121183cfb614bce6',
       ]);
       expect(borrowerComponents.viewLinks).toEqual(lenderComponents.viewLinks);
 
       expect(borrowerComponents.footer).toEqual(
-        'https://rinkeby.withbacked.xyz/profile/0x0dd7d78ed27632839cd2a929ee570ead346c19fc?unsubscribe=true&uuid=borrower-uuid',
+        'https://staging.withbacked.xyz/profile/network/rinkeby/0x0dd7d78ed27632839cd2a929ee570ead346c19fc?unsubscribe=true&uuid=borrower-uuid',
       );
       expect(lenderComponents.footer).toEqual(
-        'https://rinkeby.withbacked.xyz/profile/0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866?unsubscribe=true&uuid=lender-uuid',
+        'https://staging.withbacked.xyz/profile/network/rinkeby/0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866?unsubscribe=true&uuid=lender-uuid',
       );
     });
   });
@@ -373,16 +373,16 @@ describe('Transforming on-chain events to email components', () => {
       ]);
 
       expect(borrowerComponents.viewLinks).toEqual([
-        'https://rinkeby.withbacked.xyz/loans/65',
+        'https://staging.withbacked.xyz/network/rinkeby/loans/65',
         'https://rinkeby.etherscan.io/tx/0x7685d19b85fb80c03ac0c117ea542b77a6c8ecebea56744b121183cfb614bce6',
       ]);
       expect(borrowerComponents.viewLinks).toEqual(lenderComponents.viewLinks);
 
       expect(borrowerComponents.footer).toEqual(
-        'https://rinkeby.withbacked.xyz/profile/0x0dd7d78ed27632839cd2a929ee570ead346c19fc?unsubscribe=true&uuid=borrower-uuid',
+        'https://staging.withbacked.xyz/profile/network/rinkeby/0x0dd7d78ed27632839cd2a929ee570ead346c19fc?unsubscribe=true&uuid=borrower-uuid',
       );
       expect(lenderComponents.footer).toEqual(
-        'https://rinkeby.withbacked.xyz/profile/0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866?unsubscribe=true&uuid=lender-uuid',
+        'https://staging.withbacked.xyz/profile/network/rinkeby/0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866?unsubscribe=true&uuid=lender-uuid',
       );
     });
   });
@@ -447,16 +447,16 @@ describe('Transforming on-chain events to email components', () => {
       );
 
       expect(borrowerComponents.viewLinks).toEqual([
-        'https://rinkeby.withbacked.xyz/loans/65',
+        'https://staging.withbacked.xyz/network/rinkeby/loans/65',
         '',
       ]);
       expect(borrowerComponents.viewLinks).toEqual(lenderComponents.viewLinks);
 
       expect(borrowerComponents.footer).toEqual(
-        'https://rinkeby.withbacked.xyz/profile/0x0dd7d78ed27632839cd2a929ee570ead346c19fc?unsubscribe=true&uuid=borrower-uuid',
+        'https://staging.withbacked.xyz/profile/network/rinkeby/0x0dd7d78ed27632839cd2a929ee570ead346c19fc?unsubscribe=true&uuid=borrower-uuid',
       );
       expect(lenderComponents.footer).toEqual(
-        'https://rinkeby.withbacked.xyz/profile/0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866?unsubscribe=true&uuid=lender-uuid',
+        'https://staging.withbacked.xyz/profile/network/rinkeby/0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866?unsubscribe=true&uuid=lender-uuid',
       );
     });
   });
@@ -524,16 +524,16 @@ describe('Transforming on-chain events to email components', () => {
       );
 
       expect(borrowerComponents.viewLinks).toEqual([
-        'https://rinkeby.withbacked.xyz/loans/65',
+        'https://staging.withbacked.xyz/network/rinkeby/loans/65',
         '',
       ]);
       expect(borrowerComponents.viewLinks).toEqual(lenderComponents.viewLinks);
 
       expect(borrowerComponents.footer).toEqual(
-        'https://rinkeby.withbacked.xyz/profile/0x0dd7d78ed27632839cd2a929ee570ead346c19fc?unsubscribe=true&uuid=borrower-uuid',
+        'https://staging.withbacked.xyz/profile/network/rinkeby/0x0dd7d78ed27632839cd2a929ee570ead346c19fc?unsubscribe=true&uuid=borrower-uuid',
       );
       expect(lenderComponents.footer).toEqual(
-        'https://rinkeby.withbacked.xyz/profile/0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866?unsubscribe=true&uuid=lender-uuid',
+        'https://staging.withbacked.xyz/profile/network/rinkeby/0x7e6463782b87c57CFFa6AF66E7C2de64E97d1866?unsubscribe=true&uuid=lender-uuid',
       );
     });
   });

@@ -72,8 +72,7 @@ export async function sendConfirmationEmail(
   destination: string,
   ethAddress: string,
   unsubscribeUuid: string,
-  siteUrl: string,
-  jsonRpcProvider: string,
+  config: Config,
 ) {
   if (!process.env.VERCEL_ENV) {
     return;
@@ -82,9 +81,9 @@ export async function sendConfirmationEmail(
   const confirmationEmailComponents: GenericEmailComponents = {
     mainMessage: `We've received your request to subscribe to the activity of ${await ensOrAddr(
       ethAddress,
-      jsonRpcProvider,
+      config.jsonRpcProvider,
     )}`,
-    footer: `https://${siteUrl}/profile/${ethAddress}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+    footer: `https://${config.siteUrl}/profile/${ethAddress}?unsubscribe=true&uuid=${unsubscribeUuid}`,
   };
 
   await executeEmailSendWithSes(

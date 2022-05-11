@@ -2,12 +2,16 @@ import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import { ethers } from 'ethers';
 import { addressToENS } from 'lib/account';
+import { Config } from 'lib/config';
 import { secondsBigNumToDaysBigNum } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
 import { interestOverTerm } from 'lib/loans/utils';
 import { Loan as ParsedLoan } from 'types/Loan';
 
 dayjs.extend(duration);
+
+export const loanUrl = (loanId: string, config: Config): string =>
+  `${config.siteUrl}/network/${config.network}/loans/${loanId}`;
 
 export const ensOrAddr = async (
   rawAddress: string,
