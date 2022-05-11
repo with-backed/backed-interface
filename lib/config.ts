@@ -72,6 +72,7 @@ const optimism = {
   siteUrl: 'https://withbacked.xyz',
   network: 'optimism',
   emailSubjectPrefix: '[Optimism]:',
+  nftSalesSubgraph: null,
 };
 
 export const configs = {
