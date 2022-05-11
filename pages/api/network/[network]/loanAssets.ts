@@ -6,6 +6,8 @@ import { configs, SupportedNetwork, validateNetwork } from 'lib/config';
 // TODO: we should almost certainly cache this
 // TODO: optimism, polygon...
 const mainnetLoanAssetsURI = 'https://tokens.1inch.eth.link/';
+const optimismLoanAssetURI =
+  'https://static.optimism.io/optimism.tokenlist.json';
 
 async function handler(
   req: NextApiRequest,
@@ -27,6 +29,9 @@ async function handler(
         break;
       case 'ethereum':
         assets = await loadJson(mainnetLoanAssetsURI);
+        break;
+      case 'optimism':
+        assets = await loadJson(optimismLoanAssetURI);
         break;
     }
     return res.status(200).json(assets);
