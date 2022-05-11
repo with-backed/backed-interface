@@ -142,9 +142,8 @@ function LoansInner({
         kind: 'success',
         message: (
           <p>
-            {`You've successfully created loan #${loan.id}! To get notifications on its activity, go to the`}
+            {`You've successfully created loan #${loan.id}! To get notifications on its activity, go to the `}
             <Link href={`/network/${network}/profile/${loan.borrower}`}>
-              {' '}
               profile page
             </Link>{' '}
             of address{' '}
@@ -154,7 +153,13 @@ function LoansInner({
           </p>
         ),
       });
-      router.replace(`/loans/${loan.id}`, undefined, { shallow: true });
+      router.replace(
+        `/network/${network}/loans/${loan.id.toString()}`,
+        undefined,
+        {
+          shallow: true,
+        },
+      );
     }
   }, [
     addMessage,
