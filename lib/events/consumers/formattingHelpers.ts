@@ -17,11 +17,15 @@ export const ensOrAddr = async (
   rawAddress: string,
   jsonRpcProvider: string,
 ): Promise<string> => {
-  const ens = await addressToENS(rawAddress, jsonRpcProvider);
-  if (ens === null) {
+  try {
+    const ens = await addressToENS(rawAddress, jsonRpcProvider);
+    if (ens === null) {
+      return rawAddress.substring(0, 7);
+    }
+    return ens;
+  } catch (_e) {
     return rawAddress.substring(0, 7);
   }
-  return ens;
 };
 
 export const formattedDate = (timestamp: number): string =>
