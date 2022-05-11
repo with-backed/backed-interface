@@ -55,12 +55,34 @@ const ethereum = {
   emailSubjectPrefix: '[Ethereum]:',
 };
 
+const optimism = {
+  ...baseConfig,
+  centerNetwork: '',
+  nftBackedLoansSubgraph:
+    'https://api.thegraph.com/subgraphs/name/with-backed/backed-protocol-optimism',
+  nftSalesSubgraph:
+    'https://api.thegraph.com/subgraphs/name/adamgobes/nft-sales-indexer',
+  eip721Subgraph:
+    'https://api.thegraph.com/subgraphs/name/optimism-erc721-subgraph',
+  infuraId: '54c753f04ec64374aa679e383e7f84d5',
+  pirschCode: '82ZKa76zuhAYZcSHM5QpOGU8U4hY5f1l',
+  openSeaUrl: 'https://quixotic.io',
+  etherscanUrl: 'https://optimistic.etherscan.io',
+  chainId: 10,
+  jsonRpcProvider:
+    'https://opt-mainnet.g.alchemy.com/v2/_K-HnfZvE5ChalM8ys4TQEkmsWn8CPTU',
+  siteUrl: 'https://withbacked.xyz',
+  network: 'optimism',
+  emailSubjectPrefix: '[Optimism]:',
+};
+
 export const configs = {
   ethereum,
   rinkeby,
+  optimism,
 };
 
-export const prodConfigs = [ethereum];
+export const prodConfigs = [ethereum, optimism];
 
 export const devConfigs = [rinkeby];
 
