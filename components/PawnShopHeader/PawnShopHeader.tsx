@@ -7,17 +7,14 @@ import { useRouter } from 'next/router';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import { Banner } from 'components/Banner';
-import backedBunny from './backed-bunny.png';
-import borkedBunny from './borked-bunny.png';
-import pepe from './pepe-bunny-line.png';
 import { useKonami } from 'hooks/useKonami';
-import Image from 'next/image';
 import { WrongNetwork } from 'components/Banner/messages';
 import { HeaderInfo } from 'components/HeaderInfo';
 import { Chevron } from 'components/Icons/Chevron';
 import { useHasCollapsedHeaderInfo } from 'hooks/useHasCollapsedHeaderInfo';
 import { useOnClickOutside } from 'hooks/useOnClickOutside';
 import { useConfig } from 'hooks/useConfig';
+import { Logo } from 'components/Logo';
 
 type PawnShopHeaderProps = {
   isErrorPage?: boolean;
@@ -80,25 +77,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
             <a
               title="Backed"
               className={codeActive ? styles['flipped-link'] : styles.link}>
-              {isErrorPage == true ? (
-                <Image
-                  src={borkedBunny}
-                  alt="Error Bunny"
-                  height={70}
-                  width={70}
-                  priority
-                />
-              ) : codeActive ? (
-                <Image src={pepe} alt="tfw" height={70} width={65} priority />
-              ) : (
-                <Image
-                  src={backedBunny}
-                  alt="Backed Bunny"
-                  height={70}
-                  width={70}
-                  priority
-                />
-              )}
+              <Logo codeActive={codeActive} error={isErrorPage} />
             </a>
           </Link>
 
@@ -117,23 +96,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
       <nav className={styles['mobile-header']}>
         <Link href={`/network/${network}/`} passHref>
           <a title="Backed">
-            {isErrorPage == true ? (
-              <Image
-                src={borkedBunny}
-                alt="Error Bunny"
-                height={70}
-                width={70}
-                priority
-              />
-            ) : (
-              <Image
-                src={backedBunny}
-                alt="Backed Bunny"
-                height={70}
-                width={70}
-                priority
-              />
-            )}
+            <Logo codeActive={codeActive} error={isErrorPage} />
           </a>
         </Link>
         <Button

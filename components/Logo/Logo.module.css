@@ -1,0 +1,6 @@
+.image {
+  max-height: 70px;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
