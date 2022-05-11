@@ -6,6 +6,8 @@ import { configs, SupportedNetwork, validateNetwork } from 'lib/config';
 // TODO: we should almost certainly cache this
 // TODO: optimism, polygon...
 const mainnetLoanAssetsURI = 'https://tokens.1inch.eth.link/';
+const optimismLoanAssetURI =
+  'https://static.optimism.io/optimism.tokenlist.json';
 
 async function handler(
   req: NextApiRequest,
@@ -22,11 +24,20 @@ async function handler(
           {
             address: '0x6916577695D0774171De3ED95d03A3239139Eddb',
             symbol: 'DAI',
+            chainId: 4,
           },
         ];
         break;
       case 'ethereum':
-        assets = await loadJson(mainnetLoanAssetsURI);
+        assets = (await loadJson(mainnetLoanAssetsURI)).filter(
+          (asset) => asset.chainId === 1,
+        );
+        break;
+      case 'optimism':
+        assets = (await loadJson(optimismLoanAssetURI)).filter(
+          (asset) => asset.chainId === 10,
+        );
+
         break;
     }
     return res.status(200).json(assets);
@@ -41,7 +52,8 @@ function isLoanAssets(array: LoanAsset[] | any): array is LoanAsset[] {
   return (
     array.length &&
     typeof array[0].address === 'string' &&
-    typeof array[0].symbol === 'string'
+    typeof array[0].symbol === 'string' &&
+    typeof array[0].chainId === 'number'
   );
 }
 
