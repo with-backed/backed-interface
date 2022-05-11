@@ -15,6 +15,7 @@ import { useHasCollapsedHeaderInfo } from 'hooks/useHasCollapsedHeaderInfo';
 import { useOnClickOutside } from 'hooks/useOnClickOutside';
 import { useConfig } from 'hooks/useConfig';
 import { Logo } from 'components/Logo';
+import { NetworkSelector } from 'components/NetworkSelector';
 
 type PawnShopHeaderProps = {
   isErrorPage?: boolean;
@@ -66,12 +67,17 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
       <nav className={styles.header}>
         <TwelveColumn>
           <div className={styles.pawn}>
+            {isInfoCollapsed ? (
+              <Button onClick={toggleVisible}>📘 Info</Button>
+            ) : (
+              <Button kind="secondary" onClick={toggleVisible}>
+                📖 Info
+              </Button>
+            )}
             <ButtonLink kind={kind} href={`/network/${network}${CREATE_PATH}`}>
               Create a Loan
             </ButtonLink>
           </div>
-
-          <div className={styles.placeholder}></div>
 
           <Link href={`/network/${network}/`} passHref>
             <a
@@ -82,13 +88,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
           </Link>
 
           <div className={styles['connect-wallet']}>
-            {isInfoCollapsed ? (
-              <Button onClick={toggleVisible}>📘 Info</Button>
-            ) : (
-              <Button kind="secondary" onClick={toggleVisible}>
-                📖 Info
-              </Button>
-            )}
+            <NetworkSelector />
             <ConnectWallet />
           </div>
         </TwelveColumn>
