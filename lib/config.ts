@@ -29,7 +29,7 @@ const rinkeby: Config = {
   openSeaUrl: 'https://testnets.opensea.io',
   etherscanUrl: 'https://rinkeby.etherscan.io',
   nftSalesSubgraph: null,
-  siteUrl: 'https://rinkeby.withbacked.xyz',
+  siteUrl: 'https://staging.withbacked.xyz',
   network: 'rinkeby',
   emailSubjectPrefix: '[Testnet]:',
 };
@@ -59,6 +59,10 @@ export const configs = {
   ethereum,
   rinkeby,
 };
+
+export const prodConfigs = [ethereum];
+
+export const devConfigs = [rinkeby];
 
 const SUPPORTED_NETWORKS = new Set(Object.keys(configs));
 

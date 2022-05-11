@@ -16,6 +16,7 @@ import {
   formattedDuration,
   formattedLoanTerms,
   getEstimatedRepaymentAndMaturity,
+  loanUrl,
 } from 'lib/events/consumers/formattingHelpers';
 import { captureMessage } from '@sentry/nextjs';
 import { Config } from 'lib/config';
@@ -120,7 +121,7 @@ const notificationEventToEmailMetadata: {
         ],
         messageAfterTerms: [],
         viewLinks: [
-          `${config.siteUrl}/loans/${event.loan.id}`,
+          loanUrl(event.loan.id, config),
           `${config.etherscanUrl}/tx/${event.id}`,
         ],
       };
@@ -129,7 +130,7 @@ const notificationEventToEmailMetadata: {
         [event.creator]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `${config.siteUrl}/profile/${event.creator}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${config.siteUrl}/profile/network/${config.network}/${event.creator}?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
       };
     },
@@ -201,7 +202,7 @@ const notificationEventToEmailMetadata: {
           `At this rate, repayment of ${repayment} ${event.loan.loanAssetSymbol} will be due on ${maturity}.`,
         ],
         viewLinks: [
-          `${config.siteUrl}/loans/${event.loan.id}`,
+          loanUrl(event.loan.id, config),
           `${config.etherscanUrl}/tx/${event.id}`,
         ],
       };
@@ -211,19 +212,19 @@ const notificationEventToEmailMetadata: {
           ({
             ...sharedComponents,
             mainMessage: `The loan created by ${borrower} has been bought out with new terms.`,
-            footer: `${config.siteUrl}/profile/${event.loan.borrowTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${config.siteUrl}/profile/network/${config.network}/${event.loan.borrowTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
         [event.newLender]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
             mainMessage: `${newLender} replaced ${oldLender} as lender.`,
-            footer: `${config.siteUrl}/profile/${event.newLender}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${config.siteUrl}/profile/network/${config.network}/${event.newLender}?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
         [event.lendTicketHolder]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
             mainMessage: `${oldLender} has been replaced as the lender on loan #${event.loan.id}.`,
-            footer: `${config.siteUrl}/profile/${event.lendTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${config.siteUrl}/profile/network/${config.network}/${event.lendTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
       };
     },
@@ -266,7 +267,7 @@ const notificationEventToEmailMetadata: {
           `At this rate, repayment of ${repayment} ${event.loan.loanAssetSymbol} will be due on ${maturity}`,
         ],
         viewLinks: [
-          `${config.siteUrl}/loans/${event.loan.id}`,
+          loanUrl(event.loan.id, config),
           `${config.etherscanUrl}/tx/${event.id}`,
         ],
       };
@@ -275,12 +276,12 @@ const notificationEventToEmailMetadata: {
         [event.borrowTicketHolder]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `${config.siteUrl}/profile/${event.borrowTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${config.siteUrl}/profile/network/${config.network}/${event.borrowTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
         [event.lender]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `${config.siteUrl}/profile/${event.lender}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${config.siteUrl}/profile/network/${config.network}/${event.lender}?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
       };
     },
@@ -333,7 +334,7 @@ const notificationEventToEmailMetadata: {
           `The total cost to repay was ${formattedTotalRepay} ${event.loan.loanAssetSymbol}.`,
         ],
         viewLinks: [
-          `${config.siteUrl}/loans/${event.loan.id}`,
+          loanUrl(event.loan.id, config),
           `${config.etherscanUrl}/tx/${event.id}`,
         ],
       };
@@ -342,12 +343,12 @@ const notificationEventToEmailMetadata: {
         [event.repayer]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `${config.siteUrl}/profile/${event.repayer}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${config.siteUrl}/profile/network/${config.network}/${event.repayer}?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
         [event.lendTicketHolder]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `${config.siteUrl}/profile/${event.lendTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${config.siteUrl}/profile/network/${config.network}/${event.lendTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
       };
     },
@@ -404,7 +405,7 @@ const notificationEventToEmailMetadata: {
           )}.`,
         ],
         viewLinks: [
-          `${config.siteUrl}/loans/${event.loan.id}`,
+          loanUrl(event.loan.id, config),
           `${config.etherscanUrl}/tx/${event.id}`,
         ],
       };
@@ -413,12 +414,12 @@ const notificationEventToEmailMetadata: {
         [event.borrowTicketHolder]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `${config.siteUrl}/profile/${event.borrowTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${config.siteUrl}/profile/network/${config.network}/${event.borrowTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
         [event.lendTicketHolder]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `${config.siteUrl}/profile/${event.lendTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${config.siteUrl}/profile/network/${config.network}/${event.lendTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
       };
     },
@@ -470,7 +471,7 @@ const notificationEventToEmailMetadata: {
           `They accrued ${interestAccruedSoFar} ${loan.loanAssetSymbol} over that period.`,
           `At this rate, repayment of ${repayment} ${loan.loanAssetSymbol} will be due on ${maturity}`,
         ],
-        viewLinks: [`${config.siteUrl}/loans/${loan.id}`, ''],
+        viewLinks: [loanUrl(loan.id, config), ''],
         footer: `${config.siteUrl}`,
       };
 
@@ -478,12 +479,12 @@ const notificationEventToEmailMetadata: {
         [loan.borrowTicketHolder]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `${config.siteUrl}/profile/${loan.borrowTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${config.siteUrl}/profile/network/${config.network}/${loan.borrowTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
         [loan.lendTicketHolder]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `${config.siteUrl}/profile/${loan.lendTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${config.siteUrl}/profile/network/${config.network}/${loan.lendTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
       };
     },
@@ -544,7 +545,7 @@ const notificationEventToEmailMetadata: {
           )} with a repayment cost of ${repayment} ${loan.loanAssetSymbol}`,
           `Unless borrower ${borrower} repays, ${lender} may seize the collateral NFT.`,
         ],
-        viewLinks: [`${config.siteUrl}/loans/${loan.id}`, ''],
+        viewLinks: [loanUrl(loan.id, config), ''],
         footer: `${config.siteUrl}`,
       };
 
@@ -552,12 +553,12 @@ const notificationEventToEmailMetadata: {
         [loan.borrowTicketHolder]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `${config.siteUrl}/profile/${loan.borrowTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${config.siteUrl}/profile/network/${config.network}/${loan.borrowTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
         [loan.lendTicketHolder]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `${config.siteUrl}/profile/${loan.lendTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${config.siteUrl}/profile/network/${config.network}/${loan.lendTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
       };
     },

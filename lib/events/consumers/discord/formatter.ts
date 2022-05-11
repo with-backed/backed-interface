@@ -10,6 +10,7 @@ import {
   ensOrAddr,
   getEstimatedRepaymentAndMaturity,
   formattedDuration,
+  loanUrl,
 } from 'lib/events/consumers/formattingHelpers';
 import { NotificationTriggerType } from 'lib/events/consumers/userNotifications/shared';
 import { sendBotMessage } from 'lib/events/consumers/discord/bot';
@@ -40,7 +41,7 @@ export async function sendBotUpdateForTriggerAndEntity(
     mostRecentTermsEvent,
   )}
 
-Loan: <${config.siteUrl}/loans/${event.loan.id}>
+Loan: <${loanUrl(event.loan.id, config)}>
 Event Tx: <${config.etherscanUrl}/tx/${event.id}>
 `;
 

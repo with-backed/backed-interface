@@ -16,6 +16,7 @@ import {
   ensOrAddr,
   formattedDuration,
   getEstimatedRepaymentAndMaturity,
+  loanUrl,
 } from 'lib/events/consumers/formattingHelpers';
 import { parseSubgraphLoan } from 'lib/loans/utils';
 import { Config, SupportedNetwork } from 'lib/config';
@@ -40,7 +41,7 @@ export async function sendTweetForTriggerAndEntity(
     mostRecentTermsEvent,
   )}
 
-${config.siteUrl}/loans/${event.loan.id}
+${loanUrl(event.loan.id, config)}
 `;
 
   const attachmentImageBuffer = await nftResponseDataToImageBuffer(

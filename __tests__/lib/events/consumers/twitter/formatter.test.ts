@@ -69,7 +69,9 @@ describe('Formatting events for tweet updates', () => {
         undefined,
       );
       expect(mockTweetCall).toHaveBeenCalledWith(
-        expect.stringContaining('https://rinkeby.withbacked.xyz/loans/65'),
+        expect.stringContaining(
+          'https://staging.withbacked.xyz/network/rinkeby/loans/65',
+        ),
         undefined,
       );
     });
@@ -105,7 +107,9 @@ describe('Formatting events for tweet updates', () => {
         undefined,
       );
       expect(mockTweetCall).toHaveBeenCalledWith(
-        expect.stringContaining('https://rinkeby.withbacked.xyz/loans/65'),
+        expect.stringContaining(
+          'https://staging.withbacked.xyz/network/rinkeby/loans/65',
+        ),
         undefined,
       );
     });
@@ -150,7 +154,9 @@ describe('Formatting events for tweet updates', () => {
         undefined,
       );
       expect(mockTweetCall).toHaveBeenCalledWith(
-        expect.stringContaining('https://rinkeby.withbacked.xyz/loans/65'),
+        expect.stringContaining(
+          'https://staging.withbacked.xyz/network/rinkeby/loans/65',
+        ),
         undefined,
       );
     });
@@ -186,7 +192,9 @@ describe('Formatting events for tweet updates', () => {
         undefined,
       );
       expect(mockTweetCall).toHaveBeenCalledWith(
-        expect.stringContaining('https://rinkeby.withbacked.xyz/loans/65'),
+        expect.stringContaining(
+          'https://staging.withbacked.xyz/network/rinkeby/loans/65',
+        ),
         undefined,
       );
     });
@@ -216,7 +224,9 @@ describe('Formatting events for tweet updates', () => {
         undefined,
       );
       expect(mockTweetCall).toHaveBeenCalledWith(
-        expect.stringContaining('https://rinkeby.withbacked.xyz/loans/65'),
+        expect.stringContaining(
+          'https://staging.withbacked.xyz/network/rinkeby/loans/65',
+        ),
         undefined,
       );
     });
