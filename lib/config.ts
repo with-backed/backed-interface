@@ -4,8 +4,6 @@ const baseConfig = {
   centerCode: 'backed-xyz',
   infuraId: '54c753f04ec64374aa679e383e7f84d5',
   nftPortApiKey: '39de5023-b9ef-42cf-a730-ce98537d2d8d',
-  // TODO: set this for each env
-  facilitatorStartBlock: 0,
 };
 
 export type Config = {
@@ -32,6 +30,7 @@ const rinkeby: Config = {
   siteUrl: 'https://staging.withbacked.xyz',
   network: 'rinkeby',
   emailSubjectPrefix: '[Testnet]:',
+  facilitatorStartBlock: 10550059,
 };
 
 const ethereum = {
@@ -53,9 +52,10 @@ const ethereum = {
   siteUrl: 'https://withbacked.xyz',
   network: 'ethereum',
   emailSubjectPrefix: '[Ethereum]:',
+  facilitatorStartBlock: 14636317,
 };
 
-const optimism = {
+const optimism: Config = {
   ...baseConfig,
   centerNetwork: '',
   nftBackedLoansSubgraph:
@@ -73,6 +73,7 @@ const optimism = {
   network: 'optimism',
   emailSubjectPrefix: '[Optimism]:',
   nftSalesSubgraph: null,
+  facilitatorStartBlock: 6679943,
 };
 
 export const configs = {
