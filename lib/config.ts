@@ -60,10 +60,8 @@ const optimism = {
   centerNetwork: '',
   nftBackedLoansSubgraph:
     'https://api.thegraph.com/subgraphs/name/with-backed/backed-protocol-optimism',
-  nftSalesSubgraph:
-    'https://api.thegraph.com/subgraphs/name/adamgobes/nft-sales-indexer',
   eip721Subgraph:
-    'https://api.thegraph.com/subgraphs/name/optimism-erc721-subgraph',
+    'https://api.thegraph.com/subgraphs/name/with-backed/optimism-erc721-subgraph',
   infuraId: '54c753f04ec64374aa679e383e7f84d5',
   pirschCode: '82ZKa76zuhAYZcSHM5QpOGU8U4hY5f1l',
   openSeaUrl: 'https://quixotic.io',
