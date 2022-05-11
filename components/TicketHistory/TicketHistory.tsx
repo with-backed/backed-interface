@@ -6,6 +6,7 @@ import type { Event } from 'types/Event';
 import useSWR from 'swr';
 import { toObjectWithBigNumbers } from 'lib/parseSerializedResponse';
 import { useMemo } from 'react';
+import { useConfig } from 'hooks/useConfig';
 
 interface TicketHistoryProps {
   loan: Loan;
@@ -14,7 +15,11 @@ interface TicketHistoryProps {
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export function TicketHistory({ loan }: TicketHistoryProps) {
-  const { data } = useSWR(`/api/loans/history/${loan.id}`, fetcher);
+  const { network } = useConfig();
+  const { data } = useSWR(
+    `/api/network/${network}/loans/history/${loan.id}`,
+    fetcher,
+  );
 
   const parsedData = useMemo(
     () => (data ? (data.map(toObjectWithBigNumbers) as Event[]) : []),

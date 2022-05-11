@@ -6,6 +6,7 @@ import { ERC721 } from 'types/generated/abis';
 import { contractDirectory, jsonRpcERC721Contract } from 'lib/contracts';
 import { Fallback } from 'components/Media/Fallback';
 import { useTokenMetadata } from 'hooks/useTokenMetadata';
+import { useConfig } from 'hooks/useConfig';
 
 interface PawnArtProps {
   contract: ERC721;
@@ -14,8 +15,10 @@ interface PawnArtProps {
 
 export const PawnLoanArt = React.memo(
   ({ tokenID }: Pick<PawnArtProps, 'tokenID'>) => {
+    const { jsonRpcProvider } = useConfig();
     const pawnLoansContract = jsonRpcERC721Contract(
       contractDirectory.lendTicket,
+      jsonRpcProvider,
     );
     return <PawnArt contract={pawnLoansContract} tokenID={tokenID} />;
   },
@@ -24,8 +27,10 @@ PawnLoanArt.displayName = 'PawnLoanArt';
 
 export const PawnTicketArt = React.memo(
   ({ tokenID }: Pick<PawnArtProps, 'tokenID'>) => {
+    const { jsonRpcProvider } = useConfig();
     const pawnTicketsContract = jsonRpcERC721Contract(
       contractDirectory.borrowTicket,
+      jsonRpcProvider,
     );
     return <PawnArt contract={pawnTicketsContract} tokenID={tokenID} />;
   },

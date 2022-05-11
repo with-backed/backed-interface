@@ -14,9 +14,10 @@ export async function main() {
       // if graph is not yet in sync, skip
       // if graph is in sync and event exists, push to SNS for consumption by bots/email APIs and delete message from SQS queue
       const network = message.network;
+      const config = configs[network];
 
       const event = await subgraphEventFromTxHash(
-        configs[network],
+        config,
         message.eventName,
         message.txHash,
       );
@@ -24,6 +25,7 @@ export async function main() {
         // get most recent terms for BuyoutEvent consumers
         const mostRecentTermsEvent = await getMostRecentTermsForLoan(
           event.loan.id,
+          config.nftBackedLoansSubgraph,
         );
 
         // if push to SNS succeeded, delete from SQS queue, if push to SNS failed, do nothing, and we will process this message again on next run

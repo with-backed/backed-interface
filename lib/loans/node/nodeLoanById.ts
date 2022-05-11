@@ -7,11 +7,20 @@ import {
 } from 'lib/contracts';
 import { Loan } from 'types/Loan';
 
-export async function nodeLoanById(loanId: string): Promise<Loan> {
+export async function nodeLoanById(
+  loanId: string,
+  jsonRpcProvider: string,
+): Promise<Loan> {
   const id = ethers.BigNumber.from(loanId);
-  const loanFacilitator = jsonRpcLoanFacilitator();
-  const lendTicket = jsonRpcERC721Contract(contractDirectory.lendTicket);
-  const borrowTicket = jsonRpcERC721Contract(contractDirectory.borrowTicket);
+  const loanFacilitator = jsonRpcLoanFacilitator(jsonRpcProvider);
+  const lendTicket = jsonRpcERC721Contract(
+    contractDirectory.lendTicket,
+    jsonRpcProvider,
+  );
+  const borrowTicket = jsonRpcERC721Contract(
+    contractDirectory.borrowTicket,
+    jsonRpcProvider,
+  );
 
   const loanInfo = await loanFacilitator.loanInfo(loanId);
   const {
@@ -27,7 +36,10 @@ export async function nodeLoanById(loanId: string): Promise<Loan> {
     allowLoanAmountIncrease,
   } = loanInfo;
 
-  const loanAssetContract = jsonRpcERC20Contract(loanAssetContractAddress);
+  const loanAssetContract = jsonRpcERC20Contract(
+    loanAssetContractAddress,
+    jsonRpcProvider,
+  );
 
   const decimals = await loanAssetContract.decimals();
   const loanAssetSymbol = await loanAssetContract.symbol();
@@ -45,6 +57,7 @@ export async function nodeLoanById(loanId: string): Promise<Loan> {
 
   const collateralAssetContract = jsonRpcERC721Contract(
     collateralContractAddress,
+    jsonRpcProvider,
   );
   const collateralTokenURI = await collateralAssetContract.tokenURI(
     collateralTokenId,

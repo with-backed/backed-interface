@@ -9,6 +9,7 @@ import { NotificationMethod } from 'lib/events/consumers/userNotifications/share
 import { APIErrorMessage } from 'pages/api/sharedTypes';
 import { captureException, withSentry } from '@sentry/nextjs';
 import { sendConfirmationEmail } from 'lib/events/consumers/userNotifications/emails/emails';
+import { configs, SupportedNetwork, validateNetwork } from 'lib/config';
 
 const MAX_ADDRESSES_PER_NOTIFICATION_DESTINATION = 5;
 
@@ -24,10 +25,14 @@ async function handler(
   // this endpoint takes an email if POST (i.e. subscribing to an ethAddresses activity)
   // this endpoint takes a UUID if DELETE (i.e. unsubscribing a particular email <> ethAddress pair)
   try {
-    const { address, emailOrUuid } = req.query as {
+    validateNetwork(req.query);
+    const { address, emailOrUuid, network } = req.query as {
       address: string;
       emailOrUuid: string;
+      network: SupportedNetwork;
     };
+
+    const config = configs[network];
 
     if (req.method == 'POST') {
       const destination = emailOrUuid as string;
@@ -62,7 +67,13 @@ async function handler(
         return;
       }
 
-      await sendConfirmationEmail(destination, address, notificationRequest.id);
+      await sendConfirmationEmail(
+        destination,
+        address,
+        notificationRequest.id,
+        config.siteUrl,
+        config.jsonRpcProvider,
+      );
 
       res.status(200).json(notificationRequest);
     } else if (req.method == 'DELETE') {

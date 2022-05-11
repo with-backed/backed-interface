@@ -1,4 +1,5 @@
 import { FormWrapper } from 'components/layouts/FormWrapper';
+import { useConfig } from 'hooks/useConfig';
 import { DEFAULT_ASSET_DECIMALS } from 'lib/loanAssets';
 import { LoanAmountInputType } from 'lib/loans/subgraph/subgraphLoans';
 import { isEqual } from 'lodash';
@@ -37,6 +38,7 @@ export function AdvancedSearch({
   setStatuses,
   loanAssetDecimalsForSearch = DEFAULT_ASSET_DECIMALS,
 }: AdvancedSearchProps) {
+  const { network } = useConfig();
   const [collectionAddress, setCollectionAddress] = useState<string>('');
   const [collectionName, setCollectionName] = useState<string>('');
   const [loanAsset, setLoanAsset] = useState<string>('');
@@ -75,7 +77,7 @@ export function AdvancedSearch({
       ),
     );
     setSearchUrl(
-      `/api/loans/search?statuses=${statuses}&collectionAddress=${collectionAddress}&collectionName=${collectionName}&loanAsset=${loanAsset}&borrowerAddress=${borrowerAddress}&lenderAddress=${lenderAddress}&loanAmountMin=${loanAmountMin.nominal}&loanAmountMinDecimals=${loanAmountMin.loanAssetDecimal}&loanAmountMax=${loanAmountMax.nominal}&loanAmountMaxDecimals=${loanAmountMax.loanAssetDecimal}&loanInterestMin=${loanInterestMin}&loanInterestMax=${loanInterestMax}&loanDurationMin=${loanDurationMin}&loanDurationMax=${loanDurationMax}&`,
+      `/api/network/${network}/loans/search?statuses=${statuses}&collectionAddress=${collectionAddress}&collectionName=${collectionName}&loanAsset=${loanAsset}&borrowerAddress=${borrowerAddress}&lenderAddress=${lenderAddress}&loanAmountMin=${loanAmountMin.nominal}&loanAmountMinDecimals=${loanAmountMin.loanAssetDecimal}&loanAmountMax=${loanAmountMax.nominal}&loanAmountMaxDecimals=${loanAmountMax.loanAssetDecimal}&loanInterestMin=${loanInterestMin}&loanInterestMax=${loanInterestMax}&loanDurationMin=${loanDurationMin}&loanDurationMax=${loanDurationMax}&`,
     );
   }, [
     statuses,
@@ -92,6 +94,7 @@ export function AdvancedSearch({
     loanDurationMax,
     setSearchActive,
     setSearchUrl,
+    network,
   ]);
 
   return (

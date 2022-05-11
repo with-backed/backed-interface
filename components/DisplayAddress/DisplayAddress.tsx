@@ -1,3 +1,4 @@
+import { useConfig } from 'hooks/useConfig';
 import { addressToENS } from 'lib/account';
 import React, { useEffect, useState } from 'react';
 import styles from './Address.module.css';
@@ -11,13 +12,14 @@ export function DisplayAddress({
   address,
   useEns = true,
 }: DisplayAddressProps) {
+  const { jsonRpcProvider } = useConfig();
   const [gotResponse, setGotResponse] = useState(false);
   const [addr, setAddr] = useState<string>(address);
 
   useEffect(() => {
     async function getEnsName() {
       try {
-        let name = await addressToENS(address);
+        let name = await addressToENS(address, jsonRpcProvider);
 
         setGotResponse(true);
         if (name) {
@@ -30,7 +32,7 @@ export function DisplayAddress({
     }
 
     if (useEns) getEnsName();
-  }, [address, useEns]);
+  }, [address, jsonRpcProvider, useEns]);
 
   if (!useEns) {
     return (

@@ -37,7 +37,11 @@ describe('DisplayCurrency', () => {
       </CachedRatesProvider>,
     );
 
-    expect(mockUnitPriceForCoin).toHaveBeenCalledWith(amount.address, 'usd');
+    expect(mockUnitPriceForCoin).toHaveBeenCalledWith(
+      amount.address,
+      'usd',
+      'rinkeby',
+    );
     await screen.findByText('$101.00');
   });
 
@@ -51,8 +55,16 @@ describe('DisplayCurrency', () => {
     await screen.findByText('$303.00');
 
     expect(mockUnitPriceForCoin).toHaveBeenCalledTimes(2);
-    expect(mockUnitPriceForCoin).toHaveBeenCalledWith(amount.address, 'usd');
-    expect(mockUnitPriceForCoin).toHaveBeenCalledWith(amountTwo.address, 'usd');
+    expect(mockUnitPriceForCoin).toHaveBeenCalledWith(
+      amount.address,
+      'usd',
+      'rinkeby',
+    );
+    expect(mockUnitPriceForCoin).toHaveBeenCalledWith(
+      amountTwo.address,
+      'usd',
+      'rinkeby',
+    );
   });
 
   it('makes no calls to coingecko if killswitch is on', async () => {

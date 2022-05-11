@@ -1,15 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { captureException, withSentry } from '@sentry/nextjs';
-import { convertIPFS, getMedia, Media } from 'lib/getNFTInfo';
-
-export type NFTResponseData = {
-  name: string;
-  description: string;
-  tokenId: number;
-  image: Media;
-  animation: Media;
-  external_url: string;
-} | null;
+import { convertIPFS, getMedia, NFTResponseData } from 'lib/getNFTInfo';
 
 async function handler(
   req: NextApiRequest,

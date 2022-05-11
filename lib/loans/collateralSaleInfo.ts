@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { onMainnet, onOptimism, onRinkeby } from 'lib/chainEnv';
+import { SupportedNetwork } from 'lib/config';
 import { jsonRpcERC20Contract } from 'lib/contracts';
 import {
   CollectionStatistics,
@@ -22,10 +22,19 @@ export type CollateralSaleInfo = {
 export async function getCollateralSaleInfo(
   nftContractAddress: string,
   tokenId: string,
+  nftSalesSubgraph: string | null,
+  network: SupportedNetwork,
+  jsonRpcProvider: string,
 ): Promise<CollateralSaleInfo> {
-  const recentSale = await getMostRecentSale(nftContractAddress, tokenId);
+  const recentSale = await getMostRecentSale(
+    nftContractAddress,
+    tokenId,
+    nftSalesSubgraph,
+    network,
+    jsonRpcProvider,
+  );
 
-  const collectionStats = await getCollectionStats(nftContractAddress);
+  const collectionStats = await getCollectionStats(nftContractAddress, network);
 
   return {
     collectionStats,
@@ -36,27 +45,35 @@ export async function getCollateralSaleInfo(
 async function getMostRecentSale(
   nftContractAddress: string,
   tokenId: string,
+  nftSalesSubgraph: string | null,
+  network: SupportedNetwork,
+  jsonRpcProvider: string,
 ): Promise<{ paymentToken: string; price: number } | null> {
   let sale: NFTSale | null = null;
 
-  switch (true) {
-    case onMainnet:
-      sale = await queryMostRecentSaleForNFT(nftContractAddress, tokenId);
+  switch (network) {
+    case 'ethereum':
+      sale = await queryMostRecentSaleForNFT(
+        nftContractAddress,
+        tokenId,
+        nftSalesSubgraph,
+      );
       if (!sale) return null;
       break;
-    case onOptimism:
-      // TODO(adamgobes): follow up with Quixotic team on when they will release API to get most recent sale. it is not available for now
-      return null;
-    case onRinkeby:
+    case 'rinkeby':
       sale = generateFakeSaleForNFT(nftContractAddress, tokenId);
     default:
+      // TODO(adamgobes): follow up with Quixotic team on when they will release API to get most recent sale. it is not available for now
       return null;
   }
 
   const paymentTokenAddress = sale.paymentToken;
   const price = sale.price;
 
-  const erc20Contract = jsonRpcERC20Contract(paymentTokenAddress);
+  const erc20Contract = jsonRpcERC20Contract(
+    paymentTokenAddress,
+    jsonRpcProvider,
+  );
 
   let paymentTokenSymbol: string;
   let recentSaleTokenDecimals: number;

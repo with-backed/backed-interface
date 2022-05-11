@@ -21,16 +21,13 @@ const rinkebyContracts: ContractDirectory = {
 // TODO: @cnasc update to dispatch between test and mainnet based on env
 export const contractDirectory: ContractDirectory = rinkebyContracts;
 
-const jsonRpcProvider = new ethers.providers.JsonRpcProvider(
-  process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
-);
-
 export function web3LoanFacilitator(signer: Signer) {
   return loanFacilitator(signer);
 }
 
-export function jsonRpcLoanFacilitator() {
-  return loanFacilitator(jsonRpcProvider);
+export function jsonRpcLoanFacilitator(jsonRpcProvider: string) {
+  const provider = new ethers.providers.JsonRpcProvider(jsonRpcProvider);
+  return loanFacilitator(provider);
 }
 
 export function web3Erc20Contract(address: string, signer: Signer) {
@@ -41,12 +38,17 @@ export function web3Erc721Contract(address: string, signer: Signer) {
   return erc721Contract(address, signer);
 }
 
-export function jsonRpcERC721Contract(address: string): ERC721 {
-  return erc721Contract(address, jsonRpcProvider);
+export function jsonRpcERC721Contract(
+  address: string,
+  jsonRpcProvider: string,
+): ERC721 {
+  const provider = new ethers.providers.JsonRpcProvider(jsonRpcProvider);
+  return erc721Contract(address, provider);
 }
 
-export function jsonRpcERC20Contract(address: string) {
-  return erc20Contract(address, jsonRpcProvider);
+export function jsonRpcERC20Contract(address: string, jsonRpcProvider: string) {
+  const provider = new ethers.providers.JsonRpcProvider(jsonRpcProvider);
+  return erc20Contract(address, provider);
 }
 
 export function loanFacilitator(

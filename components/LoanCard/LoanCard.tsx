@@ -9,6 +9,7 @@ import { Fallback } from 'components/Media/Fallback';
 import { Loan } from 'types/Loan';
 import { DescriptionList } from 'components/DescriptionList';
 import { useLoanDetails } from 'hooks/useLoanDetails';
+import { useConfig } from 'hooks/useConfig';
 
 type LoanCardProps = {
   loan: Loan;
@@ -96,8 +97,9 @@ export function LoanCardLoaded({
   metadata,
   children,
 }: React.PropsWithChildren<LoanCardLoadedProps>) {
+  const { network } = useConfig();
   return (
-    <Link href={`/loans/${id}`}>
+    <Link href={`/network/${network}/loans/${id}`}>
       <a className={styles['profile-link']} aria-label={title} title={title}>
         <div className={styles['profile-card']}>
           <div className={styles.media}>
@@ -130,8 +132,9 @@ export function LoanCardLoading({
   children,
   id,
 }: React.PropsWithChildren<LoanCardLoadingProps>) {
+  const { network } = useConfig();
   return (
-    <Link href={`/loans/${id}`}>
+    <Link href={`/network/${network}/loans/${id}`}>
       <a className={styles['profile-link']}>
         <div className={styles['profile-card']}>
           <div className={styles.media}>

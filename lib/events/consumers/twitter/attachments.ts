@@ -1,4 +1,4 @@
-import { NFTResponseData } from 'pages/api/nftInfo/[uri]';
+import { NFTResponseData } from 'lib/getNFTInfo';
 import fetch from 'node-fetch';
 import { getPngBufferFromBase64SVG } from '../attachmentsHelper';
 

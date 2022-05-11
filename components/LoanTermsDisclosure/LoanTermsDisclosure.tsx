@@ -2,6 +2,7 @@ import { DisclosureButton } from 'components/Button';
 import { DescriptionList } from 'components/DescriptionList';
 import { Balance } from 'components/LoanForm/Balance';
 import { ethers } from 'ethers';
+import { useConfig } from 'hooks/useConfig';
 import { jsonRpcERC20Contract } from 'lib/contracts';
 import { estimatedRepayment } from 'lib/loans/utils';
 import React, { useEffect, useState } from 'react';
@@ -61,15 +62,17 @@ export function LoanTermsDisclosure({
 }
 
 function CreatePageTerms({ fields }: Pick<LoanTermsDisclosureProps, 'fields'>) {
+  const { jsonRpcProvider } = useConfig();
   const [decimals, setDecimals] = useState<number | null>(null);
   useEffect(() => {
     if (fields.denomination) {
       const loanAssetContract = jsonRpcERC20Contract(
         fields.denomination.address,
+        jsonRpcProvider,
       );
       loanAssetContract.decimals().then(setDecimals);
     }
-  }, [fields.denomination, setDecimals]);
+  }, [fields.denomination, jsonRpcProvider, setDecimals]);
 
   if (!fieldsAreFull(fields) || !decimals) {
     return null;
@@ -131,15 +134,17 @@ function LendPageTerms({
   balance,
 }: Pick<LoanTermsDisclosureProps, 'fields'> &
   Pick<LoanTermsDisclosureProps, 'balance'>) {
+  const { jsonRpcProvider } = useConfig();
   const [decimals, setDecimals] = useState<number | null>(null);
   useEffect(() => {
     if (fields.denomination) {
       const loanAssetContract = jsonRpcERC20Contract(
         fields.denomination.address,
+        jsonRpcProvider,
       );
       loanAssetContract.decimals().then(setDecimals);
     }
-  }, [fields.denomination, setDecimals]);
+  }, [fields.denomination, jsonRpcProvider, setDecimals]);
 
   if (!fieldsAreFull(fields) || !decimals) {
     return null;
@@ -173,16 +178,18 @@ function BuyoutPageTerms({
   Pick<LoanTermsDisclosureProps, 'balance'> &
   Pick<LoanTermsDisclosureProps, 'accrued'> &
   Pick<LoanTermsDisclosureProps, 'totalPayback'>) {
+  const { jsonRpcProvider } = useConfig();
   const [decimals, setDecimals] = useState<number | null>(null);
 
   useEffect(() => {
     if (fields.denomination) {
       const loanAssetContract = jsonRpcERC20Contract(
         fields.denomination.address,
+        jsonRpcProvider,
       );
       loanAssetContract.decimals().then(setDecimals);
     }
-  }, [fields.denomination, setDecimals]);
+  }, [fields.denomination, jsonRpcProvider, setDecimals]);
 
   if (!fieldsAreFull(fields) || !decimals) {
     return null;

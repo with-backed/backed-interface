@@ -1,7 +1,6 @@
-import { onMainnet, onOptimism, onRinkeby } from 'lib/chainEnv';
 import { collectionStatsEthMainnet } from 'lib/nftCollectionStats/nftPort';
-import { collectionStatsOptimism } from 'lib/nftCollectionStats/quixotic';
 import { collectionStatsRinkeby } from 'lib/nftCollectionStats/mockData';
+import { SupportedNetwork } from 'lib/config';
 
 export type CollectionStatistics = {
   floor: number | null;
@@ -12,13 +11,12 @@ export type CollectionStatistics = {
 
 export async function getCollectionStats(
   contractAddress: string,
+  network: SupportedNetwork,
 ): Promise<CollectionStatistics> {
-  switch (true) {
-    case onMainnet:
+  switch (network) {
+    case 'ethereum':
       return collectionStatsEthMainnet(contractAddress);
-    case onOptimism:
-      return collectionStatsOptimism(contractAddress);
-    case onRinkeby:
+    case 'rinkeby':
       return collectionStatsRinkeby();
     default:
       return nullCollectionStats;

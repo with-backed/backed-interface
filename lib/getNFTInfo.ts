@@ -1,9 +1,18 @@
 import { captureException } from '@sentry/nextjs';
 import { ethers } from 'ethers';
-import { NFTResponseData } from 'pages/api/nftInfo/[uri]';
 import IPFSGatewayTools from '@pinata/ipfs-gateway-tools/dist/node';
+import { SupportedNetwork } from './config';
 
 const ipfsGatewayTools = new IPFSGatewayTools();
+
+export type NFTResponseData = {
+  name: string;
+  description: string;
+  tokenId: number;
+  image: Media;
+  animation: Media;
+  external_url: string;
+} | null;
 
 export interface GetNFTInfoResponse {
   name: string;
@@ -16,12 +25,15 @@ export interface GetNFTInfoResponse {
 export async function getNFTInfoFromTokenInfo(
   tokenId: ethers.BigNumber,
   tokenURI: string,
+  network: SupportedNetwork,
   forceImage: boolean = false,
 ): Promise<GetNFTInfoResponse | null> {
   const isDataUri = tokenURI.startsWith('data:');
   try {
     const tokenURIRes = await fetch(
-      isDataUri ? tokenURI : `/api/nftInfo/${encodeURIComponent(tokenURI)}`,
+      isDataUri
+        ? tokenURI
+        : `/api/network/${network}/nftInfo/${encodeURIComponent(tokenURI)}`,
     );
     const NFTInfo: NFTResponseData = await tokenURIRes.json();
 

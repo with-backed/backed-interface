@@ -1,3 +1,4 @@
+import { useConfig } from 'hooks/useConfig';
 import React, { AnchorHTMLAttributes, FunctionComponent } from 'react';
 
 interface EtherscanLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
@@ -8,7 +9,8 @@ const EtherscanLink: FunctionComponent<EtherscanLinkProps> = ({
   path,
   ...props
 }) => {
-  const href = `${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/${path}`;
+  const { etherscanUrl } = useConfig();
+  const href = `${etherscanUrl}/${path}`;
   return (
     <a target="_blank" rel="noreferrer" {...props} href={href}>
       {children}

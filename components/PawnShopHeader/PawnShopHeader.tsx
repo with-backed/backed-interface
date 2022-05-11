@@ -17,22 +17,23 @@ import { HeaderInfo } from 'components/HeaderInfo';
 import { Chevron } from 'components/Icons/Chevron';
 import { useHasCollapsedHeaderInfo } from 'hooks/useHasCollapsedHeaderInfo';
 import { useOnClickOutside } from 'hooks/useOnClickOutside';
+import { useConfig } from 'hooks/useConfig';
 
 type PawnShopHeaderProps = {
   isErrorPage?: boolean;
   showInitialInfo?: boolean;
 };
 
-const expectedChainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID as string);
 const CREATE_PATH = '/loans/create';
 
 export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
   isErrorPage,
   showInitialInfo = false,
 }) => {
+  const { chainId, network } = useConfig();
   const { messages, removeMessage } = useGlobalMessages();
   const { pathname } = useRouter();
-  const kind = pathname === CREATE_PATH ? 'secondary' : 'primary';
+  const kind = pathname.endsWith(CREATE_PATH) ? 'secondary' : 'primary';
   const codeActive = useKonami();
   const { hasCollapsed, onCollapse } = useHasCollapsedHeaderInfo();
   const [isInfoCollapsed, setIsInfoCollapsed] = useState(
@@ -54,7 +55,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
   return (
     <>
       <div className={styles['banner-container']}>
-        <WrongNetwork expectedChainId={expectedChainId} />
+        <WrongNetwork expectedChainId={chainId} />
         {messages.map((m) => {
           const close = () => removeMessage(m);
           return (
@@ -68,14 +69,14 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
       <nav className={styles.header}>
         <TwelveColumn>
           <div className={styles.pawn}>
-            <ButtonLink kind={kind} href={CREATE_PATH}>
+            <ButtonLink kind={kind} href={`/network/${network}${CREATE_PATH}`}>
               Create a Loan
             </ButtonLink>
           </div>
 
           <div className={styles.placeholder}></div>
 
-          <Link href="/" passHref>
+          <Link href={`/network/${network}/`} passHref>
             <a
               title="Backed"
               className={codeActive ? styles['flipped-link'] : styles.link}>
@@ -114,7 +115,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
         </TwelveColumn>
       </nav>
       <nav className={styles['mobile-header']}>
-        <Link href="/" passHref>
+        <Link href={`/network/${network}/`} passHref>
           <a title="Backed">
             {isErrorPage == true ? (
               <Image
@@ -147,7 +148,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
           <div
             ref={mobileMenuNode as any}
             className={styles['mobile-menu-buttons']}>
-            <ButtonLink kind={kind} href={CREATE_PATH}>
+            <ButtonLink kind={kind} href={`/network/${network}${CREATE_PATH}`}>
               Create a Loan
             </ButtonLink>
             {isInfoCollapsed ? (

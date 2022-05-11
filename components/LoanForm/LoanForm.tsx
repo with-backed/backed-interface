@@ -17,6 +17,7 @@ import { useLoanViewerRole } from 'hooks/useLoanViewerRole';
 import { LoanFormDisclosure } from './LoanFormDisclosure';
 import { useAccount } from 'wagmi';
 import { LoanOfferBetterTermsDisclosure } from 'components/LoanForm/LoanOfferBetterTermsDisclosure';
+import { useConfig } from 'hooks/useConfig';
 
 type LoanFormProps = {
   loan: Loan;
@@ -25,7 +26,7 @@ type LoanFormProps = {
 export function LoanForm({ loan, refresh }: LoanFormProps) {
   const [{ data }] = useAccount();
   const account = data?.address;
-
+  const { jsonRpcProvider } = useConfig();
   const timestamp = useTimestamp();
   const [balance, setBalance] = useState(0);
   const [needsAllowance, setNeedsAllowance] = useState(true);
@@ -40,8 +41,13 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
           account,
           loan.loanAssetContractAddress,
           ethers.BigNumber.from(loan.loanAssetDecimals),
+          jsonRpcProvider,
         ),
-        getAccountLoanAssetAllowance(account, loan.loanAssetContractAddress),
+        getAccountLoanAssetAllowance(
+          account,
+          loan.loanAssetContractAddress,
+          jsonRpcProvider,
+        ),
       ]).then(([balance, allowanceAmount]) => {
         setBalance(balance);
         setNeedsAllowance(allowanceAmount.lt(loan.loanAmount));

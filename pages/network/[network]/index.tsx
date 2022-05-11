@@ -15,21 +15,37 @@ import Head from 'next/head';
 import { LoanTable } from 'components/LoanTable';
 import { LoanCard } from 'components/LoanCard';
 import { LoanGalleryLoadMore } from 'components/LoanGalleryLoadMore';
+import { captureException } from '@sentry/nextjs';
+import { configs, SupportedNetwork, validateNetwork } from 'lib/config';
+import { useConfig } from 'hooks/useConfig';
 
 const PAGE_LIMIT = 12;
 
-export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
-  return {
-    props: {
-      loans: await subgraphLoans(PAGE_LIMIT),
-    },
-  };
+export const getServerSideProps: GetServerSideProps<HomeProps> = async (
+  context,
+) => {
+  try {
+    validateNetwork(context.params!);
+    const network = context.params?.network as SupportedNetwork;
+    const config = configs[network];
+    return {
+      props: {
+        loans: await subgraphLoans(PAGE_LIMIT, config.nftBackedLoansSubgraph),
+      },
+    };
+  } catch (e) {
+    captureException(e);
+    return {
+      notFound: true,
+    };
+  }
 };
 
 type HomeProps = {
   loans: SubgraphLoan[];
 };
 export default function Home({ loans }: HomeProps) {
+  const { network } = useConfig();
   const [showSearch, setShowSearch] = useState<boolean>(false);
   const [searchActive, setSearchActive] = useState<boolean>(false);
   const [searchUrl, setSearchUrl] = useState<string>('');
@@ -45,7 +61,7 @@ export default function Home({ loans }: HomeProps) {
 
   const { paginatedLoans, loadMore, isReachingEnd, isLoadingMore } =
     usePaginatedLoans(
-      searchActive ? searchUrl : '/api/loans/all?',
+      searchActive ? searchUrl : `/api/network/${network}/loans/all?`,
       PAGE_LIMIT,
       selectedSort,
       loans,

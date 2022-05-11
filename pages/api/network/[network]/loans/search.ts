@@ -7,12 +7,14 @@ import {
   OrderDirection,
 } from 'types/generated/graphql/nftLoans';
 import { captureException, withSentry } from '@sentry/nextjs';
+import { configs, SupportedNetwork, validateNetwork } from 'lib/config';
 
 async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Loan[] | null>,
 ) {
   try {
+    validateNetwork(req.query);
     const {
       page,
       limit,
@@ -32,7 +34,9 @@ async function handler(
       loanInterestMax,
       loanDurationMin,
       loanDurationMax,
+      network,
     } = req.query;
+    const config = configs[network as SupportedNetwork];
 
     const loans = await searchLoans(
       (statuses as string).split(',') as LoanStatus[],
@@ -56,6 +60,7 @@ async function handler(
       sort as Loan_OrderBy,
       sortDirection as OrderDirection,
       parseInt(limit as string),
+      config.nftBackedLoansSubgraph,
       parseInt(page as string),
     );
 

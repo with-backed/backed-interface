@@ -9,6 +9,19 @@ import { useAccount, useSigner } from 'wagmi';
 import { PawnShopHeader } from 'components/PawnShopHeader';
 import Head from 'next/head';
 import { captureException } from '@sentry/nextjs';
+import { GetServerSideProps } from 'next';
+import { useConfig } from 'hooks/useConfig';
+
+export const getServerSideProps: GetServerSideProps<{}> = async (context) => {
+  if (context.params?.network !== 'rinkeby') {
+    return {
+      notFound: true,
+    };
+  }
+  return {
+    props: {},
+  };
+};
 
 export default function Test() {
   const [{ data }] = useAccount();
@@ -40,6 +53,7 @@ export default function Test() {
 }
 
 function MintPunk() {
+  const { jsonRpcProvider } = useConfig();
   const [{ data }] = useAccount();
   const [{ data: signer }] = useSigner();
   const account = data?.address;
@@ -63,9 +77,7 @@ function MintPunk() {
   };
 
   const wait = async () => {
-    const provider = new ethers.providers.JsonRpcProvider(
-      process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
-    );
+    const provider = new ethers.providers.JsonRpcProvider(jsonRpcProvider);
     const punk = MockPUNK__factory.connect(mockPunkContract, provider);
     const filter = punk.filters.Transfer(null, account, null);
     punk.once(filter, (from, to, tokenId) => {
@@ -92,6 +104,7 @@ function MintPunk() {
 }
 
 function MintDAI() {
+  const { jsonRpcProvider } = useConfig();
   const [{ data }] = useAccount();
   const [{ data: signer }] = useSigner();
   const account = data?.address;
@@ -115,9 +128,7 @@ function MintDAI() {
   };
 
   const wait = async () => {
-    const provider = new ethers.providers.JsonRpcProvider(
-      process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
-    );
+    const provider = new ethers.providers.JsonRpcProvider(jsonRpcProvider);
     const dai = MockDAI__factory.connect(mockDAIContract, provider);
     const filter = dai.filters.Transfer(null, account, null);
     dai.once(filter, (from, to, value) => {

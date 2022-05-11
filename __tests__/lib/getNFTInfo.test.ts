@@ -1,7 +1,11 @@
-import { convertIPFS, getMimeType, supportedMedia } from 'lib/getNFTInfo';
+import {
+  convertIPFS,
+  getMimeType,
+  supportedMedia,
+  NFTResponseData,
+} from 'lib/getNFTInfo';
 import fetchMock from 'jest-fetch-mock';
 import { captureException } from '@sentry/nextjs';
-import { NFTResponseData } from 'pages/api/nftInfo/[uri]';
 
 jest.mock('@sentry/nextjs', () => ({
   ...jest.requireActual('@sentry/nextjs'),

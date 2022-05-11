@@ -1,11 +1,15 @@
 import { captureEvent } from '@sentry/nextjs';
-import { nftBackedLoansClient } from 'lib/urql';
+import { clientFromUrl } from 'lib/urql';
 import {
   LoanByIdDocument,
   LoanByIdQuery,
 } from 'types/generated/graphql/nftLoans';
 
-export async function subgraphLoanById(id: string) {
+export async function subgraphLoanById(
+  id: string,
+  nftBackedLoansSubgraph: string,
+) {
+  const nftBackedLoansClient = clientFromUrl(nftBackedLoansSubgraph);
   const { data, error } = await nftBackedLoansClient
     .query<LoanByIdQuery>(LoanByIdDocument, { id })
     .toPromise();

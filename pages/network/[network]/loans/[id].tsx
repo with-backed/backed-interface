@@ -18,6 +18,9 @@ import Link from 'next/link';
 import { PawnShopHeader } from 'components/PawnShopHeader';
 import Head from 'next/head';
 import { useTokenMetadata, TokenURIAndID } from 'hooks/useTokenMetadata';
+import { captureException } from '@sentry/nextjs';
+import { configs, SupportedNetwork, validateNetwork } from 'lib/config';
+import { useConfig } from 'hooks/useConfig';
 
 export type LoanPageProps = {
   loanInfoJson: string;
@@ -30,10 +33,20 @@ export type LoanPageProps = {
 export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
   context,
 ) => {
+  try {
+    validateNetwork(context.params!);
+  } catch (e) {
+    captureException(e);
+    return {
+      notFound: true,
+    };
+  }
   const id = context.params?.id as string;
+  const network = context.params?.network as SupportedNetwork;
+  const config = configs[network];
   const [loan, history] = await Promise.all([
-    loanById(id),
-    subgraphLoanHistoryById(id),
+    loanById(id, config.nftBackedLoansSubgraph, config.jsonRpcProvider),
+    subgraphLoanHistoryById(id, config.nftBackedLoansSubgraph),
   ]);
 
   // The Graph didn't have loan, and fallback call errored.
@@ -52,9 +65,12 @@ export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
       collateralSaleInfo: await getCollateralSaleInfo(
         loan.collateralContractAddress,
         loan.collateralTokenId.toString(),
+        config.nftSalesSubgraph,
+        network,
+        config.jsonRpcProvider,
       ),
       fallback: {
-        [`/api/loans/history/${id}`]: historyJson,
+        [`/api/network/${network}/loans/history/${id}`]: historyJson,
       },
     },
   };
@@ -94,6 +110,7 @@ function LoansInner({
   serverLoan: Loan;
   collateralSaleInfo: CollateralSaleInfo;
 }) {
+  const { jsonRpcProvider, network } = useConfig();
   const { mutate } = useSWRConfig();
   const [loan, setLoan] = useState(serverLoan);
   const tokenSpec: TokenURIAndID = useMemo(
@@ -106,13 +123,13 @@ function LoansInner({
   const metadata = useTokenMetadata(tokenSpec);
 
   const refresh = useCallback(() => {
-    mutate(`/api/loans/history/${loan.id}`);
-    nodeLoanById(loan.id.toString()).then((loan) => {
+    mutate(`/api/network/${network}/loans/history/${loan.id}`);
+    nodeLoanById(loan.id.toString(), jsonRpcProvider).then((loan) => {
       if (loan) {
         setLoan(loan);
       }
     });
-  }, [loan.id, mutate]);
+  }, [jsonRpcProvider, loan.id, mutate, network]);
 
   const router = useRouter();
   const { addMessage } = useGlobalMessages();
@@ -126,8 +143,11 @@ function LoansInner({
         message: (
           <p>
             {`You've successfully created loan #${loan.id}! To get notifications on its activity, go to the`}
-            <Link href={`/profile/${loan.borrower}`}> profile page</Link> of
-            address{' '}
+            <Link href={`/network/${network}/profile/${loan.borrower}`}>
+              {' '}
+              profile page
+            </Link>{' '}
+            of address{' '}
             <span title={loan.borrower}>
               {loan.borrower.substring(0, 7)}...
             </span>
@@ -136,7 +156,14 @@ function LoansInner({
       });
       router.replace(`/loans/${loan.id}`, undefined, { shallow: true });
     }
-  }, [addMessage, loan.borrower, loan.id, router, router.query.newLoan]);
+  }, [
+    addMessage,
+    loan.borrower,
+    loan.id,
+    network,
+    router,
+    router.query.newLoan,
+  ]);
 
   return (
     <>

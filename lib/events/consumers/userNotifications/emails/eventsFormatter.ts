@@ -100,7 +100,7 @@ const notificationEventToEmailMetadata: {
       config: Config,
     ) => {
       const event = entity as CreateEvent;
-      const borrower = await ensOrAddr(event.creator);
+      const borrower = await ensOrAddr(event.creator, config.jsonRpcProvider);
 
       const sharedComponents: Partial<EventsEmailComponents> = {
         header: emailHeader(event.loan),
@@ -145,9 +145,18 @@ const notificationEventToEmailMetadata: {
       mostRecentTermsEvent?: LendEvent,
     ) => {
       const event = entity as BuyoutEvent;
-      const borrower = await ensOrAddr(event.loan.borrowTicketHolder);
-      const oldLender = await ensOrAddr(event.lendTicketHolder);
-      const newLender = await ensOrAddr(event.newLender);
+      const borrower = await ensOrAddr(
+        event.loan.borrowTicketHolder,
+        config.jsonRpcProvider,
+      );
+      const oldLender = await ensOrAddr(
+        event.lendTicketHolder,
+        config.jsonRpcProvider,
+      );
+      const newLender = await ensOrAddr(
+        event.newLender,
+        config.jsonRpcProvider,
+      );
       const formattedInterestEarned = ethers.utils.formatUnits(
         event.interestEarned,
         event.loan.loanAssetDecimal,
@@ -228,8 +237,11 @@ const notificationEventToEmailMetadata: {
       config: Config,
     ) => {
       const event = entity as LendEvent;
-      const borrower = await ensOrAddr(event.borrowTicketHolder);
-      const lender = await ensOrAddr(event.lender);
+      const borrower = await ensOrAddr(
+        event.borrowTicketHolder,
+        config.jsonRpcProvider,
+      );
+      const lender = await ensOrAddr(event.lender, config.jsonRpcProvider);
       const [repayment, maturity] = getEstimatedRepaymentAndMaturity(
         parseSubgraphLoan(event.loan),
       );
@@ -282,8 +294,11 @@ const notificationEventToEmailMetadata: {
       config: Config,
     ) => {
       const event = entity as RepaymentEvent;
-      const repayer = await ensOrAddr(event.repayer);
-      const lender = await ensOrAddr(event.lendTicketHolder);
+      const repayer = await ensOrAddr(event.repayer, config.jsonRpcProvider);
+      const lender = await ensOrAddr(
+        event.lendTicketHolder,
+        config.jsonRpcProvider,
+      );
       const formattedInterestEarned = ethers.utils.formatUnits(
         event.interestEarned,
         event.loan.loanAssetDecimal,
@@ -348,8 +363,14 @@ const notificationEventToEmailMetadata: {
       config: Config,
     ) => {
       const event = entity as CollateralSeizureEvent;
-      const borrower = await ensOrAddr(event.borrowTicketHolder);
-      const lender = await ensOrAddr(event.lendTicketHolder);
+      const borrower = await ensOrAddr(
+        event.borrowTicketHolder,
+        config.jsonRpcProvider,
+      );
+      const lender = await ensOrAddr(
+        event.lendTicketHolder,
+        config.jsonRpcProvider,
+      );
       const [repayment, _] = getEstimatedRepaymentAndMaturity(
         parseSubgraphLoan(event.loan),
       );
@@ -412,7 +433,10 @@ const notificationEventToEmailMetadata: {
     ) => {
       const loan = entity as Loan;
 
-      const lender = await ensOrAddr(loan.lendTicketHolder);
+      const lender = await ensOrAddr(
+        loan.lendTicketHolder,
+        config.jsonRpcProvider,
+      );
 
       const loanDuration = now - loan.lastAccumulatedTimestamp;
 
@@ -473,8 +497,14 @@ const notificationEventToEmailMetadata: {
       config: Config,
     ) => {
       const loan = entity as Loan;
-      const lender = await ensOrAddr(loan.lendTicketHolder);
-      const borrower = await ensOrAddr(loan.borrowTicketHolder);
+      const lender = await ensOrAddr(
+        loan.lendTicketHolder,
+        config.jsonRpcProvider,
+      );
+      const borrower = await ensOrAddr(
+        loan.borrowTicketHolder,
+        config.jsonRpcProvider,
+      );
 
       const loanDuration =
         loan.endDateTimestamp! - loan.lastAccumulatedTimestamp;

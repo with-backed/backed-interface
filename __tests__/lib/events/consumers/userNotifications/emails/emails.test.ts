@@ -150,6 +150,8 @@ describe('Sending emails with Amazon SES', () => {
         notificationReqOne.deliveryDestination,
         notificationReqOne.ethAddress,
         notificationReqOne.id,
+        'https://site-url.fake',
+        configs.rinkeby.jsonRpcProvider,
       );
 
       expect(mockedSesEmailCall).toHaveBeenCalledWith(

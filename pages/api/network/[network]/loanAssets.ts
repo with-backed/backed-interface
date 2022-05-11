@@ -1,17 +1,22 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { captureException, withSentry } from '@sentry/nextjs';
 import type { LoanAsset } from 'lib/loanAssets';
+import { configs, SupportedNetwork, validateNetwork } from 'lib/config';
 
 // TODO: we should almost certainly cache this
+// TODO: optimism, polygon...
 const mainnetLoanAssetsURI = 'https://tokens.1inch.eth.link/';
 
 async function handler(
-  _req: NextApiRequest,
+  req: NextApiRequest,
   res: NextApiResponse<LoanAsset[] | null>,
 ) {
   try {
+    validateNetwork(req.query);
+    const { network } = req.query;
+    const { network: configNetwork } = configs[network as SupportedNetwork];
     let assets: LoanAsset[] = [];
-    switch (process.env.NEXT_PUBLIC_ENV) {
+    switch (configNetwork) {
       case 'rinkeby':
         assets = [
           {
@@ -20,7 +25,7 @@ async function handler(
           },
         ];
         break;
-      case 'mainnet':
+      case 'ethereum':
         assets = await loadJson(mainnetLoanAssetsURI);
         break;
     }

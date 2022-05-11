@@ -1,6 +1,7 @@
 import { DisplayCurrency } from 'components/DisplayCurrency';
 import { NFTMedia } from 'components/Media/NFTMedia';
 import { ethers } from 'ethers';
+import { useConfig } from 'hooks/useConfig';
 import { useLoanDetails } from 'hooks/useLoanDetails';
 import { useTokenMetadata } from 'hooks/useTokenMetadata';
 import { secondsBigNumToDays } from 'lib/duration';
@@ -44,6 +45,7 @@ type LoanProps = {
   loan: LoanType;
 };
 function Loan({ loan }: LoanProps) {
+  const { network } = useConfig();
   const tokenSpec = useMemo(
     () => ({
       tokenURI: loan.collateralTokenURI,
@@ -81,7 +83,7 @@ function Loan({ loan }: LoanProps) {
   return (
     <tr>
       <td>
-        <Link href={`/loans/${loan.id.toString()}`}>
+        <Link href={`/network/${network}/loans/${loan.id.toString()}`}>
           <a className={styles['name-container']}>
             <NFTMedia nftInfo={nftInfo} small />
             <div className={styles['field-and-subfield']}>
