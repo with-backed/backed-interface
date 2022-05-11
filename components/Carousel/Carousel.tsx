@@ -34,7 +34,18 @@ export function Carousel() {
       </div>
       <div className={styles.controls}>
         <ArrowButton orientation="left" onClick={goBack} />
-        <p>{slides[index].text}</p>
+        <div>
+          <p>{slides[index].text}</p>
+          <p>{slides[index].text}</p>
+          <p>{slides[index].text}</p>
+          <p>{slides[index].text}</p>
+          <p>{slides[index].text}</p>
+          <p>{slides[index].text}</p>
+          <p>{slides[index].text}</p>
+          <p>{slides[index].text}</p>
+          <p>{slides[index].text}</p>
+          <p>{slides[index].text}</p>
+        </div>
         <ArrowButton orientation="right" onClick={goForward} />
       </div>
       <div className={styles.progress}>
