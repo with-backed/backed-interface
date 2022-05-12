@@ -64,7 +64,7 @@ export function Select<
           border: 'none',
           outline: 'none',
           borderRadius: 'var(--border-radius-large)',
-          paddingLeft: '8px',
+          padding: '0px 4px 0px 14px',
           zIndex: 2,
           cursor: state.isDisabled ? 'not-allowed' : 'pointer',
           boxShadow: 'none',
