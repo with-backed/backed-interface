@@ -5,6 +5,7 @@ import capitalize from 'lodash/capitalize';
 import { useRouter } from 'next/router';
 import React, { useCallback, useMemo } from 'react';
 import { SingleValue } from 'react-select';
+import styles from './NetworkSelector.module.css';
 
 type Option = {
   value: string;
@@ -66,11 +67,13 @@ export const NetworkSelector = () => {
   );
 
   return (
-    <Select
-      options={options}
-      defaultValue={defaultValue}
-      onChange={onChange}
-      color="light"
-    />
+    <div className={styles.container}>
+      <Select
+        options={options}
+        defaultValue={defaultValue}
+        onChange={onChange}
+        color="light"
+      />
+    </div>
   );
 };
