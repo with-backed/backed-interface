@@ -70,9 +70,9 @@ export const NetworkSelector = () => {
     <div className={styles.container}>
       <Select
         options={options}
-        defaultValue={defaultValue}
         onChange={onChange}
         color="light"
+        value={defaultValue}
       />
     </div>
   );
