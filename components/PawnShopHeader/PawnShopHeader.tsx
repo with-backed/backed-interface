@@ -88,7 +88,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
           </Link>
 
           <div className={styles['connect-wallet']}>
-            <NetworkSelector />
+            <NetworkSelector isErrorPage={isErrorPage} />
             <ConnectWallet />
           </div>
         </TwelveColumn>
@@ -122,7 +122,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
               </Button>
             )}
             <ConnectWallet />
-            <NetworkSelector />
+            <NetworkSelector isErrorPage={isErrorPage} />
             <TextButton onClick={closeMobileMenu}>Close</TextButton>
           </div>
         </nav>

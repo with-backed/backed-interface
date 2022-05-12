@@ -42,7 +42,10 @@ function shouldReturnToHomepage(path: string): boolean {
   return false;
 }
 
-export const NetworkSelector = () => {
+type NetworkSelectorProps = {
+  isErrorPage?: boolean;
+};
+export const NetworkSelector = ({ isErrorPage }: NetworkSelectorProps) => {
   const { network } = useConfig();
   const { push, route } = useRouter();
 
@@ -65,6 +68,13 @@ export const NetworkSelector = () => {
     () => options.find((o) => o.value === network),
     [network],
   );
+
+  if (isErrorPage) {
+    // The 404 page is statically generated so it thinks the network is always
+    // ethereum. This could result in some unintuitive behavior, so just ditch
+    // the network selector there.
+    return null;
+  }
 
   return (
     <div className={styles.container}>
