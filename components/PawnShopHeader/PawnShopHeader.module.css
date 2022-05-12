@@ -27,23 +27,24 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-}
-
-.flipped-link {
-  composes: link;
-}
-
-.link {
   height: 70px;
 }
 
 .flipped-link {
+  composes: link;
   transform: rotateX(180deg);
 }
 
 .pawn {
-  grid-column: span 3;
+  grid-column: span 4;
   align-self: center;
+  display: flex;
+  gap: 18px;
+}
+
+.pawn > * {
+  flex: 0;
+  white-space: nowrap;
 }
 
 .connect-wallet {
@@ -54,8 +55,8 @@
   gap: 18px;
 }
 
-.connect-wallet > button,
-.connect-wallet a {
+.connect-wallet > * {
+  white-space: nowrap;
   max-width: 50%;
 }
 

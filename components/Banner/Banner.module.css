@@ -30,7 +30,6 @@
 }
 
 .inner {
-  max-width: var(--max-width);
   text-align: center;
 }
 
