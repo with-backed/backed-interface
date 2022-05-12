@@ -34,7 +34,11 @@ export async function getCollateralSaleInfo(
     jsonRpcProvider,
   );
 
-  const collectionStats = await getCollectionStats(nftContractAddress, network);
+  const collectionStats = await getCollectionStats(
+    nftContractAddress,
+    tokenId,
+    network,
+  );
 
   return {
     collectionStats,
@@ -53,15 +57,11 @@ async function getMostRecentSale(
 
   switch (network) {
     case 'ethereum':
-      sale = await queryMostRecentSaleForNFT(
-        nftContractAddress,
-        tokenId,
-        nftSalesSubgraph,
-      );
-      if (!sale) return null;
-      break;
+      //TODO(adamgobes): find an NFT sales api for eth mainnet
+      return null;
     case 'rinkeby':
       sale = generateFakeSaleForNFT(nftContractAddress, tokenId);
+      break;
     default:
       // TODO(adamgobes): follow up with Quixotic team on when they will release API to get most recent sale. it is not available for now
       return null;
