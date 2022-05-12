@@ -71,7 +71,7 @@ export const NetworkSelector = () => {
       <Select
         options={options}
         onChange={onChange}
-        color="light"
+        color="clickable"
         value={defaultValue}
       />
     </div>
