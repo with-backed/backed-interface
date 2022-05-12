@@ -134,7 +134,6 @@ export function CreatePageForm({
       setWaitingForTx(true);
 
       t.wait().catch((err) => {
-        console.log('catch of tx ran');
         setWaitingForTx(false);
         onError();
         captureException(err);
