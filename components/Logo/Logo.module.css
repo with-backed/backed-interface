@@ -1,5 +1,6 @@
 .image {
-  max-height: 70px;
+  height: 70px;
+  width: 70px;
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;
