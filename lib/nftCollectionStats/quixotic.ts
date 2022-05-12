@@ -15,10 +15,12 @@ export async function collectionStatsOptimism(
 
   const json = (await quixoticAssetReq.json()) as any;
 
+  console.log({ json });
+
   return {
-    floor: json?.stats?.floor_price,
-    items: json?.stats?.total_supply,
-    owners: json?.stats?.num_owners,
-    volume: json?.stats?.total_volume,
+    floor: json?.stats?.floor_price || null,
+    items: json?.stats?.total_supply || null,
+    owners: json?.stats?.num_owners || null,
+    volume: json?.stats?.total_volume || null,
   };
 }

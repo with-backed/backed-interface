@@ -4,10 +4,10 @@ const ART_BLOCKS_CONTRACT_ADDRESS =
   '0xa7d8d9ef8D8Ce8992Df33D8b8CF4Aebabd5bD270';
 
 const resevoirResToStats = (json: any): CollectionStatistics => ({
-  floor: json?.collection?.floorAsk.price,
-  items: json?.collection?.tokenCount,
-  owners: json?.collection?.ownerCount,
-  volume: json?.collection?.volume.allTime,
+  floor: json?.collection?.floorAsk.price || null,
+  items: json?.collection?.tokenCount || null,
+  owners: json?.collection?.ownerCount || null,
+  volume: json?.collection?.volume.allTime || null,
 });
 
 export async function collectionStatsEthMainnet(
