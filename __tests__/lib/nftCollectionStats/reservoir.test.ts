@@ -1,7 +1,7 @@
-import { collectionStatsEthMainnet } from 'lib/nftCollectionStats/resevoir';
+import { collectionStatsEthMainnet } from 'lib/nftCollectionStats/reservoir';
 import fetchMock from 'jest-fetch-mock';
 
-describe('Resevoir API', () => {
+describe('Reservoir API', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });

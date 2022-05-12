@@ -1,4 +1,4 @@
-import { collectionStatsEthMainnet } from 'lib/nftCollectionStats/resevoir';
+import { collectionStatsEthMainnet } from 'lib/nftCollectionStats/reservoir';
 import { collectionStatsRinkeby } from 'lib/nftCollectionStats/mockData';
 import { SupportedNetwork } from 'lib/config';
 import { collectionStatsOptimism } from 'lib/nftCollectionStats/quixotic';
