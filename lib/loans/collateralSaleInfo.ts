@@ -34,7 +34,11 @@ export async function getCollateralSaleInfo(
     jsonRpcProvider,
   );
 
-  const collectionStats = await getCollectionStats(nftContractAddress, network);
+  const collectionStats = await getCollectionStats(
+    nftContractAddress,
+    tokenId,
+    network,
+  );
 
   return {
     collectionStats,

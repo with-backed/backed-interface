@@ -12,11 +12,12 @@ export type CollectionStatistics = {
 
 export async function getCollectionStats(
   contractAddress: string,
+  tokenId: string,
   network: SupportedNetwork,
 ): Promise<CollectionStatistics> {
   switch (network) {
     case 'ethereum':
-      return collectionStatsEthMainnet(contractAddress);
+      return collectionStatsEthMainnet(contractAddress, tokenId);
     case 'optimism':
       return collectionStatsOptimism(contractAddress);
     case 'rinkeby':
