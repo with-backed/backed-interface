@@ -3,7 +3,6 @@ import React from 'react';
 import backedBunny from './backed-bunny.png';
 import borkedBunny from './borked-bunny.png';
 import optimismBackedBunny from './opbunny.png';
-import optimismBorkedBunny from './opborked.png';
 import pepe from './pepe-bunny-line.png';
 import { SupportedNetwork } from 'lib/config';
 import styles from './Logo.module.css';
@@ -14,7 +13,7 @@ type ImageDirectory = {
 const ERROR_LOGOS: ImageDirectory = {
   ethereum: borkedBunny,
   rinkeby: borkedBunny,
-  optimism: optimismBorkedBunny,
+  optimism: borkedBunny,
 };
 
 const NORMAL_LOGOS: ImageDirectory = {
@@ -33,7 +32,6 @@ export function getLogo(
   }
 
   if (error) {
-    console.log({ error, network, codeActive });
     return ERROR_LOGOS[network];
   }
 
@@ -51,7 +49,6 @@ export const Logo = ({ error, codeActive }: LogoProps) => {
       className={styles.image}
       src={getLogo(network as SupportedNetwork, error, codeActive).src}
       alt="Backed logo"
-      priority
     />
   );
 };
