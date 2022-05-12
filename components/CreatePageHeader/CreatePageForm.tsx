@@ -116,6 +116,8 @@ export function CreatePageForm({
 
       const contract = web3LoanFacilitator(signer!);
       onSubmit();
+
+      wait();
       const t = await contract.createLoan(
         collateralTokenID,
         collateralAddress,
@@ -130,27 +132,23 @@ export function CreatePageForm({
 
       setTxHash(t.hash);
       setWaitingForTx(true);
-      t.wait()
-        .then(() => {
-          wait();
-          setWaitingForTx(true);
-        })
-        .catch((err) => {
-          setWaitingForTx(false);
-          onError();
-          captureException(err);
-          addMessage({
-            kind: 'error',
-            message: (
-              <div>
-                Failed to create loan.{' '}
-                <EtherscanTransactionLink transactionHash={t.hash}>
-                  View transaction
-                </EtherscanTransactionLink>
-              </div>
-            ),
-          });
+
+      t.wait().catch((err) => {
+        setWaitingForTx(false);
+        onError();
+        captureException(err);
+        addMessage({
+          kind: 'error',
+          message: (
+            <div>
+              Failed to create loan.{' '}
+              <EtherscanTransactionLink transactionHash={t.hash}>
+                View transaction
+              </EtherscanTransactionLink>
+            </div>
+          ),
         });
+      });
     },
     [
       account,
