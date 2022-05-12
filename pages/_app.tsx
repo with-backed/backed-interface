@@ -22,15 +22,12 @@ export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     if (query.network) {
       if (query.network !== network) {
-        console.log({ network });
         if (isSupportedNetwork(query.network as string)) {
           setNetwork(query.network as SupportedNetwork);
         }
       }
     }
   }, [network, query.network]);
-
-  console.log({ network, query });
 
   return (
     <ConfigProvider network={network}>
