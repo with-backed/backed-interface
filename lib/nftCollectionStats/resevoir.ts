@@ -42,7 +42,7 @@ async function handleArtBlocks(tokenId: string): Promise<CollectionStatistics> {
     },
   );
 
-  const collectionId = (await tokensV4Req.json()).tokens[0].collection.id;
+  const collectionId = (await tokensV4Req.json())?.tokens[0]?.collection?.id;
 
   const collectionV2Req = await fetch(
     `https://api.reservoir.tools/collection/v2?id=${collectionId}`,
