@@ -7,8 +7,12 @@ import { Banner } from '../Banner';
 
 type WrongNetworkProps = {
   expectedChainId: number;
+  expectedChainName: string;
 };
-export const WrongNetwork = ({ expectedChainId }: WrongNetworkProps) => {
+export const WrongNetwork = ({
+  expectedChainId,
+  expectedChainName,
+}: WrongNetworkProps) => {
   const [{ data }, switchNetwork] = useNetwork();
   const { addMessage } = useGlobalMessages();
 
@@ -29,24 +33,27 @@ export const WrongNetwork = ({ expectedChainId }: WrongNetworkProps) => {
   const currentChainName = useMemo(() => {
     if (chainId) {
       const rawName = ethers.providers.getNetwork(chainId).name;
+      if (rawName.toLowerCase() === 'homestead') {
+        return 'Ethereum';
+      }
       return rawName[0].toUpperCase() + rawName.slice(1);
     }
     return '';
   }, [chainId]);
 
-  const expectedChainName = useMemo(() => {
-    const rawName = ethers.providers.getNetwork(expectedChainId).name;
-    return rawName[0].toUpperCase() + rawName.slice(1);
-  }, [expectedChainId]);
+  const formattedExpectedName = useMemo(
+    () => expectedChainName[0].toUpperCase() + expectedChainName.slice(1),
+    [expectedChainName],
+  );
 
   if (chainId && chainId !== expectedChainId) {
     return (
       <Banner kind="error">
         <span>
-          You&apos;re viewing data from the {expectedChainName} network, but
+          You&apos;re viewing data from the {formattedExpectedName} network, but
           your wallet is connected to the {currentChainName} network.{' '}
           <TextButton kind="alert" onClick={handleClick}>
-            Switch to {expectedChainName}
+            Switch wallet to {formattedExpectedName}
           </TextButton>
         </span>
       </Banner>
