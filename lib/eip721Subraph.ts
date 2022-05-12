@@ -4,7 +4,7 @@ import { contractDirectory } from 'lib/contracts';
 export const HIDDEN_NFT_ADDRESSES = [
   contractDirectory.borrowTicket,
   contractDirectory.lendTicket,
-];
+].map((a) => a.toLowerCase());
 
 export function getNftContractAddress(nft: NFTEntity): string {
   return nft.id.substring(0, 42);
