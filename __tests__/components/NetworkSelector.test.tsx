@@ -10,7 +10,9 @@ const mockedUseRouter = nextRouter.useRouter as jest.MockedFunction<
   typeof nextRouter.useRouter
 >;
 const push = jest.fn();
-mockedUseRouter.mockImplementation(() => ({ push } as any));
+mockedUseRouter.mockImplementation(
+  () => ({ push, route: '/network/rinkeby/loans/create' } as any),
+);
 
 describe('Select', () => {
   beforeEach(() => {
@@ -44,7 +46,10 @@ describe('Select', () => {
       expect(push).not.toHaveBeenCalled();
     });
 
-    it('handles selection', () => {
+    it('handles selection on a loan page', () => {
+      mockedUseRouter.mockImplementation(
+        () => ({ push, route: '/network/rinkeby/loans/1337' } as any),
+      );
       const { getByText } = render(<NetworkSelector />);
 
       const input = getByText('Rinkeby');
@@ -55,6 +60,57 @@ describe('Select', () => {
       userEvent.click(optimism);
 
       expect(push).toHaveBeenCalledWith('/network/optimism');
+      expect(push).toHaveBeenCalledTimes(1);
+    });
+
+    it('handles selection on the home page', () => {
+      mockedUseRouter.mockImplementation(
+        () => ({ push, route: '/network/rinkeby' } as any),
+      );
+      const { getByText } = render(<NetworkSelector />);
+
+      const input = getByText('Rinkeby');
+
+      userEvent.click(input);
+
+      const optimism = getByText('Optimism');
+      userEvent.click(optimism);
+
+      expect(push).toHaveBeenCalledWith('/network/optimism');
+      expect(push).toHaveBeenCalledTimes(1);
+    });
+
+    it('handles selection on the create page', () => {
+      mockedUseRouter.mockImplementation(
+        () => ({ push, route: '/network/rinkeby/loans/create' } as any),
+      );
+      const { getByText } = render(<NetworkSelector />);
+
+      const input = getByText('Rinkeby');
+
+      userEvent.click(input);
+
+      const optimism = getByText('Optimism');
+      userEvent.click(optimism);
+
+      expect(push).toHaveBeenCalledWith('/network/optimism/loans/create');
+      expect(push).toHaveBeenCalledTimes(1);
+    });
+
+    it('handles selection on the profile page', () => {
+      mockedUseRouter.mockImplementation(
+        () => ({ push, route: '/network/rinkeby/profile/0xwhatever' } as any),
+      );
+      const { getByText } = render(<NetworkSelector />);
+
+      const input = getByText('Rinkeby');
+
+      userEvent.click(input);
+
+      const optimism = getByText('Optimism');
+      userEvent.click(optimism);
+
+      expect(push).toHaveBeenCalledWith('/network/optimism/profile/0xwhatever');
       expect(push).toHaveBeenCalledTimes(1);
     });
   });
