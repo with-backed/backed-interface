@@ -15,8 +15,6 @@ export async function collectionStatsOptimism(
 
   const json = (await quixoticAssetReq.json()) as any;
 
-  console.log({ json });
-
   return {
     floor: json?.stats?.floor_price || null,
     items: json?.stats?.total_supply || null,
