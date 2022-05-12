@@ -55,15 +55,19 @@ describe('Banner', () => {
         } as any);
       });
       it('renders', () => {
-        const { getByText } = render(<WrongNetwork expectedChainId={1} />);
+        const { getByText } = render(
+          <WrongNetwork expectedChainId={1} expectedChainName="ethereum" />,
+        );
         getByText(
-          "You're viewing data from the Homestead network, but your wallet is connected to the Rinkeby network.",
+          "You're viewing data from the Ethereum network, but your wallet is connected to the Rinkeby network.",
         );
       });
 
       it('attempts to change network when pressing the button', () => {
-        const { getByText } = render(<WrongNetwork expectedChainId={1} />);
-        const button = getByText('Switch to Homestead');
+        const { getByText } = render(
+          <WrongNetwork expectedChainId={1} expectedChainName="ethereum" />,
+        );
+        const button = getByText('Switch wallet to Ethereum');
         expect(switchNetwork).not.toHaveBeenCalled();
         userEvent.click(button);
         expect(switchNetwork).toHaveBeenCalledWith(1);
@@ -71,8 +75,10 @@ describe('Banner', () => {
 
       it('attempts to change network when pressing the button', async () => {
         switchNetwork.mockRejectedValue('fail');
-        const { getByText } = render(<WrongNetwork expectedChainId={1} />);
-        const button = getByText('Switch to Homestead');
+        const { getByText } = render(
+          <WrongNetwork expectedChainId={1} expectedChainName="ethereum" />,
+        );
+        const button = getByText('Switch wallet to Ethereum');
         expect(addMessage).not.toHaveBeenCalled();
         userEvent.click(button);
         await waitFor(() => expect(addMessage).toHaveBeenCalled());
