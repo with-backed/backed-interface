@@ -14,6 +14,10 @@ export async function collectionStatsEthMainnet(
   contractAddress: string,
   tokenId: string,
 ): Promise<CollectionStatistics> {
+  if (contractAddress === ART_BLOCKS_CONTRACT_ADDRESS) {
+    return handleArtBlocks(tokenId);
+  }
+
   const resevoirAssetReq = await fetch(
     `https://api.reservoir.tools/collection/v2?id=${contractAddress}`,
     {
@@ -23,10 +27,6 @@ export async function collectionStatsEthMainnet(
       }),
     },
   );
-
-  if (contractAddress === ART_BLOCKS_CONTRACT_ADDRESS) {
-    return handleArtBlocks(tokenId);
-  }
 
   return resevoirResToStats(await resevoirAssetReq.json());
 }
