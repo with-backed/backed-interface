@@ -122,6 +122,7 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
               </Button>
             )}
             <ConnectWallet />
+            <NetworkSelector />
             <TextButton onClick={closeMobileMenu}>Close</TextButton>
           </div>
         </nav>
