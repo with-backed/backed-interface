@@ -189,44 +189,40 @@ export function ProfileHeader({ address, loans }: ProfileHeaderProps) {
   const dialog = useDialogState();
 
   return (
-    <>
-      <div className={styles['profile-header-wrapper']}>
-        <TwelveColumn>
-          <Fieldset legend="📭 Address">
-            <div className={styles.container}>
-              <span>{address}</span>
-              <EtherscanAddressLink address={address}>
-                View on Etherscan 🔗
-              </EtherscanAddressLink>
-              <DialogDisclosure as={'text'} {...dialog}>
-                <TextButton kind="clickable">
-                  Subscribe to updates 🔔
-                </TextButton>
-              </DialogDisclosure>
-              {connectedAddress && connectedAddress === address && (
-                <TextButton
-                  kind="clickable"
-                  onClick={() => {
-                    disconnect();
-                  }}>
-                  Disconnect 🚪
-                </TextButton>
-              )}
-            </div>
-          </Fieldset>
-          <Fieldset legend="🖼 Borrowing">
-            <div className={styles.container}>
-              <LoanStats loans={loansAsBorrower} kind="borrower" />
-            </div>
-          </Fieldset>
-          <Fieldset legend="💸 Lending">
-            <div className={styles.container}>
-              <LoanStats loans={loansAsLender} kind="lender" />
-            </div>
-          </Fieldset>
-        </TwelveColumn>
-      </div>
+    <div className={styles['profile-header-wrapper']}>
+      <TwelveColumn>
+        <Fieldset legend="📭 Address">
+          <div className={styles.container}>
+            <span>{address}</span>
+            <EtherscanAddressLink address={address}>
+              View on Etherscan 🔗
+            </EtherscanAddressLink>
+            <DialogDisclosure as={'text'} {...dialog}>
+              <TextButton kind="clickable">Subscribe to updates 🔔</TextButton>
+            </DialogDisclosure>
+            {connectedAddress && connectedAddress === address && (
+              <TextButton
+                kind="clickable"
+                onClick={() => {
+                  disconnect();
+                }}>
+                Disconnect 🚪
+              </TextButton>
+            )}
+          </div>
+        </Fieldset>
+        <Fieldset legend="🖼 Borrowing">
+          <div className={styles.container}>
+            <LoanStats loans={loansAsBorrower} kind="borrower" />
+          </div>
+        </Fieldset>
+        <Fieldset legend="💸 Lending">
+          <div className={styles.container}>
+            <LoanStats loans={loansAsLender} kind="lender" />
+          </div>
+        </Fieldset>
+      </TwelveColumn>
       <NotificationsModal profileAddress={address} dialog={dialog} />
-    </>
+    </div>
   );
 }
