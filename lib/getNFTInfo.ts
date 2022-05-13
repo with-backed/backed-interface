@@ -44,12 +44,6 @@ export async function getNFTInfoFromTokenInfo({
       return null;
     }
 
-    // if (isDataUri) {
-    //   // TODO: make this type safe. Since this is a data URI, it hasn't been
-    //   // transformed the way the API does the non-data ones.
-    //   Object.assign(NFTInfo, await getMedia(NFTInfo as any));
-    // }
-
     const { mediaUrl, mediaMimeType } = supportedMedia(NFTInfo, forceImage);
 
     return {
