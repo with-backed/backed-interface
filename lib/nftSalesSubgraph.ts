@@ -73,7 +73,7 @@ export const generateFakeSaleForNFT = (
     nftTokenId,
     saleType: SaleType.Single,
     paymentToken: Object.keys(PAYMENT_TOKENS)[randomNumber(1)],
-    price: ethers.utils.formatUnits(randomNumber(1000)), // BigInts get sent down the wire as strings with TheGraph
+    price: '12500000000000000000',
     exchange: Object.keys(NFT_EXCHANGES)[randomNumber(1)],
     timestamp: new Date(2020, randomNumber(11), 15).getTime(),
   };
