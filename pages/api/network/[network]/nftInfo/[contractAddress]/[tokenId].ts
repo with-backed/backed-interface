@@ -23,7 +23,6 @@ async function handler(
     const contract = jsonRpcERC721Contract(contractAddress, jsonRpcProvider);
     const uri = await contract.tokenURI(ethers.BigNumber.from(tokenId));
     const resolvedUri = convertIPFS(uri);
-    console.log({ uri, resolvedUri });
     if (!resolvedUri) {
       throw new Error(`Could not resolve ${uri}`);
     }
@@ -41,7 +40,6 @@ async function handler(
       external_url,
     });
   } catch (e) {
-    console.log({ e });
     if (e instanceof Error) {
       if (
         e.name === 'FetchError' &&
