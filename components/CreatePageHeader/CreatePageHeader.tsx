@@ -38,7 +38,7 @@ export function CreatePageHeader() {
   const [current, send] = useMachine(createPageFormMachine);
 
   const [selectedNFT, setSelectedNFT] = useState<NFTEntity | null>(null);
-  const [collateralAddress, collateralTokenID] = useMemo(() => {
+  const [collateralContractAddress, collateralTokenId] = useMemo(() => {
     if (!selectedNFT) {
       return ['', ethers.BigNumber.from(-1)];
     }
@@ -46,17 +46,8 @@ export function CreatePageHeader() {
   }, [selectedNFT]);
 
   const tokenSpec = useMemo(
-    () =>
-      selectedNFT
-        ? {
-            tokenURI: selectedNFT.uri || '',
-            tokenID: ethers.BigNumber.from(selectedNFT.identifier),
-          }
-        : {
-            tokenURI: '',
-            tokenID: ethers.BigNumber.from('0'),
-          },
-    [selectedNFT],
+    () => ({ collateralContractAddress, collateralTokenId }),
+    [collateralContractAddress, collateralTokenId],
   );
 
   const nftInfo = useTokenMetadata(tokenSpec);
@@ -185,8 +176,8 @@ export function CreatePageHeader() {
         <div className={styles['button-container']}>
           <SelectNFTButton dialog={dialog} state={nftButtonState} />
           <AuthorizeNFTButton
-            collateralAddress={collateralAddress}
-            collateralTokenID={collateralTokenID}
+            collateralAddress={collateralContractAddress}
+            collateralTokenID={collateralTokenId}
             disabled={!selectedNFT}
             nft={selectedNFT}
             onAlreadyApproved={onAlreadyApproved}
@@ -202,8 +193,8 @@ export function CreatePageHeader() {
             Set Loan Terms
           </Button>
           <CreatePageForm
-            collateralAddress={collateralAddress}
-            collateralTokenID={collateralTokenID}
+            collateralAddress={collateralContractAddress}
+            collateralTokenID={collateralTokenId}
             disabled={formIsDisabled}
             onApproved={onApproved}
             onBlur={onBlur}

@@ -17,7 +17,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { PawnShopHeader } from 'components/PawnShopHeader';
 import Head from 'next/head';
-import { useTokenMetadata, TokenURIAndID } from 'hooks/useTokenMetadata';
+import { useTokenMetadata, CollateralSpec } from 'hooks/useTokenMetadata';
 import { captureException } from '@sentry/nextjs';
 import { configs, SupportedNetwork, validateNetwork } from 'lib/config';
 import { useConfig } from 'hooks/useConfig';
@@ -113,12 +113,12 @@ function LoansInner({
   const { jsonRpcProvider, network } = useConfig();
   const { mutate } = useSWRConfig();
   const [loan, setLoan] = useState(serverLoan);
-  const tokenSpec: TokenURIAndID = useMemo(
+  const tokenSpec: CollateralSpec = useMemo(
     () => ({
-      tokenURI: loan.collateralTokenURI,
-      tokenID: loan.collateralTokenId,
+      collateralContractAddress: loan.collateralContractAddress,
+      collateralTokenId: loan.collateralTokenId,
     }),
-    [loan.collateralTokenId, loan.collateralTokenURI],
+    [loan.collateralTokenId, loan.collateralContractAddress],
   );
   const metadata = useTokenMetadata(tokenSpec);
 

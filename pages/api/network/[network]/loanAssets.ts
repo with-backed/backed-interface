@@ -42,7 +42,6 @@ async function handler(
     }
     return res.status(200).json(assets);
   } catch (e) {
-    console.log({ e });
     captureException(e);
     return res.status(404).json(null);
   }

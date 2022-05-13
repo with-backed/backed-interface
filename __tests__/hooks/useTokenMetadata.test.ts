@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import { ethers } from 'ethers';
 import { useTokenMetadata } from 'hooks/useTokenMetadata';
-import { TokenURIAndID } from 'hooks/useTokenMetadata/useTokenMetadata';
+import { CollateralSpec } from 'hooks/useTokenMetadata/useTokenMetadata';
 import { getNFTInfoFromTokenInfo } from 'lib/getNFTInfo';
 
 // JSDom doesn't have TextEncoder. We're not actually running getNFTInfo
@@ -16,9 +16,9 @@ jest.mock('lib/getNFTInfo', () => ({
 
 const mockedGetNFTInfoFromTokenInfo = getNFTInfoFromTokenInfo as jest.Mock;
 
-const tokenURIAndID: TokenURIAndID = {
-  tokenURI: 'https://this-is-a-mock-uri',
-  tokenID: ethers.BigNumber.from(1),
+const collateralSpec: CollateralSpec = {
+  collateralContractAddress: '0x306b1ea3ecdf94ab739f1910bbda052ed4a9f949',
+  collateralTokenId: ethers.BigNumber.from(1),
 };
 
 describe('useTokenMetadata', () => {
@@ -29,7 +29,7 @@ describe('useTokenMetadata', () => {
 
   it('starts in a loading state, then returns a value based on token URI', async () => {
     expect.assertions(3);
-    const { result } = renderHook(() => useTokenMetadata(tokenURIAndID));
+    const { result } = renderHook(() => useTokenMetadata(collateralSpec));
     expect(result.current).toEqual(
       expect.objectContaining({ isLoading: true, metadata: null }),
     );
@@ -42,7 +42,7 @@ describe('useTokenMetadata', () => {
 
   it('returns cached value when called with the same params', async () => {
     expect.assertions(2);
-    const { result } = renderHook(() => useTokenMetadata(tokenURIAndID));
+    const { result } = renderHook(() => useTokenMetadata(collateralSpec));
     expect(result.current).toEqual(
       expect.objectContaining({
         isLoading: false,

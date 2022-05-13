@@ -22,18 +22,21 @@ export interface GetNFTInfoResponse {
   id: ethers.BigNumber;
 }
 
-export async function getNFTInfoFromTokenInfo(
-  tokenId: ethers.BigNumber,
-  tokenURI: string,
-  network: SupportedNetwork,
-  forceImage: boolean = false,
-): Promise<GetNFTInfoResponse | null> {
-  const isDataUri = tokenURI.startsWith('data:');
+type NFTInfoParams = {
+  collateralTokenId: ethers.BigNumber;
+  collateralContractAddress: string;
+  network: SupportedNetwork;
+  forceImage?: boolean;
+};
+export async function getNFTInfoFromTokenInfo({
+  collateralTokenId,
+  collateralContractAddress,
+  network,
+  forceImage,
+}: NFTInfoParams): Promise<GetNFTInfoResponse | null> {
   try {
     const tokenURIRes = await fetch(
-      isDataUri
-        ? tokenURI
-        : `/api/network/${network}/nftInfo/${encodeURIComponent(tokenURI)}`,
+      `/api/network/${network}/nftInfo/${collateralContractAddress}/${collateralTokenId.toString()}`,
     );
     const NFTInfo: NFTResponseData = await tokenURIRes.json();
 
@@ -41,18 +44,11 @@ export async function getNFTInfoFromTokenInfo(
       return null;
     }
 
-    if (isDataUri) {
-      // TODO: make this type safe. Since this is a data URI, it hasn't been
-      // transformed the way the API does the non-data ones.
-      Object.assign(NFTInfo, await getMedia(NFTInfo as any));
-    }
-
     const { mediaUrl, mediaMimeType } = supportedMedia(NFTInfo, forceImage);
 
     return {
-      id: tokenId,
-      name: NFTInfo?.name,
-      description: NFTInfo?.description,
+      ...NFTInfo,
+      id: ethers.BigNumber.from(NFTInfo.tokenId),
       mediaUrl,
       mediaMimeType,
     };

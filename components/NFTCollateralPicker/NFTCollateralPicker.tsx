@@ -8,6 +8,7 @@ import { useNFTs } from 'hooks/useNFTs';
 import { NFTEntity } from 'types/NFT';
 import { useTokenMetadata } from 'hooks/useTokenMetadata';
 import { ethers } from 'ethers';
+import { getNftContractAddress } from 'lib/eip721Subraph';
 
 interface NFTCollateralPickerProps {
   connectedWallet: string;
@@ -144,8 +145,8 @@ function NFT({ handleNFTClick, nft }: NFTProps) {
 
   const tokenSpec = useMemo(
     () => ({
-      tokenURI: nft.uri || '',
-      tokenID: ethers.BigNumber.from(nft.identifier),
+      collateralContractAddress: getNftContractAddress(nft),
+      collateralTokenId: ethers.BigNumber.from(nft.identifier),
       forceImage: true,
     }),
     [nft],

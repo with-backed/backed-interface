@@ -47,7 +47,8 @@ Event Tx: <${config.etherscanUrl}/tx/${event.id}>
 
   const messagedEmbed = await collateralToDiscordMessageEmbed(
     await getNFTInfoForAttachment(
-      event.loan.collateralTokenURI,
+      event.loan.collateralContractAddress,
+      event.loan.collateralTokenId,
       config.siteUrl,
       config.network as SupportedNetwork,
     ),
