@@ -35,7 +35,12 @@ describe('loanById', () => {
   });
 
   it('checks the subgraph for the loan, returning that data parsed if present', async () => {
-    const loan = await loanById(loanId, nftBackedLoansSubgraph, provider);
+    const loan = await loanById(
+      loanId,
+      nftBackedLoansSubgraph,
+      provider,
+      'rinkeby',
+    );
     expect(mockedSubgraphLoanById).toHaveBeenCalledWith(
       loanId,
       nftBackedLoansSubgraph,
@@ -46,13 +51,22 @@ describe('loanById', () => {
 
   it('falls back to the node when there is no subgraph data', async () => {
     mockedSubgraphLoanById.mockResolvedValue(null);
-    const loan = await loanById(loanId, nftBackedLoansSubgraph, provider);
+    const loan = await loanById(
+      loanId,
+      nftBackedLoansSubgraph,
+      provider,
+      'rinkeby',
+    );
     expect(mockedSubgraphLoanById).toHaveBeenCalledWith(
       loanId,
       nftBackedLoansSubgraph,
     );
     expect(loan?.id).toEqual(ethers.BigNumber.from(loanId));
-    expect(mockedNodeLoanById).toHaveBeenCalledWith(loanId, provider);
+    expect(mockedNodeLoanById).toHaveBeenCalledWith(
+      loanId,
+      provider,
+      'rinkeby',
+    );
   });
 
   it('returns null when we get an invalid value from the node', async () => {
@@ -61,7 +75,12 @@ describe('loanById', () => {
       ...parsedLoan,
       loanAssetContractAddress: '0',
     });
-    const loan = await loanById(loanId, nftBackedLoansSubgraph, provider);
+    const loan = await loanById(
+      loanId,
+      nftBackedLoansSubgraph,
+      provider,
+      'rinkeby',
+    );
     expect(loan).toBeNull();
   });
 
@@ -70,7 +89,12 @@ describe('loanById', () => {
     mockedNodeLoanById.mockImplementation(() => {
       throw new Error('fail');
     });
-    const loan = await loanById(loanId, nftBackedLoansSubgraph, provider);
+    const loan = await loanById(
+      loanId,
+      nftBackedLoansSubgraph,
+      provider,
+      'rinkeby',
+    );
     expect(loan).toBeNull();
   });
 });

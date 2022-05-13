@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { SupportedNetwork } from 'lib/config';
 import { Loan } from 'types/Loan';
 import { nodeLoanById } from './node/nodeLoanById';
 import { subgraphLoanById } from './subgraph/subgraphLoanById';
@@ -8,6 +9,7 @@ export async function loanById(
   id: string,
   nftBackedLoansSubgraph: string,
   jsonRpcProvider: string,
+  network: SupportedNetwork,
 ): Promise<Loan | null> {
   if (parseInt(id).toString() != id) {
     // the path /loans/create was calling this with a bad arg
@@ -32,7 +34,7 @@ export async function loanById(
 
   // The Graph has not indexed this loan, but it may exist.
   try {
-    const loanInfo = await nodeLoanById(id, jsonRpcProvider);
+    const loanInfo = await nodeLoanById(id, jsonRpcProvider, network);
 
     if (ethers.BigNumber.from(loanInfo.loanAssetContractAddress).isZero()) {
       // Solidity initializes all the loan structs,

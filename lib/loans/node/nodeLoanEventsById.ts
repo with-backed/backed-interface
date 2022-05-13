@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { SupportedNetwork } from 'lib/config';
 import { jsonRpcLoanFacilitator } from 'lib/contracts';
 import {
   BuyoutEvent,
@@ -22,9 +23,10 @@ export async function nodeLoanEventsById(
   loanIdString: string,
   jsonRpcProvider: string,
   startBlock: number,
+  network: SupportedNetwork,
 ) {
   const loanId = ethers.BigNumber.from(loanIdString);
-  const contract = jsonRpcLoanFacilitator(jsonRpcProvider);
+  const contract = jsonRpcLoanFacilitator(jsonRpcProvider, network);
 
   const createLoanFilter = contract.filters.CreateLoan(loanId, null);
   const closeFilter = contract.filters.Close(loanId);

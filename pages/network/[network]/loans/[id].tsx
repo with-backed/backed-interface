@@ -45,7 +45,12 @@ export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
   const network = context.params?.network as SupportedNetwork;
   const config = configs[network];
   const [loan, history] = await Promise.all([
-    loanById(id, config.nftBackedLoansSubgraph, config.jsonRpcProvider),
+    loanById(
+      id,
+      config.nftBackedLoansSubgraph,
+      config.jsonRpcProvider,
+      network,
+    ),
     subgraphLoanHistoryById(id, config.nftBackedLoansSubgraph),
   ]);
 
@@ -124,7 +129,11 @@ function LoansInner({
 
   const refresh = useCallback(() => {
     mutate(`/api/network/${network}/loans/history/${loan.id}`);
-    nodeLoanById(loan.id.toString(), jsonRpcProvider).then((loan) => {
+    nodeLoanById(
+      loan.id.toString(),
+      jsonRpcProvider,
+      network as SupportedNetwork,
+    ).then((loan) => {
       if (loan) {
         setLoan(loan);
       }

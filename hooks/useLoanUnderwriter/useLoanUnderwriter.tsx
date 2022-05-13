@@ -10,6 +10,7 @@ import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import { EtherscanTransactionLink } from 'components/EtherscanLink';
 import Link from 'next/link';
 import { useConfig } from 'hooks/useConfig';
+import { SupportedNetwork } from 'lib/config';
 
 // Annoyingly, the form data gets automatically parsed into numbers, so we can't use the LoanFormData type
 type Values = { interestRate: number; duration: number; loanAmount: number };
@@ -31,7 +32,10 @@ export function useLoanUnderwriter(
       if (!account) {
         throw new Error('Cannot underwrite a loan without a connected account');
       }
-      const loanFacilitator = web3LoanFacilitator(signer!);
+      const loanFacilitator = web3LoanFacilitator(
+        signer!,
+        network as SupportedNetwork,
+      );
       const annualInterestRate = ethers.BigNumber.from(
         Math.floor(interestRate * 10 ** (INTEREST_RATE_PERCENT_DECIMALS - 2)),
       );

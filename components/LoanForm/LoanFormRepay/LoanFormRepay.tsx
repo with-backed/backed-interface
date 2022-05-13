@@ -9,6 +9,8 @@ import { useSigner } from 'wagmi';
 import { captureException } from '@sentry/nextjs';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import { EtherscanTransactionLink } from 'components/EtherscanLink';
+import { useConfig } from 'hooks/useConfig';
+import { SupportedNetwork } from 'lib/config';
 
 type LoanFormRepayProps = {
   loan: Loan;
@@ -28,13 +30,17 @@ export function LoanFormRepay({
     formattedPrincipal,
     formattedInterestAccrued,
   } = useLoanDetails(loan);
+  const { network } = useConfig();
   const { addMessage } = useGlobalMessages();
   const [{ data: signer }] = useSigner();
   const [txHash, setTxHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
 
   const repay = useCallback(async () => {
-    const t = await web3LoanFacilitator(signer!).repayAndCloseLoan(loan.id);
+    const t = await web3LoanFacilitator(
+      signer!,
+      network as SupportedNetwork,
+    ).repayAndCloseLoan(loan.id);
     setWaitingForTx(true);
     setTxHash(t.hash);
     t.wait()
@@ -57,7 +63,7 @@ export function LoanFormRepay({
           ),
         });
       });
-  }, [addMessage, loan.id, refresh, signer]);
+  }, [addMessage, loan.id, network, refresh, signer]);
 
   return (
     <>

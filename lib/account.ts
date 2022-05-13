@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
 import { contractDirectory, jsonRpcERC20Contract } from 'lib/contracts';
+import { SupportedNetwork } from './config';
 
 export async function getAccountLoanAssetBalance(
   account: string,
@@ -22,6 +23,7 @@ export async function getAccountLoanAssetAllowance(
   account: string,
   loanAssetContractAddress: string,
   jsonRpcProvider: string,
+  network: SupportedNetwork,
 ) {
   const assetContract = jsonRpcERC20Contract(
     loanAssetContractAddress,
@@ -29,7 +31,7 @@ export async function getAccountLoanAssetAllowance(
   );
   return assetContract.allowance(
     account as string,
-    contractDirectory.loanFacilitator,
+    contractDirectory[network].loanFacilitator,
   );
 }
 
@@ -37,11 +39,12 @@ export function waitForApproval(
   account: string,
   contractAddress: string,
   jsonRpcProvider: string,
+  network: SupportedNetwork,
 ) {
   const contract = jsonRpcERC20Contract(contractAddress, jsonRpcProvider);
   const filter = contract.filters.Approval(
     account,
-    contractDirectory.loanFacilitator,
+    contractDirectory[network].loanFacilitator,
     null,
   );
   return new Promise((resolve) => {

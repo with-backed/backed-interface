@@ -5,6 +5,8 @@ import { Media } from 'components/Media';
 import { contractDirectory } from 'lib/contracts';
 import { Fallback } from 'components/Media/Fallback';
 import { useTokenMetadata } from 'hooks/useTokenMetadata';
+import { useConfig } from 'hooks/useConfig';
+import { SupportedNetwork } from 'lib/config';
 
 interface PawnArtProps {
   collateralContractAddress: string;
@@ -13,9 +15,12 @@ interface PawnArtProps {
 
 export const PawnLoanArt = React.memo(
   ({ tokenID }: Pick<PawnArtProps, 'tokenID'>) => {
+    const { network } = useConfig();
     return (
       <PawnArt
-        collateralContractAddress={contractDirectory.lendTicket}
+        collateralContractAddress={
+          contractDirectory[network as SupportedNetwork].lendTicket
+        }
         tokenID={tokenID}
       />
     );
@@ -25,9 +30,12 @@ PawnLoanArt.displayName = 'PawnLoanArt';
 
 export const PawnTicketArt = React.memo(
   ({ tokenID }: Pick<PawnArtProps, 'tokenID'>) => {
+    const { network } = useConfig();
     return (
       <PawnArt
-        collateralContractAddress={contractDirectory.borrowTicket}
+        collateralContractAddress={
+          contractDirectory[network as SupportedNetwork].borrowTicket
+        }
         tokenID={tokenID}
       />
     );

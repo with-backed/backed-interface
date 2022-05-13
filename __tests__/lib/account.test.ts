@@ -47,6 +47,7 @@ describe('account utilities', () => {
         '0xaccount',
         '0xcontract',
         configs.rinkeby.jsonRpcProvider,
+        'rinkeby',
       );
       expect(value).toEqual(10000000000);
     });

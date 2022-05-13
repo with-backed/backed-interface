@@ -8,6 +8,7 @@ import { Select } from 'components/Select';
 import { ethers } from 'ethers';
 import { useConfig } from 'hooks/useConfig';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
+import { SupportedNetwork } from 'lib/config';
 import {
   INTEREST_RATE_PERCENT_DECIMALS,
   SECONDS_IN_A_DAY,
@@ -81,7 +82,10 @@ export function CreatePageForm({
   const watchAllFields = watch();
 
   const wait = useCallback(async () => {
-    const contract = jsonRpcLoanFacilitator(jsonRpcProvider);
+    const contract = jsonRpcLoanFacilitator(
+      jsonRpcProvider,
+      network as SupportedNetwork,
+    );
     const filter = contract.filters.CreateLoan(null, account, null, null, null);
     contract.once(filter, (id) => {
       onApproved();
@@ -114,7 +118,10 @@ export function CreatePageForm({
         ),
       );
 
-      const contract = web3LoanFacilitator(signer!);
+      const contract = web3LoanFacilitator(
+        signer!,
+        network as SupportedNetwork,
+      );
       onSubmit();
 
       wait();
@@ -156,6 +163,7 @@ export function CreatePageForm({
       collateralAddress,
       collateralTokenID,
       jsonRpcProvider,
+      network,
       onError,
       onSubmit,
       signer,

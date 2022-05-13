@@ -21,6 +21,7 @@ async function handler(
       idString,
       config.jsonRpcProvider,
       config.facilitatorStartBlock,
+      network,
     );
 
     res.status(200).json(events);
