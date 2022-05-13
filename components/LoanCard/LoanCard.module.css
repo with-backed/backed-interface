@@ -76,6 +76,10 @@
   max-height: 350px;
 }
 
+.media > img {
+  object-position: bottom;
+}
+
 .loading-media {
   overflow: hidden;
   height: 0;
