@@ -56,5 +56,5 @@
   height: 100%;
   justify-self: center;
   object-fit: contain;
-  object-position: bottom;
+  object-position: top;
 }
