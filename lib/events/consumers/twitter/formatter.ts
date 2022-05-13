@@ -46,7 +46,8 @@ ${loanUrl(event.loan.id, config)}
 
   const attachmentImageBuffer = await nftResponseDataToImageBuffer(
     await getNFTInfoForAttachment(
-      event.loan.collateralTokenURI,
+      event.loan.collateralContractAddress,
+      event.loan.collateralTokenId,
       config.siteUrl,
       config.network as SupportedNetwork,
     ),

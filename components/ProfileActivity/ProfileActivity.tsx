@@ -1,4 +1,4 @@
-import { captureEvent, captureException, captureMessage } from '@sentry/nextjs';
+import { captureMessage } from '@sentry/nextjs';
 import { EtherscanTransactionLink } from 'components/EtherscanLink';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { NFTMedia } from 'components/Media/NFTMedia';
@@ -69,11 +69,11 @@ type EventEntryProps = {
 function EventEntry({ address, event, loan }: EventEntryProps) {
   const tokenSpec = useMemo(
     () => ({
-      tokenURI: loan.collateralTokenURI,
-      tokenID: loan.collateralTokenId,
+      collateralContractAddress: loan.collateralContractAddress,
+      collateralTokenId: loan.collateralTokenId,
       forceImage: true,
     }),
-    [loan.collateralTokenURI, loan.collateralTokenId],
+    [loan.collateralContractAddress, loan.collateralTokenId],
   );
   const nftInfo = useTokenMetadata(tokenSpec);
 

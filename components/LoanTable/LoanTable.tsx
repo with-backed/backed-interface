@@ -48,11 +48,11 @@ function Loan({ loan }: LoanProps) {
   const { network } = useConfig();
   const tokenSpec = useMemo(
     () => ({
-      tokenURI: loan.collateralTokenURI,
-      tokenID: loan.collateralTokenId,
+      collateralContractAddress: loan.collateralContractAddress,
+      collateralTokenId: loan.collateralTokenId,
       forceImage: true,
     }),
-    [loan.collateralTokenURI, loan.collateralTokenId],
+    [loan.collateralContractAddress, loan.collateralTokenId],
   );
   const nftInfo = useTokenMetadata(tokenSpec);
   const { metadata, isLoading } = nftInfo;

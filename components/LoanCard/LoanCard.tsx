@@ -1,8 +1,7 @@
-import { ethers } from 'ethers';
 import Link from 'next/link';
 import React, { memo, useMemo } from 'react';
 import styles from './LoanCard.module.css';
-import { TokenURIAndID, useTokenMetadata } from 'hooks/useTokenMetadata';
+import { CollateralSpec, useTokenMetadata } from 'hooks/useTokenMetadata';
 import { Media } from 'components/Media';
 import { GetNFTInfoResponse } from 'lib/getNFTInfo';
 import { Fallback } from 'components/Media/Fallback';
@@ -21,13 +20,13 @@ export const LoanCard = memo(
   ({ loan, selectedAddress, display = 'expanded' }: LoanCardProps) => {
     const title = `View loan #${loan.id}`;
 
-    const tokenSpec: TokenURIAndID = useMemo(
+    const tokenSpec: CollateralSpec = useMemo(
       () => ({
-        tokenURI: loan.collateralTokenURI,
-        tokenID: ethers.BigNumber.from(loan.collateralTokenId),
+        collateralContractAddress: loan.collateralContractAddress,
+        collateralTokenId: loan.collateralTokenId,
         forceImage: true,
       }),
-      [loan.collateralTokenId, loan.collateralTokenURI],
+      [loan.collateralTokenId, loan.collateralContractAddress],
     );
 
     const maybeMetadata = useTokenMetadata(tokenSpec);
