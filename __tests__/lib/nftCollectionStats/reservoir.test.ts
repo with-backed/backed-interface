@@ -6,24 +6,7 @@ describe('Reservoir API', () => {
     jest.clearAllMocks();
   });
 
-  it('makes only one call to collection/v2 when NFT is not ArtBlocks', async () => {
-    fetchMock.mockResponse(
-      JSON.stringify({
-        floor: null,
-        items: null,
-        owners: null,
-        volume: null,
-      }),
-    );
-    await collectionStatsEthMainnet(
-      '0x9ec7ff8964afba6d8c43dc340a2e6c6c3156e966',
-      '147',
-    );
-
-    expect(fetchMock).toHaveBeenCalledTimes(1);
-  });
-
-  it('makes one call to tokens/v4 and one call to collection/v2 when NFT is ArtBlocks', async () => {
+  it('makes one call to tokens/v4 and one call to collection/v2 for all NFTs', async () => {
     fetchMock.mockResponse(
       JSON.stringify({
         floor: null,
