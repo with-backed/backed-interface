@@ -1,7 +1,9 @@
 import { CollectionStatistics } from 'lib/nftCollectionStats';
 
-const ART_BLOCKS_CONTRACT_ADDRESS =
-  '0xa7d8d9ef8D8Ce8992Df33D8b8CF4Aebabd5bD270';
+const ART_BLOCKS_CONTRACT_ADDRESSES = [
+  '0xa7d8d9ef8D8Ce8992Df33D8b8CF4Aebabd5bD270',
+  '0x059EDD72Cd353dF5106D2B9cC5ab83a52287aC3a',
+];
 
 const reservoirResToStats = (json: any): CollectionStatistics => ({
   floor: json?.collection?.floorAsk.price || null,
@@ -14,8 +16,8 @@ export async function collectionStatsEthMainnet(
   contractAddress: string,
   tokenId: string,
 ): Promise<CollectionStatistics> {
-  if (contractAddress === ART_BLOCKS_CONTRACT_ADDRESS) {
-    return handleArtBlocks(tokenId);
+  if (ART_BLOCKS_CONTRACT_ADDRESSES.includes(contractAddress)) {
+    return handleArtBlocks(contractAddress, tokenId);
   }
 
   const reservoirAssetReq = await fetch(
@@ -31,9 +33,12 @@ export async function collectionStatsEthMainnet(
   return reservoirResToStats(await reservoirAssetReq.json());
 }
 
-async function handleArtBlocks(tokenId: string): Promise<CollectionStatistics> {
+async function handleArtBlocks(
+  contractAddress: string,
+  tokenId: string,
+): Promise<CollectionStatistics> {
   const tokensV4Req = await fetch(
-    `https://api.reservoir.tools/tokens/v4?tokens=${ART_BLOCKS_CONTRACT_ADDRESS}:${tokenId}`,
+    `https://api.reservoir.tools/tokens/v4?tokens=${contractAddress}:${tokenId}`,
     {
       headers: new Headers({
         Accept: 'application/json',
