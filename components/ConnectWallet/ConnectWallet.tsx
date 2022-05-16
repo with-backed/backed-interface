@@ -11,7 +11,12 @@ export const ConnectWallet = () => {
     <ConnectButton.Custom>
       {({ account, openConnectModal }) =>
         !account ? (
-          <Button onClick={openConnectModal} type="button">
+          <Button
+            onClick={() => {
+              window.pirsch('Wallet connection modal opened', {});
+              openConnectModal();
+            }}
+            type="button">
             🥕 Connect
           </Button>
         ) : (
