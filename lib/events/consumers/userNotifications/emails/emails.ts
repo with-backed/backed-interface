@@ -20,11 +20,7 @@ import {
   GenericEmailType,
   getSubjectForGenericEmail,
 } from 'lib/events/consumers/userNotifications/emails/genericFormatter';
-import { mainnet } from 'lib/chainEnv';
-import { incrementBackedMetric, Metric } from 'lib/metrics/repository';
-import { captureException } from '@sentry/nextjs';
 import { Config } from 'lib/config';
-import { mainnet } from 'lib/chainEnv';
 import { incrementBackedMetric, Metric } from 'lib/metrics/repository';
 import { captureException } from '@sentry/nextjs';
 

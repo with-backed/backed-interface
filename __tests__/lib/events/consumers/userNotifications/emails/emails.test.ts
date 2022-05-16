@@ -29,7 +29,6 @@ import {
 
 import { incrementBackedMetric } from 'lib/metrics/repository';
 import { configs } from 'lib/config';
-import { incrementBackedMetric } from 'lib/metrics/repository';
 
 jest.mock('lib/events/consumers/userNotifications/emails/ses', () => ({
   executeEmailSendWithSes: jest.fn(),
