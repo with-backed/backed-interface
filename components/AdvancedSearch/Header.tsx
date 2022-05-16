@@ -1,5 +1,6 @@
 import { Button } from 'components/Button';
 import { GridListSelector } from 'components/GridListSelector';
+import { useCallback } from 'react';
 import { LoanStatus } from 'types/generated/graphql/nftLoans';
 import styles from './AdvancedSearch.module.css';
 import LendabilityDropdown from './LendabilityDropdown';
@@ -20,13 +21,20 @@ export function SearchHeader({
   showSearch,
   setShowSearch,
 }: SearchHeaderProps) {
+  const toggleShowSearch = useCallback(() => {
+    const message = showSearch
+      ? 'Advanced search closed'
+      : 'Advanced search opened';
+    setShowSearch(!showSearch);
+    window.pirsch(message, {});
+  }, [setShowSearch, showSearch]);
   return (
     <div className={styles.header}>
       <div className={styles.searchButton}>
         <GridListSelector handleChange={handleViewChange} />
         <Button
           kind={showSearch ? 'highlight' : 'quaternary'}
-          onClick={() => setShowSearch(!showSearch)}>
+          onClick={toggleShowSearch}>
           &#x1F50D; Search
         </Button>
       </div>
