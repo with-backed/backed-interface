@@ -26,6 +26,8 @@ import {
   generateHTMLForEventsEmail,
   generateHTMLForGenericEmail,
 } from 'lib/events/consumers/userNotifications/emails/mjml';
+
+import { incrementBackedMetric } from 'lib/metrics/repository';
 import { configs } from 'lib/config';
 import { incrementBackedMetric } from 'lib/metrics/repository';
 
