@@ -3,6 +3,7 @@ import React from 'react';
 import backedBunny from './backed-bunny.png';
 import borkedBunny from './borked-bunny.png';
 import optimismBackedBunny from './opbunny.png';
+import polygonBackedBunny from './pbunny.png';
 import pepe from './pepe-bunny-line.png';
 import { SupportedNetwork } from 'lib/config';
 import styles from './Logo.module.css';
@@ -14,12 +15,14 @@ const ERROR_LOGOS: ImageDirectory = {
   ethereum: borkedBunny,
   rinkeby: borkedBunny,
   optimism: borkedBunny,
+  polygon: borkedBunny,
 };
 
 const NORMAL_LOGOS: ImageDirectory = {
   ethereum: backedBunny,
   rinkeby: backedBunny,
   optimism: optimismBackedBunny,
+  polygon: polygonBackedBunny,
 };
 
 export function getLogo(

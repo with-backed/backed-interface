@@ -73,10 +73,32 @@ const optimism: Config = {
   facilitatorStartBlock: 6679943,
 };
 
+const polygon: Config = {
+  ...baseConfig,
+  centerNetwork: '',
+  nftBackedLoansSubgraph:
+    'https://api.thegraph.com/subgraphs/name/with-backed/backed-protocol-polygon',
+  eip721Subgraph:
+    'https://api.thegraph.com/subgraphs/name/with-backed/polygon-erc721-subgraph',
+  infuraId: '54c753f04ec64374aa679e383e7f84d5',
+  pirschCode: '82ZKa76zuhAYZcSHM5QpOGU8U4hY5f1l',
+  openSeaUrl: 'https://opensea.io',
+  etherscanUrl: 'https://polygonscan.com',
+  chainId: 137,
+  jsonRpcProvider:
+    'https://polygon-mainnet.g.alchemy.com/v2/sRuR0U0CxGifKBURcsLPibuCjYj8nmZJ',
+  siteUrl: 'https://withbacked.xyz',
+  network: 'polygon',
+  emailSubjectPrefix: '[Polygon]:',
+  nftSalesSubgraph: null,
+  facilitatorStartBlock: 28234089,
+};
+
 export const configs = {
   ethereum,
   rinkeby,
   optimism,
+  polygon,
 };
 
 export const prodConfigs = [ethereum, optimism];

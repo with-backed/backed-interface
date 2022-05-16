@@ -23,10 +23,17 @@ const baseContracts: ContractDirectoryListing = {
   loanFacilitator: '0x0BacCDD05a729aB8B56e09Ef19c15f953E10885f',
 };
 
+const polygonContracts: ContractDirectoryListing = {
+  borrowTicket: '0x222FB4559B1CfbaB63fc9C9a30F14A7232CB2636',
+  lendTicket: '0xe01194534169DC6f38c9Aefea4917C623a99E7Ec',
+  loanFacilitator: '0x0baccdd05a729ab8b56e09ef19c15f953e10885f',
+};
+
 export const contractDirectory: ContractDirectory = {
   ethereum: baseContracts,
   optimism: baseContracts,
   rinkeby: baseContracts,
+  polygon: polygonContracts,
 };
 
 export function web3LoanFacilitator(signer: Signer, network: SupportedNetwork) {

@@ -5,12 +5,14 @@ const ADDRESS_LINK_TEXT: { [key: string]: string } = {
   rinkeby: 'View on OpenSea',
   ethereum: 'View on OpenSea',
   optimism: 'View on Quixotic',
+  polygon: 'View on OpenSea',
 };
 
 const ADDRESS_LINK_PATH_PREFIX: { [key: string]: string } = {
   rinkeby: 'assets',
   ethereum: 'assets',
   optimism: 'asset',
+  polygon: 'assets/matic',
 };
 
 interface ExchangeLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {

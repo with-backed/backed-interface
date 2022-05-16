@@ -9,6 +9,8 @@ const mainnetLoanAssetsURI = 'https://tokens.1inch.eth.link/';
 const optimismLoanAssetURI =
   'https://static.optimism.io/optimism.tokenlist.json';
 
+const polygonLoanAssetURI = 'https://api.1inch.exchange/v4.0/137/tokens';
+
 async function handler(
   req: NextApiRequest,
   res: NextApiResponse<LoanAsset[] | null>,
@@ -37,6 +39,16 @@ async function handler(
         assets = (await loadJson(optimismLoanAssetURI)).filter(
           (asset) => asset.chainId === 10,
         );
+
+        break;
+      case 'polygon':
+        const response = await fetch(polygonLoanAssetURI);
+        const json = await response.json();
+        assets = Object.keys(json.tokens).map((address) => ({
+          address,
+          symbol: json.tokens[address].symbol,
+          chainId: 137,
+        }));
 
         break;
     }
