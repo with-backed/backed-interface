@@ -41,14 +41,14 @@ export default function Document() {
           src="https://api.pirsch.io/pirsch.js"
           id="pirschjs"
           key="pirschjs"
-          data-code={configs.ethereum.pirschCode}></script>
+          data-code={process.env.NEXT_PUBLIC_PIRSCH_CODE}></script>
         <script
           defer
           type="text/javascript"
           src="https://api.pirsch.io/pirsch-events.js"
           id="pirscheventsjs"
           key="pirscheventsjs"
-          data-code={configs.ethereum.pirschCode}></script>
+          data-code={process.env.NEXT_PUBLIC_PIRSCH_CODE}></script>
       </Head>
       <body>
         <Main />

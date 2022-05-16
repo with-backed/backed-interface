@@ -19,7 +19,6 @@ const rinkeby: Config = {
   chainId: 4,
   nftBackedLoansSubgraph:
     'https://api.thegraph.com/subgraphs/name/with-backed/backed-protocol-rinkeby',
-  pirschCode: 'YJk8KXD6e5xIgVxoe6f9A1O1lSxQW3ky',
   jsonRpcProvider:
     'https://eth-rinkeby.alchemyapi.io/v2/BtHbvji7nhBOC943JJB2XoXMSJAh64g-',
   eip721Subgraph:
@@ -43,7 +42,6 @@ const ethereum = {
   eip721Subgraph:
     'https://api.thegraph.com/subgraphs/name/sunguru98/mainnet-erc721-subgraph',
   infuraId: '54c753f04ec64374aa679e383e7f84d5',
-  pirschCode: '82ZKa76zuhAYZcSHM5QpOGU8U4hY5f1l',
   openSeaUrl: 'https://opensea.io',
   etherscanUrl: 'https://etherscan.io',
   chainId: 1,
@@ -63,7 +61,6 @@ const optimism: Config = {
   eip721Subgraph:
     'https://api.thegraph.com/subgraphs/name/with-backed/optimism-erc721-subgraph',
   infuraId: '54c753f04ec64374aa679e383e7f84d5',
-  pirschCode: '82ZKa76zuhAYZcSHM5QpOGU8U4hY5f1l',
   openSeaUrl: 'https://quixotic.io',
   etherscanUrl: 'https://optimistic.etherscan.io',
   chainId: 10,
