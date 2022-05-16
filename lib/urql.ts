@@ -6,17 +6,9 @@ import { createClient } from '@urql/core';
 // be invalidated.
 const requestPolicy = 'network-only';
 
-export const nftBackedLoansClient = createClient({
-  url: process.env.NEXT_PUBLIC_NFT_BACKED_LOANS_SUBGRAPH || '',
-  requestPolicy,
-});
-
-export const eip721Client = createClient({
-  url: process.env.NEXT_PUBLIC_EIP721_SUBGRAPH || '',
-  requestPolicy,
-});
-
-export const nftSalesClient = createClient({
-  url: process.env.NEXT_PUBLIC_NFT_SALES_SUBGRAPH || '',
-  requestPolicy,
-});
+export function clientFromUrl(url: string) {
+  return createClient({
+    url,
+    requestPolicy,
+  });
+}

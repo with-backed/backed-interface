@@ -19,4 +19,5 @@ export type Loan = {
   interestOwed: ethers.BigNumber;
   endDateTimestamp: number;
   collateralTokenURI: string;
+  allowLoanAmountIncrease: boolean;
 };

@@ -4,8 +4,8 @@ import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { NFTMedia } from 'components/Media/NFTMedia';
 import { NFTCollateralPicker } from 'components/NFTCollateralPicker/NFTCollateralPicker';
 import { ethers } from 'ethers';
-import { getNftContractAddress, HIDDEN_NFT_ADDRESSES } from 'lib/eip721Subraph';
-import { eip721Client } from 'lib/urql';
+import { getNftContractAddress, hiddenNFTAddresses } from 'lib/eip721Subraph';
+import { clientFromUrl } from 'lib/urql';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDialogState } from 'reakit/Dialog';
@@ -21,18 +21,25 @@ import { createPageFormSchema } from './createPageFormSchema';
 import { NFTEntity } from 'types/NFT';
 import { useTokenMetadata } from 'hooks/useTokenMetadata';
 import { useAccount } from 'wagmi';
+import { Button } from 'components/Button';
+import { useConfig } from 'hooks/useConfig';
+import { SupportedNetwork } from 'lib/config';
 
 export function CreatePageHeader() {
   const form = useForm<CreateFormData>({
     mode: 'all',
     resolver: yupResolver(createPageFormSchema),
+    defaultValues: {
+      acceptHigherLoanAmounts: true,
+    },
   });
+  const { eip721Subgraph, network } = useConfig();
   const [{ data }] = useAccount();
   const account = data?.address;
   const [current, send] = useMachine(createPageFormMachine);
 
   const [selectedNFT, setSelectedNFT] = useState<NFTEntity | null>(null);
-  const [collateralAddress, collateralTokenID] = useMemo(() => {
+  const [collateralContractAddress, collateralTokenId] = useMemo(() => {
     if (!selectedNFT) {
       return ['', ethers.BigNumber.from(-1)];
     }
@@ -40,17 +47,8 @@ export function CreatePageHeader() {
   }, [selectedNFT]);
 
   const tokenSpec = useMemo(
-    () =>
-      selectedNFT
-        ? {
-            tokenURI: selectedNFT.uri || '',
-            tokenID: ethers.BigNumber.from(selectedNFT.identifier),
-          }
-        : {
-            tokenURI: '',
-            tokenID: ethers.BigNumber.from('0'),
-          },
-    [selectedNFT],
+    () => ({ collateralContractAddress, collateralTokenId }),
+    [collateralContractAddress, collateralTokenId],
   );
 
   const nftInfo = useTokenMetadata(tokenSpec);
@@ -77,9 +75,20 @@ export function CreatePageHeader() {
   const onError = useCallback(() => {
     send({ type: 'FAILURE' });
   }, [send]);
+  const onSetLoanTerms = useCallback(() => {
+    send({ type: 'SET' });
+  }, [send]);
 
   const onFocus = useCallback(
-    (type: 'DENOMINATION' | 'LOAN_AMOUNT' | 'DURATION' | 'INTEREST_RATE') => {
+    (
+      type:
+        | 'DENOMINATION'
+        | 'LOAN_AMOUNT'
+        | 'DURATION'
+        | 'INTEREST_RATE'
+        | 'REVIEW'
+        | 'ACCEPT_HIGHER_LOAN_AMOUNT',
+    ) => {
       send({ type });
     },
     [send],
@@ -134,6 +143,7 @@ export function CreatePageHeader() {
       'pendingMintBorrowerTicket',
       'mintBorrowerTicketSuccess',
       'mintBorrowerTicketFailure',
+      'setLoanTerms',
     ].some(current.matches);
   }, [current]);
 
@@ -147,6 +157,24 @@ export function CreatePageHeader() {
     return 'active';
   }, [current, selectedNFT]);
 
+  const setTermsButtonIsDisabled = useMemo(() => {
+    return [
+      'noWallet',
+      'selectNFT',
+      'authorizeNFT',
+      'pendingAuthorization',
+    ].some(current.matches);
+  }, [current]);
+
+  const eip721Client = useMemo(() => {
+    return clientFromUrl(eip721Subgraph);
+  }, [eip721Subgraph]);
+
+  const hiddenNFTs = useMemo(
+    () => hiddenNFTAddresses(network as SupportedNetwork),
+    [network],
+  );
+
   return (
     <div className={styles['create-page-header']}>
       <ThreeColumn>
@@ -154,8 +182,8 @@ export function CreatePageHeader() {
         <div className={styles['button-container']}>
           <SelectNFTButton dialog={dialog} state={nftButtonState} />
           <AuthorizeNFTButton
-            collateralAddress={collateralAddress}
-            collateralTokenID={collateralTokenID}
+            collateralAddress={collateralContractAddress}
+            collateralTokenID={collateralTokenId}
             disabled={!selectedNFT}
             nft={selectedNFT}
             onAlreadyApproved={onAlreadyApproved}
@@ -163,9 +191,16 @@ export function CreatePageHeader() {
             onError={onError}
             onSubmit={onSubmit}
           />
+          <Button
+            kind={current.matches('setLoanTerms') ? 'primary' : 'secondary'}
+            disabled={setTermsButtonIsDisabled}
+            id="setLoanTerms"
+            onClick={onSetLoanTerms}>
+            Set Loan Terms
+          </Button>
           <CreatePageForm
-            collateralAddress={collateralAddress}
-            collateralTokenID={collateralTokenID}
+            collateralAddress={collateralContractAddress}
+            collateralTokenID={collateralTokenId}
             disabled={formIsDisabled}
             onApproved={onApproved}
             onBlur={onBlur}
@@ -183,7 +218,7 @@ export function CreatePageHeader() {
       </ThreeColumn>
       <Provider value={eip721Client}>
         <NFTCollateralPicker
-          hiddenNFTAddresses={HIDDEN_NFT_ADDRESSES}
+          hiddenNFTAddresses={hiddenNFTs}
           connectedWallet={account || ''}
           handleSetSelectedNFT={handleSetSelectedNFT}
           dialog={dialog}

@@ -17,7 +17,7 @@ import {
   MostEventsQuery,
   MostEventsDocument,
 } from 'types/generated/graphql/nftLoans';
-import { nftBackedLoansClient } from '../../urql';
+import { clientFromUrl } from '../../urql';
 import { Dictionary, groupBy } from 'lodash';
 import { Event } from 'types/Event';
 import {
@@ -34,6 +34,7 @@ import { captureException } from '@sentry/nextjs';
 
 export async function getAllActiveLoansForAddress(
   address: string,
+  nftBackedLoansSubgraph: string,
 ): Promise<Loan[]> {
   const sharedQueryArgs: QueryLoansArgs = {
     orderBy: Loan_OrderBy.CreatedAtTimestamp,
@@ -58,6 +59,8 @@ export async function getAllActiveLoansForAddress(
     where: whereFilterAsLender,
   };
 
+  const nftBackedLoansClient = clientFromUrl(nftBackedLoansSubgraph);
+
   const results = await Promise.all([
     nftBackedLoansClient
       .query<AllLoansQuery>(AllLoansDocument, queryArgsAsBorrower)
@@ -79,8 +82,9 @@ export async function getAllActiveLoansForAddress(
 
 export async function getAllEventsForAddress(
   address: string,
+  nftBackedLoansSubgraph: string,
 ): Promise<Dictionary<Event[]>> {
-  const c = nftBackedLoansClient;
+  const c = clientFromUrl(nftBackedLoansSubgraph);
   const whereBorrower = { borrowTicketHolder: address };
   const whereLender = { lendTicketHolder: address };
   const queries = await Promise.all([

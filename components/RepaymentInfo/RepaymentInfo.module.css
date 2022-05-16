@@ -1,0 +1,14 @@
+.maturity-date > div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.maturity-date img {
+    cursor: pointer;
+    margin: 0 10px;
+}
+
+.maturity-date a {
+    display: flex;
+}

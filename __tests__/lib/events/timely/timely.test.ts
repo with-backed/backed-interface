@@ -7,6 +7,7 @@ import {
   getLastWrittenTimestamp,
   overrideLastWrittenTimestamp,
 } from 'lib/events/consumers/userNotifications/repository';
+import { configs } from 'lib/config';
 
 let lastRun = 1645155901;
 let now = lastRun + 3600;
@@ -62,14 +63,22 @@ describe('getLiquidatedLoansForTimestamp', () => {
     fetchMock.mockResponse('success');
 
     const { liquidationOccurringLoans, liquidationOccurredLoans } =
-      await getLiquidatedLoansForTimestamp(now);
+      await getLiquidatedLoansForTimestamp(
+        now,
+        configs.rinkeby.nftBackedLoansSubgraph,
+      );
 
     expect(mockedGetExpiringLoansCall).toHaveBeenCalledTimes(2);
     expect(mockedGetExpiringLoansCall).toHaveBeenCalledWith(
       now + 24 * 3600,
       now + 25 * 3600,
+      configs.rinkeby.nftBackedLoansSubgraph,
     );
-    expect(mockedGetExpiringLoansCall).toHaveBeenCalledWith(now - 3600, now);
+    expect(mockedGetExpiringLoansCall).toHaveBeenCalledWith(
+      now - 3600,
+      now,
+      configs.rinkeby.nftBackedLoansSubgraph,
+    );
 
     expect(liquidationOccurringLoans).toEqual([aboutToExpireLoan]);
     expect(liquidationOccurredLoans).toEqual([alreadyExpiredLoan]);

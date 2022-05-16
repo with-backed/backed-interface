@@ -1,0 +1,1 @@
+export { LoanTermsDisclosure } from './LoanTermsDisclosure';

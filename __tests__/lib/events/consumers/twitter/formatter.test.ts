@@ -9,6 +9,7 @@ import { tweet } from 'lib/events/consumers/twitter/api';
 import { sendTweetForTriggerAndEntity } from 'lib/events/consumers/twitter/formatter';
 import { nftResponseDataToImageBuffer } from 'lib/events/consumers/twitter/attachments';
 import { getNFTInfoForAttachment } from 'lib/events/consumers/getNftInfoForAttachment';
+import { configs } from 'lib/config';
 
 jest.mock('lib/events/consumers/twitter/api', () => ({
   tweet: jest.fn(),
@@ -42,7 +43,11 @@ describe('Formatting events for tweet updates', () => {
 
   describe('CreateEvent', () => {
     it('Correctly formats event for tweet', async () => {
-      await sendTweetForTriggerAndEntity('CreateEvent', subgraphCreateEvent);
+      await sendTweetForTriggerAndEntity(
+        'CreateEvent',
+        subgraphCreateEvent,
+        configs.rinkeby,
+      );
 
       expect(mockTweetCall).toHaveBeenCalledTimes(1);
       expect(mockTweetCall).toHaveBeenCalledWith(
@@ -63,12 +68,22 @@ describe('Formatting events for tweet updates', () => {
         expect.stringContaining('2.0%'),
         undefined,
       );
+      expect(mockTweetCall).toHaveBeenCalledWith(
+        expect.stringContaining(
+          'https://staging.withbacked.xyz/network/rinkeby/loans/65',
+        ),
+        undefined,
+      );
     });
   });
 
   describe('LendEvent', () => {
     it('Correctly formats event for tweet', async () => {
-      await sendTweetForTriggerAndEntity('LendEvent', subgraphLendEvent);
+      await sendTweetForTriggerAndEntity(
+        'LendEvent',
+        subgraphLendEvent,
+        configs.rinkeby,
+      );
 
       expect(mockTweetCall).toHaveBeenCalledTimes(1);
       expect(mockTweetCall).toHaveBeenCalledWith(
@@ -91,16 +106,27 @@ describe('Formatting events for tweet updates', () => {
         expect.stringContaining('2.0%'),
         undefined,
       );
+      expect(mockTweetCall).toHaveBeenCalledWith(
+        expect.stringContaining(
+          'https://staging.withbacked.xyz/network/rinkeby/loans/65',
+        ),
+        undefined,
+      );
     });
   });
 
   describe('BuyoutEvent', () => {
     it('Correctly formats event for tweet', async () => {
-      await sendTweetForTriggerAndEntity('BuyoutEvent', subgraphBuyoutEvent, {
-        ...subgraphLendEvent,
-        loanAmount: '8000000000000000000000',
-        timestamp: subgraphLendEvent.timestamp - 86400 * 2,
-      });
+      await sendTweetForTriggerAndEntity(
+        'BuyoutEvent',
+        subgraphBuyoutEvent,
+        configs.rinkeby,
+        {
+          ...subgraphLendEvent,
+          loanAmount: '8000000000000000000000',
+          timestamp: subgraphLendEvent.timestamp - 86400 * 2,
+        },
+      );
 
       expect(mockTweetCall).toHaveBeenCalledTimes(1);
       expect(mockTweetCall).toHaveBeenCalledWith(
@@ -127,6 +153,12 @@ describe('Formatting events for tweet updates', () => {
         expect.stringContaining('8193.0 DAI'),
         undefined,
       );
+      expect(mockTweetCall).toHaveBeenCalledWith(
+        expect.stringContaining(
+          'https://staging.withbacked.xyz/network/rinkeby/loans/65',
+        ),
+        undefined,
+      );
     });
   });
 
@@ -135,6 +167,7 @@ describe('Formatting events for tweet updates', () => {
       await sendTweetForTriggerAndEntity(
         'RepaymentEvent',
         subgraphRepaymentEvent,
+        configs.rinkeby,
       );
 
       expect(mockTweetCall).toHaveBeenCalledTimes(1);
@@ -158,6 +191,12 @@ describe('Formatting events for tweet updates', () => {
         expect.stringContaining('2.0%'),
         undefined,
       );
+      expect(mockTweetCall).toHaveBeenCalledWith(
+        expect.stringContaining(
+          'https://staging.withbacked.xyz/network/rinkeby/loans/65',
+        ),
+        undefined,
+      );
     });
   });
 
@@ -166,6 +205,7 @@ describe('Formatting events for tweet updates', () => {
       await sendTweetForTriggerAndEntity(
         'CollateralSeizureEvent',
         subgraphCollateralSeizureEvent,
+        configs.rinkeby,
       );
 
       expect(mockTweetCall).toHaveBeenCalledTimes(1);
@@ -180,6 +220,12 @@ describe('Formatting events for tweet updates', () => {
       expect(mockTweetCall).toHaveBeenCalledWith(
         expect.stringContaining(
           "0x7e646 held the loan for 53 minutes. The loan became due on 01/01/1970 with a repayment cost of 8245.73952 DAI. 0x0dd7d did not repay, so 0x7e646 was able to seize the loan's collateral",
+        ),
+        undefined,
+      );
+      expect(mockTweetCall).toHaveBeenCalledWith(
+        expect.stringContaining(
+          'https://staging.withbacked.xyz/network/rinkeby/loans/65',
         ),
         undefined,
       );

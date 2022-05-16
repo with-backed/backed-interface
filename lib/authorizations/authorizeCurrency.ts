@@ -1,10 +1,12 @@
 import { captureException } from '@sentry/nextjs';
 import { ethers, Signer } from 'ethers';
+import { SupportedNetwork } from 'lib/config';
 import { contractDirectory, web3Erc20Contract } from 'lib/contracts';
 
 type AllowParams = {
   callback: () => void;
   contractAddress: string;
+  network: SupportedNetwork;
   signer: Signer;
   setTxHash: (value: string) => void;
   setWaitingForTx: (value: boolean) => void;
@@ -12,13 +14,14 @@ type AllowParams = {
 export async function authorizeCurrency({
   callback,
   contractAddress,
+  network,
   signer,
   setTxHash,
   setWaitingForTx,
 }: AllowParams) {
   const contract = web3Erc20Contract(contractAddress, signer);
   const t = await contract.approve(
-    contractDirectory.loanFacilitator,
+    contractDirectory[network].loanFacilitator,
     ethers.BigNumber.from(2).pow(256).sub(1),
   );
   setWaitingForTx(true);

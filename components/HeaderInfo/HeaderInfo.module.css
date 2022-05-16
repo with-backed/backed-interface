@@ -1,0 +1,29 @@
+.wrapper {
+  width: 100%;
+  background: var(--background-white);
+  position: relative;
+  overflow: hidden;
+}
+
+.info {
+  grid-column: span 4;
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  font-size: var(--font-small);
+  margin: 1.2rem 0 2.2rem 0;
+}
+
+.info > p {
+  line-height: 1.6rem;
+  margin-left: 1rem;
+}
+
+.info > p > button {
+  padding: 0;
+}
+
+@media screen and (max-width: 710px) {
+  .info {
+    grid-column: span 12;
+  }
+}

@@ -5,6 +5,7 @@ import {
 } from 'lib/events/sns/helpers';
 import { sendTweetForTriggerAndEntity } from 'lib/events/consumers/twitter/formatter';
 import { captureException, withSentry } from '@sentry/nextjs';
+import { configs } from 'lib/config';
 
 async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
   if (req.method != 'POST') {
@@ -20,11 +21,16 @@ async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
   }
 
   try {
-    const { eventName, event, mostRecentTermsEvent } = JSON.parse(
+    const { eventName, event, mostRecentTermsEvent, network } = JSON.parse(
       parsedBody['Message'],
     ) as EventsSNSMessage;
 
-    await sendTweetForTriggerAndEntity(eventName, event, mostRecentTermsEvent);
+    await sendTweetForTriggerAndEntity(
+      eventName,
+      event,
+      configs[network],
+      mostRecentTermsEvent,
+    );
 
     res.status(200).json(`tweet successfully sent`);
   } catch (e) {

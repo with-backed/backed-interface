@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { SupportedNetwork } from 'lib/config';
 import { jsonRpcLoanFacilitator } from 'lib/contracts';
 import {
   BuyoutEvent,
@@ -18,9 +19,14 @@ import {
   SeizeCollateralEvent,
 } from 'types/generated/abis/NFTLoanFacilitator';
 
-export async function nodeLoanEventsById(loanIdString: string) {
+export async function nodeLoanEventsById(
+  loanIdString: string,
+  jsonRpcProvider: string,
+  startBlock: number,
+  network: SupportedNetwork,
+) {
   const loanId = ethers.BigNumber.from(loanIdString);
-  const contract = jsonRpcLoanFacilitator();
+  const contract = jsonRpcLoanFacilitator(jsonRpcProvider, network);
 
   const createLoanFilter = contract.filters.CreateLoan(loanId, null);
   const closeFilter = contract.filters.Close(loanId);
@@ -47,10 +53,7 @@ export async function nodeLoanEventsById(loanIdString: string) {
     seizeCollateralEvents,
   ] = await Promise.all(
     filters.map((filter) => {
-      return contract.queryFilter(
-        filter,
-        parseInt(process.env.NEXT_PUBLIC_FACILITATOR_START_BLOCK || ''),
-      );
+      return contract.queryFilter(filter, startBlock);
     }),
   );
 

@@ -1,24 +1,23 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Loan as SubgraphLoan,
   Loan_OrderBy,
 } from 'types/generated/graphql/nftLoans';
 import useSWRInfinite from 'swr/infinite';
-import { useOnScreen } from './useOnScreenRef';
 import { SortOptionValue } from 'components/AdvancedSearch/SortDropdown';
+import { parseSubgraphLoan } from 'lib/loans/utils';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export function usePaginatedLoans(
   url: string,
-  ref: any,
   pageSize: number,
   selectedSort: SortOptionValue | undefined,
   initialLoans: SubgraphLoan[] = [],
-  skipQuery: boolean = false,
 ) {
-  const isVisible = useOnScreen(ref);
-
+  const [paginatedLoans, setPaginatedLoans] = useState(
+    initialLoans.map(parseSubgraphLoan),
+  );
   const { data, error, size, setSize } = useSWRInfinite(
     (index) =>
       `${url}limit=${pageSize}&page=${index + 1}&sort=${
@@ -27,7 +26,11 @@ export function usePaginatedLoans(
     fetcher,
   );
 
-  const paginatedLoans = data ? [].concat(...data) : initialLoans;
+  useEffect(() => {
+    if (data) {
+      setPaginatedLoans([].concat(...data).map(parseSubgraphLoan));
+    }
+  }, [data]);
 
   useEffect(() => {
     if (!selectedSort) return;
@@ -42,11 +45,9 @@ export function usePaginatedLoans(
   const isReachingEnd =
     isEmpty || (data && data[data.length - 1]?.length < pageSize);
 
-  useEffect(() => {
-    if (isVisible && !isLoadingMore && !isReachingEnd) {
-      setSize(size + 1);
-    }
-  }, [isVisible, isLoadingMore, isReachingEnd, size, setSize]);
+  const loadMore = useCallback(() => {
+    setSize((prev) => prev + 1);
+  }, [setSize]);
 
-  return { paginatedLoans, error };
+  return { paginatedLoans, error, isLoadingMore, isReachingEnd, loadMore };
 }

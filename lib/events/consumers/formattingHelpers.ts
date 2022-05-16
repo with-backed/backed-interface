@@ -2,6 +2,7 @@ import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import { ethers } from 'ethers';
 import { addressToENS } from 'lib/account';
+import { Config } from 'lib/config';
 import { secondsBigNumToDaysBigNum } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
 import { interestOverTerm } from 'lib/loans/utils';
@@ -9,12 +10,22 @@ import { Loan as ParsedLoan } from 'types/Loan';
 
 dayjs.extend(duration);
 
-export const ensOrAddr = async (rawAddress: string): Promise<string> => {
-  const ens = await addressToENS(rawAddress);
-  if (ens === null) {
+export const loanUrl = (loanId: string, config: Config): string =>
+  `${config.siteUrl}/network/${config.network}/loans/${loanId}`;
+
+export const ensOrAddr = async (
+  rawAddress: string,
+  jsonRpcProvider: string,
+): Promise<string> => {
+  try {
+    const ens = await addressToENS(rawAddress, jsonRpcProvider);
+    if (ens === null) {
+      return rawAddress.substring(0, 7);
+    }
+    return ens;
+  } catch (_e) {
     return rawAddress.substring(0, 7);
   }
-  return ens;
 };
 
 export const formattedDate = (timestamp: number): string =>

@@ -1,28 +1,18 @@
-import { NFTResponseData } from 'pages/api/nftInfo/[uri]';
+import { NFTResponseData } from 'lib/getNFTInfo';
 import fetch from 'node-fetch';
-import sharp from 'sharp';
+import { getPngBufferFromBase64SVG } from '../attachmentsHelper';
 
 const SVG_PREFIX = 'data:image/svg+xml;base64,';
 
 export async function nftResponseDataToImageBuffer(
   nftResponseData: NFTResponseData,
 ): Promise<string | undefined> {
-  let outputBuffer: Buffer;
-
-  if (nftResponseData!.image.startsWith(SVG_PREFIX)) {
-    outputBuffer = await sharp(
-      Buffer.from(
-        nftResponseData!.image.substring(SVG_PREFIX.length),
-        'base64',
-      ),
-    )
-      .png()
-      .toBuffer();
+  if (nftResponseData?.image?.mediaUrl.startsWith(SVG_PREFIX)) {
+    return await getPngBufferFromBase64SVG(nftResponseData!.image!.mediaUrl);
   } else {
-    const imageUrlRes = await fetch(nftResponseData!.image);
+    const imageUrlRes = await fetch(nftResponseData!.image!.mediaUrl);
     const arraybuffer = await imageUrlRes.arrayBuffer();
-    outputBuffer = Buffer.from(arraybuffer);
+    const outputBuffer = Buffer.from(arraybuffer);
+    return outputBuffer.toString('base64');
   }
-
-  return outputBuffer.toString('base64');
 }

@@ -10,6 +10,7 @@ import {
   ensOrAddr,
   getEstimatedRepaymentAndMaturity,
   formattedDuration,
+  loanUrl,
 } from 'lib/events/consumers/formattingHelpers';
 import { NotificationTriggerType } from 'lib/events/consumers/userNotifications/shared';
 import { sendBotMessage } from 'lib/events/consumers/discord/bot';
@@ -18,11 +19,13 @@ import { parseSubgraphLoan } from 'lib/loans/utils';
 import { formattedAnnualRate } from 'lib/interest';
 import { collateralToDiscordMessageEmbed } from './attachments';
 import { getNFTInfoForAttachment } from 'lib/events/consumers/getNftInfoForAttachment';
+import { Config, SupportedNetwork } from 'lib/config';
+import capitalize from 'lodash/capitalize';
 
 export async function sendBotUpdateForTriggerAndEntity(
   trigger: NotificationTriggerType,
   event: RawSubgraphEvent,
-  now: number,
+  config: Config,
   mostRecentTermsEvent?: LendEvent,
 ): Promise<void> {
   // we do not want to send LendEvent bot messages and BuyoutEvent bot messages
@@ -33,15 +36,22 @@ export async function sendBotUpdateForTriggerAndEntity(
   const botMessageContent = `${await generateContentStringForEvent(
     trigger,
     event,
+    capitalize(config.network),
+    config.jsonRpcProvider,
     mostRecentTermsEvent,
   )}
 
-Loan: <https://rinkeby.withbacked.xyz/loans/${event.loan.id}>
-Event Tx: <https://rinkeby.etherscan.io/tx/${event.id}>
+Loan: <${loanUrl(event.loan.id, config)}>
+Event Tx: <${config.etherscanUrl}/tx/${event.id}>
 `;
 
   const messagedEmbed = await collateralToDiscordMessageEmbed(
-    await getNFTInfoForAttachment(event.loan.collateralTokenURI),
+    await getNFTInfoForAttachment(
+      event.loan.collateralContractAddress,
+      event.loan.collateralTokenId,
+      config.siteUrl,
+      config.network as SupportedNetwork,
+    ),
     event.loan.collateralName,
     event.loan.collateralTokenId,
   );
@@ -52,6 +62,8 @@ Event Tx: <https://rinkeby.etherscan.io/tx/${event.id}>
 async function generateContentStringForEvent(
   trigger: NotificationTriggerType,
   event: RawSubgraphEvent,
+  networkName: string,
+  jsonRpcProvider: string,
   mostRecentTermsEvent?: LendEvent,
 ): Promise<string> {
   let duration: string;
@@ -61,10 +73,13 @@ async function generateContentStringForEvent(
     case 'CreateEvent':
       const createEvent = event as CreateEvent;
 
-      return `**New Loan Created**
-${await ensOrAddr(createEvent.creator)} has created a loan with collateral: ${
-        createEvent.loan.collateralName
-      } #${createEvent.loan.collateralTokenId}
+      return `**New Loan Created on ${networkName}**
+${await ensOrAddr(
+  createEvent.creator,
+  jsonRpcProvider,
+)} has created a loan with collateral: ${createEvent.loan.collateralName} #${
+        createEvent.loan.collateralTokenId
+      }
 
 Their desired loans terms are:
 ${formatTermsForBot(
@@ -77,10 +92,13 @@ ${formatTermsForBot(
     case 'LendEvent':
       const lendEvent = event as LendEvent;
 
-      return `**Loan Lent To**
+      return `**Loan Lent To on ${networkName}**
 Loan #${lendEvent.loan.id}: ${
         lendEvent.loan.collateralName
-      } has been lent to by ${await ensOrAddr(lendEvent.lender)}
+      } has been lent to by ${await ensOrAddr(
+        lendEvent.lender,
+        jsonRpcProvider,
+      )}
 
 Their loans terms are: 
 ${formatTermsForBot(
@@ -93,8 +111,11 @@ ${formatTermsForBot(
     case 'BuyoutEvent':
       const buyoutEvent = event as BuyoutEvent;
 
-      const newLender = await ensOrAddr(buyoutEvent.newLender);
-      const oldLender = await ensOrAddr(buyoutEvent.lendTicketHolder);
+      const newLender = await ensOrAddr(buyoutEvent.newLender, jsonRpcProvider);
+      const oldLender = await ensOrAddr(
+        buyoutEvent.lendTicketHolder,
+        jsonRpcProvider,
+      );
       duration = formattedDuration(
         buyoutEvent.timestamp - mostRecentTermsEvent!.timestamp,
       );
@@ -103,7 +124,7 @@ ${formatTermsForBot(
         buyoutEvent.loan.loanAssetDecimal,
       );
 
-      return `**Loan Bought Out**
+      return `**Loan Bought Out on ${networkName}**
 Loan #${buyoutEvent.loan.id}: ${
         buyoutEvent.loan.collateralName
       } has been bought out by ${newLender}
@@ -138,12 +159,16 @@ ${formatTermsForBot(
         repaymentEvent.loan.loanAssetDecimal,
       );
 
-      return `**Loan Repaid**
+      return `**Loan Repaid on ${networkName}**
 Loan #${repaymentEvent.loan.id}: ${
         repaymentEvent.loan.collateralName
-      } has been repaid by ${await ensOrAddr(repaymentEvent.repayer)}
+      } has been repaid by ${await ensOrAddr(
+        repaymentEvent.repayer,
+        jsonRpcProvider,
+      )}
 ${await ensOrAddr(
   repaymentEvent.lendTicketHolder,
+  jsonRpcProvider,
 )} held the loan for ${duration} and earned ${formattedInterestEarned} ${
         repaymentEvent.loan.loanAssetSymbol
       } over that time
@@ -160,8 +185,12 @@ ${formatTermsForBot(
       const collateralSeizureEvent = event as CollateralSeizureEvent;
       const borrower = await ensOrAddr(
         collateralSeizureEvent.borrowTicketHolder,
+        jsonRpcProvider,
       );
-      const lender = await ensOrAddr(collateralSeizureEvent.lendTicketHolder);
+      const lender = await ensOrAddr(
+        collateralSeizureEvent.lendTicketHolder,
+        jsonRpcProvider,
+      );
       duration = formattedDuration(
         collateralSeizureEvent.timestamp -
           collateralSeizureEvent.loan.lastAccumulatedTimestamp,
@@ -170,7 +199,7 @@ ${formatTermsForBot(
         parseSubgraphLoan(collateralSeizureEvent.loan),
       );
 
-      return `**Loan Collateral Seized**
+      return `**Loan Collateral Seized on ${networkName}**
 Loan #${collateralSeizureEvent.loan.id}: ${collateralSeizureEvent.loan.collateralName} has had its collateral seized
 ${lender} held the loan for ${duration}. The loan became due on ${maturity} with a repayment cost of ${repayment} ${collateralSeizureEvent.loan.loanAssetSymbol}. ${borrower} did not repay, so ${lender} was able to seize the loan's collateral`;
     default:

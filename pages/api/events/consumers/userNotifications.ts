@@ -5,6 +5,7 @@ import {
   EventsSNSMessage,
 } from 'lib/events/sns/helpers';
 import { captureException, withSentry } from '@sentry/nextjs';
+import { configs } from 'lib/config';
 
 async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
   if (req.method != 'POST') {
@@ -20,7 +21,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
   }
 
   try {
-    const { eventName, event, mostRecentTermsEvent } = JSON.parse(
+    const { eventName, event, mostRecentTermsEvent, network } = JSON.parse(
       parsedBody['Message'],
     ) as EventsSNSMessage;
 
@@ -29,6 +30,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
       eventName,
       event,
       now,
+      configs[network],
       mostRecentTermsEvent,
     );
 

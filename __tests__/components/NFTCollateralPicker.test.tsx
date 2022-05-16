@@ -83,6 +83,7 @@ const Picker = () => {
 describe('NFTCollateralPicker', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    window.pirsch = jest.fn();
   });
 
   it('renders an initial loading state', () => {
@@ -124,21 +125,22 @@ describe('NFTCollateralPicker', () => {
 
   it('expands groups of NFTs on click', () => {
     mockUseNFTs.mockReturnValue({ fetching: false, nfts, error: undefined });
-    const { getByText, container } = render(<Picker />);
+    const { getByText, getByTestId } = render(<Picker />);
 
     // we haven't expanded any groups yet
-    expect(container.querySelector('.nft-list')).not.toBeInTheDocument();
+    expect(() => getByTestId('nft-list-serfs')).toThrow();
 
     const serfsButton = getByText('serfs');
     userEvent.click(serfsButton);
 
     // clicking expanded it
-    expect(container.querySelector('.nft-list')).toBeInTheDocument();
+    const list = getByTestId('nft-list-serfs');
+    expect(list.childNodes.length).toEqual(2);
   });
 
   it('sets the selected NFT and hides the dialog on click', () => {
     mockUseNFTs.mockReturnValue({ fetching: false, nfts, error: undefined });
-    const { getByText, container, getByRole } = render(<Picker />);
+    const { getByText, getByTestId, getByRole } = render(<Picker />);
 
     // this works here because the dialog is visible
     getByRole('dialog');
@@ -146,12 +148,12 @@ describe('NFTCollateralPicker', () => {
     // drill down into the list and pick an NFT
     const serfsButton = getByText('serfs');
     userEvent.click(serfsButton);
-    const list = container.querySelector('.nft-list');
-    const nft = list?.querySelector('.nft');
+    const list = getByTestId('nft-list-serfs');
+    const nft = list.children[0];
 
     // ensure that this function is actually called as a result of clicking the NFT
     expect(handleSetSelectedNFT).not.toHaveBeenCalled();
-    userEvent.click(nft!);
+    userEvent.click(nft);
     expect(handleSetSelectedNFT).toHaveBeenCalled();
 
     // this now throws because the dialog has been hidden

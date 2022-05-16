@@ -47,7 +47,7 @@ describe('NotificationsModal', () => {
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(fetchMock).toHaveBeenCalledWith(
-      '/api/addresses/0x70a85de679bc98acf97d2f890e2466cd69933cc4/notifications/emails/anotherEmail@gmail.com',
+      '/api/network/rinkeby/addresses/0x70a85de679bc98acf97d2f890e2466cd69933cc4/notifications/emails/anotherEmail@gmail.com',
       expect.objectContaining({
         method: 'POST',
       }),
@@ -76,7 +76,7 @@ describe('NotificationsModal', () => {
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(fetchMock).toHaveBeenCalledWith(
-      '/api/addresses/0x70a85de679bc98acf97d2f890e2466cd69933cc4/notifications/emails/anotherEmail@gmail.com',
+      '/api/network/rinkeby/addresses/0x70a85de679bc98acf97d2f890e2466cd69933cc4/notifications/emails/anotherEmail@gmail.com',
       expect.objectContaining({
         method: 'POST',
       }),

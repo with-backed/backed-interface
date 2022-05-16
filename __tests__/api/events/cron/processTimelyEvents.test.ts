@@ -4,6 +4,7 @@ import { getLiquidatedLoansForTimestamp } from 'lib/events/timely/timely';
 import { sendEmailsForTriggerAndEntity } from 'lib/events/consumers/userNotifications/emails/emails';
 import { createMocks } from 'node-mocks-http';
 import handler from 'pages/api/events/cron/processTimelyEvents';
+import { configs } from 'lib/config';
 
 const aboutToExpireLoan = {
   ...subgraphLoan,
@@ -57,11 +58,13 @@ describe('/api/events/cron/processTimelyEvents', () => {
       'LiquidationOccurring',
       aboutToExpireLoan,
       expect.anything(),
+      configs.rinkeby,
     );
     expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledWith(
       'LiquidationOccurred',
       alreadyExpiredLoan,
       expect.anything(),
+      configs.rinkeby,
     );
 
     expect(res._getStatusCode()).toBe(200);

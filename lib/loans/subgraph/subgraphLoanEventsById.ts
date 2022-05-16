@@ -1,4 +1,4 @@
-import { nftBackedLoansClient } from 'lib/urql';
+import { clientFromUrl } from 'lib/urql';
 import {
   BuyoutEvent,
   CloseEvent,
@@ -25,7 +25,11 @@ import { captureException } from '@sentry/nextjs';
  * @param id the id of the loan
  * @returns a list of all events associated with a loan in the subgraph, ordered by blockNumber ascending.
  */
-export async function subgraphLoanHistoryById(id: string): Promise<Event[]> {
+export async function subgraphLoanHistoryById(
+  id: string,
+  nftBackedLoansSubgraph: string,
+): Promise<Event[]> {
+  const nftBackedLoansClient = clientFromUrl(nftBackedLoansSubgraph);
   const { data, error } = await nftBackedLoansClient
     .query<EventsForLoanQuery>(EventsForLoanDocument, { id })
     .toPromise();

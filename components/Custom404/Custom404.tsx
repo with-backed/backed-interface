@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import styles from './Custom404.module.css';
-import { DISCORD_URL } from 'lib/constants';
+import { DISCORD_ERROR_CHANNEL, DISCORD_URL } from 'lib/constants';
 
 export function Custom404() {
   return (
@@ -11,7 +11,7 @@ export function Custom404() {
 
         <Link href={DISCORD_URL} passHref>
           <a target={'_blank'} rel="noreferrer">
-            #daily-qa on Discord.
+            {DISCORD_ERROR_CHANNEL} on Discord.
           </a>
         </Link>
       </p>

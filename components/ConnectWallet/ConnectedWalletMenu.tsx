@@ -1,5 +1,6 @@
 import { Button, ButtonLink } from 'components/Button';
 import { DisplayAddress } from 'components/DisplayAddress';
+import { useConfig } from 'hooks/useConfig';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useAccount } from 'wagmi';
 import styles from './ConnectWallet.module.css';
@@ -7,6 +8,7 @@ import styles from './ConnectWallet.module.css';
 type ConnectedWalletMenuProps = {};
 
 export function ConnectedWalletMenu({}: ConnectedWalletMenuProps) {
+  const { network } = useConfig();
   const [{ data }, disconnect] = useAccount();
   const [open, setOpen] = useState(false);
   const container = useRef<HTMLDivElement>(null);
@@ -49,7 +51,9 @@ export function ConnectedWalletMenu({}: ConnectedWalletMenuProps) {
         </span>
       </Button>
       <div className={styles.menu} style={{ display: open ? '' : 'none' }}>
-        <ButtonLink href={`/profile/${address}`} kind="tertiary">
+        <ButtonLink
+          href={`/network/${network}/profile/${address}`}
+          kind="tertiary">
           Profile
         </ButtonLink>
         <Button kind="tertiary" onClick={disconnect}>

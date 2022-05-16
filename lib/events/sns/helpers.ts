@@ -1,3 +1,4 @@
+import { SupportedNetwork } from 'lib/config';
 import { NextApiResponse } from 'next';
 import { LendEvent as RawSubgraphLendEvent } from 'types/generated/graphql/nftLoans';
 import { RawEventNameType, RawSubgraphEvent } from 'types/RawEvent';
@@ -5,6 +6,7 @@ import { RawEventNameType, RawSubgraphEvent } from 'types/RawEvent';
 export type EventsSNSMessage = {
   eventName: RawEventNameType;
   event: RawSubgraphEvent;
+  network: SupportedNetwork;
   mostRecentTermsEvent?: RawSubgraphLendEvent;
 };
 

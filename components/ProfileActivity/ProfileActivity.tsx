@@ -1,8 +1,9 @@
-import { captureEvent, captureException, captureMessage } from '@sentry/nextjs';
+import { captureMessage } from '@sentry/nextjs';
 import { EtherscanTransactionLink } from 'components/EtherscanLink';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { NFTMedia } from 'components/Media/NFTMedia';
 import { ethers } from 'ethers';
+import { useConfig } from 'hooks/useConfig';
 import { MaybeNFTMetadata, useTokenMetadata } from 'hooks/useTokenMetadata';
 import { secondsBigNumToDays } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
@@ -68,11 +69,11 @@ type EventEntryProps = {
 function EventEntry({ address, event, loan }: EventEntryProps) {
   const tokenSpec = useMemo(
     () => ({
-      tokenURI: loan.collateralTokenURI,
-      tokenID: loan.collateralTokenId,
+      collateralContractAddress: loan.collateralContractAddress,
+      collateralTokenId: loan.collateralTokenId,
       forceImage: true,
     }),
-    [loan.collateralTokenURI, loan.collateralTokenId],
+    [loan.collateralContractAddress, loan.collateralTokenId],
   );
   const nftInfo = useTokenMetadata(tokenSpec);
 
@@ -122,6 +123,7 @@ function EventDescription({
   loan,
   nftInfo,
 }: EventDescriptionProps) {
+  const { network } = useConfig();
   const description: JSX.Element = useMemo(() => {
     switch (event.typename) {
       case 'BuyoutEvent':
@@ -195,7 +197,7 @@ function EventDescription({
     nftInfo.isLoading || !nftInfo.metadata ? '---' : nftInfo.metadata.name;
   return (
     <div className={styles['description-wrapper']}>
-      <Link href={`/loans/${loan.id.toString()}`}>
+      <Link href={`/network/${network}/loans/${loan.id.toString()}`}>
         <a>{name}</a>
       </Link>
       {description}
@@ -208,10 +210,11 @@ type AddressProps = {
   highlightAddress: string;
 };
 function Address({ address, highlightAddress }: AddressProps) {
+  const { network } = useConfig();
   const className =
     address === highlightAddress ? styles['highlight-address'] : styles.address;
   return (
-    <Link href={`/profile/${address}`}>
+    <Link href={`/network/${network}/profile/${address}`}>
       <a className={className}>{address.slice(0, MAX_CHARS)}</a>
     </Link>
   );

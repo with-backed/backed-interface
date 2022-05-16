@@ -1,11 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { CollateralInfo } from 'components/CollateralInfo';
-import {
-  getFakeFloor,
-  getFakeItemsAndOwners,
-  getFakeVolume,
-} from 'lib/nftPort';
 import { CollateralSaleInfo } from 'lib/loans/collateralSaleInfo';
 import { generateFakeSaleForNFT } from 'lib/nftSalesSubgraph';
 import { baseLoan } from 'lib/mockData';
@@ -51,12 +46,18 @@ describe('CollateralInfo', () => {
     getByText('owners');
     getByText(collectionStats.owners);
     getByText('volume');
-    getByText(`${collectionStats.volume} ETH`);
+    getByText(`${collectionStats.volume.toFixed(2)} ETH`);
   });
 
-  it('renders a Fieldset with a message when there is no collateral info', () => {
+  it('renders a Fieldset with a message when there is no recent sale info', () => {
     const { getByText } = render(
-      <CollateralInfo loan={loan} collateralSaleInfo={null} />,
+      <CollateralInfo
+        loan={loan}
+        collateralSaleInfo={{
+          collectionStats,
+          recentSale: null,
+        }}
+      />,
     );
 
     getByText('No recent sale info');

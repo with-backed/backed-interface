@@ -1,31 +1,21 @@
-import { NFTResponseData } from 'pages/api/nftInfo/[uri]';
+import { SupportedNetwork } from 'lib/config';
+import { getMedia } from 'lib/getNFTInfo';
+import { NFTResponseData } from 'lib/getNFTInfo';
 
 const JSON_PREFIX = 'data:application/json;base64,';
 
 export async function getNFTInfoForAttachment(
-  collateralTokenURI: string,
+  collateralContractAddress: string,
+  collateralTokenId: string,
+  siteUrl: string,
+  network: SupportedNetwork,
 ): Promise<NFTResponseData> {
   let NFTInfo: NFTResponseData;
 
-  const isDataUri = collateralTokenURI.startsWith('data:');
-
-  if (isDataUri) {
-    NFTInfo = JSON.parse(
-      Buffer.from(
-        collateralTokenURI.substring(JSON_PREFIX.length),
-        'base64',
-      ).toString(),
-    );
-  } else {
-    const tokenURIRes = await fetch(
-      isDataUri
-        ? collateralTokenURI
-        : `https://rinkeby.withbacked.xyz/api/nftInfo/${encodeURIComponent(
-            collateralTokenURI,
-          )}`,
-    );
-    NFTInfo = await tokenURIRes.json();
-  }
+  const tokenURIRes = await fetch(
+    `${siteUrl}/api/network/${network}/nftInfo/${collateralContractAddress}/${collateralTokenId}`,
+  );
+  NFTInfo = await tokenURIRes.json();
 
   return NFTInfo;
 }

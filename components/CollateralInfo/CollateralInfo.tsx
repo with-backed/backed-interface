@@ -1,6 +1,6 @@
 import { DescriptionList } from 'components/DescriptionList';
 import { Fieldset } from 'components/Fieldset';
-import { OpenSeaAddressLink } from 'components/OpenSeaLink';
+import { NFTExchangeAddressLink } from 'components/NFTExchangeLink';
 import { Loan } from 'types/Loan';
 import React, { useMemo } from 'react';
 import { CollateralSaleInfo } from 'lib/loans/collateralSaleInfo';
@@ -8,7 +8,7 @@ import styles from './CollateralInfo.module.css';
 
 type CollateralInfoProps = {
   loan: Loan;
-  collateralSaleInfo: CollateralSaleInfo;
+  collateralSaleInfo: CollateralSaleInfo | null;
 };
 
 export const CollateralInfo = ({
@@ -25,14 +25,11 @@ export const CollateralInfo = ({
       <Fieldset legend="🖼️ Collateral">
         <dd>#{tokenId}</dd>
         <dd>
-          <OpenSeaAddressLink
+          <NFTExchangeAddressLink
             contractAddress={loan.collateralContractAddress}
-            assetId={tokenId}>
-            View on OpenSea
-          </OpenSeaAddressLink>
+            assetId={tokenId}
+          />
         </dd>
-        <dt className={styles.label}>item&apos;s last sale</dt>
-        <dd>No recent sale info</dd>
       </Fieldset>
     );
   }
@@ -42,40 +39,51 @@ export const CollateralInfo = ({
       <DescriptionList>
         <dd>#{tokenId}</dd>
         <dd>
-          <OpenSeaAddressLink
+          <NFTExchangeAddressLink
             contractAddress={loan.collateralContractAddress}
-            assetId={tokenId}>
-            View on OpenSea
-          </OpenSeaAddressLink>
+            assetId={tokenId}
+          />
         </dd>
 
-        <dt className={styles.label}>item&apos;s last sale</dt>
-        <dd>
-          {collateralSaleInfo.recentSale.price}{' '}
-          {collateralSaleInfo.recentSale.paymentToken}
-        </dd>
+        {!collateralSaleInfo.recentSale && (
+          <>
+            <dt className={styles.label}>item&apos;s last sale</dt>
+            <dd>No recent sale info</dd>
+          </>
+        )}
+        {!!collateralSaleInfo.recentSale && (
+          <>
+            <dt className={styles.label}>item&apos;s last sale</dt>
+            <dd>
+              {collateralSaleInfo.recentSale.price}{' '}
+              {collateralSaleInfo.recentSale.paymentToken}
+            </dd>
+          </>
+        )}
 
         <dt className={styles.label}>collection</dt>
         <dd>{loan.collateralName}</dd>
 
         <div className={styles.collectionInfoElement}>
           <dt className={styles.label}>items</dt>
-          <dd>{collateralSaleInfo.collectionStats.items}</dd>
+          <dd>{collateralSaleInfo.collectionStats.items || '--'}</dd>
         </div>
 
         <div className={styles.collectionInfoElement}>
           <dt className={styles.label}>floor price</dt>
-          <dd>{collateralSaleInfo.collectionStats.floor} ETH</dd>
+          <dd>{collateralSaleInfo.collectionStats.floor || '--'} ETH</dd>
         </div>
 
         <div className={styles.collectionInfoElement}>
           <dt className={styles.label}>owners</dt>
-          <dd>{collateralSaleInfo.collectionStats.owners}</dd>
+          <dd>{collateralSaleInfo.collectionStats.owners || '--'}</dd>
         </div>
 
         <div className={styles.collectionInfoElement}>
           <dt className={styles.label}>volume</dt>
-          <dd>{collateralSaleInfo.collectionStats.volume} ETH</dd>
+          <dd>
+            {collateralSaleInfo.collectionStats.volume?.toFixed(2) || '--'} ETH
+          </dd>
         </div>
       </DescriptionList>
     </Fieldset>

@@ -7,15 +7,19 @@ export const createPageFormSchema = Yup.object({
     address: Yup.string(),
   }).required(),
   loanAmount: Yup.number()
+    .typeError('Loan amount must be a positive integer')
     .moreThan(0, 'Loan amount must be greater than zero.')
     .required(),
   interestRate: Yup.number()
+    .typeError('Interest rate must be a positive integer')
     .min(
       MIN_RATE,
       `Interest rate must be greater than the minimum value of ${MIN_RATE}%`,
     )
     .required(),
   duration: Yup.number()
-    .moreThan(0, 'Duration must be longer than 0 days.')
+    .typeError('Duration must be a positive integer')
+    .moreThan(0, 'Duration must be greater than 0.')
     .required(),
+  acceptHigherLoanAmounts: Yup.boolean(),
 });

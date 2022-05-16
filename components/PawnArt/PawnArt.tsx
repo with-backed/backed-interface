@@ -1,51 +1,57 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { ethers } from 'ethers';
 import { GetNFTInfoResponse } from 'lib/getNFTInfo';
 import { Media } from 'components/Media';
-import { ERC721 } from 'types/generated/abis';
-import { contractDirectory, jsonRpcERC721Contract } from 'lib/contracts';
+import { contractDirectory } from 'lib/contracts';
 import { Fallback } from 'components/Media/Fallback';
 import { useTokenMetadata } from 'hooks/useTokenMetadata';
+import { useConfig } from 'hooks/useConfig';
+import { SupportedNetwork } from 'lib/config';
 
 interface PawnArtProps {
-  contract: ERC721;
+  collateralContractAddress: string;
   tokenID: ethers.BigNumber;
 }
 
 export const PawnLoanArt = React.memo(
   ({ tokenID }: Pick<PawnArtProps, 'tokenID'>) => {
-    const pawnLoansContract = jsonRpcERC721Contract(
-      contractDirectory.lendTicket,
+    const { network } = useConfig();
+    return (
+      <PawnArt
+        collateralContractAddress={
+          contractDirectory[network as SupportedNetwork].lendTicket
+        }
+        tokenID={tokenID}
+      />
     );
-    return <PawnArt contract={pawnLoansContract} tokenID={tokenID} />;
   },
 );
 PawnLoanArt.displayName = 'PawnLoanArt';
 
 export const PawnTicketArt = React.memo(
   ({ tokenID }: Pick<PawnArtProps, 'tokenID'>) => {
-    const pawnTicketsContract = jsonRpcERC721Contract(
-      contractDirectory.borrowTicket,
+    const { network } = useConfig();
+    return (
+      <PawnArt
+        collateralContractAddress={
+          contractDirectory[network as SupportedNetwork].borrowTicket
+        }
+        tokenID={tokenID}
+      />
     );
-    return <PawnArt contract={pawnTicketsContract} tokenID={tokenID} />;
   },
 );
 PawnTicketArt.displayName = 'PawnTicketArt';
 
-function PawnArt({ contract, tokenID }: PawnArtProps) {
-  const [tokenURI, setTokenURI] = useState('');
+function PawnArt({ collateralContractAddress, tokenID }: PawnArtProps) {
   const tokenSpec = useMemo(
     () => ({
-      tokenURI,
-      tokenID,
+      collateralContractAddress,
+      collateralTokenId: tokenID,
     }),
-    [tokenID, tokenURI],
+    [collateralContractAddress, tokenID],
   );
   const { isLoading, metadata } = useTokenMetadata(tokenSpec);
-
-  useEffect(() => {
-    contract.tokenURI(tokenID).then(setTokenURI);
-  }, [contract, tokenID]);
 
   if (isLoading || !metadata) {
     return <Fallback />;

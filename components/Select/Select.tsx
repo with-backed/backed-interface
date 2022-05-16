@@ -1,16 +1,25 @@
 import React, { useMemo } from 'react';
 import ReactSelect, { components, GroupBase, Props } from 'react-select';
 
+type SelectColor = 'dark' | 'light' | 'clickable';
+
 interface SelectProps<
   Option,
   IsMulti extends boolean = false,
   Group extends GroupBase<Option> = GroupBase<Option>,
 > extends Props<Option, IsMulti, Group> {
-  color?: 'dark' | 'light';
+  color?: SelectColor;
 }
 
 const Input: typeof components.Input = (props) => {
   return <components.Input {...props} data-lpignore />;
+};
+
+const backgrounds: { [key in SelectColor]: string } = {
+  light: 'linear-gradient(180deg, var(--neutral-10) 5%, var(--neutral-5) 100%)',
+  dark: 'var(--highlight-active-10)',
+  clickable:
+    'linear-gradient( 180deg, var(--highlight-clickable-5) 50%, var(--highlight-clickable-7) 100%)',
 };
 
 export function Select<
@@ -28,10 +37,7 @@ export function Select<
     }
     return undefined;
   }, [props]);
-  const controlBackground =
-    color === 'light'
-      ? 'var(--background-white)'
-      : 'var(--highlight-active-10)';
+  const controlBackground = backgrounds[color];
   return (
     <ReactSelect
       openMenuOnFocus
@@ -64,7 +70,7 @@ export function Select<
           border: 'none',
           outline: 'none',
           borderRadius: 'var(--border-radius-large)',
-          padding: 'var(--padding-button)',
+          padding: '0px 4px 0px 14px',
           zIndex: 2,
           cursor: state.isDisabled ? 'not-allowed' : 'pointer',
           boxShadow: 'none',
@@ -89,6 +95,13 @@ export function Select<
         valueContainer: (provided) => ({
           ...provided,
           padding: 'none',
+        }),
+        singleValue: (provided) => ({
+          ...provided,
+          color:
+            color === 'clickable'
+              ? 'var(--highlight-clickable-100)'
+              : provided.color,
         }),
       }}
       defaultValue={defaultValue}

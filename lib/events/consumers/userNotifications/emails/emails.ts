@@ -23,11 +23,13 @@ import {
 import { mainnet } from 'lib/chainEnv';
 import { incrementBackedMetric, Metric } from 'lib/metrics/repository';
 import { captureException } from '@sentry/nextjs';
+import { Config } from 'lib/config';
 
 export async function sendEmailsForTriggerAndEntity(
   emailTrigger: NotificationTriggerType,
   entity: RawSubgraphEvent | Loan,
   now: number,
+  config: Config,
   mostRecentTermsEvent?: LendEvent,
 ) {
   // we do not want to send LendEvent emails and BuyoutEvent emails
@@ -40,6 +42,7 @@ export async function sendEmailsForTriggerAndEntity(
     emailTrigger,
     entity,
     now,
+    config,
     mostRecentTermsEvent,
   );
   if (!addressToEmailComponents) {
@@ -59,9 +62,7 @@ export async function sendEmailsForTriggerAndEntity(
 
       return executeEmailSendWithSes(
         generateHTMLForEventsEmail(emailComponentGenerator(r.id)),
-        mainnet()
-          ? getEmailSubject(emailTrigger, entity)
-          : `[TESTNET]: ${getEmailSubject(emailTrigger, entity)}`,
+        `${config.emailSubjectPrefix} ${getEmailSubject(emailTrigger, entity)}`,
         r.deliveryDestination,
       );
     });
@@ -88,6 +89,7 @@ export async function sendConfirmationEmail(
   destination: string,
   ethAddress: string,
   unsubscribeUuid: string,
+  config: Config,
 ) {
   if (!process.env.VERCEL_ENV) {
     return;
@@ -96,8 +98,9 @@ export async function sendConfirmationEmail(
   const confirmationEmailComponents: GenericEmailComponents = {
     mainMessage: `We've received your request to subscribe to the activity of ${await ensOrAddr(
       ethAddress,
+      config.jsonRpcProvider,
     )}`,
-    footer: `https://rinkeby.withbacked.xyz/profile/${ethAddress}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+    footer: `https://${config.siteUrl}/profile/${ethAddress}?unsubscribe=true&uuid=${unsubscribeUuid}`,
   };
 
   await executeEmailSendWithSes(

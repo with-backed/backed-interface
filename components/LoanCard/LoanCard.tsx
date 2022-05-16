@@ -1,14 +1,14 @@
-import { ethers } from 'ethers';
 import Link from 'next/link';
-import React, { useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 import styles from './LoanCard.module.css';
-import { TokenURIAndID, useTokenMetadata } from 'hooks/useTokenMetadata';
+import { CollateralSpec, useTokenMetadata } from 'hooks/useTokenMetadata';
 import { Media } from 'components/Media';
 import { GetNFTInfoResponse } from 'lib/getNFTInfo';
 import { Fallback } from 'components/Media/Fallback';
 import { Loan } from 'types/Loan';
 import { DescriptionList } from 'components/DescriptionList';
 import { useLoanDetails } from 'hooks/useLoanDetails';
+import { useConfig } from 'hooks/useConfig';
 
 type LoanCardProps = {
   loan: Loan;
@@ -16,55 +16,70 @@ type LoanCardProps = {
   display?: 'expanded' | 'compact';
 };
 
-export function LoanCard({
-  loan,
-  selectedAddress,
-  display = 'expanded',
-}: LoanCardProps) {
-  const title = `View loan #${loan.id}`;
+export const LoanCard = memo(
+  ({ loan, selectedAddress, display = 'expanded' }: LoanCardProps) => {
+    const title = `View loan #${loan.id}`;
 
-  const tokenSpec: TokenURIAndID = useMemo(
-    () => ({
-      tokenURI: loan.collateralTokenURI,
-      tokenID: ethers.BigNumber.from(loan.collateralTokenId),
-      forceImage: true,
-    }),
-    [loan.collateralTokenId, loan.collateralTokenURI],
-  );
-
-  const maybeMetadata = useTokenMetadata(tokenSpec);
-
-  const relationship =
-    selectedAddress === loan.borrower ? 'borrower' : 'lender';
-  const attributes = useMemo(
-    () =>
-      display === 'expanded' ? (
-        <ExpandedAttributes loan={loan} />
-      ) : (
-        <CompactAttributes loan={loan} />
-      ),
-    [display, loan],
-  );
-
-  if (maybeMetadata.isLoading) {
-    return (
-      <LoanCardLoading id={loan.id.toString()}>
-        {selectedAddress && <Relationship>{relationship}</Relationship>}
-        {attributes}
-      </LoanCardLoading>
+    const tokenSpec: CollateralSpec = useMemo(
+      () => ({
+        collateralContractAddress: loan.collateralContractAddress,
+        collateralTokenId: loan.collateralTokenId,
+        forceImage: true,
+      }),
+      [loan.collateralTokenId, loan.collateralContractAddress],
     );
-  } else {
-    return (
-      <LoanCardLoaded
-        id={loan.id.toString()}
-        title={title}
-        metadata={maybeMetadata.metadata}>
-        {selectedAddress && <Relationship>{relationship}</Relationship>}
-        {attributes}
-      </LoanCardLoaded>
+
+    const maybeMetadata = useTokenMetadata(tokenSpec);
+
+    const relationship =
+      selectedAddress === loan.borrower ? 'borrower' : 'lender';
+    const attributes = useMemo(
+      () =>
+        display === 'expanded' ? (
+          <ExpandedAttributes loan={loan} />
+        ) : (
+          <CompactAttributes loan={loan} />
+        ),
+      [display, loan],
     );
-  }
-}
+
+    if (maybeMetadata.isLoading) {
+      return (
+        <LoanCardLoading id={loan.id.toString()}>
+          {selectedAddress && <Relationship>{relationship}</Relationship>}
+          {attributes}
+        </LoanCardLoading>
+      );
+    } else {
+      return (
+        <LoanCardLoaded
+          id={loan.id.toString()}
+          title={title}
+          metadata={maybeMetadata.metadata}>
+          {selectedAddress && <Relationship>{relationship}</Relationship>}
+          {attributes}
+        </LoanCardLoaded>
+      );
+    }
+  },
+  (prevProps, nextProps) => {
+    if (prevProps.display !== nextProps.display) {
+      return false;
+    }
+
+    if (prevProps.selectedAddress !== nextProps.selectedAddress) {
+      return false;
+    }
+
+    if (!prevProps.loan.id.eq(nextProps.loan.id)) {
+      return false;
+    }
+
+    return true;
+  },
+);
+
+LoanCard.displayName = 'LoanCard';
 
 type LoanCardLoadedProps = {
   id: string;
@@ -81,8 +96,9 @@ export function LoanCardLoaded({
   metadata,
   children,
 }: React.PropsWithChildren<LoanCardLoadedProps>) {
+  const { network } = useConfig();
   return (
-    <Link href={`/loans/${id}`}>
+    <Link href={`/network/${network}/loans/${id}`}>
       <a className={styles['profile-link']} aria-label={title} title={title}>
         <div className={styles['profile-card']}>
           <div className={styles.media}>
@@ -115,11 +131,14 @@ export function LoanCardLoading({
   children,
   id,
 }: React.PropsWithChildren<LoanCardLoadingProps>) {
+  const { network } = useConfig();
   return (
-    <Link href={`/loans/${id}`}>
+    <Link href={`/network/${network}/loans/${id}`}>
       <a className={styles['profile-link']}>
         <div className={styles['profile-card']}>
-          <Fallback />
+          <div className={styles.media}>
+            <Fallback />
+          </div>
           <div className={styles['profile-card-attributes']}>
             <span>loading name</span>
             {children}

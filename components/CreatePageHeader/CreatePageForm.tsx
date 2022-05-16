@@ -3,9 +3,12 @@ import { TransactionButton } from 'components/Button';
 import { EtherscanTransactionLink } from 'components/EtherscanLink';
 import { Form } from 'components/Form';
 import { Input } from 'components/Input';
+import { LoanTermsDisclosure } from 'components/LoanTermsDisclosure';
 import { Select } from 'components/Select';
 import { ethers } from 'ethers';
+import { useConfig } from 'hooks/useConfig';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
+import { SupportedNetwork } from 'lib/config';
 import {
   INTEREST_RATE_PERCENT_DECIMALS,
   SECONDS_IN_A_DAY,
@@ -15,7 +18,7 @@ import {
   jsonRpcLoanFacilitator,
   web3LoanFacilitator,
 } from 'lib/contracts';
-import { getLoanAssets, LoanAsset } from 'lib/loanAssets';
+import { LoanAsset } from 'lib/loanAssets';
 import React, {
   FocusEvent,
   useCallback,
@@ -24,7 +27,7 @@ import React, {
   useState,
 } from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
-import { useAccount, useProvider, useSigner } from 'wagmi';
+import { useAccount, useSigner } from 'wagmi';
 import { CreateFormData } from './CreateFormData';
 
 type CreatePageFormProps = {
@@ -36,7 +39,13 @@ type CreatePageFormProps = {
   onBlur: (filled: boolean) => void;
   onError: () => void;
   onFocus: (
-    type: 'DENOMINATION' | 'LOAN_AMOUNT' | 'DURATION' | 'INTEREST_RATE',
+    type:
+      | 'DENOMINATION'
+      | 'LOAN_AMOUNT'
+      | 'DURATION'
+      | 'INTEREST_RATE'
+      | 'REVIEW'
+      | 'ACCEPT_HIGHER_LOAN_AMOUNT',
   ) => void;
   onSubmit: () => void;
 };
@@ -59,6 +68,7 @@ export function CreatePageForm({
     watch,
     formState: { errors },
   } = form;
+  const { jsonRpcProvider, network } = useConfig();
   const { addMessage } = useGlobalMessages();
   const [{ data }] = useAccount();
   const [{ data: signer }] = useSigner();
@@ -67,18 +77,24 @@ export function CreatePageForm({
   const [txHash, setTxHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
   const [loanAssetOptions, setLoanAssetOptions] = useState<LoanAsset[]>([]);
+  const [hasReviewed, setHasReviewed] = useState(false);
 
   const watchAllFields = watch();
 
   const wait = useCallback(async () => {
-    const contract = jsonRpcLoanFacilitator();
+    const contract = jsonRpcLoanFacilitator(
+      jsonRpcProvider,
+      network as SupportedNetwork,
+    );
     const filter = contract.filters.CreateLoan(null, account, null, null, null);
     contract.once(filter, (id) => {
       onApproved();
       setWaitingForTx(false);
-      window.location.assign(`/loans/${id.toString()}?newLoan=true`);
+      window.location.assign(
+        `/network/${network}/loans/${id.toString()}?newLoan=true`,
+      );
     });
-  }, [account, onApproved]);
+  }, [account, jsonRpcProvider, network, onApproved]);
 
   const mint = useCallback(
     async ({
@@ -86,10 +102,14 @@ export function CreatePageForm({
       interestRate,
       duration,
       denomination,
+      acceptHigherLoanAmounts,
     }: CreateFormData) => {
       const parsedInterestRate = parseFloat(interestRate);
       const parsedDuration = parseFloat(duration);
-      const assetContract = jsonRpcERC20Contract(denomination.address);
+      const assetContract = jsonRpcERC20Contract(
+        denomination.address,
+        jsonRpcProvider,
+      );
       const loanAssetDecimals = await assetContract.decimals();
       const durationInSeconds = Math.ceil(parsedDuration * SECONDS_IN_A_DAY);
       const annualInterestRate = ethers.BigNumber.from(
@@ -97,16 +117,19 @@ export function CreatePageForm({
           parsedInterestRate * 10 ** (INTEREST_RATE_PERCENT_DECIMALS - 2),
         ),
       );
-      // TODO: allow user to select
-      const allowLoanAmountIncrease = true;
 
-      const contract = web3LoanFacilitator(signer!);
+      const contract = web3LoanFacilitator(
+        signer!,
+        network as SupportedNetwork,
+      );
       onSubmit();
+
+      wait();
       const t = await contract.createLoan(
         collateralTokenID,
         collateralAddress,
         annualInterestRate,
-        allowLoanAmountIncrease,
+        acceptHigherLoanAmounts,
         ethers.utils.parseUnits(loanAmount.toString(), loanAssetDecimals),
         denomination.address,
         durationInSeconds,
@@ -116,33 +139,31 @@ export function CreatePageForm({
 
       setTxHash(t.hash);
       setWaitingForTx(true);
-      t.wait()
-        .then(() => {
-          wait();
-          setWaitingForTx(true);
-        })
-        .catch((err) => {
-          setWaitingForTx(false);
-          onError();
-          captureException(err);
-          addMessage({
-            kind: 'error',
-            message: (
-              <div>
-                Failed to create loan.{' '}
-                <EtherscanTransactionLink transactionHash={t.hash}>
-                  View transaction
-                </EtherscanTransactionLink>
-              </div>
-            ),
-          });
+
+      t.wait().catch((err) => {
+        setWaitingForTx(false);
+        onError();
+        captureException(err);
+        addMessage({
+          kind: 'error',
+          message: (
+            <div>
+              Failed to create loan.{' '}
+              <EtherscanTransactionLink transactionHash={t.hash}>
+                View transaction
+              </EtherscanTransactionLink>
+            </div>
+          ),
         });
+      });
     },
     [
       account,
       addMessage,
       collateralAddress,
       collateralTokenID,
+      jsonRpcProvider,
+      network,
       onError,
       onSubmit,
       signer,
@@ -151,9 +172,12 @@ export function CreatePageForm({
   );
 
   const loadAssets = useCallback(async () => {
-    const assets = await getLoanAssets();
-    setLoanAssetOptions(assets);
-  }, []);
+    const response = await fetch(`/api/network/${network}/loanAssets`);
+    const tokens: LoanAsset[] | null = await response.json();
+    if (tokens) {
+      setLoanAssetOptions(tokens);
+    }
+  }, [network]);
 
   const handleBlur = useCallback(
     (event: FocusEvent<HTMLInputElement>) => {
@@ -182,10 +206,12 @@ export function CreatePageForm({
             <Select
               id="denomination"
               onChange={onChange}
+              color="light"
               onBlur={() => {
                 handleSelectBlur(!!watchAllFields.denomination);
                 onBlur();
               }}
+              isDisabled={disabled}
               onFocus={() => onFocus('DENOMINATION')}
               options={
                 loanAssetOptions.map((asset) => ({
@@ -201,7 +227,11 @@ export function CreatePageForm({
       </label>
 
       <label htmlFor="loanAmount">
-        <span>Minimum Loan Amount</span>
+        <span>
+          {watchAllFields.acceptHigherLoanAmounts
+            ? 'Minimum Loan Amount'
+            : 'Loan Amount'}
+        </span>
         <Input
           id="loanAmount"
           placeholder="0"
@@ -212,6 +242,18 @@ export function CreatePageForm({
           onFocus={() => onFocus('LOAN_AMOUNT')}
           aria-invalid={!!errors.loanAmount}
           {...register('loanAmount', { onBlur: handleBlur })}
+        />
+      </label>
+
+      <label htmlFor="acceptHigherLoanAmounts">
+        <span>Accept Higher Loan Amounts</span>
+        <input
+          id="acceptHigherLoanAmounts"
+          type="checkbox"
+          disabled={disabled}
+          onFocus={() => onFocus('ACCEPT_HIGHER_LOAN_AMOUNT')}
+          aria-invalid={!!errors.acceptHigherLoanAmounts}
+          {...register('acceptHigherLoanAmounts', { onBlur: handleBlur })}
         />
       </label>
 
@@ -245,13 +287,22 @@ export function CreatePageForm({
         />
       </label>
 
+      <LoanTermsDisclosure
+        type="CREATE"
+        fields={watchAllFields}
+        onClick={() => {
+          onFocus('REVIEW');
+          setHasReviewed(true);
+        }}
+      />
+
       <TransactionButton
         id="mintBorrowerTicket"
         text={buttonText}
         type="submit"
         txHash={txHash}
         isPending={waitingForTx}
-        disabled={disabled || Object.keys(errors).length > 0}
+        disabled={!hasReviewed}
       />
     </Form>
   );

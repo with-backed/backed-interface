@@ -5,6 +5,7 @@ import { EventsSNSMessage } from 'lib/events/sns/helpers';
 export async function pushEventForProcessing({
   eventName,
   event,
+  network,
   mostRecentTermsEvent,
 }: EventsSNSMessage): Promise<boolean> {
   const sns = new SNS(awsConfig);
@@ -15,6 +16,7 @@ export async function pushEventForProcessing({
       Message: JSON.stringify({
         eventName,
         event,
+        network,
         mostRecentTermsEvent,
       }),
     })

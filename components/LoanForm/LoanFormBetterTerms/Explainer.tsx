@@ -6,6 +6,7 @@ import { formattedAnnualRate } from 'lib/interest';
 import React, { useCallback } from 'react';
 import { FieldError, UseFormReturn } from 'react-hook-form';
 import { Loan } from 'types/Loan';
+import { Review } from 'components/LoanForm/LoanFormAwaiting/Explainer';
 
 type ExplainerProps = {
   form: UseFormReturn<LoanFormData, object>;
@@ -23,6 +24,7 @@ const explainers: {
   [key: string]: (props: InnerProps) => JSX.Element;
 } = {
   Lend,
+  review: Review,
   LendPending,
   LendSuccess,
   LendTermsUnfocused,
@@ -52,12 +54,18 @@ function Error({ error }: { error: FieldError }) {
   );
 }
 
-function LendTermsUnfocused() {
+function LendTermsUnfocused({ loan }: InnerProps) {
   return (
     <div>
-      You can become the lender on this loan by offering better terms. Improve
-      one term by at least 10% — a higher loan amount, a lower interest rate, or
-      a longer duration. Click on one to edit.
+      <p style={{ marginTop: 0 }}>
+        You can become the lender on this loan by offering better terms. Improve
+        one term by at least 10%.
+      </p>
+      {!loan.allowLoanAmountIncrease && (
+        <p style={{ marginBottom: 0 }}>
+          The borrower has locked the loan amount and it cannot be increased
+        </p>
+      )}
     </div>
   );
 }

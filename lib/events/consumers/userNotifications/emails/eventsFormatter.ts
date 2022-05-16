@@ -1,24 +1,25 @@
 import { ethers } from 'ethers';
-
 import {
   BuyoutEvent,
   CollateralSeizureEvent,
+  CreateEvent,
   LendEvent,
   Loan,
   RepaymentEvent,
 } from 'types/generated/graphql/nftLoans';
 import { RawSubgraphEvent } from 'types/RawEvent';
 import { parseSubgraphLoan } from 'lib/loans/utils';
-import { NotificationTriggerType } from '../shared';
+import { NotificationTriggerType } from 'lib/events/consumers/userNotifications/shared';
 import {
   ensOrAddr,
   formattedDate,
   formattedDuration,
   formattedLoanTerms,
   getEstimatedRepaymentAndMaturity,
+  loanUrl,
 } from 'lib/events/consumers/formattingHelpers';
-import { siteUrl } from 'lib/chainEnv';
 import { captureMessage } from '@sentry/nextjs';
+import { Config } from 'lib/config';
 
 type RenderedTerms = {
   prefix?: string;
@@ -41,6 +42,7 @@ type EmailMetadataType = {
   getComponentsFromEntity: (
     entity: RawSubgraphEvent | Loan,
     now: number,
+    config: Config,
     mostRecentTermsEvent?: LendEvent,
   ) => Promise<AddressesToEmailComponentGenerator>;
 };
@@ -66,6 +68,7 @@ export async function getEmailComponentsMap(
   emailTrigger: NotificationTriggerType,
   entity: RawSubgraphEvent | Loan,
   now: number,
+  config: Config,
   mostRecentTermsEvent?: LendEvent,
 ): Promise<AddressesToEmailComponentGenerator | null> {
   const emailMetadata = notificationEventToEmailMetadata[emailTrigger];
@@ -78,6 +81,7 @@ export async function getEmailComponentsMap(
   return await emailMetadata.getComponentsFromEntity(
     entity,
     now,
+    config,
     mostRecentTermsEvent,
   );
 }
@@ -88,18 +92,72 @@ const emailHeader = (loan: Loan): string =>
 const notificationEventToEmailMetadata: {
   [key: string]: EmailMetadataType;
 } = {
+  CreateEvent: {
+    getSubjectFromEntity: (entity: RawSubgraphEvent | Loan) =>
+      `Loan #${(entity as CreateEvent).loan.id} has been created`,
+    getComponentsFromEntity: async (
+      entity: RawSubgraphEvent | Loan,
+      _now: number,
+      config: Config,
+    ) => {
+      const event = entity as CreateEvent;
+      const borrower = await ensOrAddr(event.creator, config.jsonRpcProvider);
+
+      const sharedComponents: Partial<EventsEmailComponents> = {
+        header: emailHeader(event.loan),
+        mainMessage: `${borrower} has created a loan with collateral: ${event.loan.collateralName} #${event.loan.collateralTokenId}.`,
+        messageBeforeTerms: [],
+        terms: [
+          {
+            prefix: `Their desired loan terms are:`,
+            ...formattedLoanTerms(
+              event.loan.loanAmount,
+              event.loan.loanAssetDecimal,
+              event.loan.perAnumInterestRate,
+              event.loan.durationSeconds,
+              event.loan.loanAssetSymbol,
+            ),
+          },
+        ],
+        messageAfterTerms: [],
+        viewLinks: [
+          loanUrl(event.loan.id, config),
+          `${config.etherscanUrl}/tx/${event.id}`,
+        ],
+      };
+
+      return {
+        [event.creator]: (unsubscribeUuid: string) =>
+          ({
+            ...sharedComponents,
+            footer: `${config.siteUrl}/profile/network/${config.network}/${event.creator}?unsubscribe=true&uuid=${unsubscribeUuid}`,
+          } as EventsEmailComponents),
+      };
+    },
+  },
+
   BuyoutEvent: {
     getSubjectFromEntity: (entity: RawSubgraphEvent | Loan) =>
       `Loan #${(entity as BuyoutEvent).loan.id} has a new lender`,
     getComponentsFromEntity: async (
       entity: RawSubgraphEvent | Loan,
       _now: number,
+      config: Config,
       mostRecentTermsEvent?: LendEvent,
     ) => {
       const event = entity as BuyoutEvent;
-      const borrower = await ensOrAddr(event.loan.borrowTicketHolder);
-      const oldLender = await ensOrAddr(event.lendTicketHolder);
-      const newLender = await ensOrAddr(event.newLender);
+      const borrower = await ensOrAddr(
+        event.loan.borrowTicketHolder,
+        config.jsonRpcProvider,
+      );
+      const oldLender = await ensOrAddr(
+        event.lendTicketHolder,
+        config.jsonRpcProvider,
+      );
+      const newLender = await ensOrAddr(
+        event.newLender,
+        config.jsonRpcProvider,
+      );
       const formattedInterestEarned = ethers.utils.formatUnits(
         event.interestEarned,
         event.loan.loanAssetDecimal,
@@ -144,8 +202,8 @@ const notificationEventToEmailMetadata: {
           `At this rate, repayment of ${repayment} ${event.loan.loanAssetSymbol} will be due on ${maturity}.`,
         ],
         viewLinks: [
-          `${siteUrl()}/loans/${event.loan.id}`,
-          `${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/tx/${event.id}`,
+          loanUrl(event.loan.id, config),
+          `${config.etherscanUrl}/tx/${event.id}`,
         ],
       };
 
@@ -154,39 +212,37 @@ const notificationEventToEmailMetadata: {
           ({
             ...sharedComponents,
             mainMessage: `The loan created by ${borrower} has been bought out with new terms.`,
-            footer: `${siteUrl()}/profile/${
-              event.loan.borrowTicketHolder
-            }?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${config.siteUrl}/profile/network/${config.network}/${event.loan.borrowTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
         [event.newLender]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
             mainMessage: `${newLender} replaced ${oldLender} as lender.`,
-            footer: `${siteUrl()}/profile/${
-              event.newLender
-            }?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${config.siteUrl}/profile/network/${config.network}/${event.newLender}?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
         [event.lendTicketHolder]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
             mainMessage: `${oldLender} has been replaced as the lender on loan #${event.loan.id}.`,
-            footer: `${siteUrl()}/profile/${
-              event.lendTicketHolder
-            }?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${config.siteUrl}/profile/network/${config.network}/${event.lendTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
       };
     },
   },
   LendEvent: {
     getSubjectFromEntity: (entity: RawSubgraphEvent | Loan) =>
-      `Loan #${(entity as LendEvent).loan.id} has been fulfilled`,
+      `Loan #${(entity as LendEvent).loan.id} has a lender`,
     getComponentsFromEntity: async (
       entity: RawSubgraphEvent | Loan,
       _now: number,
+      config: Config,
     ) => {
       const event = entity as LendEvent;
-      const borrower = await ensOrAddr(event.borrowTicketHolder);
-      const lender = await ensOrAddr(event.lender);
+      const borrower = await ensOrAddr(
+        event.borrowTicketHolder,
+        config.jsonRpcProvider,
+      );
+      const lender = await ensOrAddr(event.lender, config.jsonRpcProvider);
       const [repayment, maturity] = getEstimatedRepaymentAndMaturity(
         parseSubgraphLoan(event.loan),
       );
@@ -211,8 +267,8 @@ const notificationEventToEmailMetadata: {
           `At this rate, repayment of ${repayment} ${event.loan.loanAssetSymbol} will be due on ${maturity}`,
         ],
         viewLinks: [
-          `${siteUrl()}/loans/${event.loan.id}`,
-          `${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/tx/${event.id}`,
+          loanUrl(event.loan.id, config),
+          `${config.etherscanUrl}/tx/${event.id}`,
         ],
       };
 
@@ -220,16 +276,12 @@ const notificationEventToEmailMetadata: {
         [event.borrowTicketHolder]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `${siteUrl()}/profile/${
-              event.borrowTicketHolder
-            }?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${config.siteUrl}/profile/network/${config.network}/${event.borrowTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
         [event.lender]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `${siteUrl()}/profile/${
-              event.lender
-            }?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${config.siteUrl}/profile/network/${config.network}/${event.lender}?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
       };
     },
@@ -240,10 +292,14 @@ const notificationEventToEmailMetadata: {
     getComponentsFromEntity: async (
       entity: RawSubgraphEvent | Loan,
       _now: number,
+      config: Config,
     ) => {
       const event = entity as RepaymentEvent;
-      const repayer = await ensOrAddr(event.repayer);
-      const lender = await ensOrAddr(event.lendTicketHolder);
+      const repayer = await ensOrAddr(event.repayer, config.jsonRpcProvider);
+      const lender = await ensOrAddr(
+        event.lendTicketHolder,
+        config.jsonRpcProvider,
+      );
       const formattedInterestEarned = ethers.utils.formatUnits(
         event.interestEarned,
         event.loan.loanAssetDecimal,
@@ -278,8 +334,8 @@ const notificationEventToEmailMetadata: {
           `The total cost to repay was ${formattedTotalRepay} ${event.loan.loanAssetSymbol}.`,
         ],
         viewLinks: [
-          `${siteUrl()}/loans/${event.loan.id}`,
-          `${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/tx/${event.id}`,
+          loanUrl(event.loan.id, config),
+          `${config.etherscanUrl}/tx/${event.id}`,
         ],
       };
 
@@ -287,16 +343,12 @@ const notificationEventToEmailMetadata: {
         [event.repayer]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `${siteUrl()}/profile/${
-              event.repayer
-            }?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${config.siteUrl}/profile/network/${config.network}/${event.repayer}?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
         [event.lendTicketHolder]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `${siteUrl()}/profile/${
-              event.lendTicketHolder
-            }?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${config.siteUrl}/profile/network/${config.network}/${event.lendTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
       };
     },
@@ -306,10 +358,20 @@ const notificationEventToEmailMetadata: {
       `Loan #${
         (entity as CollateralSeizureEvent).loan.id
       } collateral has been seized`,
-    getComponentsFromEntity: async (entity: RawSubgraphEvent | Loan) => {
+    getComponentsFromEntity: async (
+      entity: RawSubgraphEvent | Loan,
+      _now: number,
+      config: Config,
+    ) => {
       const event = entity as CollateralSeizureEvent;
-      const borrower = await ensOrAddr(event.borrowTicketHolder);
-      const lender = await ensOrAddr(event.lendTicketHolder);
+      const borrower = await ensOrAddr(
+        event.borrowTicketHolder,
+        config.jsonRpcProvider,
+      );
+      const lender = await ensOrAddr(
+        event.lendTicketHolder,
+        config.jsonRpcProvider,
+      );
       const [repayment, _] = getEstimatedRepaymentAndMaturity(
         parseSubgraphLoan(event.loan),
       );
@@ -343,8 +405,8 @@ const notificationEventToEmailMetadata: {
           )}.`,
         ],
         viewLinks: [
-          `${siteUrl()}/loans/${event.loan.id}`,
-          `${process.env.NEXT_PUBLIC_ETHERSCAN_URL}/tx/${event.id}`,
+          loanUrl(event.loan.id, config),
+          `${config.etherscanUrl}/tx/${event.id}`,
         ],
       };
 
@@ -352,16 +414,12 @@ const notificationEventToEmailMetadata: {
         [event.borrowTicketHolder]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `${siteUrl()}/profile/${
-              event.borrowTicketHolder
-            }?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${config.siteUrl}/profile/network/${config.network}/${event.borrowTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
         [event.lendTicketHolder]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `${siteUrl()}/profile/${
-              event.lendTicketHolder
-            }?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${config.siteUrl}/profile/network/${config.network}/${event.lendTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
       };
     },
@@ -372,10 +430,14 @@ const notificationEventToEmailMetadata: {
     getComponentsFromEntity: async (
       entity: RawSubgraphEvent | Loan,
       now: number,
+      config: Config,
     ) => {
       const loan = entity as Loan;
 
-      const lender = await ensOrAddr(loan.lendTicketHolder);
+      const lender = await ensOrAddr(
+        loan.lendTicketHolder,
+        config.jsonRpcProvider,
+      );
 
       const loanDuration = now - loan.lastAccumulatedTimestamp;
 
@@ -409,24 +471,20 @@ const notificationEventToEmailMetadata: {
           `They accrued ${interestAccruedSoFar} ${loan.loanAssetSymbol} over that period.`,
           `At this rate, repayment of ${repayment} ${loan.loanAssetSymbol} will be due on ${maturity}`,
         ],
-        viewLinks: [`${siteUrl()}/loans/${loan.id}`, ''],
-        footer: `${siteUrl()}`,
+        viewLinks: [loanUrl(loan.id, config), ''],
+        footer: `${config.siteUrl}`,
       };
 
       return {
         [loan.borrowTicketHolder]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `${siteUrl()}/profile/${
-              loan.borrowTicketHolder
-            }?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${config.siteUrl}/profile/network/${config.network}/${loan.borrowTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
         [loan.lendTicketHolder]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `${siteUrl()}/profile/${
-              loan.lendTicketHolder
-            }?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${config.siteUrl}/profile/network/${config.network}/${loan.lendTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
       };
     },
@@ -437,10 +495,17 @@ const notificationEventToEmailMetadata: {
     getComponentsFromEntity: async (
       entity: RawSubgraphEvent | Loan,
       _now: number,
+      config: Config,
     ) => {
       const loan = entity as Loan;
-      const lender = await ensOrAddr(loan.lendTicketHolder);
-      const borrower = await ensOrAddr(loan.borrowTicketHolder);
+      const lender = await ensOrAddr(
+        loan.lendTicketHolder,
+        config.jsonRpcProvider,
+      );
+      const borrower = await ensOrAddr(
+        loan.borrowTicketHolder,
+        config.jsonRpcProvider,
+      );
 
       const loanDuration =
         loan.endDateTimestamp! - loan.lastAccumulatedTimestamp;
@@ -480,24 +545,20 @@ const notificationEventToEmailMetadata: {
           )} with a repayment cost of ${repayment} ${loan.loanAssetSymbol}`,
           `Unless borrower ${borrower} repays, ${lender} may seize the collateral NFT.`,
         ],
-        viewLinks: [`${siteUrl()}/loans/${loan.id}`, ''],
-        footer: `${siteUrl()}`,
+        viewLinks: [loanUrl(loan.id, config), ''],
+        footer: `${config.siteUrl}`,
       };
 
       return {
         [loan.borrowTicketHolder]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `${siteUrl()}/profile/${
-              loan.borrowTicketHolder
-            }?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${config.siteUrl}/profile/network/${config.network}/${loan.borrowTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
         [loan.lendTicketHolder]: (unsubscribeUuid: string) =>
           ({
             ...sharedComponents,
-            footer: `${siteUrl()}/profile/${
-              loan.lendTicketHolder
-            }?unsubscribe=true&uuid=${unsubscribeUuid}`,
+            footer: `${config.siteUrl}/profile/network/${config.network}/${loan.lendTicketHolder}?unsubscribe=true&uuid=${unsubscribeUuid}`,
           } as EventsEmailComponents),
       };
     },

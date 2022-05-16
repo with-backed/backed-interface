@@ -8,6 +8,7 @@ import { useNFTs } from 'hooks/useNFTs';
 import { NFTEntity } from 'types/NFT';
 import { useTokenMetadata } from 'hooks/useTokenMetadata';
 import { ethers } from 'ethers';
+import { getNftContractAddress } from 'lib/eip721Subraph';
 
 interface NFTCollateralPickerProps {
   connectedWallet: string;
@@ -47,6 +48,7 @@ export function NFTCollateralPicker({
 
   const handleNFTClick = useCallback(
     (nft: NFTEntity) => {
+      window.pirsch('NFT Selected', { meta: { id: nft.id } });
       handleSetSelectedNFT(nft);
       dialog.setVisible(false);
     },
@@ -120,7 +122,9 @@ function NFTGroup({ nftCollectionName, nfts, handleNFTClick }: NFTGroupProps) {
         <span className={styles['nft-count']}>{nfts.length}</span>
       </Button>
       {isOpen && (
-        <div className={styles['nft-list']}>
+        <div
+          data-testid={`nft-list-${nftCollectionName}`}
+          className={styles['nft-list']}>
           {nfts.map((nft) => (
             <NFT nft={nft} handleNFTClick={handleNFTClick} key={nft.id} />
           ))}
@@ -141,8 +145,8 @@ function NFT({ handleNFTClick, nft }: NFTProps) {
 
   const tokenSpec = useMemo(
     () => ({
-      tokenURI: nft.uri || '',
-      tokenID: ethers.BigNumber.from(nft.identifier),
+      collateralContractAddress: getNftContractAddress(nft),
+      collateralTokenId: ethers.BigNumber.from(nft.identifier),
       forceImage: true,
     }),
     [nft],

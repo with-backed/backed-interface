@@ -1,13 +1,10 @@
 import { ethers } from 'ethers';
-import { mainnet } from 'lib/chainEnv';
+import { SupportedNetwork } from 'lib/config';
 import { jsonRpcERC20Contract } from 'lib/contracts';
 import {
   CollectionStatistics,
-  collectionStats,
-  getFakeFloor,
-  getFakeItemsAndOwners,
-  getFakeVolume,
-} from 'lib/nftPort';
+  getCollectionStats,
+} from 'lib/nftCollectionStats';
 import {
   generateFakeSaleForNFT,
   queryMostRecentSaleForNFT,
@@ -18,59 +15,83 @@ export type CollateralSaleInfo = {
   recentSale: {
     paymentToken: string;
     price: number;
-  };
+  } | null;
   collectionStats: CollectionStatistics;
-} | null;
+};
 
 export async function getCollateralSaleInfo(
   nftContractAddress: string,
   tokenId: string,
+  nftSalesSubgraph: string | null,
+  network: SupportedNetwork,
+  jsonRpcProvider: string,
 ): Promise<CollateralSaleInfo> {
-  const recentSale = await getMostRecentSale(nftContractAddress, tokenId);
+  const recentSale = await getMostRecentSale(
+    nftContractAddress,
+    tokenId,
+    nftSalesSubgraph,
+    network,
+    jsonRpcProvider,
+  );
 
-  if (!recentSale) {
-    return null;
-  }
-
-  const erc20Contract = jsonRpcERC20Contract(recentSale.paymentToken);
-
-  const recentSaleToken = await erc20Contract.symbol();
-  const recentSaleTokenDecimals = await erc20Contract.decimals();
-
-  const recentSalePrice = ethers.utils
-    .parseUnits(recentSale.price, recentSaleTokenDecimals)
-    .toNumber();
-
-  const collectionStats = await getCollectionStats(nftContractAddress);
+  const collectionStats = await getCollectionStats(
+    nftContractAddress,
+    tokenId,
+    network,
+  );
 
   return {
     collectionStats,
-    recentSale: {
-      paymentToken: recentSaleToken,
-      price: recentSalePrice,
-    },
+    recentSale,
   };
 }
 
 async function getMostRecentSale(
   nftContractAddress: string,
   tokenId: string,
-): Promise<NFTSale | null> {
-  if (!mainnet()) return generateFakeSaleForNFT(nftContractAddress, tokenId);
-  return await queryMostRecentSaleForNFT(nftContractAddress, tokenId);
-}
+  nftSalesSubgraph: string | null,
+  network: SupportedNetwork,
+  jsonRpcProvider: string,
+): Promise<{ paymentToken: string; price: number } | null> {
+  let sale: NFTSale | null = null;
 
-async function getCollectionStats(
-  nftContractAddress: string,
-): Promise<CollectionStatistics> {
-  if (!mainnet()) {
-    const [items, owners] = getFakeItemsAndOwners();
-    return {
-      floor: getFakeFloor(),
-      items,
-      owners,
-      volume: getFakeVolume(),
-    };
+  switch (network) {
+    case 'ethereum':
+      //TODO(adamgobes): find an NFT sales api for eth mainnet
+      return null;
+    case 'rinkeby':
+      sale = generateFakeSaleForNFT(nftContractAddress, tokenId);
+      break;
+    default:
+      // TODO(adamgobes): follow up with Quixotic team on when they will release API to get most recent sale. it is not available for now
+      return null;
   }
-  return await collectionStats(nftContractAddress);
+
+  const paymentTokenAddress = sale.paymentToken;
+  const price = sale.price;
+
+  const erc20Contract = jsonRpcERC20Contract(
+    paymentTokenAddress,
+    jsonRpcProvider,
+  );
+
+  let paymentTokenSymbol: string;
+  let recentSaleTokenDecimals: number;
+  if (paymentTokenAddress === '0x0000000000000000000000000000000000000000') {
+    paymentTokenSymbol = 'ETH';
+    recentSaleTokenDecimals = 18;
+  } else {
+    paymentTokenSymbol = await erc20Contract.symbol();
+    recentSaleTokenDecimals = await erc20Contract.decimals();
+  }
+
+  const formatttedPrice = ethers.utils.formatUnits(
+    ethers.BigNumber.from(price),
+    recentSaleTokenDecimals,
+  );
+
+  return {
+    paymentToken: paymentTokenSymbol,
+    price: parseFloat(formatttedPrice),
+  };
 }

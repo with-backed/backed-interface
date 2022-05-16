@@ -1,0 +1,110 @@
+.carousel {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap);
+}
+
+.controls {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--gap);
+  min-height: 120px;
+}
+
+.controls > p {
+  margin: 0;
+}
+
+.arrow-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.arrow-button > svg {
+  fill: var(--highlight-clickable-50);
+}
+
+.arrow-button:hover > svg {
+  fill: var(--highlight-clickable-100);
+}
+
+.arrow-button-right {
+  composes: arrow-button;
+}
+
+.arrow-button-right > svg {
+  transform: rotate(180deg);
+}
+
+.arrow-button-disabled {
+  cursor: not-allowed;
+}
+
+.arrow-button-disabled > svg {
+  fill: var(--neutral-10);
+}
+
+.progress {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16px, 1fr));
+  gap: 4px;
+}
+
+.indicator {
+  height: 6px;
+  width: 100%;
+  border-radius: 3px;
+  background-color: var(--highlight-clickable-100);
+  cursor: pointer;
+}
+
+.indicator-awaiting {
+  composes: indicator;
+  background-color: var(--highlight-clickable-20);
+}
+
+.image {
+  width: 100%;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  aspect-ratio: 7 / 4;
+}
+
+.mobile-controls {
+  display: none;
+}
+
+@media screen and (max-width: 700px) {
+  .carousel {
+    height: 100%;
+    justify-content: flex-start;
+  }
+
+  .progress {
+    margin-top: auto;
+  }
+
+  .controls {
+    display: none;
+  }
+
+  .mobile-controls {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-controls > div {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+}

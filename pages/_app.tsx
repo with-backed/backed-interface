@@ -2,53 +2,41 @@ import 'styles/global.css';
 import 'styles/fonts-maru.css';
 import 'normalize.css';
 import '@rainbow-me/rainbowkit/styles.css';
-import {
-  RainbowKitProvider,
-  Chain,
-  getDefaultWallets,
-  connectorsForWallets,
-  lightTheme,
-} from '@rainbow-me/rainbowkit';
 import { AppProps } from 'next/app';
 import { AppWrapper } from 'components/layouts/AppWrapper';
-import { providers } from 'ethers';
-import { TimestampProvider } from 'hooks/useTimestamp/useTimestamp';
-import { GlobalMessagingProvider } from 'hooks/useGlobalMessages';
-import { WagmiProvider, chain } from 'wagmi';
-
-const jsonRpcProvider = new providers.JsonRpcProvider(
-  process.env.NEXT_PUBLIC_JSON_RPC_PROVIDER,
-);
-
-const chains: Chain[] = [{ ...chain.rinkeby, name: 'Rinkeby' }];
-
-const wallets = getDefaultWallets({
-  chains,
-  appName: 'Backed',
-  jsonRpcUrl: ({ chainId }) =>
-    chains.find((x) => x.id === chainId)?.rpcUrls?.[0] ??
-    chain.mainnet.rpcUrls[0],
-});
-
-const connectors = connectorsForWallets(wallets)({
-  chainId: parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || '1'),
-});
+import { Footer } from 'components/Footer';
+import { ConfigProvider } from 'hooks/useConfig';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { SupportedNetwork, isSupportedNetwork } from 'lib/config';
+import { ApplicationProviders } from 'components/ApplicationProviders';
 
 export default function App({ Component, pageProps }: AppProps) {
+  const { query } = useRouter();
+  const [network, setNetwork] = useState<SupportedNetwork>(
+    isSupportedNetwork(query.network as string)
+      ? (query.network as SupportedNetwork)
+      : 'ethereum',
+  );
+
+  useEffect(() => {
+    if (query.network) {
+      if (query.network !== network) {
+        if (isSupportedNetwork(query.network as string)) {
+          setNetwork(query.network as SupportedNetwork);
+        }
+      }
+    }
+  }, [network, query.network]);
+
   return (
-    <GlobalMessagingProvider>
-      <RainbowKitProvider theme={lightTheme()} chains={chains}>
-        <WagmiProvider
-          autoConnect
-          connectors={connectors}
-          provider={jsonRpcProvider}>
-          <TimestampProvider>
-            <AppWrapper>
-              <Component {...pageProps} />
-            </AppWrapper>
-          </TimestampProvider>
-        </WagmiProvider>
-      </RainbowKitProvider>
-    </GlobalMessagingProvider>
+    <ConfigProvider network={network}>
+      <ApplicationProviders>
+        <AppWrapper>
+          <Component {...pageProps} />
+          <Footer />
+        </AppWrapper>
+      </ApplicationProviders>
+    </ConfigProvider>
   );
 }

@@ -1,4 +1,4 @@
-import { nftBackedLoansClient } from './urql';
+import { clientFromUrl } from 'lib/urql';
 import {
   CreateByTransactionHashDocument,
   CreateByTransactionHashQuery,
@@ -28,11 +28,15 @@ import {
 } from 'types/generated/graphql/nftLoans';
 import { RawEventNameType, RawSubgraphEvent } from 'types/RawEvent';
 import { captureException } from '@sentry/nextjs';
+import { Config } from 'lib/config';
 
 export async function subgraphEventFromTxHash(
+  config: Config,
   eventName: RawEventNameType,
   txHash: string,
 ): Promise<RawSubgraphEvent | undefined | null> {
+  const nftBackedLoansClient = clientFromUrl(config.nftBackedLoansSubgraph);
+
   switch (eventName) {
     case 'CreateEvent':
       const { data: createEventData, error: createEventError } =

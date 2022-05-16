@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { SupportedNetwork } from 'lib/config';
 import {
   contractDirectory,
   jsonRpcERC20Contract,
@@ -7,11 +8,21 @@ import {
 } from 'lib/contracts';
 import { Loan } from 'types/Loan';
 
-export async function nodeLoanById(loanId: string): Promise<Loan> {
+export async function nodeLoanById(
+  loanId: string,
+  jsonRpcProvider: string,
+  network: SupportedNetwork,
+): Promise<Loan> {
   const id = ethers.BigNumber.from(loanId);
-  const loanFacilitator = jsonRpcLoanFacilitator();
-  const lendTicket = jsonRpcERC721Contract(contractDirectory.lendTicket);
-  const borrowTicket = jsonRpcERC721Contract(contractDirectory.borrowTicket);
+  const loanFacilitator = jsonRpcLoanFacilitator(jsonRpcProvider, network);
+  const lendTicket = jsonRpcERC721Contract(
+    contractDirectory[network].lendTicket,
+    jsonRpcProvider,
+  );
+  const borrowTicket = jsonRpcERC721Contract(
+    contractDirectory[network].borrowTicket,
+    jsonRpcProvider,
+  );
 
   const loanInfo = await loanFacilitator.loanInfo(loanId);
   const {
@@ -24,9 +35,13 @@ export async function nodeLoanById(loanId: string): Promise<Loan> {
     durationSeconds,
     loanAmount,
     closed,
+    allowLoanAmountIncrease,
   } = loanInfo;
 
-  const loanAssetContract = jsonRpcERC20Contract(loanAssetContractAddress);
+  const loanAssetContract = jsonRpcERC20Contract(
+    loanAssetContractAddress,
+    jsonRpcProvider,
+  );
 
   const decimals = await loanAssetContract.decimals();
   const loanAssetSymbol = await loanAssetContract.symbol();
@@ -44,8 +59,11 @@ export async function nodeLoanById(loanId: string): Promise<Loan> {
 
   const collateralAssetContract = jsonRpcERC721Contract(
     collateralContractAddress,
+    jsonRpcProvider,
   );
-  const collateralTokenURI = await collateralAssetContract.tokenURI(id);
+  const collateralTokenURI = await collateralAssetContract.tokenURI(
+    collateralTokenId,
+  );
   const collateralName = await collateralAssetContract.name();
 
   return {
@@ -69,5 +87,6 @@ export async function nodeLoanById(loanId: string): Promise<Loan> {
     interestOwed,
     endDateTimestamp,
     collateralTokenURI,
+    allowLoanAmountIncrease,
   };
 }

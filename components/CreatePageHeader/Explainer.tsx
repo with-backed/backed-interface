@@ -1,6 +1,7 @@
 import { Explainer as ExplainerWrapper } from 'components/Explainer';
 import { ethers } from 'ethers';
 import { formatUnits } from 'ethers/lib/utils';
+import { useConfig } from 'hooks/useConfig';
 import { jsonRpcERC20Contract } from 'lib/contracts';
 import { estimatedRepayment } from 'lib/loans/utils';
 import React, { useEffect, useState } from 'react';
@@ -21,31 +22,37 @@ export const explainers: {
   noWallet: NoWallet,
   selectNFT: SelectNFT,
   authorizeNFT: AuthorizeNFT,
-  pendingAuthorization: PendingAuthorization,
-  loanFormUnfocused: LoanFormUnfocused,
+  loanFormUnfocused: SetLoanTerms,
   denomination: Denomination,
   loanAmount: LoanAmount,
   minimumDuration: MinimumDuration,
   maximumInterestRate: MaximumInterestRate,
   mintBorrowerTicket: MintBorrowerTicket,
-  pendingMintBorrowerTicket: PendingMintBorrowerAuthorization,
   mintBorrowerTicketSuccess: MintBorrowerTicketSuccess,
+  setLoanTerms: SetLoanTerms,
+  acceptHigherLoanAmount: LoanAmount,
 };
 
 export function Explainer({ form, state, top }: ExplainerProps) {
+  const { jsonRpcProvider } = useConfig();
   const context = form.watch();
   const [decimals, setDecimals] = useState<number | null>(null);
   useEffect(() => {
     if (context.denomination) {
       const loanAssetContract = jsonRpcERC20Contract(
         context.denomination.address,
+        jsonRpcProvider,
       );
       loanAssetContract.decimals().then(setDecimals);
     }
-  }, [context.denomination, setDecimals]);
+  }, [context.denomination, jsonRpcProvider, setDecimals]);
 
   const error = Object.values(form.formState.errors)[0];
-  const Inner = explainers[state];
+  const Inner = explainers[state] || null;
+
+  if (!error && !Inner) {
+    return null;
+  }
 
   return (
     <ExplainerWrapper top={top} display={!!error ? 'error' : 'normal'}>
@@ -105,19 +112,6 @@ function AuthorizeNFT({ context }: InnerProps) {
   );
 }
 
-function PendingAuthorization({ context }: InnerProps) {
-  return <div>This can take a few minutes.</div>;
-}
-
-function LoanFormUnfocused({ context }: InnerProps) {
-  return (
-    <div>
-      Set your loan terms. Any lender who wishes can meet these terms, and you
-      will automatically receive the loan amount minus a 1% origination fee.
-    </div>
-  );
-}
-
 function Denomination({ context }: InnerProps) {
   return (
     <div>
@@ -127,10 +121,19 @@ function Denomination({ context }: InnerProps) {
 }
 
 function LoanAmount({ context }: InnerProps) {
+  if (context.acceptHigherLoanAmounts) {
+    return (
+      <div>
+        Lenders can give you a larger loan, but this is the minimum amount
+        you&apos;ll accept.
+      </div>
+    );
+  }
+
   return (
     <div>
-      Lenders can give you a larger loan, but this is the minimum amount
-      you&apos;ll accept.
+      Lenders will be able to offer improved interest rates and duration, but
+      loan amount will stay fixed.
     </div>
   );
 }
@@ -160,7 +163,16 @@ function EstimatedRepayment({
   context: { denomination, duration, interestRate, loanAmount },
   decimals,
 }: InnerProps) {
-  if (interestRate && loanAmount && duration && denomination && decimals) {
+  if (
+    interestRate &&
+    !isNaN(parseFloat(interestRate)) &&
+    loanAmount &&
+    !isNaN(parseFloat(loanAmount)) &&
+    duration &&
+    !isNaN(parseFloat(duration)) &&
+    denomination &&
+    decimals
+  ) {
     const parsedLoanAmount = ethers.utils.parseUnits(
       parseFloat(loanAmount).toFixed(decimals),
       decimals,
@@ -195,18 +207,35 @@ function EstimatedRepayment({
 function MintBorrowerTicket({ context }: InnerProps) {
   return (
     <div>
-      This is the last step of creating a loan. You will be issued an NFT
-      representing your rights and obligations as a borrower. This cannot be
-      undone without closing the loan and repaying any loan amount you&apos;ve
-      received and interest accrued.
+      <p style={{ marginTop: 0 }}>
+        This NFT will represent your loan offer. This cannot be undone without
+        closing the loan and repaying any amount you’ll receive from a lender,
+        plus interest.
+      </p>
+      <p style={{ marginBottom: 0 }}>
+        Your repayment can increase as lenders offer higher loan amounts or
+        longer durations.
+      </p>
     </div>
   );
 }
 
-function PendingMintBorrowerAuthorization({ context }: InnerProps) {
-  return <div>This can take a few more minutes.</div>;
-}
-
 function MintBorrowerTicketSuccess({ context }: InnerProps) {
   return <div>Your loan is created and available for lenders to see!</div>;
+}
+
+function SetLoanTerms({ context }: InnerProps) {
+  return (
+    <div>
+      <p style={{ marginTop: 0 }}>
+        When a lender meets these terms, you’ll immediately receive the loan
+        amount minus a 1% origination fee.
+      </p>
+      <p style={{ marginBottom: 0 }}>
+        Lenders can be &ldquo;bought out&rdquo; by new lenders offering better
+        terms (higher amount, lower rate, or longer duration). When this
+        happens, the new terms will instantly go into effect.
+      </p>
+    </div>
+  );
 }

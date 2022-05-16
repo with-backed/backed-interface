@@ -21,6 +21,7 @@ import { useDialogState, DialogDisclosure } from 'reakit/Dialog';
 import { useRouter } from 'next/router';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import { useAccount } from 'wagmi';
+import { useConfig } from 'hooks/useConfig';
 
 type ProfileHeaderProps = {
   address: string;
@@ -136,6 +137,7 @@ function LoanStats({ loans, kind }: LoanStatsProps) {
 }
 
 export function ProfileHeader({ address, loans }: ProfileHeaderProps) {
+  const { network } = useConfig();
   const { query } = useRouter();
   const { addMessage, removeMessage } = useGlobalMessages();
   const [{ data: accountData }, disconnect] = useAccount();
@@ -151,7 +153,7 @@ export function ProfileHeader({ address, loans }: ProfileHeaderProps) {
       });
 
       const res = await fetch(
-        `/api/addresses/${address}/notifications/emails/${uuid}`,
+        `/api/network/${network}/addresses/${address}/notifications/emails/${uuid}`,
         {
           method: 'DELETE',
         },
@@ -173,7 +175,7 @@ export function ProfileHeader({ address, loans }: ProfileHeaderProps) {
     if (unsubscribe) {
       unsubscribeEmail();
     }
-  }, [query, address, addMessage, removeMessage]);
+  }, [query, address, addMessage, removeMessage, network]);
 
   const loansAsBorrower = useMemo(
     () => loans.filter((l) => l.borrower === ethers.utils.getAddress(address)),
@@ -187,44 +189,40 @@ export function ProfileHeader({ address, loans }: ProfileHeaderProps) {
   const dialog = useDialogState();
 
   return (
-    <>
-      <div className={styles['profile-header-wrapper']}>
-        <TwelveColumn>
-          <Fieldset legend="📭 Address">
-            <div className={styles.container}>
-              <span>{address}</span>
-              <EtherscanAddressLink address={address}>
-                View on Etherscan 🔗
-              </EtherscanAddressLink>
-              <DialogDisclosure as={'text'} {...dialog}>
-                <TextButton kind="clickable">
-                  Subscribe to updates 🔔
-                </TextButton>
-              </DialogDisclosure>
-              {connectedAddress && connectedAddress === address && (
-                <TextButton
-                  kind="clickable"
-                  onClick={() => {
-                    disconnect();
-                  }}>
-                  Disconnect 🚪
-                </TextButton>
-              )}
-            </div>
-          </Fieldset>
-          <Fieldset legend="🖼 Borrowing">
-            <div className={styles.container}>
-              <LoanStats loans={loansAsBorrower} kind="borrower" />
-            </div>
-          </Fieldset>
-          <Fieldset legend="💸 Lending">
-            <div className={styles.container}>
-              <LoanStats loans={loansAsLender} kind="lender" />
-            </div>
-          </Fieldset>
-        </TwelveColumn>
-      </div>
+    <div className={styles['profile-header-wrapper']}>
+      <TwelveColumn>
+        <Fieldset legend="📭 Address">
+          <div className={styles.container}>
+            <span>{address}</span>
+            <EtherscanAddressLink address={address}>
+              View on Etherscan 🔗
+            </EtherscanAddressLink>
+            <DialogDisclosure as={'text'} {...dialog}>
+              <TextButton kind="clickable">Subscribe to updates 🔔</TextButton>
+            </DialogDisclosure>
+            {connectedAddress && connectedAddress === address && (
+              <TextButton
+                kind="clickable"
+                onClick={() => {
+                  disconnect();
+                }}>
+                Disconnect 🚪
+              </TextButton>
+            )}
+          </div>
+        </Fieldset>
+        <Fieldset legend="🖼 Borrowing">
+          <div className={styles.container}>
+            <LoanStats loans={loansAsBorrower} kind="borrower" />
+          </div>
+        </Fieldset>
+        <Fieldset legend="💸 Lending">
+          <div className={styles.container}>
+            <LoanStats loans={loansAsLender} kind="lender" />
+          </div>
+        </Fieldset>
+      </TwelveColumn>
       <NotificationsModal profileAddress={address} dialog={dialog} />
-    </>
+    </div>
   );
 }

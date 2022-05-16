@@ -1,23 +1,29 @@
 import styles from './AdvancedSearch.module.css';
 import { Input } from 'components/Input';
-import { ChangeEvent, useCallback } from 'react';
+import { ChangeEvent, useCallback, useState } from 'react';
 
 type SearchTextInputProps = {
   label: string;
   placeholder: string;
+  isAddress: boolean;
   setTextValue: (token: string) => void;
-  error?: string;
 };
 
 export default function SearchTextInput({
   label,
   placeholder,
+  isAddress,
   setTextValue,
-  error,
 }: SearchTextInputProps) {
+  const [error, setError] = useState('');
+
   const handleTextInputChanged = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       const newValue = event.target.value.trim();
+      if (newValue.length % 2 !== 0 && isAddress) {
+        setError('Invalid address inputted');
+        return;
+      }
 
       if (newValue.length < 3) {
         setTextValue('');

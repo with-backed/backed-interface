@@ -9,6 +9,8 @@ import { captureException } from '@sentry/nextjs';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import { EtherscanTransactionLink } from 'components/EtherscanLink';
 import Link from 'next/link';
+import { useConfig } from 'hooks/useConfig';
+import { SupportedNetwork } from 'lib/config';
 
 // Annoyingly, the form data gets automatically parsed into numbers, so we can't use the LoanFormData type
 type Values = { interestRate: number; duration: number; loanAmount: number };
@@ -17,6 +19,7 @@ export function useLoanUnderwriter(
   { id, loanAssetDecimals }: Loan,
   refresh: () => void,
 ) {
+  const { network } = useConfig();
   const { addMessage } = useGlobalMessages();
   const [txHash, setTxHash] = useState('');
   const [transactionPending, setTransactionPending] = useState(false);
@@ -29,7 +32,10 @@ export function useLoanUnderwriter(
       if (!account) {
         throw new Error('Cannot underwrite a loan without a connected account');
       }
-      const loanFacilitator = web3LoanFacilitator(signer!);
+      const loanFacilitator = web3LoanFacilitator(
+        signer!,
+        network as SupportedNetwork,
+      );
       const annualInterestRate = ethers.BigNumber.from(
         Math.floor(interestRate * 10 ** (INTEREST_RATE_PERCENT_DECIMALS - 2)),
       );
@@ -52,10 +58,12 @@ export function useLoanUnderwriter(
             kind: 'success',
             message: (
               <p>
-                {
-                  '💸 You are now the Lender on this loan! Subscribe to activity notifications from your'
-                }
-                <Link href={`/profile/${account}`}> profile page</Link>.
+                💸 You are now the Lender on this loan! Subscribe to activity
+                notifications from your{' '}
+                <Link href={`/network/${network}/profile/${account}`}>
+                  <a>profile page</a>
+                </Link>
+                .
               </p>
             ),
           });
@@ -76,7 +84,7 @@ export function useLoanUnderwriter(
           });
         });
     },
-    [account, addMessage, id, signer, loanAssetDecimals, refresh],
+    [account, addMessage, id, signer, loanAssetDecimals, network, refresh],
   );
 
   return {
