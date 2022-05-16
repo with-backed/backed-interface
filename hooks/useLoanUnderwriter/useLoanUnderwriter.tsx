@@ -58,12 +58,10 @@ export function useLoanUnderwriter(
             kind: 'success',
             message: (
               <p>
-                {
-                  '💸 You are now the Lender on this loan! Subscribe to activity notifications from your'
-                }
+                💸 You are now the Lender on this loan! Subscribe to activity
+                notifications from your{' '}
                 <Link href={`/network/${network}/profile/${account}`}>
-                  {' '}
-                  profile page
+                  <a>profile page</a>
                 </Link>
                 .
               </p>
