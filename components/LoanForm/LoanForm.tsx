@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { Loan } from 'types/Loan';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   getAccountLoanAssetAllowance,
   getAccountLoanAssetBalance,
@@ -18,6 +18,7 @@ import { LoanFormDisclosure } from './LoanFormDisclosure';
 import { useAccount } from 'wagmi';
 import { LoanOfferBetterTermsDisclosure } from 'components/LoanForm/LoanOfferBetterTermsDisclosure';
 import { useConfig } from 'hooks/useConfig';
+import { SupportedNetwork } from 'lib/config';
 
 type LoanFormProps = {
   loan: Loan;
@@ -26,7 +27,7 @@ type LoanFormProps = {
 export function LoanForm({ loan, refresh }: LoanFormProps) {
   const [{ data }] = useAccount();
   const account = data?.address;
-  const { jsonRpcProvider } = useConfig();
+  const { jsonRpcProvider, network } = useConfig();
   const timestamp = useTimestamp();
   const [balance, setBalance] = useState(0);
   const [needsAllowance, setNeedsAllowance] = useState(true);
@@ -47,6 +48,7 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
           account,
           loan.loanAssetContractAddress,
           jsonRpcProvider,
+          network as SupportedNetwork,
         ),
       ]).then(([balance, allowanceAmount]) => {
         setBalance(balance);
@@ -55,9 +57,11 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
     }
   }, [
     account,
+    jsonRpcProvider,
     loan.loanAssetContractAddress,
     loan.loanAssetDecimals,
     loan.loanAmount,
+    network,
   ]);
 
   if (loan.closed) {

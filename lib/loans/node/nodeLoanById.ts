@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { SupportedNetwork } from 'lib/config';
 import {
   contractDirectory,
   jsonRpcERC20Contract,
@@ -10,15 +11,16 @@ import { Loan } from 'types/Loan';
 export async function nodeLoanById(
   loanId: string,
   jsonRpcProvider: string,
+  network: SupportedNetwork,
 ): Promise<Loan> {
   const id = ethers.BigNumber.from(loanId);
-  const loanFacilitator = jsonRpcLoanFacilitator(jsonRpcProvider);
+  const loanFacilitator = jsonRpcLoanFacilitator(jsonRpcProvider, network);
   const lendTicket = jsonRpcERC721Contract(
-    contractDirectory.lendTicket,
+    contractDirectory[network].lendTicket,
     jsonRpcProvider,
   );
   const borrowTicket = jsonRpcERC721Contract(
-    contractDirectory.borrowTicket,
+    contractDirectory[network].borrowTicket,
     jsonRpcProvider,
   );
 

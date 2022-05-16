@@ -3,6 +3,8 @@ import { TransactionButton } from 'components/Button';
 import { CompletedButton } from 'components/Button';
 import { authorizeCurrency } from 'lib/authorizations/authorizeCurrency';
 import { useSigner } from 'wagmi';
+import { useConfig } from 'hooks/useConfig';
+import { SupportedNetwork } from 'lib/config';
 
 interface AllowButtonProps {
   contractAddress: string;
@@ -17,6 +19,7 @@ export function AllowButton({
   callback,
   done,
 }: AllowButtonProps) {
+  const { network } = useConfig();
   const [{ data: signer }] = useSigner();
   const [txHash, setTxHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
@@ -28,8 +31,9 @@ export function AllowButton({
       signer: signer!,
       setTxHash,
       setWaitingForTx,
+      network: network as SupportedNetwork,
     });
-  }, [callback, contractAddress, setTxHash, setWaitingForTx, signer]);
+  }, [callback, contractAddress, network, setTxHash, setWaitingForTx, signer]);
 
   const buttonText = useMemo(() => `Authorize ${symbol}`, [symbol]);
 

@@ -2,7 +2,9 @@ import { captureException } from '@sentry/nextjs';
 import { CompletedButton, TransactionButton } from 'components/Button';
 import { EtherscanTransactionLink } from 'components/EtherscanLink';
 import { ethers } from 'ethers';
+import { useConfig } from 'hooks/useConfig';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
+import { SupportedNetwork } from 'lib/config';
 import { contractDirectory, web3Erc721Contract } from 'lib/contracts';
 import { isNFTApprovedForCollateral } from 'lib/eip721Subraph';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -31,6 +33,7 @@ export function AuthorizeNFTButton({
   onError,
   onSubmit,
 }: AuthorizeNFTButtonProps) {
+  const { network } = useConfig();
   const { addMessage } = useGlobalMessages();
   const [{ data: signer }] = useSigner();
   const [transactionHash, setTransactionHash] = useState('');
@@ -39,19 +42,19 @@ export function AuthorizeNFTButton({
 
   useEffect(() => {
     if (!!nft) {
-      if (isNFTApprovedForCollateral(nft)) {
+      if (isNFTApprovedForCollateral(nft, network as SupportedNetwork)) {
         setIsCollateralApproved(true);
         onAlreadyApproved();
       } else {
         setIsCollateralApproved(false);
       }
     }
-  }, [nft, onAlreadyApproved]);
+  }, [network, nft, onAlreadyApproved]);
 
   const approve = useCallback(async () => {
     const web3Contract = web3Erc721Contract(collateralAddress, signer!);
     const t = await web3Contract.approve(
-      contractDirectory.loanFacilitator,
+      contractDirectory[network as SupportedNetwork].loanFacilitator,
       collateralTokenID,
     );
     setTransactionHash(t.hash);
@@ -83,6 +86,7 @@ export function AuthorizeNFTButton({
     addMessage,
     collateralAddress,
     collateralTokenID,
+    network,
     onApproved,
     onError,
     onSubmit,

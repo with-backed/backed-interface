@@ -11,6 +11,7 @@ import React from 'react';
 import styles from './LoanTickets.module.css';
 import Link from 'next/link';
 import { useConfig } from 'hooks/useConfig';
+import { SupportedNetwork } from 'lib/config';
 
 type LoanTicketsProps = {
   loan: Loan;
@@ -22,7 +23,7 @@ function BorrowerColumn({ loan }: BorrowerColumnProps) {
   const { jsonRpcProvider, network } = useConfig();
   const { formattedTotalPayback } = useLoanDetails(loan);
   const BORROW_CONTRACT = jsonRpcERC721Contract(
-    contractDirectory.borrowTicket,
+    contractDirectory[network as SupportedNetwork].borrowTicket,
     jsonRpcProvider,
   );
 
@@ -56,7 +57,7 @@ function LenderColumn({ loan }: LenderColumnProps) {
   const { formattedInterestAccrued } = useLoanDetails(loan);
   const { jsonRpcProvider, network } = useConfig();
   const LEND_CONTRACT = jsonRpcERC721Contract(
-    contractDirectory.lendTicket,
+    contractDirectory[network as SupportedNetwork].lendTicket,
     jsonRpcProvider,
   );
 

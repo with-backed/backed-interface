@@ -1,7 +1,9 @@
 import { captureException } from '@sentry/nextjs';
 import { TransactionButton } from 'components/Button';
 import { EtherscanTransactionLink } from 'components/EtherscanLink';
+import { useConfig } from 'hooks/useConfig';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
+import { SupportedNetwork } from 'lib/config';
 import { web3LoanFacilitator } from 'lib/contracts';
 import React, { useCallback, useState } from 'react';
 import { Loan } from 'types/Loan';
@@ -15,13 +17,17 @@ export function LoanFormEarlyClosure({
   loan,
   refresh,
 }: LoanFormEarlyClosureProps) {
+  const { network } = useConfig();
   const { addMessage } = useGlobalMessages();
   const [{ data: signer }] = useSigner();
   const [txHash, setTxHash] = useState('');
   const [isPending, setIsPending] = useState(false);
 
   const close = useCallback(async () => {
-    const loanFacilitator = web3LoanFacilitator(signer!);
+    const loanFacilitator = web3LoanFacilitator(
+      signer!,
+      network as SupportedNetwork,
+    );
     const t = await loanFacilitator.closeLoan(loan.id, loan.borrower);
     setIsPending(true);
     setTxHash(t.hash);
@@ -46,7 +52,7 @@ export function LoanFormEarlyClosure({
           ),
         });
       });
-  }, [addMessage, loan.id, loan.borrower, refresh, signer]);
+  }, [addMessage, loan.id, loan.borrower, network, refresh, signer]);
 
   return (
     <>

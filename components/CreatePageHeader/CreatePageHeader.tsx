@@ -4,7 +4,7 @@ import { ThreeColumn } from 'components/layouts/ThreeColumn';
 import { NFTMedia } from 'components/Media/NFTMedia';
 import { NFTCollateralPicker } from 'components/NFTCollateralPicker/NFTCollateralPicker';
 import { ethers } from 'ethers';
-import { getNftContractAddress, HIDDEN_NFT_ADDRESSES } from 'lib/eip721Subraph';
+import { getNftContractAddress, hiddenNFTAddresses } from 'lib/eip721Subraph';
 import { clientFromUrl } from 'lib/urql';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -23,6 +23,7 @@ import { useTokenMetadata } from 'hooks/useTokenMetadata';
 import { useAccount } from 'wagmi';
 import { Button } from 'components/Button';
 import { useConfig } from 'hooks/useConfig';
+import { SupportedNetwork } from 'lib/config';
 
 export function CreatePageHeader() {
   const form = useForm<CreateFormData>({
@@ -32,7 +33,7 @@ export function CreatePageHeader() {
       acceptHigherLoanAmounts: true,
     },
   });
-  const { eip721Subgraph } = useConfig();
+  const { eip721Subgraph, network } = useConfig();
   const [{ data }] = useAccount();
   const account = data?.address;
   const [current, send] = useMachine(createPageFormMachine);
@@ -169,6 +170,11 @@ export function CreatePageHeader() {
     return clientFromUrl(eip721Subgraph);
   }, [eip721Subgraph]);
 
+  const hiddenNFTs = useMemo(
+    () => hiddenNFTAddresses(network as SupportedNetwork),
+    [network],
+  );
+
   return (
     <div className={styles['create-page-header']}>
       <ThreeColumn>
@@ -212,7 +218,7 @@ export function CreatePageHeader() {
       </ThreeColumn>
       <Provider value={eip721Client}>
         <NFTCollateralPicker
-          hiddenNFTAddresses={HIDDEN_NFT_ADDRESSES}
+          hiddenNFTAddresses={hiddenNFTs}
           connectedWallet={account || ''}
           handleSetSelectedNFT={handleSetSelectedNFT}
           dialog={dialog}
