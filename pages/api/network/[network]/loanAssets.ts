@@ -4,12 +4,11 @@ import type { LoanAsset } from 'lib/loanAssets';
 import { configs, SupportedNetwork, validateNetwork } from 'lib/config';
 
 // TODO: we should almost certainly cache this
-// TODO: optimism, polygon...
 const mainnetLoanAssetsURI = 'https://tokens.1inch.eth.link/';
 const optimismLoanAssetURI =
   'https://static.optimism.io/optimism.tokenlist.json';
-
-const polygonLoanAssetURI = 'https://api.1inch.exchange/v4.0/137/tokens';
+const polygonLoanAssetURI =
+  'https://api-polygon-tokens.polygon.technology/tokenlists/default.tokenlist.json';
 
 async function handler(
   req: NextApiRequest,
@@ -42,13 +41,9 @@ async function handler(
 
         break;
       case 'polygon':
-        const response = await fetch(polygonLoanAssetURI);
-        const json = await response.json();
-        assets = Object.keys(json.tokens).map((address) => ({
-          address,
-          symbol: json.tokens[address].symbol,
-          chainId: 137,
-        }));
+        assets = (await loadJson(polygonLoanAssetURI)).filter(
+          (asset) => asset.chainId === 137,
+        );
 
         break;
     }
