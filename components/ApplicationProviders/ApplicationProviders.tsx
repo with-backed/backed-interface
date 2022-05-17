@@ -60,8 +60,8 @@ export const ApplicationProviders = ({
 
   return (
     <GlobalMessagingProvider>
-      <RainbowKitProvider theme={lightTheme()} chains={chains}>
-        <WagmiProvider client={client}>
+      <WagmiProvider client={client}>
+        <RainbowKitProvider theme={lightTheme()} chains={chains}>
           <TimestampProvider>
             <CachedRatesProvider>
               <HasCollapsedHeaderInfoProvider>
@@ -69,8 +69,8 @@ export const ApplicationProviders = ({
               </HasCollapsedHeaderInfoProvider>
             </CachedRatesProvider>
           </TimestampProvider>
-        </WagmiProvider>
-      </RainbowKitProvider>
+        </RainbowKitProvider>
+      </WagmiProvider>
     </GlobalMessagingProvider>
   );
 };
