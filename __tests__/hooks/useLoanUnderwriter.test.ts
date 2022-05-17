@@ -41,9 +41,9 @@ const makeTransaction = () => {
 describe('useLoanUnderwriter', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockedUseAccount.mockReturnValue([
-      { data: { address: '0xmyaddress' } },
-    ] as any);
+    mockedUseAccount.mockReturnValue({
+      data: { address: '0xmyaddress' },
+    } as any);
     mockedLoanFacilitator.mockReturnValue({
       lend: jest.fn(),
     } as any);
@@ -59,7 +59,7 @@ describe('useLoanUnderwriter', () => {
     });
   });
 
-  it('signals an error if you try to underwrite before having an account', async () => {
+  it('signals an error if you try to ugnderwrite before having an account', async () => {
     mockedUseAccount.mockReturnValue([{ data: { address: undefined } }] as any);
 
     const { result } = renderHook(() => useLoanUnderwriter(baseLoan, refresh));
