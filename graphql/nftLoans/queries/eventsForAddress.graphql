@@ -13,7 +13,7 @@ query createAndClose(
   ) {
     ...createEventProperties
     loan {
-      id
+      ...allLoanProperties
     }
   }
   closeEvents(
@@ -23,7 +23,7 @@ query createAndClose(
   ) {
     ...closeEventProperties
     loan {
-      id
+      ...allLoanProperties
     }
   }
 }
@@ -48,7 +48,7 @@ query mostEvents(
   ) {
     ...buyoutEventProperties
     loan {
-      id
+      ...allLoanProperties
     }
   }
   collateralSeizureEvents(
@@ -58,7 +58,7 @@ query mostEvents(
   ) {
     ...collateralSeizureEventProperties
     loan {
-      id
+      ...allLoanProperties
     }
   }
   repaymentEvents(
@@ -68,7 +68,7 @@ query mostEvents(
   ) {
     ...repaymentEventProperties
     loan {
-      id
+      ...allLoanProperties
     }
   }
   lendEvents(
@@ -78,7 +78,7 @@ query mostEvents(
   ) {
     ...lendEventProperties
     loan {
-      id
+      ...allLoanProperties
     }
   }
 }

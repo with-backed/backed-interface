@@ -64,10 +64,15 @@ export const getServerSideProps: GetServerSideProps<ProfilePageProps> = async (
 export default function Profile({ address, loans, events }: ProfilePageProps) {
   const [showingActivity, setShowingActivity] = useState(false);
   const parsedLoans = useMemo(() => loans.map(parseSubgraphLoan), [loans]);
-  const parsedEvents = useMemo(
-    () => parseSerializedResponse(events) as Event[],
-    [events],
-  );
+  const parsedEvents = useMemo(() => {
+    const parsed = parseSerializedResponse(events) as Event[];
+    parsed.forEach((e) => {
+      if (e.loan) {
+        e.loan = parseSubgraphLoan(e.loan as any);
+      }
+    });
+    return parsed;
+  }, [events]);
 
   return (
     <>
@@ -89,11 +94,7 @@ export default function Profile({ address, loans, events }: ProfilePageProps) {
             initialChecked={false}
           />
           {showingActivity ? (
-            <ProfileActivity
-              address={address}
-              events={parsedEvents}
-              loans={parsedLoans}
-            />
+            <ProfileActivity address={address} events={parsedEvents} />
           ) : (
             <ProfileLoans address={address} loans={parsedLoans} />
           )}
