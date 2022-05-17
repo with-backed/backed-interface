@@ -11,13 +11,13 @@ import { GlobalMessagingProvider } from 'hooks/useGlobalMessages';
 import { HasCollapsedHeaderInfoProvider } from 'hooks/useHasCollapsedHeaderInfo';
 import { TimestampProvider } from 'hooks/useTimestamp/useTimestamp';
 import React, { PropsWithChildren, useMemo } from 'react';
-import { WagmiProvider, chain, Chain } from 'wagmi';
+import { WagmiProvider, chain, Chain, createClient } from 'wagmi';
 
 const CHAINS: Chain[] = [
   { ...chain.rinkeby, name: 'Rinkeby' },
   { ...chain.mainnet, name: 'Ethereum' },
   { ...chain.optimism, name: 'Optimism' },
-  { ...chain.polygonMainnet, name: 'Polygon' },
+  { ...chain.polygon, name: 'Polygon' },
 ];
 
 type ApplicationProvidersProps = {};
@@ -48,10 +48,18 @@ export const ApplicationProviders = ({
     return new providers.JsonRpcProvider(jsonRpcProvider);
   }, [jsonRpcProvider]);
 
+  const client = useMemo(() => {
+    return createClient({
+      autoConnect: true,
+      connectors,
+      provider,
+    });
+  }, [connectors, provider]);
+
   return (
     <GlobalMessagingProvider>
       <RainbowKitProvider theme={lightTheme()} chains={CHAINS}>
-        <WagmiProvider autoConnect connectors={connectors} provider={provider}>
+        <WagmiProvider client={client}>
           <TimestampProvider>
             <CachedRatesProvider>
               <HasCollapsedHeaderInfoProvider>
