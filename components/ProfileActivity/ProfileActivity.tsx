@@ -1,4 +1,3 @@
-import { captureMessage } from '@sentry/nextjs';
 import { EtherscanTransactionLink } from 'components/EtherscanLink';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { NFTMedia } from 'components/Media/NFTMedia';
@@ -7,6 +6,7 @@ import { useConfig } from 'hooks/useConfig';
 import { MaybeNFTMetadata, useTokenMetadata } from 'hooks/useTokenMetadata';
 import { secondsBigNumToDays } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
+import { parseSubgraphLoan } from 'lib/loans/utils';
 import { renderEventName } from 'lib/text';
 import Link from 'next/link';
 import React, { useMemo } from 'react';
@@ -19,39 +19,17 @@ const MAX_CHARS = 6;
 type ProfileActivityProps = {
   address: string;
   events: Event[];
-  loans: Loan[];
 };
 
-export function ProfileActivity({
-  address,
-  events,
-  loans,
-}: ProfileActivityProps) {
-  const loanLookup = useMemo(() => {
-    const table: { [key: string]: Loan } = {};
-    loans.forEach((l) => (table[l.id.toString()] = l));
-    return table;
-  }, [loans]);
-
+export function ProfileActivity({ address, events }: ProfileActivityProps) {
   return (
     <TwelveColumn>
       <ul className={styles['event-list']}>
         {events.map((e) => {
-          const loan = loanLookup[e.loanId.toString()];
-          if (!loan) {
-            // Sometimes an event points to a loanId that we don't have.
-            // Unsure whether this is due to query being limited, will have
-            // to investigate.
-            captureMessage(
-              `${e.typename} ${e.id} refers to loan ID ${e.loanId}, which is not present in result set.`,
-            );
-            return null;
-          }
           return (
             <EventEntry
               key={`${e.id}-${e.typename}`}
               address={address}
-              loan={loan}
               event={e}
             />
           );
@@ -63,10 +41,12 @@ export function ProfileActivity({
 
 type EventEntryProps = {
   address: string;
-  loan: Loan;
   event: Event;
 };
-function EventEntry({ address, event, loan }: EventEntryProps) {
+function EventEntry({ address, event }: EventEntryProps) {
+  const loan = useMemo(() => {
+    return parseSubgraphLoan(event.loan);
+  }, [event.loan]);
   const tokenSpec = useMemo(
     () => ({
       collateralContractAddress: loan.collateralContractAddress,

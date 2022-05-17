@@ -1,10 +1,12 @@
 import { ethers } from 'ethers';
+import { Loan } from 'types/generated/graphql/nftLoans';
 
 type BaseEvent = {
   id: string;
   blockNumber: number;
   timestamp: number;
   loanId: ethers.BigNumber;
+  loan?: Loan;
 };
 
 export type BuyoutEvent = BaseEvent & {
