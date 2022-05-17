@@ -46,10 +46,10 @@ describe('Banner', () => {
       let addMessage = jest.fn();
       beforeEach(() => {
         jest.clearAllMocks();
-        mockedUseNetwork.mockReturnValue([
-          { data: { chain: { id: 4 } } },
+        mockedUseNetwork.mockReturnValue({
+          activeChain: { id: 4 },
           switchNetwork,
-        ] as any);
+        } as any);
         mockedUseGlobalMessages.mockReturnValue({
           addMessage,
         } as any);
