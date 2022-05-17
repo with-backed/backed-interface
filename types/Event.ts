@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { Loan } from 'types/Loan';
+import { Loan } from 'types/generated/graphql/nftLoans';
 
 type BaseEvent = {
   id: string;

@@ -6,6 +6,7 @@ import { useConfig } from 'hooks/useConfig';
 import { MaybeNFTMetadata, useTokenMetadata } from 'hooks/useTokenMetadata';
 import { secondsBigNumToDays } from 'lib/duration';
 import { formattedAnnualRate } from 'lib/interest';
+import { parseSubgraphLoan } from 'lib/loans/utils';
 import { renderEventName } from 'lib/text';
 import Link from 'next/link';
 import React, { useMemo } from 'react';
@@ -43,7 +44,9 @@ type EventEntryProps = {
   event: Event;
 };
 function EventEntry({ address, event }: EventEntryProps) {
-  const loan = event.loan!;
+  const loan = useMemo(() => {
+    return parseSubgraphLoan(event.loan);
+  }, [event.loan]);
   const tokenSpec = useMemo(
     () => ({
       collateralContractAddress: loan.collateralContractAddress,

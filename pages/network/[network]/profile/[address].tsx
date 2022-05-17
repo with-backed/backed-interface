@@ -64,15 +64,10 @@ export const getServerSideProps: GetServerSideProps<ProfilePageProps> = async (
 export default function Profile({ address, loans, events }: ProfilePageProps) {
   const [showingActivity, setShowingActivity] = useState(false);
   const parsedLoans = useMemo(() => loans.map(parseSubgraphLoan), [loans]);
-  const parsedEvents = useMemo(() => {
-    const parsed = parseSerializedResponse(events) as Event[];
-    parsed.forEach((e) => {
-      if (e.loan) {
-        e.loan = parseSubgraphLoan(e.loan as any);
-      }
-    });
-    return parsed;
-  }, [events]);
+  const parsedEvents = useMemo(
+    () => parseSerializedResponse(events) as Event[],
+    [events],
+  );
 
   return (
     <>
