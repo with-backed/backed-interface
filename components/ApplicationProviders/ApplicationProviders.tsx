@@ -1,15 +1,17 @@
 import {
-  connectorsForWallets,
+  apiProvider,
+  configureChains,
   getDefaultWallets,
   lightTheme,
   RainbowKitProvider,
 } from '@rainbow-me/rainbowkit';
-import { providers } from 'ethers';
+import { captureMessage } from '@sentry/nextjs';
 import { CachedRatesProvider } from 'hooks/useCachedRates/useCachedRates';
 import { useConfig } from 'hooks/useConfig';
 import { GlobalMessagingProvider } from 'hooks/useGlobalMessages';
 import { HasCollapsedHeaderInfoProvider } from 'hooks/useHasCollapsedHeaderInfo';
 import { TimestampProvider } from 'hooks/useTimestamp/useTimestamp';
+import { configs } from 'lib/config';
 import React, { PropsWithChildren, useMemo } from 'react';
 import { WagmiProvider, chain, Chain, createClient } from 'wagmi';
 
@@ -24,29 +26,29 @@ type ApplicationProvidersProps = {};
 export const ApplicationProviders = ({
   children,
 }: PropsWithChildren<ApplicationProvidersProps>) => {
-  const { chainId, jsonRpcProvider, infuraId } = useConfig();
+  const { infuraId, jsonRpcProvider } = useConfig();
 
-  const wallets = useMemo(() => {
-    const w = getDefaultWallets({
-      chains: CHAINS,
-      appName: 'Backed',
-      infuraId,
-      jsonRpcUrl: jsonRpcProvider,
-    });
+  const { provider, chains } = configureChains(CHAINS, [
+    apiProvider.jsonRpc((chain) => {
+      for (let config of Object.values(configs)) {
+        if (config.chainId === chain.id) {
+          return { rpcUrl: jsonRpcProvider };
+        }
+      }
+      // We didn't find the correct RPC provider in our allowed configs. User on a network we don't support?
+      captureMessage(
+        `Cannot get jsonRpcProvider for chainId: ${chain.id}. User on a network we don't support?`,
+      );
+      return { rpcUrl: '' };
+    }),
+    apiProvider.infura(infuraId),
+    apiProvider.fallback(),
+  ]);
 
-    w[0].wallets.sort((a, b) => a.id.localeCompare(b.id));
-    return w;
-  }, [infuraId, jsonRpcProvider]);
-
-  const connectors = useMemo(() => {
-    return connectorsForWallets(wallets)({
-      chainId,
-    });
-  }, [chainId, wallets]);
-
-  const provider = useMemo(() => {
-    return new providers.JsonRpcProvider(jsonRpcProvider);
-  }, [jsonRpcProvider]);
+  const { connectors } = getDefaultWallets({
+    appName: 'Backed',
+    chains,
+  });
 
   const client = useMemo(() => {
     return createClient({
@@ -58,7 +60,7 @@ export const ApplicationProviders = ({
 
   return (
     <GlobalMessagingProvider>
-      <RainbowKitProvider theme={lightTheme()} chains={CHAINS}>
+      <RainbowKitProvider theme={lightTheme()} chains={chains}>
         <WagmiProvider client={client}>
           <TimestampProvider>
             <CachedRatesProvider>
