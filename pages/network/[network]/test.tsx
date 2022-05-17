@@ -24,7 +24,7 @@ export const getServerSideProps: GetServerSideProps<{}> = async (context) => {
 };
 
 export default function Test() {
-  const [{ data }] = useAccount();
+  const { data } = useAccount();
   const account = data?.address;
   return (
     <>
@@ -54,8 +54,8 @@ export default function Test() {
 
 function MintPunk() {
   const { jsonRpcProvider } = useConfig();
-  const [{ data }] = useAccount();
-  const [{ data: signer }] = useSigner();
+  const { data } = useAccount();
+  const { data: signer } = useSigner();
   const account = data?.address;
   const [txHash, setTxHash] = useState('');
   const [txPending, setTxPending] = useState(false);
@@ -105,8 +105,8 @@ function MintPunk() {
 
 function MintDAI() {
   const { jsonRpcProvider } = useConfig();
-  const [{ data }] = useAccount();
-  const [{ data: signer }] = useSigner();
+  const { data } = useAccount();
+  const { data: signer } = useSigner();
   const account = data?.address;
   const [txHash, setTxHash] = useState('');
   const [txPending, setTxPending] = useState(false);
