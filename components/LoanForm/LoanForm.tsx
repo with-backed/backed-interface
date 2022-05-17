@@ -25,7 +25,7 @@ type LoanFormProps = {
   refresh: () => void;
 };
 export function LoanForm({ loan, refresh }: LoanFormProps) {
-  const [{ data }] = useAccount();
+  const { data } = useAccount();
   const account = data?.address;
   const { jsonRpcProvider, network } = useConfig();
   const timestamp = useTimestamp();
