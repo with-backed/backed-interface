@@ -18,7 +18,7 @@ import dayjs from 'dayjs';
 import { GenericEmailComponents } from 'lib/events/consumers/userNotifications/emails/genericFormatter';
 import { executeEmailSendWithSes } from 'lib/events/consumers/userNotifications/emails/ses';
 import { generateHTMLForGenericEmail } from 'lib/events/consumers/userNotifications/emails/mjml';
-import { mainnet } from 'lib/chainEnv';
+import { Config, devConfigs, prodConfigs } from 'lib/config';
 
 async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
   if (req.method != 'POST') {
@@ -26,63 +26,79 @@ async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
     return;
   }
 
+  let configs: Config[];
+  if (process.env.VERCEL_ENV === 'production') {
+    configs = prodConfigs;
+  } else {
+    configs = devConfigs;
+  }
+
   try {
     const currentTimestamp = Math.floor(new Date().getTime() / 1000);
     const dayAgo = currentTimestamp - 24 * 3600;
 
-    const lendEventsAddresses = (await getLendEventsSince(dayAgo))
-      .filter(
-        (lendEvent) => !subgraphEventFromTxHash('BuyoutEvent', lendEvent.id),
+    for (const config of configs) {
+      const lendEventsAddresses = (await getLendEventsSince(config, dayAgo))
+        .filter(
+          (lendEvent) =>
+            !subgraphEventFromTxHash(config, 'BuyoutEvent', lendEvent.id),
+        )
+        .map((e) => [e.lender, e.borrowTicketHolder])
+        .flat();
+
+      const buyoutEventsAddresses = (await getBuyoutEventsSince(config, dayAgo))
+        .map((e) => [
+          e.loan.borrowTicketHolder,
+          e.newLender,
+          e.lendTicketHolder,
+        ])
+        .flat();
+
+      const repaymentEventAddresses = (
+        await getRepaymentEventsSince(config, dayAgo)
       )
-      .map((e) => [e.lender, e.borrowTicketHolder])
-      .flat();
+        .map((e) => [e.lendTicketHolder, e.borrowTicketHolder])
+        .flat();
 
-    const buyoutEventsAddresses = (await getBuyoutEventsSince(dayAgo))
-      .map((e) => [e.loan.borrowTicketHolder, e.newLender, e.lendTicketHolder])
-      .flat();
-
-    const repaymentEventAddresses = (await getRepaymentEventsSince(dayAgo))
-      .map((e) => [e.lendTicketHolder, e.borrowTicketHolder])
-      .flat();
-
-    const collateralSeizureAddresses = (
-      await getCollateralSeizureEventsSince(dayAgo)
-    )
-      .map((e) => [e.borrowTicketHolder, e.lendTicketHolder])
-      .flat();
-
-    const expectedNumEmails = (
-      await Promise.all(
-        [
-          ...lendEventsAddresses,
-          ...buyoutEventsAddresses,
-          ...repaymentEventAddresses,
-          ...collateralSeizureAddresses,
-        ].map((a) => getNotificationRequestsForAddress(a)),
+      const collateralSeizureAddresses = (
+        await getCollateralSeizureEventsSince(config, dayAgo)
       )
-    )
-      .flat()
-      .filter(
-        (request) => request.deliveryMethod === NotificationMethod.EMAIL,
-      ).length;
+        .map((e) => [e.borrowTicketHolder, e.lendTicketHolder])
+        .flat();
 
-    const actualNumEmails = await getBackedMetric(Metric.EMAILS_PAST_DAY);
+      const expectedNumEmails = (
+        await Promise.all(
+          [
+            ...lendEventsAddresses,
+            ...buyoutEventsAddresses,
+            ...repaymentEventAddresses,
+            ...collateralSeizureAddresses,
+          ].map((a) => getNotificationRequestsForAddress(a)),
+        )
+      )
+        .flat()
+        .filter(
+          (request) => request.deliveryMethod === NotificationMethod.EMAIL,
+        ).length;
 
-    const confirmationEmailComponents: GenericEmailComponents = {
-      mainMessage: `
+      const actualNumEmails = await getBackedMetric(Metric.EMAILS_PAST_DAY);
+
+      const confirmationEmailComponents: GenericEmailComponents = {
+        mainMessage: `
 Expected: ${expectedNumEmails}
 Actual: ${actualNumEmails}
       `,
-      footer: '',
-    };
+        footer: '',
+      };
 
-    await executeEmailSendWithSes(
-      generateHTMLForGenericEmail(confirmationEmailComponents),
-      `${mainnet() ? '' : '[TESTNET]'}: Email Monitoring Report for ${dayjs
-        .unix(currentTimestamp)
-        .format('MM/DD/YYYY')}`,
-      process.env.EMAIL_MONITOR_REPORT_TO!,
-    );
+      await executeEmailSendWithSes(
+        generateHTMLForGenericEmail(confirmationEmailComponents),
+        `[${config.network}]: Email Monitoring Report for ${dayjs
+          .unix(currentTimestamp)
+          .format('MM/DD/YYYY')}`,
+        process.env.EMAIL_MONITOR_REPORT_TO!,
+      );
+    }
 
     await resetBackedMetric(Metric.EMAILS_PAST_DAY);
 

@@ -108,7 +108,9 @@ export async function subgraphEventFromTxHash(
   }
 }
 
-export async function getCreateEventsSince(timestamp: number) {
+export async function getCreateEventsSince(config: Config, timestamp: number) {
+  const nftBackedLoansClient = clientFromUrl(config.nftBackedLoansSubgraph);
+
   const where: CreateEvent_Filter = {
     timestamp_gte: timestamp,
   };
@@ -122,7 +124,9 @@ export async function getCreateEventsSince(timestamp: number) {
   return data?.createEvents || [];
 }
 
-export async function getLendEventsSince(timestamp: number) {
+export async function getLendEventsSince(config: Config, timestamp: number) {
+  const nftBackedLoansClient = clientFromUrl(config.nftBackedLoansSubgraph);
+
   const where: LendEvent_Filter = {
     timestamp_gte: timestamp,
   };
@@ -136,7 +140,9 @@ export async function getLendEventsSince(timestamp: number) {
   return data?.lendEvents || [];
 }
 
-export async function getBuyoutEventsSince(timestamp: number) {
+export async function getBuyoutEventsSince(config: Config, timestamp: number) {
+  const nftBackedLoansClient = clientFromUrl(config.nftBackedLoansSubgraph);
+
   const where: BuyoutEvent_Filter = {
     timestamp_gte: timestamp,
   };
@@ -150,7 +156,12 @@ export async function getBuyoutEventsSince(timestamp: number) {
   return data?.buyoutEvents || [];
 }
 
-export async function getRepaymentEventsSince(timestamp: number) {
+export async function getRepaymentEventsSince(
+  config: Config,
+  timestamp: number,
+) {
+  const nftBackedLoansClient = clientFromUrl(config.nftBackedLoansSubgraph);
+
   const where: RepaymentEvent_Filter = {
     timestamp_gte: timestamp,
   };
@@ -164,7 +175,12 @@ export async function getRepaymentEventsSince(timestamp: number) {
   return data?.repaymentEvents || [];
 }
 
-export async function getCollateralSeizureEventsSince(timestamp: number) {
+export async function getCollateralSeizureEventsSince(
+  config: Config,
+  timestamp: number,
+) {
+  const nftBackedLoansClient = clientFromUrl(config.nftBackedLoansSubgraph);
+
   const where: CollateralSeizureEvent_Filter = {
     timestamp_gte: timestamp,
   };
