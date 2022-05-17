@@ -78,7 +78,7 @@ const polygon: Config = {
   centerNetwork: '',
   nftBackedLoansSubgraph:
     'https://api.thegraph.com/subgraphs/name/with-backed/backed-protocol-polygon',
-  eip721Subgraph: 'nfts-by-account-polygon.vercel.app/graphql',
+  eip721Subgraph: 'https://nfts-by-account-polygon.vercel.app/graphql',
   infuraId: '54c753f04ec64374aa679e383e7f84d5',
   openSeaUrl: 'https://opensea.io',
   etherscanUrl: 'https://polygonscan.com',
