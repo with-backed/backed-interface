@@ -13,10 +13,10 @@ export const WrongNetwork = ({
   expectedChainId,
   expectedChainName,
 }: WrongNetworkProps) => {
-  const [{ data }, switchNetwork] = useNetwork();
+  const { activeChain, switchNetwork } = useNetwork();
   const { addMessage } = useGlobalMessages();
 
-  const chainId = data.chain?.id;
+  const chainId = activeChain?.id;
 
   const handleClick = useCallback(async () => {
     try {
