@@ -59,7 +59,7 @@ describe('useLoanUnderwriter', () => {
     });
   });
 
-  it('signals an error if you try to ugnderwrite before having an account', async () => {
+  it('signals an error if you try to underwrite before having an account', async () => {
     mockedUseAccount.mockReturnValue([{ data: { address: undefined } }] as any);
 
     const { result } = renderHook(() => useLoanUnderwriter(baseLoan, refresh));
