@@ -151,7 +151,7 @@ function LoansInner({
         kind: 'success',
         message: (
           <p>
-            You&apos;ve successfully created loan #${loan.id}! To get
+            You&apos;ve successfully created loan #{loan.id.toString()}! To get
             notifications on its activity, go to the{' '}
             <Link href={`/network/${network}/profile/${loan.borrower}`}>
               <a>profile page</a>
