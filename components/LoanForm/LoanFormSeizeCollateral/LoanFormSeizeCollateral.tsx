@@ -23,7 +23,7 @@ export function LoanFormSeizeCollateral({
   const [txHash, setTxHash] = useState('');
   const [isPending, setIsPending] = useState(false);
 
-  const [{ data: signer }] = useSigner();
+  const { data: signer } = useSigner();
 
   const seize = useCallback(async () => {
     const loanFacilitator = web3LoanFacilitator(
