@@ -1656,6 +1656,31 @@
     bech32 "1.1.4"
     ws "7.4.6"
 
+"@ethersproject/providers@^5.5.1":
+  version "5.6.6"
+  resolved "https://registry.yarnpkg.com/@ethersproject/providers/-/providers-5.6.6.tgz#1967149cb4557d253f8c176a44aabda155f228cd"
+  integrity sha512-6X6agj3NeQ4tgnvBMCjHK+CjQbz+Qmn20JTxCYZ/uymrgCEOpJtY9zeRxJIDsSi0DPw8xNAxypj95JMCsapUfA==
+  dependencies:
+    "@ethersproject/abstract-provider" "^5.6.0"
+    "@ethersproject/abstract-signer" "^5.6.0"
+    "@ethersproject/address" "^5.6.0"
+    "@ethersproject/basex" "^5.6.0"
+    "@ethersproject/bignumber" "^5.6.0"
+    "@ethersproject/bytes" "^5.6.0"
+    "@ethersproject/constants" "^5.6.0"
+    "@ethersproject/hash" "^5.6.0"
+    "@ethersproject/logger" "^5.6.0"
+    "@ethersproject/networks" "^5.6.0"
+    "@ethersproject/properties" "^5.6.0"
+    "@ethersproject/random" "^5.6.0"
+    "@ethersproject/rlp" "^5.6.0"
+    "@ethersproject/sha2" "^5.6.0"
+    "@ethersproject/strings" "^5.6.0"
+    "@ethersproject/transactions" "^5.6.0"
+    "@ethersproject/web" "^5.6.0"
+    bech32 "1.1.4"
+    ws "7.4.6"
+
 "@ethersproject/random@5.6.0", "@ethersproject/random@^5.6.0":
   version "5.6.0"
   resolved "https://registry.yarnpkg.com/@ethersproject/random/-/random-5.6.0.tgz#1505d1ab6a250e0ee92f436850fa3314b2cb5ae6"
@@ -2677,11 +2702,12 @@
   resolved "https://registry.yarnpkg.com/@prisma/engines/-/engines-3.11.0-48.b371888aaf8f51357c7457d836b86d12da91658b.tgz#4c1093f7b24c433a9cef2e60f13f57f7c89b5cfa"
   integrity sha512-m9iZd5F5vP6A2IvKWfHpOO/qK8OOO9nbsV/pdyEkF/1WNe0E8SIWFBKb+HcMLkG9OFbDDBy8QItXmp/mIULuwQ==
 
-"@rainbow-me/rainbowkit@0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@rainbow-me/rainbowkit/-/rainbowkit-0.0.2.tgz#0024f5f4bc6398de99c719a88b30b6c4c14b82b1"
-  integrity sha512-cb6pQMzkPi+mq9eZ6k9Y+FDGnxi1rtgPh9UnE522NZzz9CT3m6pxKaXOl7edgOmKTOnWSsPIUOQ+0Ive/9jytw==
+"@rainbow-me/rainbowkit@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@rainbow-me/rainbowkit/-/rainbowkit-0.1.0.tgz#36da4017abcbdd60f4952663ad3ce005edee96bb"
+  integrity sha512-53rg4OC8XPED0cwnmyZUxK4R++51M2m7Cop4U3Q72MSkDdzi5lebUT1MoSpDKTC8U977vdnyYXcyqNDTM5E32w==
   dependencies:
+    "@ethersproject/providers" "^5.5.1"
     "@vanilla-extract/css" "^1.6.6"
     "@vanilla-extract/dynamic" "^2.0.2"
     "@vanilla-extract/sprinkles" "^1.4.0"

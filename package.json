@@ -30,7 +30,7 @@
     "@hookform/resolvers": "2.8.8",
     "@pinata/ipfs-gateway-tools": "1.1.6",
     "@prisma/client": "3.11.0",
-    "@rainbow-me/rainbowkit": "0.0.2",
+    "@rainbow-me/rainbowkit": "0.1.0",
     "@sentry/nextjs": "6.19.6",
     "@web3-react/core": "6.1.9",
     "@web3-react/injected-connector": "6.0.7",
