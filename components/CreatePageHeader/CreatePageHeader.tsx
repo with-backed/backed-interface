@@ -34,7 +34,7 @@ export function CreatePageHeader() {
     },
   });
   const { eip721Subgraph, network } = useConfig();
-  const [{ data }] = useAccount();
+  const { data } = useAccount();
   const account = data?.address;
   const [current, send] = useMachine(createPageFormMachine);
 
