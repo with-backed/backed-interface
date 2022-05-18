@@ -99,7 +99,7 @@ export const configs = {
   polygon,
 };
 
-export const prodConfigs = [ethereum, optimism];
+export const prodConfigs = [ethereum, optimism, polygon];
 
 export const devConfigs = [rinkeby];
 
