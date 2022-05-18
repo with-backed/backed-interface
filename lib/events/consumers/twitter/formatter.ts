@@ -51,6 +51,7 @@ ${loanUrl(event.loan.id, config)}
       config.siteUrl,
       config.network as SupportedNetwork,
     ),
+    event.loan.collateralContractAddress,
   );
 
   await tweet(tweetContent, attachmentImageBuffer);

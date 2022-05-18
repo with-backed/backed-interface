@@ -9,6 +9,7 @@ export async function collateralToDiscordMessageEmbed(
   nftResponseData: NFTResponseData,
   collateralName: string,
   collateralTokenId: ethers.BigNumber,
+  contractAddress: string,
 ): Promise<MessageEmbed | undefined> {
   let rawBufferAttachment: MessageAttachment | undefined = undefined;
   let messageEmbed: MessageEmbed;
@@ -16,6 +17,7 @@ export async function collateralToDiscordMessageEmbed(
   if (nftResponseData?.image?.mediaUrl.startsWith(SVG_PREFIX)) {
     const pngBuffer = await getPngBufferFromBase64SVG(
       nftResponseData!.image!.mediaUrl,
+      contractAddress,
     );
 
     rawBufferAttachment = new MessageAttachment(
