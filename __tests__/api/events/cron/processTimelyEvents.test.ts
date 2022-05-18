@@ -4,7 +4,7 @@ import { getLiquidatedLoansForTimestamp } from 'lib/events/timely/timely';
 import { sendEmailsForTriggerAndEntity } from 'lib/events/consumers/userNotifications/emails/emails';
 import { createMocks } from 'node-mocks-http';
 import handler from 'pages/api/events/cron/processTimelyEvents';
-import { configs } from 'lib/config';
+import { configs, devConfigs } from 'lib/config';
 
 const aboutToExpireLoan = {
   ...subgraphLoan,
@@ -53,19 +53,24 @@ describe('/api/events/cron/processTimelyEvents', () => {
 
     await handler(req, res);
 
-    expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledTimes(2);
-    expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledWith(
-      'LiquidationOccurring',
-      aboutToExpireLoan,
-      expect.anything(),
-      configs.rinkeby,
+    expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledTimes(
+      2 * devConfigs.length,
     );
-    expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledWith(
-      'LiquidationOccurred',
-      alreadyExpiredLoan,
-      expect.anything(),
-      configs.rinkeby,
-    );
+
+    devConfigs.forEach((config) => {
+      expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledWith(
+        'LiquidationOccurring',
+        aboutToExpireLoan,
+        expect.anything(),
+        config,
+      );
+      expect(sendEmailsForTriggerAndEntity).toHaveBeenCalledWith(
+        'LiquidationOccurred',
+        alreadyExpiredLoan,
+        expect.anything(),
+        configs,
+      );
+    });
 
     expect(res._getStatusCode()).toBe(200);
     expect(JSON.parse(res._getData())).toEqual(
