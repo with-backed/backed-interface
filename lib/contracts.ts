@@ -24,9 +24,9 @@ const baseContracts: ContractDirectoryListing = {
 };
 
 const polygonContracts: ContractDirectoryListing = {
+  ...baseContracts,
   borrowTicket: '0x222FB4559B1CfbaB63fc9C9a30F14A7232CB2636',
   lendTicket: '0xe01194534169DC6f38c9Aefea4917C623a99E7Ec',
-  loanFacilitator: '0x0baccdd05a729ab8b56e09ef19c15f953e10885f',
 };
 
 export const contractDirectory: ContractDirectory = {
