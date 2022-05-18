@@ -16,6 +16,7 @@ import { useOnClickOutside } from 'hooks/useOnClickOutside';
 import { useConfig } from 'hooks/useConfig';
 import { Logo } from 'components/Logo';
 import { NetworkSelector } from 'components/NetworkSelector';
+import { SupportedNetwork } from 'lib/config';
 
 type PawnShopHeaderProps = {
   isErrorPage?: boolean;
@@ -54,7 +55,10 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
     <>
       <div className={styles['banner-container']}>
         {!isErrorPage && (
-          <WrongNetwork expectedChainId={chainId} expectedChainName={network} />
+          <WrongNetwork
+            expectedChainId={chainId}
+            expectedChainName={network as SupportedNetwork}
+          />
         )}
         {messages.map((m) => {
           const close = () => removeMessage(m);

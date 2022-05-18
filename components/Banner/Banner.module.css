@@ -29,6 +29,16 @@
   background-color: var(--highlight-active-5);
 }
 
+.optimism {
+  composes: banner;
+  background-color: var(--optimistic-red-10);
+}
+
+.polygon {
+  composes: banner;
+  background-color: var(--polygon-purple-10);
+}
+
 .inner {
   text-align: center;
 }
@@ -57,4 +67,18 @@
 
 .info > .close {
   background-color: var(--neutral-100);
+}
+
+.optimism > .close {
+  background-color: var(--optimistic-red-100);
+}
+.optimism button {
+  color: var(--optimistic-red-100);
+}
+
+.polygon > .close {
+  background-color: var(--polygon-purple-100);
+}
+.polygon button {
+  color: var(--polygon-purple-100);
 }

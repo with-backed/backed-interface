@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './Banner.module.css';
 
-export type BannerKind = 'error' | 'success' | 'info';
+export type BannerKind = 'error' | 'success' | 'info' | 'optimism' | 'polygon';
 
 type BannerProps = {
   kind: BannerKind;

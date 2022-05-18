@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { SupportedNetwork, isSupportedNetwork } from 'lib/config';
 import { ApplicationProviders } from 'components/ApplicationProviders';
+import { useNetworkSpecificStyles } from 'hooks/useNetworkSpecificStyles';
 
 export default function App({ Component, pageProps }: AppProps) {
   const { query } = useRouter();
@@ -18,6 +19,7 @@ export default function App({ Component, pageProps }: AppProps) {
       ? (query.network as SupportedNetwork)
       : 'ethereum',
   );
+  useNetworkSpecificStyles(network);
 
   useEffect(() => {
     if (query.network) {
