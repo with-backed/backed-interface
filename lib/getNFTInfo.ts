@@ -58,8 +58,13 @@ export async function getNFTInfoFromTokenInfo({
   }
 }
 
-export async function getMimeType(mediaUrl: string) {
+export async function getMimeType(mediaUrl?: string) {
   const defaultMimeType = 'application/octet-stream';
+
+  if (!mediaUrl) {
+    return defaultMimeType;
+  }
+
   try {
     const res = await fetch(mediaUrl, { method: 'HEAD' });
     // If we get no mime type in headers, we don't know what the MIME type is
@@ -110,8 +115,8 @@ export async function getMedia({
   const finalAnimation = convertIPFS(animation_url);
 
   const [animationMimeType, imageMimeType] = await Promise.all([
-    getMimeType(animation_url || ''),
-    getMimeType(image || ''),
+    getMimeType(finalAnimation),
+    getMimeType(finalImage),
   ]);
 
   return {
