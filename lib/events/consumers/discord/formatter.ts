@@ -54,6 +54,7 @@ Event Tx: <${config.etherscanUrl}/tx/${event.id}>
     ),
     event.loan.collateralName,
     event.loan.collateralTokenId,
+    event.loan.collateralContractAddress,
   );
 
   await sendBotMessage(botMessageContent, messagedEmbed);
