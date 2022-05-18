@@ -80,6 +80,8 @@ describe('getLiquidatedLoansForTimestamp', () => {
       configs.rinkeby.nftBackedLoansSubgraph,
     );
 
+    expect(mockedOverrideLastTimestampCall).toHaveBeenCalledWith(now);
+
     expect(liquidationOccurringLoans).toEqual([aboutToExpireLoan]);
     expect(liquidationOccurredLoans).toEqual([alreadyExpiredLoan]);
   });

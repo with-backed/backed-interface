@@ -50,7 +50,7 @@ export async function getLiquidatedLoansForTimestamp(
       ),
     ]);
 
-  await overrideLastWrittenTimestamp(currentTimestamp);
+  await overrideLastWrittenTimestamp(currentRunTimestamp);
 
   return {
     liquidationOccurringLoans,
