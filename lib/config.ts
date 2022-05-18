@@ -99,9 +99,9 @@ export const configs = {
   polygon,
 };
 
-export const prodConfigs = [ethereum, optimism, polygon];
+export const prodConfigs = [ethereum, optimism];
 
-export const devConfigs = [rinkeby];
+export const devConfigs = [rinkeby, polygon];
 
 const SUPPORTED_NETWORKS = new Set(Object.keys(configs));
 
