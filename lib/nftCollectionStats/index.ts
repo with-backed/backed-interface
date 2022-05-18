@@ -20,6 +20,8 @@ export async function getCollectionStats(
       return collectionStatsEthMainnet(contractAddress, tokenId);
     case 'optimism':
       return collectionStatsOptimism(contractAddress);
+    case 'polygon':
+      return nullCollectionStats;
     case 'rinkeby':
       return collectionStatsRinkeby();
     default:

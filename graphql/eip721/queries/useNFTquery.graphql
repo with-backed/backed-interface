@@ -6,7 +6,6 @@ query Nfts($address: ID!) {
       identifier
       uri
       registry {
-        symbol
         name
       }
       approvals {
