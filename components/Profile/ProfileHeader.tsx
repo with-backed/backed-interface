@@ -20,7 +20,7 @@ import { NotificationsModal } from 'components/NotificationsModal';
 import { useDialogState, DialogDisclosure } from 'reakit/Dialog';
 import { useRouter } from 'next/router';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
-import { useAccount } from 'wagmi';
+import { useAccount, useDisconnect } from 'wagmi';
 import { useConfig } from 'hooks/useConfig';
 
 type ProfileHeaderProps = {
@@ -140,8 +140,9 @@ export function ProfileHeader({ address, loans }: ProfileHeaderProps) {
   const { network } = useConfig();
   const { query } = useRouter();
   const { addMessage, removeMessage } = useGlobalMessages();
-  const [{ data: accountData }, disconnect] = useAccount();
-  const connectedAddress = accountData?.address;
+  const { data } = useAccount();
+  const { disconnect } = useDisconnect();
+  const connectedAddress = data?.address;
 
   useEffect(() => {
     const { unsubscribe, uuid } = query;

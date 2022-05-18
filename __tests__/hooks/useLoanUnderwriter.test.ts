@@ -41,9 +41,9 @@ const makeTransaction = () => {
 describe('useLoanUnderwriter', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockedUseAccount.mockReturnValue([
-      { data: { address: '0xmyaddress' } },
-    ] as any);
+    mockedUseAccount.mockReturnValue({
+      data: { address: '0xmyaddress' },
+    } as any);
     mockedLoanFacilitator.mockReturnValue({
       lend: jest.fn(),
     } as any);

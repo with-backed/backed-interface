@@ -20,7 +20,7 @@ export function AllowButton({
   done,
 }: AllowButtonProps) {
   const { network } = useConfig();
-  const [{ data: signer }] = useSigner();
+  const { data: signer } = useSigner();
   const [txHash, setTxHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
 

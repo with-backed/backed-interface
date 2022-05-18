@@ -9,7 +9,7 @@ type BubblesProps = {
 };
 
 export function BorrowerLenderBubble({ address, borrower }: BubblesProps) {
-  const [{ data }] = useAccount();
+  const { data } = useAccount();
   const account = data?.address;
   const isConnectedUser = useMemo(
     () => account && account === ethers.utils.getAddress(address),

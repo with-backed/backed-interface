@@ -23,8 +23,8 @@ export function useLoanUnderwriter(
   const { addMessage } = useGlobalMessages();
   const [txHash, setTxHash] = useState('');
   const [transactionPending, setTransactionPending] = useState(false);
-  const [{ data }] = useAccount();
-  const [{ data: signer }] = useSigner();
+  const { data } = useAccount();
+  const { data: signer } = useSigner();
   const account = data?.address;
 
   const underwrite = useCallback(

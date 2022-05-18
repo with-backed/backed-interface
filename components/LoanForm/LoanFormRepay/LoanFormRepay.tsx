@@ -32,7 +32,7 @@ export function LoanFormRepay({
   } = useLoanDetails(loan);
   const { network } = useConfig();
   const { addMessage } = useGlobalMessages();
-  const [{ data: signer }] = useSigner();
+  const { data: signer } = useSigner();
   const [txHash, setTxHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
 

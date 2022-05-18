@@ -35,7 +35,7 @@ export function AuthorizeNFTButton({
 }: AuthorizeNFTButtonProps) {
   const { network } = useConfig();
   const { addMessage } = useGlobalMessages();
-  const [{ data: signer }] = useSigner();
+  const { data: signer } = useSigner();
   const [transactionHash, setTransactionHash] = useState('');
   const [isPending, setIsPending] = useState(false);
   const [isCollateralApproved, setIsCollateralApproved] = useState(false);

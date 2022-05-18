@@ -53,7 +53,9 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
   return (
     <>
       <div className={styles['banner-container']}>
-        <WrongNetwork expectedChainId={chainId} expectedChainName={network} />
+        {!isErrorPage && (
+          <WrongNetwork expectedChainId={chainId} expectedChainName={network} />
+        )}
         {messages.map((m) => {
           const close = () => removeMessage(m);
           return (
