@@ -21,6 +21,7 @@ import { useTokenMetadata, CollateralSpec } from 'hooks/useTokenMetadata';
 import { captureException } from '@sentry/nextjs';
 import { configs, SupportedNetwork, validateNetwork } from 'lib/config';
 import { useConfig } from 'hooks/useConfig';
+import { OpenGraph } from 'components/OpenGraph';
 
 export type LoanPageProps = {
   loanInfoJson: string;
@@ -180,15 +181,31 @@ function LoansInner({
     router.query.newLoan,
   ]);
 
+  const title = useMemo(
+    () => `Backed | Loan #${loan.id.toString()}`,
+    [loan.id],
+  );
+  const description = useMemo(
+    () => `View loan #${loan.id.toString()} on Backed protocol`,
+    [loan.id],
+  );
+
   return (
     <>
       <Head>
-        <title>Backed | Loan #{loan.id.toString()}</title>
+        <title>{title}</title>
         <meta
           name="description"
           content={`View loan #${loan.id.toString()} on Backed protocol`}
         />
       </Head>
+      {!!metadata.metadata && (
+        <OpenGraph
+          title={title}
+          description={description}
+          imageUrl={metadata.metadata?.mediaUrl}
+        />
+      )}
       <PawnShopHeader />
       <LoanHeader
         loan={loan}
