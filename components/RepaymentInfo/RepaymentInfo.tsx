@@ -40,7 +40,7 @@ export function RepaymentInfo({ loan }: RepaymentInfoProps) {
     const googleCalendar = new GoogleCalendar(config);
     const link = googleCalendar.render();
     return link;
-  }, [loan]);
+  }, [loan, longFormattedEstimatedPaybackAtMaturity]);
 
   return (
     <Fieldset legend="💰 Repayment">
@@ -63,7 +63,7 @@ export function RepaymentInfo({ loan }: RepaymentInfoProps) {
                     rel="noreferrer"
                     aria-label="Add the end date of this loan to your Google Calendar"
                     title="Add the end date of this loan to your Google Calendar">
-                    <img src={'/cal-icon.svg'} />
+                    <img alt="" src={'/cal-icon.svg'} />
                   </a>
                 </Link>
               </div>
