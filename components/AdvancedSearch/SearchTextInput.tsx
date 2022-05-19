@@ -31,7 +31,7 @@ export default function SearchTextInput({
         setTextValue(newValue);
       }
     },
-    [setTextValue],
+    [isAddress, setTextValue],
   );
 
   return (
