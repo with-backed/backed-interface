@@ -19,7 +19,7 @@ import { GenericEmailComponents } from 'lib/events/consumers/userNotifications/e
 import { executeEmailSendWithSes } from 'lib/events/consumers/userNotifications/emails/ses';
 import { generateHTMLForGenericEmail } from 'lib/events/consumers/userNotifications/emails/mjml';
 import { Config, devConfigs, prodConfigs } from 'lib/config';
-import { SECONDS_IN_A_DAY } from 'lib/constants';
+import { SECONDS_IN_AN_HOUR } from 'lib/constants';
 
 async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
   if (req.method != 'POST') {
@@ -36,7 +36,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
 
   try {
     const currentTimestamp = Math.floor(new Date().getTime() / 1000);
-    const dayAgo = currentTimestamp - 24 * SECONDS_IN_A_DAY;
+    const dayAgo = currentTimestamp - 24 * SECONDS_IN_AN_HOUR;
 
     for (const config of configs) {
       const lendEventsAddresses = (await getLendEventsSince(config, dayAgo))
