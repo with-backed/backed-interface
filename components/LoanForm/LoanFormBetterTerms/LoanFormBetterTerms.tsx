@@ -51,8 +51,7 @@ export function LoanFormBetterTerms({
     [loan.durationSeconds],
   );
   const [hasReviewed, setHasReviewed] = useState(false);
-  const { formattedInterestAccrued, formattedTotalPayback } =
-    useLoanDetails(loan);
+  const { formattedInterestAccrued } = useLoanDetails(loan);
 
   const form = useForm<LoanFormData>({
     defaultValues: {
@@ -219,7 +218,7 @@ export function LoanFormBetterTerms({
         />
         <TransactionButton
           id="Lend"
-          text="Offer better terms"
+          text="Lend at better terms"
           type="submit"
           txHash={txHash}
           isPending={transactionPending}

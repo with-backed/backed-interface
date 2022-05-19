@@ -71,7 +71,9 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
   if (!account) {
     return (
       <div className={styles.wrapper}>
-        <Button disabled>{loan.lender ? 'Offer better terms' : 'Lend'}</Button>
+        <Button disabled>
+          {loan.lender ? 'Lend at better terms' : 'Lend'}
+        </Button>
       </div>
     );
   }
@@ -154,7 +156,9 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
   }
 
   return (
-    <LoanFormDisclosure title={'Offer better terms'} className={styles.wrapper}>
+    <LoanFormDisclosure
+      title={'Lend at better terms'}
+      className={styles.wrapper}>
       <div className={styles['form-wrapper']}>
         <LoanFormBetterTerms
           balance={balance}
