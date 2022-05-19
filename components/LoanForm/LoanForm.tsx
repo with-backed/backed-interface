@@ -19,6 +19,7 @@ import { useAccount } from 'wagmi';
 import { LoanOfferBetterTermsDisclosure } from 'components/LoanForm/LoanOfferBetterTermsDisclosure';
 import { useConfig } from 'hooks/useConfig';
 import { SupportedNetwork } from 'lib/config';
+import { BETTER_TERMS_LABEL, LEND_LABEL } from './strings';
 
 type LoanFormProps = {
   loan: Loan;
@@ -71,7 +72,9 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
   if (!account) {
     return (
       <div className={styles.wrapper}>
-        <Button disabled>{loan.lender ? 'Offer better terms' : 'Lend'}</Button>
+        <Button disabled>
+          {loan.lender ? BETTER_TERMS_LABEL : LEND_LABEL}
+        </Button>
       </div>
     );
   }
@@ -103,7 +106,7 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
 
   if (loan.lastAccumulatedTimestamp.eq(0)) {
     return (
-      <LoanFormDisclosure title={'Lend'} className={styles.wrapper}>
+      <LoanFormDisclosure title={LEND_LABEL} className={styles.wrapper}>
         <div className={styles['form-wrapper']}>
           <LoanFormAwaiting
             balance={balance}
@@ -154,7 +157,7 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
   }
 
   return (
-    <LoanFormDisclosure title={'Offer better terms'} className={styles.wrapper}>
+    <LoanFormDisclosure title={BETTER_TERMS_LABEL} className={styles.wrapper}>
       <div className={styles['form-wrapper']}>
         <LoanFormBetterTerms
           balance={balance}

@@ -22,6 +22,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { formattedAnnualRate } from 'lib/interest';
 import { LoanTermsDisclosure } from 'components/LoanTermsDisclosure';
 import { useLoanDetails } from 'hooks/useLoanDetails';
+import { BETTER_TERMS_LABEL } from '../strings';
 
 type LoanFormBetterTermsProps = {
   balance: number;
@@ -51,8 +52,7 @@ export function LoanFormBetterTerms({
     [loan.durationSeconds],
   );
   const [hasReviewed, setHasReviewed] = useState(false);
-  const { formattedInterestAccrued, formattedTotalPayback } =
-    useLoanDetails(loan);
+  const { formattedInterestAccrued } = useLoanDetails(loan);
 
   const form = useForm<LoanFormData>({
     defaultValues: {
@@ -219,7 +219,7 @@ export function LoanFormBetterTerms({
         />
         <TransactionButton
           id="Lend"
-          text="Offer better terms"
+          text={BETTER_TERMS_LABEL}
           type="submit"
           txHash={txHash}
           isPending={transactionPending}
