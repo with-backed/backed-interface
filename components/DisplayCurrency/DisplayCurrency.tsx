@@ -52,7 +52,7 @@ export function DisplayCurrency(props: any): JSX.Element | null {
       setTotal(total);
     }
     fetchTotalAmounts();
-  }, [amounts, currency]);
+  }, [amounts, currency, getRate]);
 
   if (!total) {
     return null;
