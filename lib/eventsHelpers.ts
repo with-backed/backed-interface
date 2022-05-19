@@ -10,6 +10,21 @@ import {
   LendByTransactionHashQuery,
   RepaymentEventByTransactionHashDocument,
   RepaymentEventByTransactionHashQuery,
+  AllBuyoutEventsQuery,
+  AllBuyoutEventsDocument,
+  BuyoutEvent_Filter,
+  CreateEvent_Filter,
+  AllCreateEventsQuery,
+  AllCreateEventsDocument,
+  LendEvent_Filter,
+  AllLendEventsQuery,
+  AllLendEventsDocument,
+  RepaymentEvent_Filter,
+  AllRepaymentEventsQuery,
+  AllRepaymentEventsDocument,
+  CollateralSeizureEvent_Filter,
+  AllCollateralSeizureEventsQuery,
+  AllCollateralSeizureEventsDocument,
 } from 'types/generated/graphql/nftLoans';
 import { RawEventNameType, RawSubgraphEvent } from 'types/RawEvent';
 import { captureException } from '@sentry/nextjs';
@@ -91,4 +106,93 @@ export async function subgraphEventFromTxHash(
     default:
       return null;
   }
+}
+
+export async function getCreateEventsSince(config: Config, timestamp: number) {
+  const nftBackedLoansClient = clientFromUrl(config.nftBackedLoansSubgraph);
+
+  const where: CreateEvent_Filter = {
+    timestamp_gte: timestamp,
+  };
+
+  const { data, error } = await nftBackedLoansClient
+    .query<AllCreateEventsQuery>(AllCreateEventsDocument, { where })
+    .toPromise();
+  if (error) {
+    captureException(error);
+  }
+  return data?.createEvents || [];
+}
+
+export async function getLendEventsSince(config: Config, timestamp: number) {
+  const nftBackedLoansClient = clientFromUrl(config.nftBackedLoansSubgraph);
+
+  const where: LendEvent_Filter = {
+    timestamp_gte: timestamp,
+  };
+
+  const { data, error } = await nftBackedLoansClient
+    .query<AllLendEventsQuery>(AllLendEventsDocument, { where })
+    .toPromise();
+  if (error) {
+    captureException(error);
+  }
+  return data?.lendEvents || [];
+}
+
+export async function getBuyoutEventsSince(config: Config, timestamp: number) {
+  const nftBackedLoansClient = clientFromUrl(config.nftBackedLoansSubgraph);
+
+  const where: BuyoutEvent_Filter = {
+    timestamp_gte: timestamp,
+  };
+
+  const { data, error } = await nftBackedLoansClient
+    .query<AllBuyoutEventsQuery>(AllBuyoutEventsDocument, { where })
+    .toPromise();
+  if (error) {
+    captureException(error);
+  }
+  return data?.buyoutEvents || [];
+}
+
+export async function getRepaymentEventsSince(
+  config: Config,
+  timestamp: number,
+) {
+  const nftBackedLoansClient = clientFromUrl(config.nftBackedLoansSubgraph);
+
+  const where: RepaymentEvent_Filter = {
+    timestamp_gte: timestamp,
+  };
+
+  const { data, error } = await nftBackedLoansClient
+    .query<AllRepaymentEventsQuery>(AllRepaymentEventsDocument, { where })
+    .toPromise();
+  if (error) {
+    captureException(error);
+  }
+  return data?.repaymentEvents || [];
+}
+
+export async function getCollateralSeizureEventsSince(
+  config: Config,
+  timestamp: number,
+) {
+  const nftBackedLoansClient = clientFromUrl(config.nftBackedLoansSubgraph);
+
+  const where: CollateralSeizureEvent_Filter = {
+    timestamp_gte: timestamp,
+  };
+
+  const { data, error } = await nftBackedLoansClient
+    .query<AllCollateralSeizureEventsQuery>(
+      AllCollateralSeizureEventsDocument,
+      { where },
+    )
+    .toPromise();
+  if (error) {
+    captureException(error);
+  }
+  return data?.collateralSeizureEvents || [];
 }

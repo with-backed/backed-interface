@@ -35,6 +35,28 @@ export async function setBackedMetric(metricName: Metric, value: number) {
   });
 }
 
+export async function incrementBackedMetric(
+  metricName: Metric,
+  by: number = 1,
+) {
+  const current = await getBackedMetric(metricName);
+  await setBackedMetric(metricName, current + by);
+}
+
+export async function resetBackedMetric(metricName: Metric) {
+  const metrics = await prisma.backedMetrics.findFirst();
+
+  if (!metrics) return;
+
+  await prisma.backedMetrics.update({
+    data: {
+      ...metrics,
+      [metricName]: 0,
+    },
+    where: { id: metrics.id },
+  });
+}
+
 export async function resetBackedMetrics() {
   const metrics = await prisma.backedMetrics.findFirst();
 

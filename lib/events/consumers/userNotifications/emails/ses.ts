@@ -25,7 +25,7 @@ export async function executeEmailSendWithSes(
   html: string,
   subject: string,
   toAddress: string,
-): Promise<void> {
+): Promise<aws.AWSError | null> {
   const params: aws.SES.Types.SendEmailRequest = {
     ...baseParams,
     Destination: {
@@ -36,7 +36,6 @@ export async function executeEmailSendWithSes(
   params.Message.Subject.Data = subject;
 
   const res = await new aws.SES(awsConfig).sendEmail(params).promise();
-  if (!!res.$response.error) {
-    console.error(res.$response.error);
-  }
+
+  return res.$response.error || null;
 }
