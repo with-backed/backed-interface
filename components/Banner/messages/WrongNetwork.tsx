@@ -1,13 +1,21 @@
 import { TextButton } from 'components/Button';
 import { ethers } from 'ethers';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
+import { SupportedNetwork } from 'lib/config';
 import React, { useCallback, useMemo } from 'react';
 import { useNetwork } from 'wagmi';
-import { Banner } from '../Banner';
+import { Banner, BannerKind } from '../Banner';
+
+const BANNER_CLASS_MAP: { [network in SupportedNetwork]: BannerKind } = {
+  ethereum: 'error',
+  rinkeby: 'error',
+  optimism: 'optimism',
+  polygon: 'polygon',
+};
 
 type WrongNetworkProps = {
   expectedChainId: number;
-  expectedChainName: string;
+  expectedChainName: SupportedNetwork;
 };
 export const WrongNetwork = ({
   expectedChainId,
@@ -48,7 +56,7 @@ export const WrongNetwork = ({
 
   if (chainId && chainId !== expectedChainId) {
     return (
-      <Banner kind="error">
+      <Banner kind={BANNER_CLASS_MAP[expectedChainName]}>
         <span>
           You&apos;re viewing data from the {formattedExpectedName} network, but
           your wallet is connected to the {currentChainName} network.{' '}

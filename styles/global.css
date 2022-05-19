@@ -24,6 +24,10 @@
   --neutral-20: #e6ded6;
   --neutral-10: #f4f0ec;
   --neutral-5: #f9f7f5;
+  --optimistic-red-10: #fff5f4;
+  --optimistic-red-100: #fe0420;
+  --polygon-purple-10: #f8f5ff;
+  --polygon-purple-100: #7b3fe4;
 
   /* layout */
   --max-width-header: 1224px;
