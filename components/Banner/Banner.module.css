@@ -33,28 +33,23 @@
   text-align: center;
 }
 
+.inner > * {
+  margin: 0;
+}
+
 .close {
-  font-weight: var(--weight-semibold);
-  color: var(--background-white);
-  border-radius: 2rem;
-  height: 1.25rem;
-  width: 1.25rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  user-select: none;
+  background-color: transparent;
   border: none;
 }
 
-.error > .close {
-  background-color: var(--highlight-alert-100);
+.error > .close > svg {
+  fill: var(--highlight-alert-100);
 }
 
-.success > .close {
-  background-color: var(--highlight-success-100);
+.success > .close > svg {
+  fill: var(--highlight-success-100);
 }
 
-.info > .close {
-  background-color: var(--neutral-100);
+.info > .close > svg {
+  fill: var(--neutral-100);
 }
