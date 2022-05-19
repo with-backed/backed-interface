@@ -1,3 +1,4 @@
+import { Cross } from 'components/Icons/Cross';
 import React from 'react';
 import styles from './Banner.module.css';
 
@@ -21,7 +22,7 @@ export function Banner({
           aria-label="close message"
           className={styles.close}
           onClick={close}>
-          ×
+          <Cross />
         </button>
       )}
     </div>
