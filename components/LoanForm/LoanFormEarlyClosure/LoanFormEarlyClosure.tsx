@@ -19,7 +19,7 @@ export function LoanFormEarlyClosure({
 }: LoanFormEarlyClosureProps) {
   const { network } = useConfig();
   const { addMessage } = useGlobalMessages();
-  const { data: signer } = useSigner();
+  const { data: signer } = useSigner({ onError: captureException });
   const [txHash, setTxHash] = useState('');
   const [isPending, setIsPending] = useState(false);
 

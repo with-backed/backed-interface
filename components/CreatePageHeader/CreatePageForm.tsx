@@ -71,7 +71,7 @@ export function CreatePageForm({
   const { jsonRpcProvider, network } = useConfig();
   const { addMessage } = useGlobalMessages();
   const { data } = useAccount();
-  const { data: signer } = useSigner();
+  const { data: signer } = useSigner({ onError: captureException });
   const account = data?.address;
   const buttonText = useMemo(() => 'Mint Borrower Ticket', []);
   const [txHash, setTxHash] = useState('');

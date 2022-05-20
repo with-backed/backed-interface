@@ -24,7 +24,7 @@ export function useLoanUnderwriter(
   const [txHash, setTxHash] = useState('');
   const [transactionPending, setTransactionPending] = useState(false);
   const { data } = useAccount();
-  const { data: signer } = useSigner();
+  const { data: signer } = useSigner({ onError: captureException });
   const account = data?.address;
 
   const underwrite = useCallback(
