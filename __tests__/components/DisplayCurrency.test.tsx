@@ -54,13 +54,20 @@ describe('DisplayCurrency', () => {
 
     await screen.findByText('$303.00');
 
-    expect(mockUnitPriceForCoin).toHaveBeenCalledTimes(2);
+    expect(mockUnitPriceForCoin).toHaveBeenCalledTimes(3);
     expect(mockUnitPriceForCoin).toHaveBeenCalledWith(
       amount.address,
       'usd',
       'rinkeby',
     );
-    expect(mockUnitPriceForCoin).toHaveBeenCalledWith(
+    expect(mockUnitPriceForCoin).toHaveBeenNthCalledWith(
+      2,
+      amountTwo.address,
+      'usd',
+      'rinkeby',
+    );
+    expect(mockUnitPriceForCoin).toHaveBeenNthCalledWith(
+      3,
       amountTwo.address,
       'usd',
       'rinkeby',
