@@ -5,6 +5,7 @@ import { authorizeCurrency } from 'lib/authorizations/authorizeCurrency';
 import { useSigner } from 'wagmi';
 import { useConfig } from 'hooks/useConfig';
 import { SupportedNetwork } from 'lib/config';
+import { captureException } from '@sentry/nextjs';
 
 interface AllowButtonProps {
   contractAddress: string;
@@ -20,7 +21,7 @@ export function AllowButton({
   done,
 }: AllowButtonProps) {
   const { network } = useConfig();
-  const { data: signer } = useSigner();
+  const { data: signer } = useSigner({ onError: captureException });
   const [txHash, setTxHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
 
