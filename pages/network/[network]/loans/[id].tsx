@@ -196,13 +196,15 @@ function LoansInner({
     }
     return `Backed | ${network} | Loan #${loan.id.toString()}`;
   }, [loan.id, metadata, network]);
-  const description = useMemo(
-    () =>
-      `View loan #${loan.id.toString()}, ${
-        !!loan.lender ? 'awaiting lender' : 'accruing interest'
-      }`,
-    [loan.id, loan.lender],
-  );
+  const description = useMemo(() => {
+    let status = 'awaiting lender.';
+    if (loan.closed) {
+      status = 'loan closed.';
+    } else if (loan.lender) {
+      status = 'accruing interest.';
+    }
+    return `View loan #${loan.id.toString()}, ${status}`;
+  }, [loan.closed, loan.id, loan.lender]);
 
   return (
     <>
