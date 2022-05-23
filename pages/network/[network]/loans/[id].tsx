@@ -192,19 +192,18 @@ function LoansInner({
 
   console.log({ metadata });
 
-  const title = useMemo(
-    () =>
-      `Backed | ${
-        metadata?.name ? `${metadata.name} is ` : ''
-      }Loan #${loan.id.toString()}`,
-    [loan.id, metadata?.name],
-  );
+  const title = useMemo(() => {
+    if (metadata) {
+      return `Backed | ${network} | ${metadata.name}`;
+    }
+    return `Backed | ${network} | Loan #${loan.id.toString()}`;
+  }, [loan.id, metadata, network]);
   const description = useMemo(
     () =>
-      `View ${
-        metadata?.name ? `${metadata.name}, which is ` : ''
-      }loan #${loan.id.toString()} on Backed protocol`,
-    [loan.id, metadata?.name],
+      `View loan #${loan.id.toString()}, ${
+        !!loan.lender ? 'awaiting lender' : 'accruing interest'
+      }`,
+    [loan.id, loan.lender],
   );
 
   return (
