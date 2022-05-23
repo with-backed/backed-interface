@@ -190,8 +190,6 @@ function LoansInner({
     router.query.newLoan,
   ]);
 
-  console.log({ metadata });
-
   const title = useMemo(() => {
     if (metadata) {
       return `Backed | ${network} | ${metadata.name}`;
