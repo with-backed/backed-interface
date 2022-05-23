@@ -19,26 +19,13 @@ async function handler(
       tokenId: string;
     };
 
-    const { jsonRpcProvider } = configs[network as SupportedNetwork];
-    const contract = jsonRpcERC721Contract(contractAddress, jsonRpcProvider);
-    const uri = await contract.tokenURI(ethers.BigNumber.from(tokenId));
-    const resolvedUri = convertIPFS(uri);
-    if (!resolvedUri) {
-      throw new Error(`Could not resolve ${uri}`);
-    }
+    const metadata = await getMetadata(
+      network as SupportedNetwork,
+      contractAddress,
+      ethers.BigNumber.from(tokenId),
+    );
 
-    const { name, description, image, image_url, animation_url, external_url } =
-      await getJson(resolvedUri);
-
-    const media = await getMedia({ animation_url, image, image_url });
-
-    return res.status(200).json({
-      name,
-      description,
-      tokenId: parseInt(tokenId),
-      ...media,
-      external_url,
-    });
+    return res.status(200).json(metadata);
   } catch (e) {
     if (e instanceof Error) {
       if (
@@ -57,6 +44,38 @@ async function handler(
 }
 
 export default withSentry(handler);
+
+/**
+ * Only for use on backend. When fetching NFT metadata from client, prefer
+ * hitting the api endpoint or using a function that calls it (such as
+ * `getNFTInfoFromTokenInfo`)
+ */
+export async function getMetadata(
+  network: SupportedNetwork,
+  contractAddress: string,
+  tokenId: ethers.BigNumber,
+): Promise<NFTResponseData> {
+  const { jsonRpcProvider } = configs[network];
+  const contract = jsonRpcERC721Contract(contractAddress, jsonRpcProvider);
+  const uri = await contract.tokenURI(ethers.BigNumber.from(tokenId));
+  const resolvedUri = convertIPFS(uri);
+  if (!resolvedUri) {
+    throw new Error(`Could not resolve ${uri}`);
+  }
+
+  const { name, description, image, image_url, animation_url, external_url } =
+    await getJson(resolvedUri);
+
+  const media = await getMedia({ animation_url, image, image_url });
+
+  return {
+    name,
+    description,
+    tokenId: tokenId.toNumber(),
+    ...media,
+    external_url,
+  };
+}
 
 async function getJson(uri: string) {
   if (uri.startsWith(DATA_URI_PREFIX)) {
