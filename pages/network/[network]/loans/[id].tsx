@@ -23,6 +23,7 @@ import { useConfig } from 'hooks/useConfig';
 import { OpenGraph } from 'components/OpenGraph';
 import { getMetadata } from 'pages/api/network/[network]/nftInfo/[contractAddress]/[tokenId]';
 import { NFTResponseData, supportedMedia } from 'lib/getNFTInfo';
+import capitalize from 'lodash/capitalize';
 
 export type LoanPageProps = {
   loanInfoJson: string;
@@ -192,7 +193,7 @@ function LoansInner({
 
   const title = useMemo(() => {
     if (metadata) {
-      return `Backed | ${network} | ${metadata.name}`;
+      return `Backed | ${capitalize(network)} | ${metadata.name}`;
     }
     return `Backed | ${network} | Loan #${loan.id.toString()}`;
   }, [loan.id, metadata, network]);
