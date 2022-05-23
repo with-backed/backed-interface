@@ -17,15 +17,17 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { PawnShopHeader } from 'components/PawnShopHeader';
 import Head from 'next/head';
-import { useTokenMetadata, CollateralSpec } from 'hooks/useTokenMetadata';
 import { captureException } from '@sentry/nextjs';
 import { configs, SupportedNetwork, validateNetwork } from 'lib/config';
 import { useConfig } from 'hooks/useConfig';
 import { OpenGraph } from 'components/OpenGraph';
+import { getMetadata } from 'pages/api/network/[network]/nftInfo/[contractAddress]/[tokenId]';
+import { NFTResponseData, supportedMedia } from 'lib/getNFTInfo';
 
 export type LoanPageProps = {
   loanInfoJson: string;
   collateralSaleInfo: CollateralSaleInfo;
+  metadata: string;
   fallback: {
     [key: string]: any;
   };
@@ -62,6 +64,12 @@ export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
     };
   }
 
+  const metadata = await getMetadata(
+    network,
+    loan.collateralContractAddress,
+    loan.collateralTokenId,
+  );
+
   const loanInfoJson = JSON.stringify(loan);
   const historyJson = JSON.stringify(history);
 
@@ -75,6 +83,7 @@ export const getServerSideProps: GetServerSideProps<LoanPageProps> = async (
         network,
         config.jsonRpcProvider,
       ),
+      metadata: JSON.stringify(metadata),
       fallback: {
         [`/api/network/${network}/loans/history/${id}`]: historyJson,
       },
@@ -86,6 +95,7 @@ export default function Loans({
   loanInfoJson,
   fallback,
   collateralSaleInfo,
+  metadata,
 }: LoanPageProps) {
   const serverLoan = useMemo(
     () => parseSerializedResponse(loanInfoJson) as Loan,
@@ -98,12 +108,17 @@ export default function Loans({
     });
     return result;
   }, [fallback]);
+  const parsedMetadata = useMemo(
+    () => parseSerializedResponse(metadata) as NFTResponseData,
+    [metadata],
+  );
 
   return (
     <SWRConfig value={{ fallback: parsedFallback }}>
       <LoansInner
         serverLoan={serverLoan}
         collateralSaleInfo={collateralSaleInfo}
+        metadata={parsedMetadata}
       />
     </SWRConfig>
   );
@@ -112,21 +127,15 @@ export default function Loans({
 function LoansInner({
   serverLoan,
   collateralSaleInfo,
+  metadata,
 }: {
   serverLoan: Loan;
   collateralSaleInfo: CollateralSaleInfo;
+  metadata: NFTResponseData;
 }) {
   const { jsonRpcProvider, network } = useConfig();
   const { mutate } = useSWRConfig();
   const [loan, setLoan] = useState(serverLoan);
-  const tokenSpec: CollateralSpec = useMemo(
-    () => ({
-      collateralContractAddress: loan.collateralContractAddress,
-      collateralTokenId: loan.collateralTokenId,
-    }),
-    [loan.collateralTokenId, loan.collateralContractAddress],
-  );
-  const metadata = useTokenMetadata(tokenSpec);
 
   const refresh = useCallback(() => {
     mutate(`/api/network/${network}/loans/history/${loan.id}`);
@@ -199,17 +208,17 @@ function LoansInner({
           content={`View loan #${loan.id.toString()} on Backed protocol`}
         />
       </Head>
-      {!!metadata.metadata && (
+      {!!metadata && (
         <OpenGraph
           title={title}
           description={description}
-          imageUrl={metadata.metadata?.mediaUrl}
+          imageUrl={metadata.image!.mediaUrl}
         />
       )}
       <PawnShopHeader />
       <LoanHeader
         loan={loan}
-        collateralMedia={metadata.metadata}
+        collateralMedia={supportedMedia(metadata)}
         refresh={refresh}
       />
       <LoanInfo loan={loan} collateralSaleInfo={collateralSaleInfo} />
