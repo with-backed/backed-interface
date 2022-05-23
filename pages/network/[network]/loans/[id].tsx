@@ -190,13 +190,21 @@ function LoansInner({
     router.query.newLoan,
   ]);
 
+  console.log({ metadata });
+
   const title = useMemo(
-    () => `Backed | Loan #${loan.id.toString()}`,
-    [loan.id],
+    () =>
+      `Backed | ${
+        metadata?.name ? `${metadata.name} is ` : ''
+      }Loan #${loan.id.toString()}`,
+    [loan.id, metadata?.name],
   );
   const description = useMemo(
-    () => `View loan #${loan.id.toString()} on Backed protocol`,
-    [loan.id],
+    () =>
+      `View ${
+        metadata?.name ? `${metadata.name}, which is ` : ''
+      }loan #${loan.id.toString()} on Backed protocol`,
+    [loan.id, metadata?.name],
   );
 
   return (
@@ -205,7 +213,9 @@ function LoansInner({
         <title>{title}</title>
         <meta
           name="description"
-          content={`View loan #${loan.id.toString()} on Backed protocol`}
+          content={`View ${
+            metadata?.name
+          } loan #${loan.id.toString()} on Backed protocol`}
         />
       </Head>
       {!!metadata && (
