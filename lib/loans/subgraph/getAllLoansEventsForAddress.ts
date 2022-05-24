@@ -32,7 +32,7 @@ import { ethers } from 'ethers';
 import { OperationResult } from 'urql';
 import { captureException } from '@sentry/nextjs';
 
-export async function getAllActiveLoansForAddress(
+export async function getAllLoansForAddress(
   address: string,
   nftBackedLoansSubgraph: string,
 ): Promise<Loan[]> {
@@ -42,7 +42,6 @@ export async function getAllActiveLoansForAddress(
   };
 
   const whereFilterAsBorrower: Loan_Filter = {
-    closed: false,
     borrowTicketHolder: address,
   };
   const queryArgsAsBorrower: QueryLoansArgs = {
@@ -51,7 +50,6 @@ export async function getAllActiveLoansForAddress(
   };
 
   const whereFilterAsLender: Loan_Filter = {
-    closed: false,
     lendTicketHolder: address,
   };
   const queryArgsAsLender: QueryLoansArgs = {

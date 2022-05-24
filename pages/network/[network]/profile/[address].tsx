@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 import React, { useMemo, useState } from 'react';
 import {
-  getAllActiveLoansForAddress,
+  getAllLoansForAddress,
   getAllEventsForAddress,
 } from 'lib/loans/subgraph/getAllLoansEventsForAddress';
 import { Loan as RawSubgraphLoan } from 'types/generated/graphql/nftLoans';
@@ -45,7 +45,7 @@ export const getServerSideProps: GetServerSideProps<ProfilePageProps> = async (
 
   const [events, loans] = await Promise.all([
     getAllEventsForAddress(address, config.nftBackedLoansSubgraph),
-    getAllActiveLoansForAddress(address, config.nftBackedLoansSubgraph),
+    getAllLoansForAddress(address, config.nftBackedLoansSubgraph),
   ]);
 
   const eventsList = Object.entries(events)
