@@ -17,4 +17,4 @@ export const GITHUB_URL = 'https://github.com/with-backed';
 export const FAQ_URL =
   'https://with-backed.notion.site/FAQ-df65a5002100406eb6c5211fb8e105cf';
 export const BUNNY_IMG_URL =
-  "https://github.com/with-backed/backed-interface/blob/main/components/Logo/backed-bunny.png?raw=true";
+  "/logos/backed-bunny.png";
