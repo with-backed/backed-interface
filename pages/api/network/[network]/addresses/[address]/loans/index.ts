@@ -1,4 +1,4 @@
-import { getAllActiveLoansForAddress } from 'lib/loans/subgraph/getAllLoansEventsForAddress';
+import { getAllLoansForAddress } from 'lib/loans/subgraph/getAllLoansEventsForAddress';
 import { Loan as SubgraphLoan } from 'types/generated/graphql/nftLoans';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { captureException, withSentry } from '@sentry/nextjs';
@@ -12,7 +12,7 @@ async function handler(
     validateNetwork(req.query);
     const { address, network } = req.query;
     const config = configs[network as SupportedNetwork];
-    const loans = await getAllActiveLoansForAddress(
+    const loans = await getAllLoansForAddress(
       address as string,
       config.nftBackedLoansSubgraph,
     );

@@ -179,11 +179,17 @@ export function ProfileHeader({ address, loans }: ProfileHeaderProps) {
   }, [query, address, addMessage, removeMessage, network]);
 
   const loansAsBorrower = useMemo(
-    () => loans.filter((l) => l.borrower === ethers.utils.getAddress(address)),
+    () =>
+      loans.filter(
+        (l) => !l.closed && l.borrower === ethers.utils.getAddress(address),
+      ),
     [loans, address],
   );
   const loansAsLender = useMemo(
-    () => loans.filter((l) => l.lender === ethers.utils.getAddress(address)),
+    () =>
+      loans.filter(
+        (l) => !l.closed && l.lender === ethers.utils.getAddress(address),
+      ),
     [loans, address],
   );
 
