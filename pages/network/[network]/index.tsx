@@ -19,6 +19,7 @@ import { configs, SupportedNetwork, validateNetwork } from 'lib/config';
 import { useConfig } from 'hooks/useConfig';
 import { OpenGraph } from 'components/OpenGraph';
 import { BUNNY_IMG_URL } from 'lib/constants';
+import capitalize from 'lodash/capitalize';
 
 const PAGE_LIMIT = 12;
 
@@ -71,7 +72,7 @@ export default function Home({ loans }: HomeProps) {
   return (
     <>
       <OpenGraph
-        title="Backed Protocol"
+        title={`Backed | ${capitalize(network)} | Home`}
         description="Welcome to Backed protocol - NFT Lending. View existing loans, lend against NFTs, or propose loan terms on your own NFTs."
         imageUrl={BUNNY_IMG_URL}
       />

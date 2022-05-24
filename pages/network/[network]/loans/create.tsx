@@ -6,6 +6,8 @@ import { validateNetwork } from 'lib/config';
 import { captureException } from '@sentry/nextjs';
 import { OpenGraph } from 'components/OpenGraph';
 import { BUNNY_IMG_URL } from 'lib/constants';
+import { useConfig } from 'hooks/useConfig';
+import capitalize from 'lodash/capitalize';
 
 export const getServerSideProps: GetServerSideProps<{}> = async (context) => {
   try {
@@ -23,10 +25,11 @@ export const getServerSideProps: GetServerSideProps<{}> = async (context) => {
 };
 
 export default function Create() {
+  const { network } = useConfig();
   return (
     <>
       <OpenGraph
-        title="Backed | Create a Loan"
+        title={`Backed | ${capitalize(network)} | Create a Loan`}
         description="Collateralize your NFT with Backed protocol."
         imageUrl={BUNNY_IMG_URL}
       />
