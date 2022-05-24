@@ -11,7 +11,6 @@ import { usePaginatedLoans } from 'hooks/usePaginatedLoans';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { SortOptionValue } from 'components/AdvancedSearch/SortDropdown';
 import { PawnShopHeader } from 'components/PawnShopHeader';
-import Head from 'next/head';
 import { LoanTable } from 'components/LoanTable';
 import { LoanCard } from 'components/LoanCard';
 import { LoanGalleryLoadMore } from 'components/LoanGalleryLoadMore';
