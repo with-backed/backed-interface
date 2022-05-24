@@ -18,6 +18,7 @@ import { LoanGalleryLoadMore } from 'components/LoanGalleryLoadMore';
 import { captureException } from '@sentry/nextjs';
 import { configs, SupportedNetwork, validateNetwork } from 'lib/config';
 import { useConfig } from 'hooks/useConfig';
+import { OpenGraph } from 'components/OpenGraph';
 
 const PAGE_LIMIT = 12;
 
@@ -69,13 +70,11 @@ export default function Home({ loans }: HomeProps) {
 
   return (
     <>
-      <Head>
-        <title>Backed | Home</title>
-        <meta
-          name="description"
-          content="Welcome to Backed protocol. View existing loans, lend against NFTs, or propose loan terms on your own NFTs."
-        />
-      </Head>
+      <OpenGraph
+        title="Backed Protocol"
+        description="Welcome to Backed protocol - NFT Lending. View existing loans, lend against NFTs, or propose loan terms on your own NFTs."
+        imageUrl="https://github.com/with-backed/backed-interface/blob/main/components/Logo/backed-bunny.png?raw=true"
+      />
       <PawnShopHeader showInitialInfo />
       <TwelveColumn>
         <div className={searchStyles.wrapper}>
