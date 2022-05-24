@@ -5,6 +5,7 @@ import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 import { validateNetwork } from 'lib/config';
 import { captureException } from '@sentry/nextjs';
+import { OpenGraph } from 'components/OpenGraph';
 
 export const getServerSideProps: GetServerSideProps<{}> = async (context) => {
   try {
@@ -24,13 +25,11 @@ export const getServerSideProps: GetServerSideProps<{}> = async (context) => {
 export default function Create() {
   return (
     <>
-      <Head>
-        <title>Backed | Create a Loan</title>
-        <meta
-          name="description"
-          content="Collateralize your NFT with Backed protocol"
-        />
-      </Head>
+      <OpenGraph
+        title="Backed | Create a Loan"
+        description="Collateralize your NFT with Backed protocol."
+        imageUrl="https://github.com/with-backed/backed-interface/blob/main/components/Logo/backed-bunny.png?raw=true"
+      />
       <PawnShopHeader />
       <CreatePageHeader />
     </>
