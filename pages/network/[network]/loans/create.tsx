@@ -5,6 +5,7 @@ import { GetServerSideProps } from 'next';
 import { validateNetwork } from 'lib/config';
 import { captureException } from '@sentry/nextjs';
 import { OpenGraph } from 'components/OpenGraph';
+import { BUNNY_IMG_URL } from 'lib/constants';
 
 export const getServerSideProps: GetServerSideProps<{}> = async (context) => {
   try {
@@ -27,7 +28,7 @@ export default function Create() {
       <OpenGraph
         title="Backed | Create a Loan"
         description="Collateralize your NFT with Backed protocol."
-        imageUrl="https://github.com/with-backed/backed-interface/blob/main/components/Logo/backed-bunny.png?raw=true"
+        imageUrl={BUNNY_IMG_URL}
       />
       <PawnShopHeader />
       <CreatePageHeader />

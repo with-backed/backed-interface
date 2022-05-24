@@ -18,6 +18,7 @@ import { captureException } from '@sentry/nextjs';
 import { configs, SupportedNetwork, validateNetwork } from 'lib/config';
 import { useConfig } from 'hooks/useConfig';
 import { OpenGraph } from 'components/OpenGraph';
+import { BUNNY_IMG_URL } from 'lib/constants';
 
 const PAGE_LIMIT = 12;
 
@@ -72,7 +73,7 @@ export default function Home({ loans }: HomeProps) {
       <OpenGraph
         title="Backed Protocol"
         description="Welcome to Backed protocol - NFT Lending. View existing loans, lend against NFTs, or propose loan terms on your own NFTs."
-        imageUrl="https://github.com/with-backed/backed-interface/blob/main/components/Logo/backed-bunny.png?raw=true"
+        imageUrl={BUNNY_IMG_URL}
       />
       <PawnShopHeader showInitialInfo />
       <TwelveColumn>
