@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { SupportedNetwork } from './config';
 
 export const SECONDS_IN_A_DAY = 60 * 60 * 24;
 export const SECONDS_IN_AN_HOUR = 60 * 60;
@@ -16,5 +17,9 @@ export const TWITTER_URL = 'https://twitter.com/backed_xyz';
 export const GITHUB_URL = 'https://github.com/with-backed';
 export const FAQ_URL =
   'https://with-backed.notion.site/FAQ-df65a5002100406eb6c5211fb8e105cf';
-export const BUNNY_IMG_URL =
-  "/logos/backed-bunny.png";
+export const BUNNY_IMG_URL_MAP = {
+  ethereum: "/logos/backed-bunny.png",
+  rinkeby: "/logos/backed-bunny.png",
+  optimism: "/logos/opbunny.png",
+  polygon: "/logos/pbunny.png",
+};
