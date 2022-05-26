@@ -11,13 +11,15 @@ import { usePaginatedLoans } from 'hooks/usePaginatedLoans';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { SortOptionValue } from 'components/AdvancedSearch/SortDropdown';
 import { PawnShopHeader } from 'components/PawnShopHeader';
-import Head from 'next/head';
 import { LoanTable } from 'components/LoanTable';
 import { LoanCard } from 'components/LoanCard';
 import { LoanGalleryLoadMore } from 'components/LoanGalleryLoadMore';
 import { captureException } from '@sentry/nextjs';
 import { configs, SupportedNetwork, validateNetwork } from 'lib/config';
 import { useConfig } from 'hooks/useConfig';
+import { OpenGraph } from 'components/OpenGraph';
+import { BUNNY_IMG_URL_MAP } from 'lib/constants';
+import capitalize from 'lodash/capitalize';
 
 const PAGE_LIMIT = 12;
 
@@ -69,13 +71,11 @@ export default function Home({ loans }: HomeProps) {
 
   return (
     <>
-      <Head>
-        <title>Backed | Home</title>
-        <meta
-          name="description"
-          content="Welcome to Backed protocol. View existing loans, lend against NFTs, or propose loan terms on your own NFTs."
-        />
-      </Head>
+      <OpenGraph
+        title={`Backed | ${capitalize(network)} | Home`}
+        description="Welcome to Backed protocol - NFT Lending. View existing loans, lend against NFTs, or propose loan terms on your own NFTs."
+        imageUrl={BUNNY_IMG_URL_MAP[network as SupportedNetwork]}
+      />
       <PawnShopHeader showInitialInfo />
       <TwelveColumn>
         <div className={searchStyles.wrapper}>

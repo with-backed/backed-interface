@@ -16,3 +16,9 @@ export const TWITTER_URL = 'https://twitter.com/backed_xyz';
 export const GITHUB_URL = 'https://github.com/with-backed';
 export const FAQ_URL =
   'https://with-backed.notion.site/FAQ-df65a5002100406eb6c5211fb8e105cf';
+export const BUNNY_IMG_URL_MAP = {
+  ethereum: "/logos/backed-bunny.png",
+  rinkeby: "/logos/backed-bunny.png",
+  optimism: "/logos/opbunny.png",
+  polygon: "/logos/pbunny.png",
+};
