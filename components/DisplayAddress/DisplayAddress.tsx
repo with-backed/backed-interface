@@ -24,6 +24,8 @@ export function DisplayAddress({
         setGotResponse(true);
         if (name) {
           setAddr(name);
+        } else {
+          setAddr(address);
         }
       } catch (error) {
         console.error(error);
