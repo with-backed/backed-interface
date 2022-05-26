@@ -18,6 +18,7 @@ export function DisplayAddress({
 
   useEffect(() => {
     async function getEnsName() {
+      setName(null);
       try {
         let name = await addressToENS(address, jsonRpcProvider);
 
