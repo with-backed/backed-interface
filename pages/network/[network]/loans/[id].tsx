@@ -207,6 +207,14 @@ function LoansInner({
     return `View loan #${loan.id.toString()}, ${status}`;
   }, [loan.closed, loan.id, loan.lender]);
 
+  const media = useMemo(() => {
+    try {
+      return supportedMedia(metadata);
+    } catch (e) {
+      return null;
+    }
+  }, [metadata]);
+
   return (
     <>
       <Head>
@@ -218,7 +226,7 @@ function LoansInner({
           } loan #${loan.id.toString()} on Backed protocol`}
         />
       </Head>
-      {!!metadata && (
+      {!!metadata && !!metadata.image && (
         <OpenGraph
           title={title}
           description={description}
@@ -226,11 +234,7 @@ function LoansInner({
         />
       )}
       <PawnShopHeader />
-      <LoanHeader
-        loan={loan}
-        collateralMedia={supportedMedia(metadata)}
-        refresh={refresh}
-      />
+      <LoanHeader loan={loan} collateralMedia={media} refresh={refresh} />
       <LoanInfo loan={loan} collateralSaleInfo={collateralSaleInfo} />
     </>
   );
