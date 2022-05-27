@@ -21,6 +21,7 @@ const rinkeby: Config = {
     'https://api.thegraph.com/subgraphs/name/with-backed/backed-protocol-rinkeby',
   jsonRpcProvider:
     'https://eth-rinkeby.alchemyapi.io/v2/BtHbvji7nhBOC943JJB2XoXMSJAh64g-',
+  alchemyId: 'BtHbvji7nhBOC943JJB2XoXMSJAh64g-',
   eip721Subgraph:
     'https://api.thegraph.com/subgraphs/name/sunguru98/erc721-rinkeby-subgraph',
   openSeaUrl: 'https://testnets.opensea.io',
@@ -47,6 +48,7 @@ const ethereum = {
   chainId: 1,
   jsonRpcProvider:
     'https://eth-mainnet.alchemyapi.io/v2/De3LMv_8CYuN9WzVEgoOI5w7ltnGIhnH',
+  alchemyId: 'De3LMv_8CYuN9WzVEgoOI5w7ltnGIhnH',
   siteUrl: 'https://withbacked.xyz',
   network: 'ethereum',
   emailSubjectPrefix: '[Ethereum]:',
@@ -66,6 +68,7 @@ const optimism: Config = {
   chainId: 10,
   jsonRpcProvider:
     'https://opt-mainnet.g.alchemy.com/v2/_K-HnfZvE5ChalM8ys4TQEkmsWn8CPTU',
+  alchemyId: '_K-HnfZvE5ChalM8ys4TQEkmsWn8CPTU',
   siteUrl: 'https://withbacked.xyz',
   network: 'optimism',
   emailSubjectPrefix: '[Optimism]:',
@@ -85,6 +88,7 @@ const polygon: Config = {
   chainId: 137,
   jsonRpcProvider:
     'https://polygon-mainnet.g.alchemy.com/v2/sRuR0U0CxGifKBURcsLPibuCjYj8nmZJ',
+  alchemyId: 'sRuR0U0CxGifKBURcsLPibuCjYj8nmZJ',
   siteUrl: 'https://withbacked.xyz',
   network: 'polygon',
   emailSubjectPrefix: '[Polygon]:',

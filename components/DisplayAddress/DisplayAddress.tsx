@@ -14,16 +14,17 @@ export function DisplayAddress({
 }: DisplayAddressProps) {
   const { jsonRpcProvider } = useConfig();
   const [gotResponse, setGotResponse] = useState(false);
-  const [addr, setAddr] = useState<string>(address);
+  const [name, setName] = useState<string | null>(null);
 
   useEffect(() => {
     async function getEnsName() {
+      setName(null);
       try {
         let name = await addressToENS(address, jsonRpcProvider);
 
         setGotResponse(true);
         if (name) {
-          setAddr(name);
+          setName(name);
         }
       } catch (error) {
         console.error(error);
@@ -36,16 +37,16 @@ export function DisplayAddress({
 
   if (!useEns) {
     return (
-      <span title={addr} className={styles.truncate}>
-        {addr}
+      <span title={address} className={styles.truncate}>
+        {address}
       </span>
     );
   }
 
   if (gotResponse) {
     return (
-      <span title={addr} className={styles.truncate}>
-        {addr}
+      <span title={name || address} className={styles.truncate}>
+        {name || address}
       </span>
     );
   }

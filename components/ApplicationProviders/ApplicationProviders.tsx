@@ -1,19 +1,24 @@
 import {
-  apiProvider,
-  configureChains,
   getDefaultWallets,
   lightTheme,
   RainbowKitProvider,
 } from '@rainbow-me/rainbowkit';
-import { captureMessage } from '@sentry/nextjs';
 import { CachedRatesProvider } from 'hooks/useCachedRates/useCachedRates';
 import { useConfig } from 'hooks/useConfig';
 import { GlobalMessagingProvider } from 'hooks/useGlobalMessages';
 import { HasCollapsedHeaderInfoProvider } from 'hooks/useHasCollapsedHeaderInfo';
 import { TimestampProvider } from 'hooks/useTimestamp/useTimestamp';
-import { configs } from 'lib/config';
 import React, { PropsWithChildren, useMemo } from 'react';
-import { WagmiProvider, chain, Chain, createClient } from 'wagmi';
+import {
+  WagmiConfig,
+  chain,
+  Chain,
+  createClient,
+  configureChains,
+} from 'wagmi';
+import { alchemyProvider } from 'wagmi/providers/alchemy';
+import { infuraProvider } from 'wagmi/providers/infura';
+import { publicProvider } from 'wagmi/providers/public';
 
 const CHAINS: Chain[] = [
   { ...chain.rinkeby, name: 'Rinkeby' },
@@ -26,23 +31,12 @@ type ApplicationProvidersProps = {};
 export const ApplicationProviders = ({
   children,
 }: PropsWithChildren<ApplicationProvidersProps>) => {
-  const { infuraId, jsonRpcProvider } = useConfig();
+  const { infuraId, alchemyId } = useConfig();
 
   const { provider, chains } = configureChains(CHAINS, [
-    apiProvider.jsonRpc((chain) => {
-      for (let config of Object.values(configs)) {
-        if (config.chainId === chain.id) {
-          return { rpcUrl: jsonRpcProvider };
-        }
-      }
-      // We didn't find the correct RPC provider in our allowed configs. User on a network we don't support?
-      captureMessage(
-        `Cannot get jsonRpcProvider for chainId: ${chain.id}. User on a network we don't support?`,
-      );
-      return { rpcUrl: '' };
-    }),
-    apiProvider.infura(infuraId),
-    apiProvider.fallback(),
+    alchemyProvider({ alchemyId }),
+    infuraProvider({ infuraId }),
+    publicProvider(),
   ]);
 
   const { connectors } = getDefaultWallets({
@@ -60,7 +54,7 @@ export const ApplicationProviders = ({
 
   return (
     <GlobalMessagingProvider>
-      <WagmiProvider client={client}>
+      <WagmiConfig client={client}>
         <RainbowKitProvider theme={lightTheme()} chains={chains}>
           <TimestampProvider>
             <CachedRatesProvider>
@@ -70,7 +64,7 @@ export const ApplicationProviders = ({
             </CachedRatesProvider>
           </TimestampProvider>
         </RainbowKitProvider>
-      </WagmiProvider>
+      </WagmiConfig>
     </GlobalMessagingProvider>
   );
 };
