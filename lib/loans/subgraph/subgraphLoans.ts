@@ -153,6 +153,7 @@ export async function getLoansExpiringWithin(
   const where: Loan_Filter = {
     endDateTimestamp_gt: timeOne,
     endDateTimestamp_lt: timeTwo,
+    closed: false,
   };
 
   const nftBackedLoansClient = clientFromUrl(nftBackedLoansSubgraph);
