@@ -24,6 +24,7 @@ import { OpenGraph } from 'components/OpenGraph';
 import { getMetadata } from 'pages/api/network/[network]/nftInfo/[contractAddress]/[tokenId]';
 import { NFTResponseData, supportedMedia } from 'lib/getNFTInfo';
 import capitalize from 'lodash/capitalize';
+import { useAccount, useSigner } from 'wagmi';
 
 export type LoanPageProps = {
   loanInfoJson: string;
@@ -137,6 +138,10 @@ function LoansInner({
   const { jsonRpcProvider, network } = useConfig();
   const { mutate } = useSWRConfig();
   const [loan, setLoan] = useState(serverLoan);
+  const { data: account } = useAccount();
+  const { data: signer } = useSigner();
+
+  console.log({ account, signer });
 
   const refresh = useCallback(() => {
     mutate(`/api/network/${network}/loans/history/${loan.id}`);
