@@ -10,13 +10,15 @@ type ProfileLoansProps = {
 export function ProfileLoans({ address, loans }: ProfileLoansProps) {
   return (
     <TwelveColumn>
-      {loans.map((loan) => (
-        <LoanCard
-          key={loan.id.toString()}
-          loan={loan}
-          selectedAddress={address}
-        />
-      ))}
+      {loans
+        .filter((loan) => !loan.closed)
+        .map((loan) => (
+          <LoanCard
+            key={loan.id.toString()}
+            loan={loan}
+            selectedAddress={address}
+          />
+        ))}
     </TwelveColumn>
   );
 }
