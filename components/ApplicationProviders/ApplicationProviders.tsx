@@ -2,6 +2,7 @@ import {
   getDefaultWallets,
   lightTheme,
   RainbowKitProvider,
+  DisclaimerComponent,
 } from '@rainbow-me/rainbowkit';
 import { CachedRatesProvider } from 'hooks/useCachedRates/useCachedRates';
 import { useConfig } from 'hooks/useConfig';
@@ -26,6 +27,15 @@ const CHAINS: Chain[] = [
   { ...chain.optimism, name: 'Optimism' },
   { ...chain.polygon, name: 'Polygon' },
 ];
+
+const Disclaimer: DisclaimerComponent = ({ Text, Link }) => (
+  <Text>
+    By connecting your wallet, you agree to the{' '}
+    <Link href="/legal/terms-of-service.pdf">Terms of Service</Link> and
+    acknowledge you have read and understand the{' '}
+    <Link href="/legal/privacy-policy.pdf">Privacy Policy</Link>
+  </Text>
+);
 
 type ApplicationProvidersProps = {};
 export const ApplicationProviders = ({
@@ -55,7 +65,13 @@ export const ApplicationProviders = ({
   return (
     <GlobalMessagingProvider>
       <WagmiConfig client={client}>
-        <RainbowKitProvider theme={lightTheme()} chains={chains}>
+        <RainbowKitProvider
+          theme={lightTheme()}
+          chains={chains}
+          appInfo={{
+            appName: 'Backed',
+            disclaimer: Disclaimer,
+          }}>
           <TimestampProvider>
             <CachedRatesProvider>
               <HasCollapsedHeaderInfoProvider>
