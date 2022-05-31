@@ -45,12 +45,12 @@ describe('LoanCard', () => {
         isLoading: false,
         metadata: null,
       });
-      const { getAllByText } = render(
+      const { getByText } = render(
         <LoanCard loan={loan} selectedAddress="0xwhatever" />,
       );
-      const placeholders = getAllByText('--');
-      // one for the name we couldn't fetch, one for the time remaining
-      expect(placeholders).toHaveLength(2);
+
+      // the name we couldn't fetch
+      getByText('--');
     });
 
     it('renders a LoanCard', () => {

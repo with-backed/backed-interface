@@ -179,7 +179,11 @@ export const ExpandedAttributes = ({ loan }: AttributesProps) => {
       </div>
       <div className={styles['stacked-entry']}>
         <dt>{statusLabel(formattedStatus)}</dt>
-        <dd>{formattedTimeRemaining}</dd>
+        <dd>
+          {formattedStatus === 'Accruing interest'
+            ? formattedTimeRemaining
+            : formattedStatus}
+        </dd>
       </div>
     </DescriptionList>
   );
@@ -209,7 +213,11 @@ export const CompactAttributes = ({ loan }: AttributesProps) => {
       </div>
       <div className={styles['stacked-entry']}>
         <dt>{statusLabel(formattedStatus)}</dt>
-        <dd>{formattedTimeRemaining}</dd>
+        <dd>
+          {formattedStatus === 'Accruing interest'
+            ? formattedTimeRemaining
+            : formattedStatus}
+        </dd>
       </div>
     </DescriptionList>
   );

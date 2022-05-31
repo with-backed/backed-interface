@@ -181,10 +181,10 @@ export function useLoanDetails(loan: Loan) {
       return '--';
     }
     if (endDateTimestamp === 0) {
-      return 'no lender';
+      return '--';
     }
     if (timestamp > endDateTimestamp) {
-      return 'past due';
+      return '0 days';
     }
     return truncate(secondsToDays(endDateTimestamp - timestamp), 2) + ' days';
   }, [endDateTimestamp, timestamp]);
