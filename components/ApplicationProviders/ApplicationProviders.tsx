@@ -31,7 +31,7 @@ const CHAINS: Chain[] = [
 const Disclaimer: DisclaimerComponent = ({ Text, Link }) => (
   <Text>
     By connecting your wallet, you agree to the{' '}
-    <Link href="/legal/terms-of-service.pdf">Terms of Service</Link> and
+    <Link href="/legal/terms-of-service.pdf">Backed Terms of Service</Link> and
     acknowledge you have read and understand the{' '}
     <Link href="https://github.com/with-backed/backed-protocol/blob/master/README.md#disclaimer">
       Backed protocol disclaimer
