@@ -22,7 +22,7 @@ export function useBalance(assetContractAddress: string) {
         jsonRpcProvider,
       );
       const [balance, decimals] = await Promise.all([
-        assetContract.balanceOf(account?.address),
+        assetContract.balanceOf(account.address),
         assetContract.decimals(),
       ]);
 
