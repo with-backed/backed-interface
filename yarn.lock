@@ -2677,10 +2677,10 @@
   resolved "https://registry.yarnpkg.com/@prisma/engines/-/engines-3.11.0-48.b371888aaf8f51357c7457d836b86d12da91658b.tgz#4c1093f7b24c433a9cef2e60f13f57f7c89b5cfa"
   integrity sha512-m9iZd5F5vP6A2IvKWfHpOO/qK8OOO9nbsV/pdyEkF/1WNe0E8SIWFBKb+HcMLkG9OFbDDBy8QItXmp/mIULuwQ==
 
-"@rainbow-me/rainbowkit@0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@rainbow-me/rainbowkit/-/rainbowkit-0.2.0.tgz#c91c8adbeeaf243282d4b95ce3a99389a23fb28c"
-  integrity sha512-NUJYrYr4b1OBXNNAj5qEd10tJKohKe1+nCxJDczKKsLF7ehx8ypK3V7SrATblnSjUPfueY6/w8KhpEBH3skPqw==
+"@rainbow-me/rainbowkit@0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@rainbow-me/rainbowkit/-/rainbowkit-0.2.1.tgz#5b55e42c6904d1ef35a16acdb34f3df3fa94f3e7"
+  integrity sha512-l6KVP/jexVrncjp0OYu/9MReI+VvZhFfpyL3YHvsStPEX4AIhHt2sfnU60iqigRWfh/lxmGmsqGLa7RflQSXUA==
   dependencies:
     "@vanilla-extract/css" "1.7.0"
     "@vanilla-extract/dynamic" "2.0.2"
