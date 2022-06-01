@@ -38,7 +38,7 @@ function LoanStats({ loans, kind }: LoanStatsProps) {
   const numActiveLoans = useMemo(() => getActiveLoanCount(loans), [loans]);
   const numClosedLoans = useMemo(() => getClosedLoanCount(loans), [loans]);
   const lentToLoans = useMemo(
-    () => loans.filter((l) => !l.lastAccumulatedTimestamp.eq(0)),
+    () => loans.filter((l) => !l.closed && !l.lastAccumulatedTimestamp.eq(0)),
     [loans],
   );
 
@@ -179,17 +179,11 @@ export function ProfileHeader({ address, loans }: ProfileHeaderProps) {
   }, [query, address, addMessage, removeMessage, network]);
 
   const loansAsBorrower = useMemo(
-    () =>
-      loans.filter(
-        (l) => !l.closed && l.borrower === ethers.utils.getAddress(address),
-      ),
+    () => loans.filter((l) => l.borrower === ethers.utils.getAddress(address)),
     [loans, address],
   );
   const loansAsLender = useMemo(
-    () =>
-      loans.filter(
-        (l) => !l.closed && l.lender === ethers.utils.getAddress(address),
-      ),
+    () => loans.filter((l) => l.lender === ethers.utils.getAddress(address)),
     [loans, address],
   );
 
