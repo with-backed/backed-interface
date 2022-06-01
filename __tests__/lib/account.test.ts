@@ -1,9 +1,5 @@
 import { ethers } from 'ethers';
-import {
-  getAccountLoanAssetAllowance,
-  getAccountLoanAssetBalance,
-  resolveEns,
-} from 'lib/account';
+import { getAccountLoanAssetAllowance, resolveEns } from 'lib/account';
 import { configs } from 'lib/config';
 
 jest.mock('lib/contracts', () => ({
@@ -29,18 +25,6 @@ describe('account utilities', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  describe('getAccountLoanAssetBalance', () => {
-    it('renders human-readable balance as expected', async () => {
-      const value = await getAccountLoanAssetBalance(
-        '0xaccount',
-        '0xcontract',
-        ethers.BigNumber.from(8),
-        configs.rinkeby.jsonRpcProvider,
-      );
-      expect(value).toEqual(100);
-    });
-  });
-
   describe('getAccountLoanAssetAllowance', () => {
     it('returns what the contract says the allowance is', async () => {
       const value = await getAccountLoanAssetAllowance(
