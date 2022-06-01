@@ -27,7 +27,7 @@ describe('useLoanDetails', () => {
     expect(result.result.current.formattedLoanID).toEqual('Loan #8');
     expect(result.result.current.formattedPrincipal).toEqual('10 DAI');
     expect(result.result.current.formattedStatus).toEqual('No lender');
-    expect(result.result.current.formattedTimeRemaining).toEqual('no lender');
+    expect(result.result.current.formattedTimeRemaining).toEqual('--');
     expect(result.result.current.formattedTotalDuration).toEqual('3 days');
     expect(result.result.current.formattedTotalPayback).toEqual('10 DAI');
   });
@@ -47,9 +47,15 @@ describe('useLoanDetails', () => {
   });
   it('renders details with indication for past due loan', () => {
     const result = renderHook(() =>
-      useLoanDetails({ ...baseLoan, endDateTimestamp: 41 }),
+      useLoanDetails({
+        ...baseLoan,
+        endDateTimestamp: 41,
+        durationSeconds: ethers.BigNumber.from(1),
+        lastAccumulatedTimestamp: ethers.BigNumber.from(1),
+      }),
     );
-    expect(result.result.current.formattedTimeRemaining).toEqual('past due');
+    expect(result.result.current.formattedStatus).toEqual('Past due');
+    expect(result.result.current.formattedTimeRemaining).toEqual('0 days');
   });
   it('renders details with time remaining for accruing loan', () => {
     const result = renderHook(() =>
