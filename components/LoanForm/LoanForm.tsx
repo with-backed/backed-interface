@@ -1,10 +1,6 @@
-import { ethers } from 'ethers';
 import { Loan } from 'types/Loan';
 import React, { useEffect, useState } from 'react';
-import {
-  getAccountLoanAssetAllowance,
-  getAccountLoanAssetBalance,
-} from 'lib/account';
+import { getAccountLoanAssetAllowance } from 'lib/account';
 import { LoanFormAwaiting } from './LoanFormAwaiting';
 import { useTimestamp } from 'hooks/useTimestamp';
 import { LoanFormBetterTerms } from './LoanFormBetterTerms';
@@ -20,6 +16,7 @@ import { LoanOfferBetterTermsDisclosure } from 'components/LoanForm/LoanOfferBet
 import { useConfig } from 'hooks/useConfig';
 import { SupportedNetwork } from 'lib/config';
 import { BETTER_TERMS_LABEL, LEND_LABEL } from './strings';
+import { useBalance } from 'hooks/useBalance';
 
 type LoanFormProps = {
   loan: Loan;
@@ -30,7 +27,7 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
   const account = data?.address;
   const { jsonRpcProvider, network } = useConfig();
   const timestamp = useTimestamp();
-  const [balance, setBalance] = useState(0);
+  const balance = useBalance(loan.loanAssetContractAddress);
   const [needsAllowance, setNeedsAllowance] = useState(true);
   const role = useLoanViewerRole(loan, account);
   const viewerIsBorrower = role === 'borrower';
@@ -38,21 +35,12 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
 
   useEffect(() => {
     if (account) {
-      Promise.all([
-        getAccountLoanAssetBalance(
-          account,
-          loan.loanAssetContractAddress,
-          ethers.BigNumber.from(loan.loanAssetDecimals),
-          jsonRpcProvider,
-        ),
-        getAccountLoanAssetAllowance(
-          account,
-          loan.loanAssetContractAddress,
-          jsonRpcProvider,
-          network as SupportedNetwork,
-        ),
-      ]).then(([balance, allowanceAmount]) => {
-        setBalance(balance);
+      getAccountLoanAssetAllowance(
+        account,
+        loan.loanAssetContractAddress,
+        jsonRpcProvider,
+        network as SupportedNetwork,
+      ).then((allowanceAmount) => {
         setNeedsAllowance(allowanceAmount.lt(loan.loanAmount));
       });
     }

@@ -2,23 +2,6 @@ import { ethers } from 'ethers';
 import { contractDirectory, jsonRpcERC20Contract } from 'lib/contracts';
 import { SupportedNetwork } from './config';
 
-export async function getAccountLoanAssetBalance(
-  account: string,
-  loanAssetContractAddress: string,
-  loanAssetDecimals: ethers.BigNumber,
-  jsonRpcProvider: string,
-) {
-  const loanAssetContract = jsonRpcERC20Contract(
-    loanAssetContractAddress,
-    jsonRpcProvider,
-  );
-  const balance = await loanAssetContract.balanceOf(account);
-  const humanReadableBalance = parseFloat(
-    ethers.utils.formatUnits(balance, loanAssetDecimals),
-  );
-  return humanReadableBalance;
-}
-
 export async function getAccountLoanAssetAllowance(
   account: string,
   loanAssetContractAddress: string,
