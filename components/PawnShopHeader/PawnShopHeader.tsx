@@ -1,10 +1,4 @@
-import React, {
-  FunctionComponent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { FunctionComponent, useCallback, useRef, useState } from 'react';
 import Link from 'next/link';
 import { ConnectWallet } from 'components/ConnectWallet';
 import styles from './PawnShopHeader.module.css';
@@ -23,7 +17,6 @@ import { useConfig } from 'hooks/useConfig';
 import { Logo } from 'components/Logo';
 import { NetworkSelector } from 'components/NetworkSelector';
 import { SupportedNetwork } from 'lib/config';
-import { useAccount, useSigner } from 'wagmi';
 
 type PawnShopHeaderProps = {
   isErrorPage?: boolean;
@@ -38,8 +31,6 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
 }) => {
   const { chainId, network } = useConfig();
   const { messages, removeMessage } = useGlobalMessages();
-  const { data: account } = useAccount({ onError: console.error });
-  const { data: signer } = useSigner({ onError: console.error });
   const { pathname } = useRouter();
   const kind = pathname.endsWith(CREATE_PATH) ? 'secondary' : 'primary';
   const codeActive = useKonami();
@@ -59,8 +50,6 @@ export const PawnShopHeader: FunctionComponent<PawnShopHeaderProps> = ({
     }
     setIsInfoCollapsed((prev) => !prev);
   }, [isInfoCollapsed, onCollapse]);
-
-  useEffect(() => console.log({ account, signer }), [account, signer]);
 
   return (
     <>
