@@ -46,16 +46,24 @@ export const ApplicationProviders = ({
 }: PropsWithChildren<ApplicationProvidersProps>) => {
   const { infuraId, alchemyId } = useConfig();
 
-  const { provider, chains } = configureChains(CHAINS, [
-    alchemyProvider({ alchemyId }),
-    infuraProvider({ infuraId }),
-    publicProvider(),
-  ]);
+  const { provider, chains } = useMemo(
+    () =>
+      configureChains(CHAINS, [
+        alchemyProvider({ alchemyId }),
+        infuraProvider({ infuraId }),
+        publicProvider(),
+      ]),
+    [alchemyId, infuraId],
+  );
 
-  const { connectors } = getDefaultWallets({
-    appName: 'Backed',
-    chains,
-  });
+  const { connectors } = useMemo(
+    () =>
+      getDefaultWallets({
+        appName: 'Backed',
+        chains,
+      }),
+    [chains],
+  );
 
   const client = useMemo(() => {
     return createClient({
