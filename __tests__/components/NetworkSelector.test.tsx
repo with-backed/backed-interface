@@ -5,16 +5,30 @@ import * as nextRouter from 'next/router';
 import { NetworkSelector } from 'components/NetworkSelector';
 
 jest.spyOn(nextRouter, 'useRouter');
+const originalLocation = global.location;
 
 const mockedUseRouter = nextRouter.useRouter as jest.MockedFunction<
   typeof nextRouter.useRouter
 >;
-const push = jest.fn();
 mockedUseRouter.mockImplementation(
-  () => ({ push, route: '/network/rinkeby/loans/create' } as any),
+  () => ({ route: '/network/rinkeby/loans/create' } as any),
 );
 
+const mockAssign = jest.fn();
+
 describe('Select', () => {
+  beforeAll(() => {
+    Object.defineProperty(window, 'location', {
+      value: {
+        assign: mockAssign,
+      },
+    });
+  });
+  afterAll(() => {
+    Object.defineProperty(window, 'location', {
+      value: originalLocation,
+    });
+  });
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -43,12 +57,12 @@ describe('Select', () => {
       const rinkeby = rinkebys[1];
       userEvent.click(rinkeby);
 
-      expect(push).not.toHaveBeenCalled();
+      expect(mockAssign).not.toHaveBeenCalled();
     });
 
     it('handles selection on a loan page', () => {
       mockedUseRouter.mockImplementation(
-        () => ({ push, route: '/network/rinkeby/loans/1337' } as any),
+        () => ({ mockAssign, route: '/network/rinkeby/loans/1337' } as any),
       );
       const { getByText } = render(<NetworkSelector />);
 
@@ -59,13 +73,13 @@ describe('Select', () => {
       const optimism = getByText('Optimism');
       userEvent.click(optimism);
 
-      expect(push).toHaveBeenCalledWith('/network/optimism');
-      expect(push).toHaveBeenCalledTimes(1);
+      expect(mockAssign).toHaveBeenCalledWith('/network/optimism');
+      expect(mockAssign).toHaveBeenCalledTimes(1);
     });
 
     it('handles selection on the home page', () => {
       mockedUseRouter.mockImplementation(
-        () => ({ push, route: '/network/rinkeby' } as any),
+        () => ({ mockAssign, route: '/network/rinkeby' } as any),
       );
       const { getByText } = render(<NetworkSelector />);
 
@@ -76,13 +90,13 @@ describe('Select', () => {
       const optimism = getByText('Optimism');
       userEvent.click(optimism);
 
-      expect(push).toHaveBeenCalledWith('/network/optimism');
-      expect(push).toHaveBeenCalledTimes(1);
+      expect(mockAssign).toHaveBeenCalledWith('/network/optimism');
+      expect(mockAssign).toHaveBeenCalledTimes(1);
     });
 
     it('handles selection on the create page', () => {
       mockedUseRouter.mockImplementation(
-        () => ({ push, route: '/network/rinkeby/loans/create' } as any),
+        () => ({ mockAssign, route: '/network/rinkeby/loans/create' } as any),
       );
       const { getByText } = render(<NetworkSelector />);
 
@@ -93,13 +107,14 @@ describe('Select', () => {
       const optimism = getByText('Optimism');
       userEvent.click(optimism);
 
-      expect(push).toHaveBeenCalledWith('/network/optimism/loans/create');
-      expect(push).toHaveBeenCalledTimes(1);
+      expect(mockAssign).toHaveBeenCalledWith('/network/optimism/loans/create');
+      expect(mockAssign).toHaveBeenCalledTimes(1);
     });
 
     it('handles selection on the profile page', () => {
       mockedUseRouter.mockImplementation(
-        () => ({ push, route: '/network/rinkeby/profile/0xwhatever' } as any),
+        () =>
+          ({ mockAssign, route: '/network/rinkeby/profile/0xwhatever' } as any),
       );
       const { getByText } = render(<NetworkSelector />);
 
@@ -110,8 +125,10 @@ describe('Select', () => {
       const optimism = getByText('Optimism');
       userEvent.click(optimism);
 
-      expect(push).toHaveBeenCalledWith('/network/optimism/profile/0xwhatever');
-      expect(push).toHaveBeenCalledTimes(1);
+      expect(mockAssign).toHaveBeenCalledWith(
+        '/network/optimism/profile/0xwhatever',
+      );
+      expect(mockAssign).toHaveBeenCalledTimes(1);
     });
   });
 });

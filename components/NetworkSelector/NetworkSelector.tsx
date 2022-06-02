@@ -61,13 +61,13 @@ export const NetworkSelector = ({ isErrorPage }: NetworkSelectorProps) => {
         const currentPath = pathWithoutNetwork(route);
         const returnHome = shouldReturnToHomepage(currentPath);
         if (returnHome) {
-          push('/network/' + option.value);
+          window.location.assign('/network/' + option.value);
         } else {
-          push('/network/' + option.value + currentPath);
+          window.location.assign('/network/' + option.value + currentPath);
         }
       }
     },
-    [network, push, route],
+    [network, route],
   );
 
   const defaultValue = useMemo(
