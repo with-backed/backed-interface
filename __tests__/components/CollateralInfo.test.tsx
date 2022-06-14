@@ -42,7 +42,7 @@ describe('CollateralInfo', () => {
     getByText('items');
     getByText(collectionStats.items);
     getByText('floor price');
-    getByText(`${collectionStats.floor} ETH`);
+    getByText(`${collectionStats.floor.toFixed(4)} ETH`);
     getByText('owners');
     getByText(collectionStats.owners);
     getByText('volume');

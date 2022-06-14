@@ -71,7 +71,9 @@ export const CollateralInfo = ({
 
         <div className={styles.collectionInfoElement}>
           <dt className={styles.label}>floor price</dt>
-          <dd>{collateralSaleInfo.collectionStats.floor || '--'} ETH</dd>
+          <dd>
+            {collateralSaleInfo.collectionStats.floor?.toFixed(4) || '--'} ETH
+          </dd>
         </div>
 
         <div className={styles.collectionInfoElement}>
