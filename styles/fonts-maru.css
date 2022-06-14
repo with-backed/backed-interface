@@ -1,14 +1,19 @@
 @font-face {
   font-family: 'GT Maru Regular';
-  src: url('/fonts/maru/GT-Maru-Regular-Trial.woff2') format('woff2'),
-    url('/fonts/maru/GT-Maru-Light-Trial.woff2') format('woff2');
+  src: url('https://with-backed-site-fonts.s3.amazonaws.com/GT-Maru-Regular.woff')
+      format('woff'),
+    url('https://with-backed-site-fonts.s3.amazonaws.com/GT-Maru-Light.woff')
+      format('woff');
   font-display: swap;
 }
 
 @font-face {
   font-family: 'GT Maru Mono';
-  src: url('/fonts/maru/GT-Maru-Mono-Regular-Trial.woff2') format('woff2'),
-    url('/fonts/maru/GT-Maru-Mono-Regular-Oblique-Trial.woff2') format('woff2'),
-    url('/fonts/maru/GT-Maru-Mono-Bold-Trial.woff2') format('woff2');
+  src: url('https://with-backed-site-fonts.s3.amazonaws.com/GT-Maru-Mono-Regular.woff')
+      format('woff'),
+    url('https://with-backed-site-fonts.s3.amazonaws.com/GT-Maru-Mono-Regular-Oblique.woff')
+      format('woff'),
+    url('https://with-backed-site-fonts.s3.amazonaws.com/GT-Maru-Mono-Bold.woff')
+      format('woff');
   font-display: swap;
 }
