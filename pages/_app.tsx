@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react';
 import { SupportedNetwork, isSupportedNetwork } from 'lib/config';
 import { ApplicationProviders } from 'components/ApplicationProviders';
 import { useNetworkSpecificStyles } from 'hooks/useNetworkSpecificStyles';
+import { Header } from 'components/Header';
 
 export default function App({ Component, pageProps }: AppProps) {
   const { query } = useRouter();
@@ -35,6 +36,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <ConfigProvider network={network}>
       <ApplicationProviders>
         <AppWrapper>
+          <Header />
           <Component {...pageProps} />
           <Footer />
         </AppWrapper>

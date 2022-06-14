@@ -1,0 +1,57 @@
+.nav {
+  width: 100%;
+  background: var(--background-white);
+  padding: 20px 0;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+/* Allows middle element to remain centered */
+.box {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+.box-left {
+  composes: box;
+  justify-content: left;
+}
+.box-right {
+  composes: box;
+  justify-content: right;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.links {
+  display: flex;
+  gap: 36px;
+  list-style-type: none;
+  padding: 0;
+  margin: 0 auto;
+}
+
+.link,
+.link:visited {
+  color: var(--neutral-50);
+}
+
+.link-active {
+  composes: link;
+  color: var(--neutral-100);
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+
+.link-active:visited {
+  color: var(--neutral-100);
+}
