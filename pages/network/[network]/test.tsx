@@ -6,7 +6,6 @@ import { ConnectWallet } from 'components/ConnectWallet';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { TransactionButton } from 'components/Button';
 import { useAccount, useSigner } from 'wagmi';
-import { PawnShopHeader } from 'components/PawnShopHeader';
 import Head from 'next/head';
 import { captureException } from '@sentry/nextjs';
 import { GetServerSideProps } from 'next';
@@ -35,7 +34,6 @@ export default function Test() {
           content="Mint testnet DAI and NFTs to try out Backed protocol on Rinkeby"
         />
       </Head>
-      <PawnShopHeader />
       <TwelveColumn>
         <Fieldset
           style={{ gridColumn: 'span 6', marginTop: 'var(--gap)' }}
