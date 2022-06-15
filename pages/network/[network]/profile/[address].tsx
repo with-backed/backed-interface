@@ -14,7 +14,6 @@ import { ProfileActivity } from 'components/ProfileActivity';
 import { Toggle } from 'components/Toggle';
 import { ProfileLoans } from 'components/Profile/ProfileLoans';
 import styles from './[address].module.css';
-import { PawnShopHeader } from 'components/PawnShopHeader';
 import Head from 'next/head';
 import { configs, SupportedNetwork, validateNetwork } from 'lib/config';
 import { captureException } from '@sentry/nextjs';
@@ -78,7 +77,6 @@ export default function Profile({ address, loans, events }: ProfilePageProps) {
           content={`View the Backed protocol profile for ${address}, see their activity and follow for updates`}
         />
       </Head>
-      <PawnShopHeader />
       <ProfileHeader address={address} loans={parsedLoans} />
       {parsedLoans.length > 0 && (
         <div className={styles.wrapper}>

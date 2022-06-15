@@ -1,1 +1,0 @@
-export { PawnShopHeader } from './PawnShopHeader';

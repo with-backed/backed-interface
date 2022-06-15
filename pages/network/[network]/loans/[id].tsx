@@ -15,7 +15,6 @@ import { parseSerializedResponse } from 'lib/parseSerializedResponse';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { PawnShopHeader } from 'components/PawnShopHeader';
 import Head from 'next/head';
 import { captureException } from '@sentry/nextjs';
 import { configs, SupportedNetwork, validateNetwork } from 'lib/config';
@@ -233,7 +232,6 @@ function LoansInner({
           imageUrl={metadata.image!.mediaUrl}
         />
       )}
-      <PawnShopHeader />
       <LoanHeader loan={loan} collateralMedia={media} refresh={refresh} />
       <LoanInfo loan={loan} collateralSaleInfo={collateralSaleInfo} />
     </>

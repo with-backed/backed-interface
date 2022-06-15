@@ -1,6 +1,6 @@
 # backed-interface
 
-![backed](/components/PawnShopHeader/backed-bunny.png 'backed')
+![backed](/public/logos/backed-bunny.png 'backed')
 
 ## Developing
 
