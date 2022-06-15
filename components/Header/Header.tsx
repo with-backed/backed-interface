@@ -12,6 +12,7 @@ import styles from './Header.module.css';
 const pages = [
   { name: 'Lend', route: '' },
   { name: 'Borrow', route: 'loans/create' },
+  { name: 'About', route: 'about' },
 ];
 
 function NavLinks() {
