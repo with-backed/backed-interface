@@ -96,6 +96,17 @@
   padding: 2rem;
 }
 
+.mobile-menu-buttons > button:last-of-type {
+  color: var(--neutral-50);
+  font-weight: var(--weight-semibold);
+  font-size: var(--font-large);
+  transition: color 200ms ease;
+}
+
+.mobile-menu-buttons > button:last-of-type:hover {
+  color: var(--neutral-100);
+}
+
 .mobile-nav-open > .mobile-menu-buttons {
   box-shadow: var(--box-shadow);
 }
