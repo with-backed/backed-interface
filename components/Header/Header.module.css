@@ -51,7 +51,11 @@
   color: var(--neutral-50);
   font-weight: var(--weight-semibold);
   font-size: var(--font-large);
-  line-height: var(--font-large);
+  transition: color 200ms ease;
+}
+
+.link:hover {
+  color: var(--neutral-100);
 }
 
 .link-active {
