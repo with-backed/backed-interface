@@ -19,10 +19,13 @@ function NavLinks() {
   const { network } = useConfig();
   const { pathname } = useRouter();
 
-  const activeRoute = useMemo(
-    () => pathname.split('[network]/')[1] || '',
-    [pathname],
-  );
+  const activeRoute = useMemo(() => {
+    // Handling these since they aren't network-namespaced
+    if (pathname === '/404' || pathname === '/500') {
+      return 'errorPage';
+    }
+    return pathname.split('[network]/')[1] || '';
+  }, [pathname]);
 
   return (
     <ul className={styles.links}>
@@ -44,10 +47,17 @@ function NavLinks() {
 
 function LogoLink() {
   const { network } = useConfig();
+  const { pathname } = useRouter();
+
+  const isErrorPage = useMemo(
+    () => pathname === '/404' || pathname === '/500',
+    [pathname],
+  );
+
   return (
     <Link href={`/network/${network}/`} passHref>
       <a title="Backed">
-        <Logo />
+        <Logo error={isErrorPage} />
       </a>
     </Link>
   );
