@@ -22,8 +22,7 @@ const prodPages: Page[] = [
   { name: 'About', route: 'about', isNetworkSpecialCase: true },
 ];
 
-// TODO: put community page here while testing
-const stagingPages: Page[] = [];
+const stagingPages: Page[] = [{ name: 'Community', route: 'community' }];
 
 type NavLinksProps = {
   activeRoute: string;
