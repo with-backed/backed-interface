@@ -1,0 +1,12 @@
+.wrapper {
+  display: flex;
+}
+
+.cta {
+  max-width: 500px;
+  margin-top: 32px;
+}
+
+.cta > button {
+  width: auto;
+}
