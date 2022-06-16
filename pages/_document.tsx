@@ -1,40 +1,30 @@
-import { configs } from 'lib/config';
 import { Html, Head, Main, NextScript } from 'next/document';
+
+const FONT_URL_PREFIX = 'https://with-backed-site-fonts.s3.amazonaws.com';
+// can defer loading of oblique/bold variants, but we'll want these right away
+const preloadFonts = ['GT-Maru-Regular', 'GT-Maru-Mono-Regular'];
+
+function FontLinks() {
+  return (
+    <>
+      {preloadFonts.map((f) => (
+        <link
+          key={f}
+          rel="preload"
+          href={`${FONT_URL_PREFIX}/${f}.woff`}
+          as="font"
+          type="font/woff"
+        />
+      ))}
+    </>
+  );
+}
 
 export default function Document() {
   return (
     <Html lang="en">
       <Head>
-        <link
-          rel="preload"
-          href="/fonts/maru/GT-Maru-Regular-Trial.woff2"
-          as="font"
-          type="font/woff2"
-        />
-        <link
-          rel="preload"
-          href="/fonts/maru/GT-Maru-Light-Trial.woff2"
-          as="font"
-          type="font/woff2"
-        />
-        <link
-          rel="preload"
-          href="/fonts/maru/GT-Maru-Mono-Regular-Trial.woff2"
-          as="font"
-          type="font/woff2"
-        />
-        <link
-          rel="preload"
-          href="/fonts/maru/GT-Maru-Mono-Regular-Oblique-Trial.woff2"
-          as="font"
-          type="font/woff2"
-        />
-        <link
-          rel="preload"
-          href="/fonts/maru/GT-Maru-Mono-Bold-Trial.woff2"
-          as="font"
-          type="font/woff2"
-        />
+        <FontLinks />
         <script
           defer
           type="text/javascript"
