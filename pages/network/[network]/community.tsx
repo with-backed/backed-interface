@@ -24,11 +24,9 @@ export default function Community() {
   return (
     <div
       style={{
-        // TODO: full-page gradient
+        // TODO: not inline styles
         width: '100%',
         height: '100%',
-        background:
-          'radial-gradient(52.94% 52.36% at 28.53% 25.3%, #FFFFFF 26.04%, #F6F3FA 100%)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',

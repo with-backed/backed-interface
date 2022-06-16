@@ -6,3 +6,16 @@
   align-items: center;
   background: var(--background-radial-gradient);
 }
+
+.app-wrapper-community {
+  composes: app-wrapper;
+  background: radial-gradient(
+    52.94% 52.36% at 28.53% 25.3%,
+    #ffffff 26.04%,
+    #f6f3fa 100%
+  );
+}
+
+.app-wrapper-community > nav {
+  background-color: transparent;
+}
