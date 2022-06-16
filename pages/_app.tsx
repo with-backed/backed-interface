@@ -12,6 +12,7 @@ import { SupportedNetwork, isSupportedNetwork } from 'lib/config';
 import { ApplicationProviders } from 'components/ApplicationProviders';
 import { useNetworkSpecificStyles } from 'hooks/useNetworkSpecificStyles';
 import { Header } from 'components/Header';
+import { ErrorBanners } from 'components/ErrorBanners';
 
 export default function App({ Component, pageProps }: AppProps) {
   const { query } = useRouter();
@@ -36,6 +37,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <ConfigProvider network={network}>
       <ApplicationProviders>
         <AppWrapper>
+          <ErrorBanners />
           <Header />
           <Component {...pageProps} />
           <Footer />
