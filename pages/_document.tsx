@@ -14,6 +14,7 @@ function FontLinks() {
           href={`${FONT_URL_PREFIX}/${f}.woff`}
           as="font"
           type="font/woff"
+          crossOrigin="anonymous"
         />
       ))}
     </>
