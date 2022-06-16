@@ -5,6 +5,7 @@ import { useConfig } from 'hooks/useConfig';
 import { SupportedNetwork } from 'lib/config';
 import { GetServerSideProps } from 'next';
 import { CommunityHeader } from 'components/CommunityHeader';
+import { CommunityInfo } from 'components/CommunityInfo';
 
 export const getServerSideProps: GetServerSideProps<{}> = async () => {
   // Community page will be unavailable on prod until we launch
@@ -39,6 +40,7 @@ export default function Community() {
         description="Mint or manage your Backed Community NFT"
       />
       <CommunityHeader />
+      <CommunityInfo />
     </div>
   );
 }
