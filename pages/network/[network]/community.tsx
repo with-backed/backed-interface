@@ -31,6 +31,7 @@ export default function Community() {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        flexGrow: 1,
       }}>
       <OpenGraph
         imageUrl={BUNNY_IMG_URL_MAP[network as SupportedNetwork]}
