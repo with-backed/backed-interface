@@ -1,12 +1,20 @@
 .wrapper {
   display: flex;
+  margin-top: 40px;
+  gap: 40px;
 }
 
 .cta {
   max-width: 500px;
   margin-top: 32px;
+  font-family: var(--sans);
 }
 
 .cta > button {
   width: auto;
+}
+
+.cta > button:disabled {
+  color: #bdaad0;
+  background: #f6f3fa;
 }
