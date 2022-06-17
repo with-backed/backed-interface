@@ -1,7 +1,12 @@
 .wrapper {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   margin-top: 40px;
   gap: 40px;
+}
+
+.wrapper > * {
+  justify-self: center;
 }
 
 .cta {
@@ -17,4 +22,15 @@
 .cta > button:disabled {
   color: #bdaad0;
   background: #f6f3fa;
+}
+
+.cta > p {
+  font-size: var(--font-large);
+}
+
+.connect-wallet > span {
+  /* this has to go on the NextJS wrapper span, not on the image and not on an
+   * additional span we control. Janky but w/e.
+   */
+  margin-bottom: -3px !important;
 }

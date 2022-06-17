@@ -18,7 +18,7 @@ export function CommunityHeader() {
         </p>
         <Button disabled>Mint for Free</Button>
 
-        <p>
+        <p className={styles['connect-wallet']}>
           Connect your wallet on{' '}
           <Image src={optimismCircle} alt="" height={18} width={18} /> Optimism
           network.
