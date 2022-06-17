@@ -22,7 +22,9 @@ const prodPages: Page[] = [
   { name: 'About', route: 'about', isNetworkSpecialCase: true },
 ];
 
-const stagingPages: Page[] = [{ name: 'Community', route: 'community' }];
+const stagingPages: Page[] = [
+  { name: 'Community', route: 'community', isNetworkSpecialCase: true },
+];
 
 type NavLinksProps = {
   activeRoute: string;
