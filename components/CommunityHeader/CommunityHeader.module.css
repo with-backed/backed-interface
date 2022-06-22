@@ -5,6 +5,14 @@
   gap: 40px;
 }
 
+@media screen and (max-width: 710px) {
+  .wrapper {
+    grid-template-columns: 1fr;
+    gap: 0px;
+    padding: 0 1em;
+  }
+}
+
 .wrapper > * {
   justify-self: center;
 }
