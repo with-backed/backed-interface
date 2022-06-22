@@ -9,7 +9,7 @@
   .wrapper {
     grid-template-columns: 1fr;
     gap: 0px;
-    padding: 0 1em;
+    padding: 0 1.5rem;
   }
 }
 
