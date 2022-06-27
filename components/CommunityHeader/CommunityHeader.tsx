@@ -1,6 +1,6 @@
 import { Button } from 'components/Button';
 import Image from 'next/image';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styles from './CommunityHeader.module.css';
 import { PlaceholderBunn } from './PlaceholderBunn';
 import optimismCircle from './optimism-circle.png';
@@ -119,7 +119,23 @@ function CommunityHeaderManage() {
     getMetadata();
   }, [account?.address]);
 
-  console.log({ metadata, accessories });
+  const accessoryOptions = useMemo(() => {
+    const options = accessories.map((accessory) => {
+      return {
+        value: accessory,
+        label: accessory.name,
+      };
+    });
+
+    return [
+      {
+        value: null,
+        label: 'No special trait',
+      },
+      ...options,
+    ];
+  }, [accessories]);
+
   return (
     <div className={styles.wrapper}>
       {metadata ? (
@@ -142,12 +158,7 @@ function CommunityHeaderManage() {
             <Select
               className={styles.select}
               color="clickable"
-              options={[
-                {
-                  value: '1',
-                  label: 'No special trait',
-                },
-              ]}
+              options={accessoryOptions}
             />
           </dd>
         </DescriptionList>
