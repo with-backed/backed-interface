@@ -46,14 +46,18 @@ function CommunityHeaderDisconnected() {
   );
 }
 
-function CommunityHeaderMint() {
+type CommunityHeaderMintProps = {
+  setHasNFT: (value: boolean) => void;
+};
+function CommunityHeaderMint({ setHasNFT }: CommunityHeaderMintProps) {
   const { data: account } = useAccount();
   const { data: signer } = useSigner();
   const mint = useCallback(async () => {
     const contract = web3CommunityNFT(signer!);
     const tx = await contract.mint(account?.address!);
+    tx.wait().then(() => setHasNFT(true));
     console.log({ tx });
-  }, [account?.address, signer]);
+  }, [account?.address, setHasNFT, signer]);
   return (
     <div className={styles.wrapper}>
       <PlaceholderBunn />
@@ -155,13 +159,17 @@ function CommunityHeaderManage() {
 
 type CommunityHeaderConnectedProps = {
   hasNFT: boolean;
+  setHasNFT: (value: boolean) => void;
 };
-function CommunityHeaderConnected({ hasNFT }: CommunityHeaderConnectedProps) {
+function CommunityHeaderConnected({
+  hasNFT,
+  setHasNFT,
+}: CommunityHeaderConnectedProps) {
   if (hasNFT) {
     return <CommunityHeaderManage />;
   }
 
-  return <CommunityHeaderMint />;
+  return <CommunityHeaderMint setHasNFT={setHasNFT} />;
 }
 
 export function CommunityHeader() {
@@ -188,7 +196,7 @@ export function CommunityHeader() {
   console.log({ activeChain, REQUIRED_NETWORK_ID });
 
   if (onRequiredNetwork) {
-    return <CommunityHeaderConnected hasNFT={hasNFT} />;
+    return <CommunityHeaderConnected hasNFT={hasNFT} setHasNFT={setHasNFT} />;
   }
 
   return <CommunityHeaderDisconnected />;
