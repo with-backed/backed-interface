@@ -10,8 +10,9 @@ export const ConnectWallet = () => {
   const { network } = useConfig();
   return (
     <ConnectButton.Custom>
-      {({ account, openConnectModal }) =>
-        !account ? (
+      {({ account, openConnectModal }) => {
+        console.log({ account });
+        return !account ? (
           <Button
             onClick={() => {
               pirsch('Wallet connection modal opened', {});
@@ -28,8 +29,8 @@ export const ConnectWallet = () => {
               🔓 <DisplayAddress address={account.address} />
             </span>
           </ButtonLink>
-        )
-      }
+        );
+      }}
     </ConnectButton.Custom>
   );
 };

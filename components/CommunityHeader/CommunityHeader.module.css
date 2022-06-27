@@ -23,7 +23,7 @@
   font-family: var(--sans);
 }
 
-.cta > button {
+.cta button {
   width: auto;
 }
 
@@ -41,4 +41,15 @@
    * additional span we control. Janky but w/e.
    */
   margin-bottom: -3px !important;
+}
+
+.button-inline {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.select {
+  margin: 8px 0 24px 0;
+  width: auto;
 }
