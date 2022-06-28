@@ -29,8 +29,8 @@ export function ErrorBanners() {
       {isCommunityPage && (
         /* Community page is not network-namespaced and only works on Optimism */
         <WrongNetwork
-          expectedChainId={configs.optimism.chainId}
-          expectedChainName={configs.optimism.network as SupportedNetwork}
+          expectedChainId={configs.rinkeby.chainId}
+          expectedChainName={configs.rinkeby.network as SupportedNetwork}
         />
       )}
       {messages.map((m) => {
