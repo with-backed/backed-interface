@@ -11,6 +11,7 @@ import { DescriptionList } from 'components/DescriptionList';
 import { Select } from 'components/Select';
 import { ethers } from 'ethers';
 import { captureException } from '@sentry/nextjs';
+import { CommunityNFT } from 'types/generated/abis';
 
 // TODO: optimism for launch
 const REQUIRED_NETWORK_ID = configs.rinkeby.chainId;
@@ -107,10 +108,22 @@ function CommunityHeaderManage() {
   const { data: account } = useAccount();
   const [accessories, setAccessories] = useState<Accessory[]>([]);
   const [metadata, setMetadata] = useState<CommunityTokenMetadata | null>(null);
+
   useEffect(() => {
+    async function getTokenID(contract: CommunityNFT) {
+      const nonce = (await contract.nonce()).toNumber();
+      for (let i = 0; i < nonce; ++i) {
+        const owner = await contract.ownerOf(i);
+        if (owner === account?.address) {
+          return i;
+        }
+      }
+      return -1;
+    }
+
     async function getMetadata() {
       const contract = jsonRpcCommunityNFT(JSON_RPC_PROVIDER);
-      const tokenID = ethers.BigNumber.from(2);
+      const tokenID = await getTokenID(contract);
       const uri = await contract.tokenURI(tokenID);
       const buffer = Buffer.from(uri.split(',')[1], 'base64');
       setMetadata(JSON.parse(buffer.toString()));
