@@ -9,6 +9,7 @@ import { NFTEntity } from 'types/NFT';
 import { useTokenMetadata } from 'hooks/useTokenMetadata';
 import { ethers } from 'ethers';
 import { getNftContractAddress } from 'lib/eip721Subraph';
+import { pirsch } from 'lib/pirsch';
 
 interface NFTCollateralPickerProps {
   connectedWallet: string;
@@ -48,7 +49,7 @@ export function NFTCollateralPicker({
 
   const handleNFTClick = useCallback(
     (nft: NFTEntity) => {
-      window.pirsch('NFT Selected', { meta: { id: nft.id } });
+      pirsch('NFT Selected', { meta: { id: nft.id } });
       handleSetSelectedNFT(nft);
       dialog.setVisible(false);
     },

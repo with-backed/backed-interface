@@ -1,5 +1,6 @@
 import { Button } from 'components/Button';
 import { GridListSelector } from 'components/GridListSelector';
+import { pirsch } from 'lib/pirsch';
 import { useCallback } from 'react';
 import { LoanStatus } from 'types/generated/graphql/nftLoans';
 import styles from './AdvancedSearch.module.css';
@@ -26,7 +27,7 @@ export function SearchHeader({
       ? 'Advanced search closed'
       : 'Advanced search opened';
     setShowSearch(!showSearch);
-    window.pirsch(message, {});
+    pirsch(message, {});
   }, [setShowSearch, showSearch]);
   return (
     <div className={styles.header}>

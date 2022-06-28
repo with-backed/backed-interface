@@ -2,6 +2,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Button, ButtonLink } from 'components/Button';
 import { DisplayAddress } from 'components/DisplayAddress';
 import { useConfig } from 'hooks/useConfig';
+import { pirsch } from 'lib/pirsch';
 import React from 'react';
 import styles from './ConnectWallet.module.css';
 
@@ -13,7 +14,7 @@ export const ConnectWallet = () => {
         !account ? (
           <Button
             onClick={() => {
-              window.pirsch('Wallet connection modal opened', {});
+              pirsch('Wallet connection modal opened', {});
               openConnectModal();
             }}
             type="button">
