@@ -95,6 +95,7 @@ type Accessory = {
   artContract: string;
   qualifyingXPScore: ethers.BigNumber;
   xpCategory: ethers.BigNumber;
+  id: ethers.BigNumber;
 };
 
 type CommunityTokenMetadata = {
@@ -106,11 +107,12 @@ type CommunityTokenMetadata = {
 
 function CommunityHeaderManage() {
   const { data: account } = useAccount();
+  const { data: signer } = useSigner();
   const [accessories, setAccessories] = useState<Accessory[]>([]);
   const [metadata, setMetadata] = useState<CommunityTokenMetadata | null>(null);
 
-  useEffect(() => {
-    async function getTokenID(contract: CommunityNFT) {
+  const getTokenID = useCallback(
+    async (contract: CommunityNFT) => {
       const nonce = (await contract.nonce()).toNumber();
       for (let i = 0; i < nonce; ++i) {
         const owner = await contract.ownerOf(i);
@@ -119,16 +121,19 @@ function CommunityHeaderManage() {
         }
       }
       return -1;
-    }
+    },
+    [account?.address],
+  );
 
-    async function getMetadata() {
-      const contract = jsonRpcCommunityNFT(JSON_RPC_PROVIDER);
-      const tokenID = await getTokenID(contract);
-      const uri = await contract.tokenURI(tokenID);
-      const buffer = Buffer.from(uri.split(',')[1], 'base64');
-      setMetadata(JSON.parse(buffer.toString()));
-    }
+  const getMetadata = useCallback(async () => {
+    const contract = jsonRpcCommunityNFT(JSON_RPC_PROVIDER);
+    const tokenID = await getTokenID(contract);
+    const uri = await contract.tokenURI(tokenID);
+    const buffer = Buffer.from(uri.split(',')[1], 'base64');
+    setMetadata(JSON.parse(buffer.toString()));
+  }, [getTokenID]);
 
+  useEffect(() => {
     async function getAccessories() {
       const contract = jsonRpcCommunityNFT(JSON_RPC_PROVIDER);
       const accessoryIDs = await contract.getUnlockedAccessoriesForAddress(
@@ -138,7 +143,9 @@ function CommunityHeaderManage() {
       const accessories = await Promise.all(
         accessoryIDs
           .filter((id) => !id.eq('-0x01'))
-          .map((id) => contract.accessoryIdToAccessory(id)),
+          .map((id) =>
+            contract.accessoryIdToAccessory(id).then((val) => ({ ...val, id })),
+          ),
       );
 
       setAccessories(accessories);
@@ -146,7 +153,32 @@ function CommunityHeaderManage() {
 
     getAccessories();
     getMetadata();
-  }, [account?.address]);
+  }, [account?.address, getMetadata]);
+
+  // TODO: use to disable update button when same as selected
+  const currentAccessory = useMemo(() => {
+    console.log({ metadata, accessories });
+    if (metadata && accessories) {
+      const accessory = metadata.attributes.find(
+        ({ trait_type }) => trait_type === 'Accessory',
+      );
+      return accessories.find((acc) => acc.name === accessory?.value) || null;
+    }
+    return null;
+  }, [accessories, metadata]);
+
+  const setAccessory = useCallback(
+    async (acc: Accessory | null) => {
+      const contract = web3CommunityNFT(signer!);
+      const tx = await contract.setEnabledAccessory(acc ? acc.id : 0);
+      tx.wait().then(() => getMetadata());
+    },
+    [getMetadata, signer],
+  );
+
+  const [selectedAccessory, setSelectedAccessory] = useState<Accessory | null>(
+    null,
+  );
 
   const accessoryOptions = useMemo(() => {
     const options = accessories.map((accessory) => {
@@ -188,10 +220,13 @@ function CommunityHeaderManage() {
               className={styles.select}
               color="clickable"
               options={accessoryOptions}
+              onChange={(option) => setSelectedAccessory(option?.value || null)}
             />
           </dd>
         </DescriptionList>
-        <Button disabled>Update Art</Button>
+        <Button onClick={() => setAccessory(selectedAccessory)}>
+          Update Art
+        </Button>
       </div>
     </div>
   );
@@ -213,7 +248,6 @@ function CommunityHeaderConnected({
 }
 
 export function CommunityHeader() {
-  // TODO: allow update after mint
   const [hasNFT, setHasNFT] = useState(false);
   const { data: account } = useAccount();
   const { activeChain } = useNetwork();
@@ -233,7 +267,6 @@ export function CommunityHeader() {
   }, [account?.address]);
 
   const onRequiredNetwork = activeChain?.id === REQUIRED_NETWORK_ID;
-  console.log({ activeChain, REQUIRED_NETWORK_ID });
 
   if (onRequiredNetwork) {
     return <CommunityHeaderConnected hasNFT={hasNFT} setHasNFT={setHasNFT} />;
