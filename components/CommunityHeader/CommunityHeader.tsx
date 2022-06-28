@@ -1,4 +1,4 @@
-import { Button } from 'components/Button';
+import { Button, TransactionButton } from 'components/Button';
 import Image from 'next/image';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styles from './CommunityHeader.module.css';
@@ -10,6 +10,7 @@ import { jsonRpcCommunityNFT, web3CommunityNFT } from 'lib/contracts';
 import { DescriptionList } from 'components/DescriptionList';
 import { Select } from 'components/Select';
 import { ethers } from 'ethers';
+import { captureException } from '@sentry/nextjs';
 
 // TODO: optimism for launch
 const REQUIRED_NETWORK_ID = configs.rinkeby.chainId;
@@ -52,20 +53,35 @@ type CommunityHeaderMintProps = {
 function CommunityHeaderMint({ setHasNFT }: CommunityHeaderMintProps) {
   const { data: account } = useAccount();
   const { data: signer } = useSigner();
+  const [txHash, setTxHash] = useState('');
+  const [isPending, setIsPending] = useState(false);
+
   const mint = useCallback(async () => {
     const contract = web3CommunityNFT(signer!);
     const tx = await contract.mint(account?.address!);
-    tx.wait().then(() => setHasNFT(true));
-    console.log({ tx });
+    setTxHash(tx.hash);
+    setIsPending(true);
+    tx.wait()
+      .then(() => {
+        setHasNFT(true);
+        setIsPending(false);
+      })
+      .catch((reason) => captureException(reason));
   }, [account?.address, setHasNFT, signer]);
+
   return (
     <div className={styles.wrapper}>
       <PlaceholderBunn />
       <div className={styles.cta}>
         <CTAContent />
         <div className={styles['button-inline']}>
-          <Button onClick={mint}>Mint for Free</Button>
-          on Optimism
+          <TransactionButton
+            text="Mint for Free"
+            onClick={mint}
+            txHash={txHash}
+            isPending={isPending}
+          />
+          {!isPending && 'on Optimism'}
         </div>
       </div>
     </div>
@@ -105,7 +121,7 @@ function CommunityHeaderManage() {
       const accessoryIDs = await contract.getUnlockedAccessoriesForAddress(
         account?.address!,
       );
-      console.log({ accessoryIDs });
+
       const accessories = await Promise.all(
         accessoryIDs
           .filter((id) => !id.eq('-0x01'))
