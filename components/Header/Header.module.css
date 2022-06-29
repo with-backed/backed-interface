@@ -19,7 +19,7 @@
 
 .mobile-header {
   composes: content;
-  padding: 0 6px 0 0;
+  padding: 0 1.5rem;
 }
 
 .left-side {
@@ -37,6 +37,8 @@
 
 .mobile-header > .controls {
   display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
 }
 
 .links {
