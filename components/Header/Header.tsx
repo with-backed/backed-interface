@@ -120,7 +120,7 @@ export function Header() {
     if (pathname === '/404' || pathname === '/500') {
       return 'errorPage';
     }
-    if (pathname === '/community' || pathname === '/about') {
+    if (pathname.startsWith('/community') || pathname === '/about') {
       return pathname.substring(1);
     }
     return pathname.split('[network]/')[1] || '';
@@ -172,5 +172,7 @@ export function Header() {
  * @param activeRoute the current page
  */
 function shouldHideNetworkSelector(activeRoute: string) {
-  return ['errorPage', 'community', 'about'].some((v) => v === activeRoute);
+  return ['errorPage', 'community', 'community/[address]', 'about'].some(
+    (v) => v === activeRoute,
+  );
 }

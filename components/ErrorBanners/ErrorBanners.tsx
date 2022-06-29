@@ -16,7 +16,10 @@ export function ErrorBanners() {
     [pathname],
   );
   const isAboutPage = useMemo(() => pathname === '/about', [pathname]);
-  const isCommunityPage = useMemo(() => pathname === '/community', [pathname]);
+  const isCommunityPage = useMemo(
+    () => pathname.startsWith('/community'),
+    [pathname],
+  );
 
   return (
     <div className={styles.banners}>
