@@ -9,29 +9,45 @@ import { useRouter } from 'next/router';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import styles from './Header.module.css';
 
-const pages = [
+type Page = {
+  name: string;
+  route: string;
+  // Some pages (about, community) don't fit into our resource-oriented hierarchy.
+  // We'll just put them at the top-level
+  isNetworkSpecialCase?: boolean;
+};
+const prodPages: Page[] = [
   { name: 'Lend', route: '' },
   { name: 'Borrow', route: 'loans/create' },
-  { name: 'About', route: 'about' },
+  { name: 'About', route: 'about', isNetworkSpecialCase: true },
 ];
 
-function NavLinks() {
-  const { network } = useConfig();
-  const { pathname } = useRouter();
+// TODO: put community page here while testing
+const stagingPages: Page[] = [];
 
-  const activeRoute = useMemo(() => {
-    // Handling these since they aren't network-namespaced
-    if (pathname === '/404' || pathname === '/500') {
-      return 'errorPage';
+type NavLinksProps = {
+  activeRoute: string;
+};
+function NavLinks({ activeRoute }: NavLinksProps) {
+  const { network } = useConfig();
+
+  const pages = useMemo(() => {
+    if (process.env.VERCEL_ENV === 'production') {
+      return prodPages;
     }
-    return pathname.split('[network]/')[1] || '';
-  }, [pathname]);
+    return [...prodPages, ...stagingPages];
+  }, []);
 
   return (
     <ul className={styles.links}>
       {pages.map((p) => (
         <li key={p.name}>
-          <Link href={`/network/${network}/${p.route}`}>
+          <Link
+            href={
+              p.isNetworkSpecialCase
+                ? `/${p.route}`
+                : `/network/${network}/${p.route}`
+            }>
             <a
               className={
                 p.route === activeRoute ? styles['link-active'] : styles.link
@@ -64,11 +80,13 @@ function LogoLink() {
 }
 
 type MobileMenuProps = {
+  activeRoute: string;
   closeMobileMenu: () => void;
   mobileMenuNode: React.RefObject<HTMLDivElement>;
   mobileMenuOpen: boolean;
 };
 function MobileMenu({
+  activeRoute,
   closeMobileMenu,
   mobileMenuNode,
   mobileMenuOpen,
@@ -79,9 +97,9 @@ function MobileMenu({
         mobileMenuOpen ? styles['mobile-nav-open'] : styles['mobile-nav']
       }>
       <div ref={mobileMenuNode} className={styles['mobile-menu-buttons']}>
-        <NavLinks />
+        <NavLinks activeRoute={activeRoute} />
         <ConnectWallet />
-        <NetworkSelector />
+        {!shouldHideNetworkSelector(activeRoute) && <NetworkSelector />}
         <TextButton onClick={closeMobileMenu}>Close</TextButton>
       </div>
     </div>
@@ -94,6 +112,18 @@ export function Header() {
   const closeMobileMenu = useCallback(() => setMobileMenuOpen(false), []);
   const mobileMenuNode = useRef<HTMLDivElement>(null);
   useOnClickOutside(mobileMenuNode, () => setMobileMenuOpen(false));
+  const { pathname } = useRouter();
+
+  const activeRoute = useMemo(() => {
+    // Handling these since they aren't network-namespaced
+    if (pathname === '/404' || pathname === '/500') {
+      return 'errorPage';
+    }
+    if (pathname === '/community' || pathname === '/about') {
+      return pathname.substring(1);
+    }
+    return pathname.split('[network]/')[1] || '';
+  }, [pathname]);
 
   return (
     <nav className={styles.nav}>
@@ -101,10 +131,14 @@ export function Header() {
         <div className={styles['desktop-header']}>
           <div className={styles['left-side']}>
             <LogoLink />
-            <NavLinks />
+            <NavLinks activeRoute={activeRoute} />
           </div>
           <div className={styles.controls}>
-            <NetworkSelector />
+            {shouldHideNetworkSelector(activeRoute) ? (
+              <span />
+            ) : (
+              <NetworkSelector />
+            )}
             <ConnectWallet />
           </div>
         </div>
@@ -122,6 +156,7 @@ export function Header() {
           </div>
         </div>
         <MobileMenu
+          activeRoute={activeRoute}
           closeMobileMenu={closeMobileMenu}
           mobileMenuNode={mobileMenuNode}
           mobileMenuOpen={mobileMenuOpen}
@@ -129,4 +164,12 @@ export function Header() {
       </div>
     </nav>
   );
+}
+
+/**
+ * On pages that aren't network-namespaced, we should hide the network selector to avoid confusion.
+ * @param activeRoute the current page
+ */
+function shouldHideNetworkSelector(activeRoute: string) {
+  return ['errorPage', 'community', 'about'].some((v) => v === activeRoute);
 }
