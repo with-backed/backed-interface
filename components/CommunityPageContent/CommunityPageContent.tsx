@@ -3,7 +3,10 @@ import { OpenGraph } from 'components/OpenGraph';
 import { BUNNY_IMG_URL_MAP } from 'lib/constants';
 import { useConfig } from 'hooks/useConfig';
 import { SupportedNetwork } from 'lib/config';
-import { CommunityHeader } from 'components/CommunityHeader';
+import {
+  CommunityHeader,
+  CommunityHeaderView,
+} from 'components/CommunityHeader';
 import { CommunityInfo } from 'components/CommunityInfo';
 import styles from './CommunityPageContent.module.css';
 
@@ -35,8 +38,7 @@ export function CommunityAddressPage({ address }: CommunityAddressPageProps) {
         title={`Backed | Community Profile for ${address}`}
         description="View this Community profile"
       />
-      <CommunityHeader />
-      <CommunityInfo />
+      <CommunityHeaderView address={address} />
     </div>
   );
 }

@@ -6,7 +6,7 @@ export const AppWrapper: FunctionComponent = ({ children }) => {
   const { pathname } = useRouter();
 
   const isCommunityPage = useMemo(
-    () => pathname.endsWith('community'),
+    () => pathname.startsWith('/community'),
     [pathname],
   );
   return (

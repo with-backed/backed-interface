@@ -105,33 +105,70 @@ type CommunityTokenMetadata = {
   name: string;
 };
 
-function CommunityHeaderManage() {
+async function getTokenID(contract: CommunityNFT, address: string) {
+  const nonce = (await contract.nonce()).toNumber();
+  for (let i = 0; i < nonce; ++i) {
+    const owner = await contract.ownerOf(i);
+    if (owner === address) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+async function getMetadata(address: string): Promise<CommunityTokenMetadata> {
+  const contract = jsonRpcCommunityNFT(JSON_RPC_PROVIDER);
+  const tokenID = await getTokenID(contract, address);
+  const uri = await contract.tokenURI(tokenID);
+  const buffer = Buffer.from(uri.split(',')[1], 'base64');
+  return JSON.parse(buffer.toString());
+}
+
+type CommunityPageViewProps = {
+  address: string;
+};
+export function CommunityHeaderView({ address }: CommunityPageViewProps) {
+  const [metadata, setMetadata] = useState<CommunityTokenMetadata | null>(null);
+  useEffect(() => {
+    getMetadata(address).then(setMetadata);
+  }, [address]);
+
+  return (
+    <div className={styles.wrapper}>
+      {metadata ? (
+        <img
+          alt={`Community NFT for ${address}`}
+          src={metadata.image as string}
+        />
+      ) : (
+        <PlaceholderBunn />
+      )}
+      <div className={styles.cta}>
+        <h3>🖼🐇 Community NFT</h3>
+        <DescriptionList>
+          <dt>Address</dt>
+          <dd>{address}</dd>
+          <dt>Joined</dt>
+          <dd>--</dd>
+          <dt>Special Trait Displayed</dt>
+          <dd>
+            {
+              metadata?.attributes.find(
+                (attr) => attr.trait_type === 'Accessory',
+              )?.value
+            }
+          </dd>
+        </DescriptionList>
+      </div>
+    </div>
+  );
+}
+
+export function CommunityHeaderManage() {
   const { data: account } = useAccount();
   const { data: signer } = useSigner();
   const [accessories, setAccessories] = useState<Accessory[]>([]);
   const [metadata, setMetadata] = useState<CommunityTokenMetadata | null>(null);
-
-  const getTokenID = useCallback(
-    async (contract: CommunityNFT) => {
-      const nonce = (await contract.nonce()).toNumber();
-      for (let i = 0; i < nonce; ++i) {
-        const owner = await contract.ownerOf(i);
-        if (owner === account?.address) {
-          return i;
-        }
-      }
-      return -1;
-    },
-    [account?.address],
-  );
-
-  const getMetadata = useCallback(async () => {
-    const contract = jsonRpcCommunityNFT(JSON_RPC_PROVIDER);
-    const tokenID = await getTokenID(contract);
-    const uri = await contract.tokenURI(tokenID);
-    const buffer = Buffer.from(uri.split(',')[1], 'base64');
-    setMetadata(JSON.parse(buffer.toString()));
-  }, [getTokenID]);
 
   useEffect(() => {
     async function getAccessories() {
@@ -151,9 +188,11 @@ function CommunityHeaderManage() {
       setAccessories(accessories);
     }
 
-    getAccessories();
-    getMetadata();
-  }, [account?.address, getMetadata]);
+    if (account?.address) {
+      getAccessories();
+      getMetadata(account.address).then(setMetadata);
+    }
+  }, [account?.address]);
 
   // TODO: use to disable update button when same as selected
   const currentAccessory = useMemo(() => {
@@ -170,9 +209,9 @@ function CommunityHeaderManage() {
     async (acc: Accessory | null) => {
       const contract = web3CommunityNFT(signer!);
       const tx = await contract.setEnabledAccessory(acc ? acc.id : 0);
-      tx.wait().then(() => getMetadata());
+      tx.wait().then(() => getMetadata(account?.address!).then(setMetadata));
     },
-    [getMetadata, signer],
+    [account?.address, signer],
   );
 
   const [selectedAccessory, setSelectedAccessory] = useState<Accessory | null>(
