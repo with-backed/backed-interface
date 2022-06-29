@@ -39,6 +39,7 @@ export function CommunityAddressPage({ address }: CommunityAddressPageProps) {
         description="View this Community profile"
       />
       <CommunityHeaderView address={address} />
+      <CommunityInfo />
     </div>
   );
 }
