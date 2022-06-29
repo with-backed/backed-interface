@@ -124,12 +124,28 @@ async function getMetadata(address: string): Promise<CommunityTokenMetadata> {
   return JSON.parse(buffer.toString());
 }
 
+async function getAccessories(address: string) {
+  const contract = jsonRpcCommunityNFT(JSON_RPC_PROVIDER);
+  const accessoryIDs = await contract.getUnlockedAccessoriesForAddress(address);
+
+  const accessories = await Promise.all(
+    accessoryIDs
+      .filter((id) => !id.eq('-0x01'))
+      .map((id) =>
+        contract.accessoryIdToAccessory(id).then((val) => ({ ...val, id })),
+      ),
+  );
+  return accessories;
+}
+
 type CommunityPageViewProps = {
   address: string;
 };
 export function CommunityHeaderView({ address }: CommunityPageViewProps) {
+  const [accessories, setAccessories] = useState<Accessory[]>([]);
   const [metadata, setMetadata] = useState<CommunityTokenMetadata | null>(null);
   useEffect(() => {
+    getAccessories(address).then(setAccessories);
     getMetadata(address).then(setMetadata);
   }, [address]);
 
@@ -150,13 +166,13 @@ export function CommunityHeaderView({ address }: CommunityPageViewProps) {
           <dd>{address}</dd>
           <dt>Joined</dt>
           <dd>--</dd>
-          <dt>Special Trait Displayed</dt>
+          <dt>Special Traits Earned</dt>
           <dd>
-            {
-              metadata?.attributes.find(
-                (attr) => attr.trait_type === 'Accessory',
-              )?.value
-            }
+            <ul>
+              {accessories.map((acc) => {
+                return <li key={acc.id.toString()}>{acc.name}</li>;
+              })}
+            </ul>
           </dd>
         </DescriptionList>
       </div>
@@ -171,25 +187,8 @@ export function CommunityHeaderManage() {
   const [metadata, setMetadata] = useState<CommunityTokenMetadata | null>(null);
 
   useEffect(() => {
-    async function getAccessories() {
-      const contract = jsonRpcCommunityNFT(JSON_RPC_PROVIDER);
-      const accessoryIDs = await contract.getUnlockedAccessoriesForAddress(
-        account?.address!,
-      );
-
-      const accessories = await Promise.all(
-        accessoryIDs
-          .filter((id) => !id.eq('-0x01'))
-          .map((id) =>
-            contract.accessoryIdToAccessory(id).then((val) => ({ ...val, id })),
-          ),
-      );
-
-      setAccessories(accessories);
-    }
-
     if (account?.address) {
-      getAccessories();
+      getAccessories(account.address).then(setAccessories);
       getMetadata(account.address).then(setMetadata);
     }
   }, [account?.address]);
