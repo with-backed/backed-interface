@@ -1,11 +1,13 @@
 import { ethers, Signer } from 'ethers';
 import {
+  CommunityNFT__factory,
   ERC20__factory,
   ERC721,
   ERC721__factory,
   NFTLoanFacilitator__factory,
 } from 'types/generated/abis';
 import { SupportedNetwork } from './config';
+import { COMMUNITY_NFT_CONTRACT_ADDRESS } from './constants';
 
 type ContractDirectoryListing = {
   loanFacilitator: string;
@@ -91,4 +93,22 @@ export function erc721Contract(
   provider: ethers.providers.Provider | ethers.Signer,
 ) {
   return ERC721__factory.connect(address, provider);
+}
+
+export function web3CommunityNFT(signer: Signer) {
+  return communityNFT(signer);
+}
+
+export function jsonRpcCommunityNFT(jsonRpcProvider: string) {
+  const provider = new ethers.providers.JsonRpcProvider(jsonRpcProvider);
+  return communityNFT(provider);
+}
+
+export function communityNFT(
+  provider: ethers.providers.Provider | ethers.Signer,
+) {
+  return CommunityNFT__factory.connect(
+    COMMUNITY_NFT_CONTRACT_ADDRESS,
+    provider,
+  );
 }
