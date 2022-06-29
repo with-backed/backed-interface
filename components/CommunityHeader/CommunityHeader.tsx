@@ -157,7 +157,6 @@ function CommunityHeaderManage() {
 
   // TODO: use to disable update button when same as selected
   const currentAccessory = useMemo(() => {
-    console.log({ metadata, accessories });
     if (metadata && accessories) {
       const accessory = metadata.attributes.find(
         ({ trait_type }) => trait_type === 'Accessory',
