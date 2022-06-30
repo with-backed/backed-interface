@@ -64,3 +64,7 @@
   align-items: center;
   justify-content: center;
 }
+
+.not-minted-wrapper > h1 {
+  font-size: var(--font-large);
+}
