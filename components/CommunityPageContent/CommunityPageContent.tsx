@@ -4,8 +4,8 @@ import { BUNNY_IMG_URL_MAP } from 'lib/constants';
 import { useConfig } from 'hooks/useConfig';
 import { SupportedNetwork } from 'lib/config';
 import {
+  CommunityHeaderDisconnected,
   CommunityHeader,
-  CommunityHeaderView,
 } from 'components/CommunityHeader';
 import { CommunityInfo } from 'components/CommunityInfo';
 import styles from './CommunityPageContent.module.css';
@@ -19,7 +19,7 @@ export function CommunityPage() {
         title="Backed | Community"
         description="Mint or manage your Backed Community NFT"
       />
-      <CommunityHeader />
+      <CommunityHeaderDisconnected />
       <CommunityInfo />
     </div>
   );
@@ -38,7 +38,7 @@ export function CommunityAddressPage({ address }: CommunityAddressPageProps) {
         title={`Backed | Community Profile for ${address}`}
         description="View this Community profile"
       />
-      <CommunityHeaderView address={address} />
+      <CommunityHeader address={address} />
       <CommunityInfo />
     </div>
   );

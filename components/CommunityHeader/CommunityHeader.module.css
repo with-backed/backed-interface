@@ -17,6 +17,10 @@
   justify-self: center;
 }
 
+.wrapper > img {
+  width: 100%;
+}
+
 .cta {
   max-width: 500px;
   margin-top: 32px;

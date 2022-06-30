@@ -30,7 +30,16 @@ function CTAContent() {
   );
 }
 
-function CommunityHeaderDisconnected() {
+export function CommunityHeaderNotMinted() {
+  return (
+    <div>
+      <h1>This address has not yet minted.</h1>
+      <PlaceholderBunn />
+    </div>
+  );
+}
+
+export function CommunityHeaderDisconnected() {
   return (
     <div className={styles.wrapper}>
       <PlaceholderBunn />
@@ -49,7 +58,7 @@ function CommunityHeaderDisconnected() {
 }
 
 type CommunityHeaderMintProps = {
-  setHasNFT: (value: boolean) => void;
+  setHasNFT: (value: MaybeBoolean) => void;
 };
 function CommunityHeaderMint({ setHasNFT }: CommunityHeaderMintProps) {
   const { data: account } = useAccount();
@@ -64,7 +73,7 @@ function CommunityHeaderMint({ setHasNFT }: CommunityHeaderMintProps) {
     setIsPending(true);
     tx.wait()
       .then(() => {
-        setHasNFT(true);
+        setHasNFT('true');
         setIsPending(false);
       })
       .catch((reason) => captureException(reason));
@@ -270,44 +279,62 @@ export function CommunityHeaderManage() {
 }
 
 type CommunityHeaderConnectedProps = {
-  hasNFT: boolean;
-  setHasNFT: (value: boolean) => void;
+  hasNFT: MaybeBoolean;
+  setHasNFT: (value: MaybeBoolean) => void;
 };
 function CommunityHeaderConnected({
   hasNFT,
   setHasNFT,
 }: CommunityHeaderConnectedProps) {
-  if (hasNFT) {
+  if (hasNFT === 'true') {
     return <CommunityHeaderManage />;
   }
 
   return <CommunityHeaderMint setHasNFT={setHasNFT} />;
 }
 
-export function CommunityHeader() {
-  const [hasNFT, setHasNFT] = useState(false);
+type MaybeBoolean = 'true' | 'false' | 'unknown';
+
+type CommunityHeaderProps = {
+  address: string;
+};
+export function CommunityHeader({ address }: CommunityHeaderProps) {
   const { data: account } = useAccount();
+  const [hasNFT, setHasNFT] = useState<MaybeBoolean>('unknown');
   const { activeChain } = useNetwork();
 
   useEffect(() => {
     const contract = jsonRpcCommunityNFT(JSON_RPC_PROVIDER);
     async function checkNFT() {
-      if (account?.address) {
-        const tokenCount = await contract.balanceOf(account.address);
-        if (tokenCount.gt(0)) {
-          setHasNFT(true);
-        }
+      const tokenCount = await contract.balanceOf(address);
+      if (tokenCount.gt(0)) {
+        setHasNFT('true');
+      } else {
+        setHasNFT('false');
       }
     }
 
     checkNFT();
-  }, [account?.address]);
+  }, [address]);
 
   const onRequiredNetwork = activeChain?.id === REQUIRED_NETWORK_ID;
+  const viewerIsHolder = account?.address === address;
 
-  if (onRequiredNetwork) {
-    return <CommunityHeaderConnected hasNFT={hasNFT} setHasNFT={setHasNFT} />;
+  if (hasNFT === 'unknown' || !onRequiredNetwork) {
+    return <CommunityHeaderDisconnected />;
   }
 
-  return <CommunityHeaderDisconnected />;
+  if (hasNFT === 'true') {
+    if (viewerIsHolder) {
+      return <CommunityHeaderManage />;
+    } else {
+      return <CommunityHeaderView address={address} />;
+    }
+  }
+
+  if (hasNFT === 'false' && viewerIsHolder) {
+    return <CommunityHeaderMint setHasNFT={setHasNFT} />;
+  }
+
+  return <CommunityHeaderNotMinted />;
 }

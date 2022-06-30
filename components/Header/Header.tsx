@@ -26,6 +26,14 @@ const stagingPages: Page[] = [
   { name: 'Community', route: 'community', isNetworkSpecialCase: true },
 ];
 
+function isActiveRoute(activeRoute: string, candidate: string) {
+  if (candidate.length === 0) {
+    return activeRoute.length === 0;
+  }
+
+  return activeRoute.startsWith(candidate);
+}
+
 type NavLinksProps = {
   activeRoute: string;
 };
@@ -51,7 +59,9 @@ function NavLinks({ activeRoute }: NavLinksProps) {
             }>
             <a
               className={
-                p.route === activeRoute ? styles['link-active'] : styles.link
+                isActiveRoute(activeRoute, p.route)
+                  ? styles['link-active']
+                  : styles.link
               }>
               {p.name}
             </a>
