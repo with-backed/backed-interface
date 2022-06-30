@@ -29,6 +29,8 @@
 
 .cta button {
   width: auto;
+  padding-left: 2em;
+  padding-right: 2em;
 }
 
 .cta > button:disabled {
