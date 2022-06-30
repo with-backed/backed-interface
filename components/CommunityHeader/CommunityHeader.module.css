@@ -57,3 +57,10 @@
   margin: 8px 0 24px 0;
   width: auto;
 }
+
+.not-minted-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}

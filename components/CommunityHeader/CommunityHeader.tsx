@@ -32,7 +32,7 @@ function CTAContent() {
 
 export function CommunityHeaderNotMinted() {
   return (
-    <div>
+    <div className={styles['not-minted-wrapper']}>
       <h1>This address has not yet minted.</h1>
       <PlaceholderBunn />
     </div>
