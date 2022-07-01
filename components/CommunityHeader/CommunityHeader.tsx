@@ -99,11 +99,9 @@ function CommunityHeaderMint({ setHasNFT }: CommunityHeaderMintProps) {
 }
 
 type Accessory = {
-  name: string;
-  xpBased: boolean;
   artContract: string;
   qualifyingXPScore: ethers.BigNumber;
-  xpCategory: ethers.BigNumber;
+  xpCategory: string;
   id: ethers.BigNumber;
 };
 
@@ -139,11 +137,12 @@ async function getAccessories(address: string) {
 
   const accessories = await Promise.all(
     accessoryIDs
-      .filter((id) => !id.eq('-0x01'))
+      .filter((id) => !id.eq(0))
       .map((id) =>
         contract.accessoryIdToAccessory(id).then((val) => ({ ...val, id })),
       ),
   );
+  console.log({ accessories });
   return accessories;
 }
 
@@ -179,7 +178,7 @@ export function CommunityHeaderView({ address }: CommunityPageViewProps) {
           <dd>
             <ul>
               {accessories.map((acc) => {
-                return <li key={acc.id.toString()}>{acc.name}</li>;
+                return <li key={acc.id.toString()}>{acc.artContract}</li>;
               })}
             </ul>
           </dd>
@@ -202,17 +201,6 @@ export function CommunityHeaderManage() {
     }
   }, [account?.address]);
 
-  // TODO: use to disable update button when same as selected
-  const currentAccessory = useMemo(() => {
-    if (metadata && accessories) {
-      const accessory = metadata.attributes.find(
-        ({ trait_type }) => trait_type === 'Accessory',
-      );
-      return accessories.find((acc) => acc.name === accessory?.value) || null;
-    }
-    return null;
-  }, [accessories, metadata]);
-
   const setAccessory = useCallback(
     async (acc: Accessory | null) => {
       const contract = web3CommunityNFT(signer!);
@@ -230,7 +218,7 @@ export function CommunityHeaderManage() {
     const options = accessories.map((accessory) => {
       return {
         value: accessory,
-        label: accessory.name,
+        label: accessory.artContract,
       };
     });
 
