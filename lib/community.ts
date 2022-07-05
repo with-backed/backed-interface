@@ -4,6 +4,7 @@ import {
   CategoryScoreChange,
   CommunityAccountDocument,
   CommunityAccountQuery,
+  CommunityAccountQueryVariables,
   QueryAccountArgs,
   Token,
 } from 'types/generated/graphql/communitysubgraph';
@@ -19,12 +20,14 @@ export async function getCommunityAccountInfo(
   address: string,
   communityNFTSubgraph: string,
 ): Promise<CommunityAccount | null> {
-  const queryArgs: QueryAccountArgs = { id: address };
+  const queryArgs: CommunityAccountQueryVariables = { address };
   const communityClient = clientFromUrl(communityNFTSubgraph);
 
   const result = await communityClient
     .query<CommunityAccountQuery>(CommunityAccountDocument, queryArgs)
     .toPromise();
+
+  console.log({ result });
 
   if (result.error) {
     captureException(result.error);
