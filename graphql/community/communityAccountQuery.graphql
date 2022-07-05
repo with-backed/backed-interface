@@ -1,0 +1,16 @@
+query communityAccount($address: ID!) {
+  account(id: $address) {
+    id
+    token {
+      id
+      uri
+    }
+    categoryScoreChanges {
+      timestamp
+      category {
+        name
+      }
+      ipfsEntryHash
+    }
+  }
+}

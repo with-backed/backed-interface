@@ -1,0 +1,10 @@
+overwrite: true
+schema: 'https://api.thegraph.com/subgraphs/name/with-backed/backed-community-nft-rinkeby'
+documents: './graphql/community/**/*.graphql'
+generates:
+  types/generated/graphql/communitysubgraph.ts:
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'
+      - 'urql-introspection'
+      - 'typed-document-node'
