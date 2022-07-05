@@ -1,6 +1,7 @@
 import { captureException } from '@sentry/nextjs';
 import {
   Account,
+  CategoryScoreChange,
   CommunityAccountDocument,
   CommunityAccountQuery,
   QueryAccountArgs,
@@ -8,8 +9,11 @@ import {
 } from 'types/generated/graphql/communitysubgraph';
 import { clientFromUrl } from './urql';
 
+export type CommunityCategoryScoreChange = Omit<CategoryScoreChange, 'account'>;
 export type CommunityToken = Pick<Token, 'id' | 'uri'>;
-export type CommunityAccount = Pick<Account, 'id'> & { token: CommunityToken };
+export type CommunityAccount = Pick<Account, 'id' | 'categoryScoreChanges'> & {
+  token: CommunityToken;
+};
 
 export async function getCommunityAccountInfo(
   address: string,
@@ -26,5 +30,5 @@ export async function getCommunityAccountInfo(
     captureException(result.error);
   }
 
-  return result.data?.account || null;
+  return (result.data?.account as CommunityAccount) || null;
 }
