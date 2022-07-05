@@ -1,0 +1,92 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  max-width: var(--max-width);
+  margin-bottom: 3rem;
+}
+
+.xp {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap);
+  margin-top: 3rem;
+}
+
+@media screen and (max-width: 710px) {
+  .xp {
+    grid-template-columns: 1fr;
+  }
+
+  .section {
+    padding: 0 1.5rem;
+  }
+}
+
+.section > h2 {
+  font-size: 24px;
+  text-transform: uppercase;
+  margin-top: 4rem;
+  letter-spacing: 0.1rem;
+}
+
+.explanation {
+  font-size: var(--font-small);
+  max-width: 550px;
+  line-height: 1.5rem;
+}
+
+.xp fieldset {
+  border-radius: var(--border-radius-large);
+  padding: 10px 35px 20px 35px;
+  flex-shrink: 1;
+  background-color: #ffffff;
+}
+
+.xp fieldset p,
+.xp fieldset ul {
+  font-size: var(--font-small);
+  line-height: 1.3rem;
+}
+
+.xp-wide {
+  composes: xp;
+  grid-template-columns: 1fr;
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 1ch;
+  margin: 0;
+}
+
+.bunns {
+  display: flex;
+  gap: 2rem;
+}
+
+.bunn {
+  margin: 0;
+  padding-top: 16px;
+  padding-bottom: 6px;
+  gap: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: var(--font-small);
+}
+
+.bunn img {
+  padding: 16px 0;
+}
+
+.bunn > figcaption {
+  text-align: center;
+}
+
+@media screen and (max-width: 700px) {
+  .bunns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
