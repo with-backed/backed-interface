@@ -24,4 +24,4 @@ export const BUNNY_IMG_URL_MAP = {
 };
 
 export const COMMUNITY_NFT_CONTRACT_ADDRESS =
-  '0xbf53f236db0cdb6ac0e24a0e93df0f643e5f055e';
+  '0x7887bad2a088027dabce45c81229092a4112f622';
