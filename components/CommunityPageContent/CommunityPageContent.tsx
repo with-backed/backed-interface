@@ -36,7 +36,6 @@ export function CommunityAddressPage({
   address,
 }: CommunityAddressPageProps) {
   const { network } = useConfig();
-  console.log({ account });
   return (
     <div className={styles.container}>
       <OpenGraph
