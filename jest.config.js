@@ -26,6 +26,7 @@ const customJestConfig = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testEnvironment: 'jsdom',
   testPathIgnorePatterns: ['<rootDir>/pages/'],
+  globalSetup: '<rootDir>/global-setup.js',
 };
 
 module.exports = createJestConfig(customJestConfig);
