@@ -5,7 +5,6 @@ import {
   CommunityAccountDocument,
   CommunityAccountQuery,
   CommunityAccountQueryVariables,
-  QueryAccountArgs,
   Token,
 } from 'types/generated/graphql/communitysubgraph';
 import { clientFromUrl } from './urql';
@@ -26,8 +25,6 @@ export async function getCommunityAccountInfo(
   const result = await communityClient
     .query<CommunityAccountQuery>(CommunityAccountDocument, queryArgs)
     .toPromise();
-
-  console.log({ result });
 
   if (result.error) {
     captureException(result.error);
