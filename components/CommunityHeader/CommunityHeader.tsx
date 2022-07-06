@@ -12,6 +12,7 @@ import { Select } from 'components/Select';
 import { ethers } from 'ethers';
 import { captureException } from '@sentry/nextjs';
 import { CommunityNFT } from 'types/generated/abis';
+import { CommunityAccount } from 'lib/community';
 
 // TODO: optimism for launch
 const REQUIRED_NETWORK_ID = configs.rinkeby.chainId;
@@ -127,7 +128,11 @@ async function getMetadata(address: string): Promise<CommunityTokenMetadata> {
   const contract = jsonRpcCommunityNFT(JSON_RPC_PROVIDER);
   const tokenID = await getTokenID(contract, address);
   const uri = await contract.tokenURI(tokenID);
-  const buffer = Buffer.from(uri.split(',')[1], 'base64');
+  return parseMetadata(uri);
+}
+
+function parseMetadata(dataUri: string) {
+  const buffer = Buffer.from(dataUri.split(',')[1], 'base64');
   return JSON.parse(buffer.toString());
 }
 
@@ -146,15 +151,24 @@ async function getAccessories(address: string) {
 }
 
 type CommunityPageViewProps = {
+  account: CommunityAccount | null;
   address: string;
 };
-export function CommunityHeaderView({ address }: CommunityPageViewProps) {
+export function CommunityHeaderView({
+  account,
+  address,
+}: CommunityPageViewProps) {
   const [accessories, setAccessories] = useState<Accessory[]>([]);
-  const [metadata, setMetadata] = useState<CommunityTokenMetadata | null>(null);
+  const [metadata, setMetadata] = useState<CommunityTokenMetadata | null>(
+    account ? parseMetadata(account.token.uri) : null,
+  );
   useEffect(() => {
     getAccessories(address).then(setAccessories);
-    getMetadata(address).then(setMetadata);
-  }, [address]);
+    if (!account) {
+      // no data from graph, fall back to node
+      getMetadata(address).then(setMetadata);
+    }
+  }, [account, address]);
 
   return (
     <div className={styles.wrapper}>
@@ -187,26 +201,36 @@ export function CommunityHeaderView({ address }: CommunityPageViewProps) {
   );
 }
 
-export function CommunityHeaderManage() {
-  const { data: account } = useAccount();
+type CommunityHeaderManageProps = {
+  account: CommunityAccount | null;
+};
+export function CommunityHeaderManage({ account }: CommunityHeaderManageProps) {
+  const { data: wagmiAccount } = useAccount();
   const { data: signer } = useSigner();
   const [accessories, setAccessories] = useState<Accessory[]>([]);
-  const [metadata, setMetadata] = useState<CommunityTokenMetadata | null>(null);
+  const [metadata, setMetadata] = useState<CommunityTokenMetadata | null>(
+    account ? parseMetadata(account.token.uri) : null,
+  );
 
   useEffect(() => {
-    if (account?.address) {
-      getAccessories(account.address).then(setAccessories);
-      getMetadata(account.address).then(setMetadata);
+    if (wagmiAccount?.address) {
+      getAccessories(wagmiAccount.address).then(setAccessories);
+      if (!account) {
+        // no data from graph, fall back to node
+        getMetadata(wagmiAccount.address).then(setMetadata);
+      }
     }
-  }, [account?.address]);
+  }, [account, wagmiAccount?.address]);
 
   const setAccessory = useCallback(
     async (acc: Accessory | null) => {
       const contract = web3CommunityNFT(signer!);
       const tx = await contract.setEnabledAccessory(acc ? acc.id : 0);
-      tx.wait().then(() => getMetadata(account?.address!).then(setMetadata));
+      tx.wait().then(() =>
+        getMetadata(wagmiAccount?.address!).then(setMetadata),
+      );
     },
-    [account?.address, signer],
+    [wagmiAccount?.address, signer],
   );
 
   const [selectedAccessory, setSelectedAccessory] = useState<Accessory | null>(
@@ -234,7 +258,7 @@ export function CommunityHeaderManage() {
     <div className={styles.wrapper}>
       {metadata ? (
         <img
-          alt={`Community NFT for ${account?.address}`}
+          alt={`Community NFT for ${wagmiAccount?.address}`}
           src={metadata.image as string}
         />
       ) : (
@@ -244,7 +268,7 @@ export function CommunityHeaderManage() {
         <h3>🖼🐇 Community NFT</h3>
         <DescriptionList>
           <dt>Address</dt>
-          <dd>{account?.address}</dd>
+          <dd>{wagmiAccount?.address}</dd>
           <dt>Joined</dt>
           <dd>--</dd>
           <dt>Special Trait Displayed</dt>
@@ -265,28 +289,14 @@ export function CommunityHeaderManage() {
   );
 }
 
-type CommunityHeaderConnectedProps = {
-  hasNFT: MaybeBoolean;
-  setHasNFT: (value: MaybeBoolean) => void;
-};
-function CommunityHeaderConnected({
-  hasNFT,
-  setHasNFT,
-}: CommunityHeaderConnectedProps) {
-  if (hasNFT === 'true') {
-    return <CommunityHeaderManage />;
-  }
-
-  return <CommunityHeaderMint setHasNFT={setHasNFT} />;
-}
-
 type MaybeBoolean = 'true' | 'false' | 'unknown';
 
 type CommunityHeaderProps = {
   address: string;
+  account: CommunityAccount | null;
 };
-export function CommunityHeader({ address }: CommunityHeaderProps) {
-  const { data: account } = useAccount();
+export function CommunityHeader({ account, address }: CommunityHeaderProps) {
+  const { data: wagmiAccount } = useAccount();
   const [hasNFT, setHasNFT] = useState<MaybeBoolean>('unknown');
   const { activeChain } = useNetwork();
 
@@ -305,7 +315,7 @@ export function CommunityHeader({ address }: CommunityHeaderProps) {
   }, [address]);
 
   const onRequiredNetwork = activeChain?.id === REQUIRED_NETWORK_ID;
-  const viewerIsHolder = account?.address === address;
+  const viewerIsHolder = wagmiAccount?.address === address;
 
   if (hasNFT === 'unknown' || !onRequiredNetwork) {
     return <CommunityHeaderDisconnected />;
@@ -313,9 +323,9 @@ export function CommunityHeader({ address }: CommunityHeaderProps) {
 
   if (hasNFT === 'true') {
     if (viewerIsHolder) {
-      return <CommunityHeaderManage />;
+      return <CommunityHeaderManage account={account} />;
     } else {
-      return <CommunityHeaderView address={address} />;
+      return <CommunityHeaderView account={account} address={address} />;
     }
   }
 

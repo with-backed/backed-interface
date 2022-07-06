@@ -3,6 +3,8 @@ import { GetServerSideProps } from 'next';
 import { CommunityAddressPage } from 'components/CommunityPageContent';
 import { resolveEns } from 'lib/account';
 import { configs } from 'lib/config';
+import { CommunityAccount, getCommunityAccountInfo } from 'lib/community';
+import { COMMUNITY_NFT_SUBGRAPH } from 'lib/constants';
 
 export const getServerSideProps: GetServerSideProps<
   CommunityAddressProps
@@ -18,14 +20,23 @@ export const getServerSideProps: GetServerSideProps<
   const address =
     (await resolveEns(rawAddress, configs.ethereum.jsonRpcProvider)) ||
     rawAddress;
+
+  const account = await getCommunityAccountInfo(
+    address.toLowerCase(),
+    COMMUNITY_NFT_SUBGRAPH,
+  );
   return {
-    props: { address },
+    props: { account, address },
   };
 };
 
 type CommunityAddressProps = {
   address: string;
+  account: CommunityAccount | null;
 };
-export default function CommunityAddress({ address }: CommunityAddressProps) {
-  return <CommunityAddressPage address={address} />;
+export default function CommunityAddress({
+  account,
+  address,
+}: CommunityAddressProps) {
+  return <CommunityAddressPage account={account} address={address} />;
 }

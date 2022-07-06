@@ -9,6 +9,8 @@ import {
 } from 'components/CommunityHeader';
 import { CommunityInfo } from 'components/CommunityInfo';
 import styles from './CommunityPageContent.module.css';
+import { CommunityAccount } from 'lib/community';
+import { CommunityActivity } from 'components/CommunityActivity';
 
 export function CommunityPage() {
   const { network } = useConfig();
@@ -27,9 +29,14 @@ export function CommunityPage() {
 
 type CommunityAddressPageProps = {
   address: string;
+  account: CommunityAccount | null;
 };
-export function CommunityAddressPage({ address }: CommunityAddressPageProps) {
+export function CommunityAddressPage({
+  account,
+  address,
+}: CommunityAddressPageProps) {
   const { network } = useConfig();
+  console.log({ account });
   return (
     <div className={styles.container}>
       <OpenGraph
@@ -38,7 +45,8 @@ export function CommunityAddressPage({ address }: CommunityAddressPageProps) {
         title={`Backed | Community Profile for ${address}`}
         description="View this Community profile"
       />
-      <CommunityHeader address={address} />
+      <CommunityHeader account={account} address={address} />
+      <CommunityActivity account={account} />
       <CommunityInfo />
     </div>
   );
