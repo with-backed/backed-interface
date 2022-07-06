@@ -1,3 +1,4 @@
+import { Fieldset } from 'components/Fieldset';
 import { CommunityAccount } from 'lib/community';
 import React, { useMemo } from 'react';
 import styles from './CommunityActivity.module.css';
@@ -20,9 +21,18 @@ export function CommunityActivity({ account }: CommunityActivityProps) {
   }
 
   return (
-    <div className={styles.wrapper}>
-      <h2>✨ XP Earned</h2>
+    <Fieldset
+      legend="✨ XP Earned"
+      // TODO: not inline styles
+      style={{
+        borderRadius: 'var(--border-radius-large)',
+        maxWidth: '715px',
+        margin: '0 auto',
+      }}>
       <ol>
+        {scoreChanges.length === 0 && (
+          <span>No XP earned by this address yet.</span>
+        )}
         {scoreChanges.map((event) => (
           <li data-testid={`event-${event.id}`} key={event.id}>
             {event.category.name} 1XP{' '}
@@ -30,6 +40,6 @@ export function CommunityActivity({ account }: CommunityActivityProps) {
           </li>
         ))}
       </ol>
-    </div>
+    </Fieldset>
   );
 }
