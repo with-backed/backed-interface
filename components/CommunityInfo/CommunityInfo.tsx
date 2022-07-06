@@ -49,7 +49,7 @@ function Bunn({ imageData, title }: BunnProps) {
   }, [title]);
   return (
     <figure className={styles.bunn}>
-      <Image src={imageData} alt="" layout="fill" />
+      <Image src={imageData} alt="" />
       <figcaption>{renderedTitle}</figcaption>
     </figure>
   );

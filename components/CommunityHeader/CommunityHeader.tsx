@@ -142,7 +142,6 @@ async function getAccessories(address: string) {
         contract.accessoryIdToAccessory(id).then((val) => ({ ...val, id })),
       ),
   );
-  console.log({ accessories });
   return accessories;
 }
 
