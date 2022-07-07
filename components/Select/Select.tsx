@@ -80,7 +80,10 @@ export function Select<
         }),
         dropdownIndicator: (provided) => ({
           ...provided,
-          color: 'var(--neutral-100)',
+          color:
+            color === 'clickable'
+              ? 'var(--highlight-clickable-100)'
+              : 'var(--neutral-100)',
         }),
         menu: (provided) => ({
           ...provided,
