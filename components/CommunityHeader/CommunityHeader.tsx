@@ -5,17 +5,16 @@ import styles from './CommunityHeader.module.css';
 import { PlaceholderBunn } from './PlaceholderBunn';
 import optimismCircle from './optimism-circle.png';
 import { configs } from 'lib/config';
-import { useAccount, useNetwork, useSigner } from 'wagmi';
+import { useAccount, useSigner } from 'wagmi';
 import { jsonRpcCommunityNFT, web3CommunityNFT } from 'lib/contracts';
 import { DescriptionList } from 'components/DescriptionList';
 import { Select } from 'components/Select';
-import { ethers } from 'ethers';
 import { captureException } from '@sentry/nextjs';
 import { CommunityNFT } from 'types/generated/abis';
-import { CommunityAccount } from 'lib/community';
+import { AccessoryLookup, CommunityAccount } from 'lib/community';
+import { Accessory } from 'types/generated/graphql/communitysubgraph';
 
 // TODO: optimism for launch
-const REQUIRED_NETWORK_ID = configs.rinkeby.chainId;
 const JSON_RPC_PROVIDER = configs.rinkeby.jsonRpcProvider;
 
 function CTAContent() {
@@ -99,13 +98,6 @@ function CommunityHeaderMint({ setHasNFT }: CommunityHeaderMintProps) {
   );
 }
 
-type Accessory = {
-  artContract: string;
-  qualifyingXPScore: ethers.BigNumber;
-  xpCategory: string;
-  id: ethers.BigNumber;
-};
-
 type CommunityTokenMetadata = {
   attributes: { trait_type: string; value: string | number }[];
   description: string;
@@ -136,39 +128,45 @@ function parseMetadata(dataUri: string) {
   return JSON.parse(buffer.toString());
 }
 
-async function getAccessories(address: string) {
+async function getAccessories(
+  address: string,
+  accessoryLookup: AccessoryLookup,
+) {
   const contract = jsonRpcCommunityNFT(JSON_RPC_PROVIDER);
   const accessoryIDs = await contract.getUnlockedAccessoriesForAddress(address);
 
-  const accessories = await Promise.all(
-    accessoryIDs
-      .filter((id) => !id.eq(0))
-      .map((id) =>
-        contract.accessoryIdToAccessory(id).then((val) => ({ ...val, id })),
-      ),
-  );
-  return accessories;
+  return accessoryIDs
+    .filter((id) => !id.eq(0))
+    .reduce((result, id) => {
+      let accessory = accessoryLookup[id.toString()];
+      if (accessory) {
+        return [...result, accessory];
+      }
+      return result;
+    }, [] as Accessory[]);
 }
 
 type CommunityPageViewProps = {
   account: CommunityAccount | null;
   address: string;
+  accessoryLookup: AccessoryLookup;
 };
 export function CommunityHeaderView({
   account,
   address,
+  accessoryLookup,
 }: CommunityPageViewProps) {
   const [accessories, setAccessories] = useState<Accessory[]>([]);
   const [metadata, setMetadata] = useState<CommunityTokenMetadata | null>(
     account ? parseMetadata(account.token.uri) : null,
   );
   useEffect(() => {
-    getAccessories(address).then(setAccessories);
+    getAccessories(address, accessoryLookup).then(setAccessories);
     if (!account) {
       // no data from graph, fall back to node
       getMetadata(address).then(setMetadata);
     }
-  }, [account, address]);
+  }, [account, address, accessoryLookup]);
 
   return (
     <div className={styles.wrapper}>
@@ -191,7 +189,7 @@ export function CommunityHeaderView({
           <dd>
             <ul>
               {accessories.map((acc) => {
-                return <li key={acc.id.toString()}>{acc.artContract}</li>;
+                return <li key={acc.id.toString()}>{acc.name}</li>;
               })}
             </ul>
           </dd>
@@ -203,8 +201,12 @@ export function CommunityHeaderView({
 
 type CommunityHeaderManageProps = {
   account: CommunityAccount | null;
+  accessoryLookup: AccessoryLookup;
 };
-export function CommunityHeaderManage({ account }: CommunityHeaderManageProps) {
+export function CommunityHeaderManage({
+  account,
+  accessoryLookup,
+}: CommunityHeaderManageProps) {
   const { data: wagmiAccount } = useAccount();
   const { data: signer } = useSigner();
   const [accessories, setAccessories] = useState<Accessory[]>([]);
@@ -214,13 +216,15 @@ export function CommunityHeaderManage({ account }: CommunityHeaderManageProps) {
 
   useEffect(() => {
     if (wagmiAccount?.address) {
-      getAccessories(wagmiAccount.address).then(setAccessories);
+      getAccessories(wagmiAccount.address, accessoryLookup).then(
+        setAccessories,
+      );
       if (!account) {
         // no data from graph, fall back to node
         getMetadata(wagmiAccount.address).then(setMetadata);
       }
     }
-  }, [account, wagmiAccount?.address]);
+  }, [account, wagmiAccount?.address, accessoryLookup]);
 
   const setAccessory = useCallback(
     async (acc: Accessory | null) => {
@@ -241,7 +245,7 @@ export function CommunityHeaderManage({ account }: CommunityHeaderManageProps) {
     const options = accessories.map((accessory) => {
       return {
         value: accessory,
-        label: accessory.artContract,
+        label: accessory.name,
       };
     });
 
@@ -294,11 +298,15 @@ type MaybeBoolean = 'true' | 'false' | 'unknown';
 type CommunityHeaderProps = {
   address: string;
   account: CommunityAccount | null;
+  accessoryLookup: AccessoryLookup;
 };
-export function CommunityHeader({ account, address }: CommunityHeaderProps) {
+export function CommunityHeader({
+  account,
+  address,
+  accessoryLookup,
+}: CommunityHeaderProps) {
   const { data: wagmiAccount } = useAccount();
   const [hasNFT, setHasNFT] = useState<MaybeBoolean>('unknown');
-  const { activeChain } = useNetwork();
 
   useEffect(() => {
     const contract = jsonRpcCommunityNFT(JSON_RPC_PROVIDER);
@@ -314,18 +322,28 @@ export function CommunityHeader({ account, address }: CommunityHeaderProps) {
     checkNFT();
   }, [address]);
 
-  const onRequiredNetwork = activeChain?.id === REQUIRED_NETWORK_ID;
   const viewerIsHolder = wagmiAccount?.address === address;
 
-  if (hasNFT === 'unknown' || !onRequiredNetwork) {
+  if (hasNFT === 'unknown') {
     return <CommunityHeaderDisconnected />;
   }
 
   if (hasNFT === 'true') {
     if (viewerIsHolder) {
-      return <CommunityHeaderManage account={account} />;
+      return (
+        <CommunityHeaderManage
+          account={account}
+          accessoryLookup={accessoryLookup}
+        />
+      );
     } else {
-      return <CommunityHeaderView account={account} address={address} />;
+      return (
+        <CommunityHeaderView
+          account={account}
+          address={address}
+          accessoryLookup={accessoryLookup}
+        />
+      );
     }
   }
 

@@ -9,7 +9,7 @@ import {
 } from 'components/CommunityHeader';
 import { CommunityInfo } from 'components/CommunityInfo';
 import styles from './CommunityPageContent.module.css';
-import { CommunityAccount } from 'lib/community';
+import { AccessoryLookup, CommunityAccount } from 'lib/community';
 import { CommunityActivity } from 'components/CommunityActivity';
 
 export function CommunityPage() {
@@ -30,10 +30,12 @@ export function CommunityPage() {
 type CommunityAddressPageProps = {
   address: string;
   account: CommunityAccount | null;
+  accessoryLookup: AccessoryLookup;
 };
 export function CommunityAddressPage({
   account,
   address,
+  accessoryLookup,
 }: CommunityAddressPageProps) {
   const { network } = useConfig();
   return (
@@ -44,7 +46,11 @@ export function CommunityAddressPage({
         title={`Backed | Community Profile for ${address}`}
         description="View this Community profile"
       />
-      <CommunityHeader account={account} address={address} />
+      <CommunityHeader
+        account={account}
+        address={address}
+        accessoryLookup={accessoryLookup}
+      />
       <CommunityActivity account={account} />
       <CommunityInfo />
     </div>
