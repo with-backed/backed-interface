@@ -1,0 +1,7 @@
+query accessories {
+  accessories {
+    id
+    name
+    contractAddress
+  }
+}

@@ -1,5 +1,8 @@
 import { captureException } from '@sentry/nextjs';
 import {
+  AccessoriesDocument,
+  AccessoriesQuery,
+  Accessory,
   Account,
   CategoryScoreChange,
   CommunityAccountDocument,
@@ -14,6 +17,7 @@ export type CommunityToken = Pick<Token, 'id' | 'uri'>;
 export type CommunityAccount = Pick<Account, 'id' | 'categoryScoreChanges'> & {
   token: CommunityToken;
 };
+export type AccessoryLookup = Record<string, Accessory | undefined>;
 
 export async function getCommunityAccountInfo(
   address: string,
@@ -31,4 +35,31 @@ export async function getCommunityAccountInfo(
   }
 
   return (result.data?.account as CommunityAccount) || null;
+}
+
+export async function getAccessoryLookup(
+  communityNFTSubgraph: string,
+): Promise<AccessoryLookup> {
+  const communityClient = clientFromUrl(communityNFTSubgraph);
+  const result = await communityClient
+    .query<AccessoriesQuery>(AccessoriesDocument)
+    .toPromise();
+
+  if (result.error) {
+    captureException(result.error);
+  }
+
+  if (result.data?.accessories) {
+    return result.data.accessories.reduce(
+      (result, accessory) => ({
+        ...result,
+        [accessory.id]: accessory,
+        [accessory.name]: accessory,
+        [accessory.contractAddress]: accessory,
+      }),
+      {} as AccessoryLookup,
+    );
+  }
+
+  return {};
 }
