@@ -1,0 +1,78 @@
+.wrapper {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  margin-top: 40px;
+  gap: 40px;
+}
+
+@media screen and (max-width: 710px) {
+  .wrapper {
+    grid-template-columns: 1fr;
+    gap: 0px;
+    padding: 0 1.5rem;
+  }
+}
+
+.wrapper > * {
+  justify-self: center;
+}
+
+.wrapper > img {
+  width: 100%;
+}
+
+.cta {
+  max-width: 500px;
+  margin-top: 32px;
+  font-family: var(--sans);
+}
+
+.cta button {
+  width: auto;
+  padding-left: 2em;
+  padding-right: 2em;
+}
+
+.cta > button:disabled {
+  color: #bdaad0;
+  background: #f6f3fa;
+}
+
+.cta > p {
+  font-size: var(--font-large);
+}
+
+.connect-wallet > span {
+  /* this has to go on the NextJS wrapper span, not on the image and not on an
+   * additional span we control. Janky but w/e.
+   */
+  margin-bottom: -3px !important;
+}
+
+.button-inline {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.select {
+  margin: 8px 0 24px 0;
+  width: auto;
+}
+
+.not-minted-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.not-minted-wrapper > h1 {
+  font-size: var(--font-large);
+}
+
+.link,
+.link:visited {
+  color: var(--neutral-100);
+  text-decoration: underline;
+}
