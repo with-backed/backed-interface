@@ -21,25 +21,23 @@ export function CommunityActivity({ account }: CommunityActivityProps) {
   }
 
   return (
-    <Fieldset
-      legend="✨ XP Earned"
-      // TODO: not inline styles
-      style={{
-        borderRadius: 'var(--border-radius-large)',
-        maxWidth: '715px',
-        margin: '0 auto',
-      }}>
-      <ol>
+    <div className={styles.wrapper}>
+      <Fieldset legend="✨ XP Earned">
         {scoreChanges.length === 0 && (
           <span>No XP earned by this address yet.</span>
         )}
-        {scoreChanges.map((event) => (
-          <li data-testid={`event-${event.id}`} key={event.id}>
-            {event.category.name} 1XP{' '}
-            {new Date(event.timestamp * 1000).toLocaleDateString()}
-          </li>
-        ))}
-      </ol>
-    </Fieldset>
+        {scoreChanges.length > 0 && (
+          <ol className={styles.list}>
+            {scoreChanges.map((event) => (
+              <li data-testid={`event-${event.id}`} key={event.id}>
+                {event.category.name} 1XP{' '}
+                <span className={styles[event.category.name]} />{' '}
+                {new Date(event.timestamp * 1000).toLocaleDateString()}
+              </li>
+            ))}
+          </ol>
+        )}
+      </Fieldset>
+    </div>
   );
 }
