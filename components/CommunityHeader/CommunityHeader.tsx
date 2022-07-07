@@ -162,15 +162,11 @@ export function CommunityHeaderView({
   accessoryLookup,
 }: CommunityPageViewProps) {
   const [accessories, setAccessories] = useState<Accessory[]>([]);
-  const [metadata, setMetadata] = useState<CommunityTokenMetadata | null>(
-    account ? parseMetadata(account.token.uri) : null,
-  );
+  // TODO: when graph is fixed populate initial metadata from there
+  const [metadata, setMetadata] = useState<CommunityTokenMetadata | null>(null);
   useEffect(() => {
     getAccessories(address, accessoryLookup).then(setAccessories);
-    if (!account) {
-      // no data from graph, fall back to node
-      getMetadata(address).then(setMetadata);
-    }
+    getMetadata(address).then(setMetadata);
   }, [account, address, accessoryLookup]);
 
   return (
@@ -215,19 +211,15 @@ export function CommunityHeaderManage({
   const { data: wagmiAccount } = useAccount();
   const { data: signer } = useSigner();
   const [accessories, setAccessories] = useState<Accessory[]>([]);
-  const [metadata, setMetadata] = useState<CommunityTokenMetadata | null>(
-    account ? parseMetadata(account.token.uri) : null,
-  );
+  // TODO: when graph is fixed populate initial metadata from there
+  const [metadata, setMetadata] = useState<CommunityTokenMetadata | null>(null);
 
   useEffect(() => {
     if (wagmiAccount?.address) {
       getAccessories(wagmiAccount.address, accessoryLookup).then(
         setAccessories,
       );
-      if (!account) {
-        // no data from graph, fall back to node
-        getMetadata(wagmiAccount.address).then(setMetadata);
-      }
+      getMetadata(wagmiAccount.address).then(setMetadata);
     }
   }, [account, wagmiAccount?.address, accessoryLookup]);
 
