@@ -25,3 +25,5 @@ export const BUNNY_IMG_URL_MAP = {
 
 export const COMMUNITY_NFT_CONTRACT_ADDRESS =
   '0x7887bad2a088027dabce45c81229092a4112f622';
+export const COMMUNITY_NFT_SUBGRAPH =
+  'https://api.thegraph.com/subgraphs/name/with-backed/backed-community-nft-rinkeby';
