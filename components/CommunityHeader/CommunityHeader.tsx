@@ -13,6 +13,7 @@ import { captureException } from '@sentry/nextjs';
 import { CommunityNFT } from 'types/generated/abis';
 import { AccessoryLookup, CommunityAccount } from 'lib/community';
 import { Accessory } from 'types/generated/graphql/communitysubgraph';
+import Link from 'next/link';
 
 // TODO: optimism for launch
 const JSON_RPC_PROVIDER = configs.rinkeby.jsonRpcProvider;
@@ -48,9 +49,13 @@ export function CommunityHeaderDisconnected() {
         <Button disabled>Mint for Free</Button>
 
         <p className={styles['connect-wallet']}>
-          Connect your wallet on{' '}
+          To mint, you&apos;ll need ETH on{' '}
           <Image src={optimismCircle} alt="" height={18} width={18} /> Optimism
-          network.
+          for gas. Use the{' '}
+          <Link href="https://app.optimism.io/bridge">
+            <a className={styles.link}>Optimism Bridge</a>
+          </Link>{' '}
+          to move ETH between networks.
         </p>
       </div>
     </div>

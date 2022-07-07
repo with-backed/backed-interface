@@ -70,3 +70,9 @@
 .not-minted-wrapper > h1 {
   font-size: var(--font-large);
 }
+
+.link,
+.link:visited {
+  color: var(--neutral-100);
+  text-decoration: underline;
+}
