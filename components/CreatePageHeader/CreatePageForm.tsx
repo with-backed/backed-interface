@@ -70,9 +70,8 @@ export function CreatePageForm({
   } = form;
   const { jsonRpcProvider, network } = useConfig();
   const { addMessage } = useGlobalMessages();
-  const { data } = useAccount();
+  const { address } = useAccount();
   const { data: signer } = useSigner({ onError: captureException });
-  const account = data?.address;
   const buttonText = useMemo(() => 'Mint Borrower Ticket', []);
   const [txHash, setTxHash] = useState('');
   const [waitingForTx, setWaitingForTx] = useState(false);
@@ -86,7 +85,7 @@ export function CreatePageForm({
       jsonRpcProvider,
       network as SupportedNetwork,
     );
-    const filter = contract.filters.CreateLoan(null, account, null, null, null);
+    const filter = contract.filters.CreateLoan(null, address, null, null, null);
     contract.once(filter, (id) => {
       onApproved();
       setWaitingForTx(false);
@@ -94,7 +93,7 @@ export function CreatePageForm({
         `/network/${network}/loans/${id.toString()}?newLoan=true`,
       );
     });
-  }, [account, jsonRpcProvider, network, onApproved]);
+  }, [address, jsonRpcProvider, network, onApproved]);
 
   const mint = useCallback(
     async ({
@@ -134,7 +133,7 @@ export function CreatePageForm({
         denomination.address,
         durationInSeconds,
         // If they've gotten this far, they must have an account.
-        account!,
+        address!,
       );
 
       setTxHash(t.hash);
@@ -158,7 +157,7 @@ export function CreatePageForm({
       });
     },
     [
-      account,
+      address,
       addMessage,
       collateralAddress,
       collateralTokenID,

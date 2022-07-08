@@ -36,7 +36,7 @@ mockJsonRpcERC20Contract.mockReturnValue({
   decimals: jest.fn().mockResolvedValue(ethers.BigNumber.from(18)),
 } as any);
 mockUseTimestamp.mockReturnValue(42);
-mockUseAccount.mockReturnValue({ data: { address: '0xmyaddress' } } as any);
+mockUseAccount.mockReturnValue({ address: '0xmyaddress' } as any);
 
 describe('useBalance', () => {
   beforeEach(() => {

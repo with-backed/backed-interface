@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import { SupportedNetwork } from 'lib/config';
 import React, { useCallback, useMemo } from 'react';
-import { useNetwork } from 'wagmi';
+import { useNetwork, useSwitchNetwork } from 'wagmi';
 import { Banner, BannerKind } from '../Banner';
 
 const BANNER_CLASS_MAP: { [network in SupportedNetwork]: BannerKind } = {
@@ -21,14 +21,15 @@ export const WrongNetwork = ({
   expectedChainId,
   expectedChainName,
 }: WrongNetworkProps) => {
-  const { activeChain, switchNetwork } = useNetwork();
+  const { chain } = useNetwork();
+  const { switchNetworkAsync } = useSwitchNetwork();
   const { addMessage } = useGlobalMessages();
 
-  const chainId = activeChain?.id;
+  const chainId = chain?.id;
 
   const handleClick = useCallback(async () => {
     try {
-      await switchNetwork!(expectedChainId);
+      await switchNetworkAsync!(expectedChainId);
     } catch (e) {
       addMessage({
         kind: 'error',
@@ -36,7 +37,7 @@ export const WrongNetwork = ({
           'Looks like your wallet does not support automatic network changes. Please change the network manually.',
       });
     }
-  }, [addMessage, expectedChainId, switchNetwork]);
+  }, [addMessage, expectedChainId, switchNetworkAsync]);
 
   const currentChainName = useMemo(() => {
     if (chainId) {

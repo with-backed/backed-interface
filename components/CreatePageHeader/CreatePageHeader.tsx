@@ -34,8 +34,7 @@ export function CreatePageHeader() {
     },
   });
   const { eip721Subgraph, network } = useConfig();
-  const { data } = useAccount();
-  const account = data?.address;
+  const { address } = useAccount();
   const [current, send] = useMachine(createPageFormMachine);
 
   const [selectedNFT, setSelectedNFT] = useState<NFTEntity | null>(null);
@@ -105,12 +104,12 @@ export function CreatePageHeader() {
   );
 
   useEffect(() => {
-    if (account && current.matches('noWallet')) {
+    if (address && current.matches('noWallet')) {
       send({
         type: 'CONNECT',
       });
     }
-  }, [account, current, send]);
+  }, [address, current, send]);
 
   const errors = form.formState.errors;
 
@@ -219,7 +218,7 @@ export function CreatePageHeader() {
       <Provider value={eip721Client}>
         <NFTCollateralPicker
           hiddenNFTAddresses={hiddenNFTs}
-          connectedWallet={account || ''}
+          connectedWallet={address || ''}
           handleSetSelectedNFT={handleSetSelectedNFT}
           dialog={dialog}
         />

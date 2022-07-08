@@ -23,20 +23,19 @@ type LoanFormProps = {
   refresh: () => void;
 };
 export function LoanForm({ loan, refresh }: LoanFormProps) {
-  const { data } = useAccount();
-  const account = data?.address;
+  const { address } = useAccount();
   const { jsonRpcProvider, network } = useConfig();
   const timestamp = useTimestamp();
   const balance = useBalance(loan.loanAssetContractAddress);
   const [needsAllowance, setNeedsAllowance] = useState(true);
-  const role = useLoanViewerRole(loan, account);
+  const role = useLoanViewerRole(loan, address);
   const viewerIsBorrower = role === 'borrower';
   const viewerIsLender = role === 'lender';
 
   useEffect(() => {
-    if (account) {
+    if (address) {
       getAccountLoanAssetAllowance(
-        account,
+        address,
         loan.loanAssetContractAddress,
         jsonRpcProvider,
         network as SupportedNetwork,
@@ -45,7 +44,7 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
       });
     }
   }, [
-    account,
+    address,
     jsonRpcProvider,
     loan.loanAssetContractAddress,
     loan.loanAssetDecimals,
@@ -57,7 +56,7 @@ export function LoanForm({ loan, refresh }: LoanFormProps) {
     return null;
   }
 
-  if (!account) {
+  if (!address) {
     return (
       <div className={styles.wrapper}>
         <Button disabled>
