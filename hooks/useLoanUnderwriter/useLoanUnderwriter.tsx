@@ -23,13 +23,12 @@ export function useLoanUnderwriter(
   const { addMessage } = useGlobalMessages();
   const [txHash, setTxHash] = useState('');
   const [transactionPending, setTransactionPending] = useState(false);
-  const { data } = useAccount();
+  const { address } = useAccount();
   const { data: signer } = useSigner({ onError: captureException });
-  const account = data?.address;
 
   const underwrite = useCallback(
     async ({ interestRate, duration, loanAmount }: Values) => {
-      if (!account) {
+      if (!address) {
         throw new Error('Cannot underwrite a loan without a connected account');
       }
       const loanFacilitator = web3LoanFacilitator(
@@ -45,7 +44,7 @@ export function useLoanUnderwriter(
         annualInterestRate,
         ethers.utils.parseUnits(loanAmount.toString(), loanAssetDecimals),
         daysToSecondsBigNum(duration),
-        account,
+        address,
       );
 
       setTransactionPending(true);
@@ -60,7 +59,7 @@ export function useLoanUnderwriter(
               <p>
                 💸 You are now the Lender on this loan! Subscribe to activity
                 notifications from your{' '}
-                <Link href={`/network/${network}/profile/${account}`}>
+                <Link href={`/network/${network}/profile/${address}`}>
                   <a>profile page</a>
                 </Link>
                 .
@@ -84,7 +83,7 @@ export function useLoanUnderwriter(
           });
         });
     },
-    [account, addMessage, id, signer, loanAssetDecimals, network, refresh],
+    [address, addMessage, id, signer, loanAssetDecimals, network, refresh],
   );
 
   return {
