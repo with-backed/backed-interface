@@ -3,21 +3,26 @@ import { render } from '@testing-library/react';
 import { ErrorBanners } from 'components/ErrorBanners';
 import { Message, useGlobalMessages } from 'hooks/useGlobalMessages';
 import { useRouter } from 'next/router';
-import { useNetwork } from 'wagmi';
+import { useNetwork, useSwitchNetwork } from 'wagmi';
 
 jest.mock('hooks/useGlobalMessages');
 jest.mock('next/router');
 jest.mock('wagmi');
 
 const mockedUseNetwork = useNetwork as jest.MockedFunction<typeof useNetwork>;
+const mockedUseSwitchNetwork = useSwitchNetwork as jest.MockedFunction<
+  typeof useSwitchNetwork
+>;
 const mockedUseGlobalMessages = useGlobalMessages as jest.MockedFunction<
   typeof useGlobalMessages
 >;
 const mockedUseRouter = useRouter as jest.MockedFunction<typeof useRouter>;
 
 mockedUseNetwork.mockReturnValue({
-  activeChain: { id: 1337 },
-  switchNetwork: jest.fn(),
+  chain: { id: 1337 },
+} as any);
+mockedUseSwitchNetwork.mockReturnValue({
+  switchNetworkAsync: jest.fn(),
 } as any);
 
 const messages: Message[] = [
