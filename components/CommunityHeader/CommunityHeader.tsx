@@ -221,7 +221,7 @@ export function CommunityHeaderManage({
   }, [accessories]);
 
   const defaultValue = useMemo(() => {
-    if (currentAccessoryName) {
+    if (currentAccessoryName || currentAccessoryName === '') {
       return (
         accessoryOptions.find((opt) => opt.label === currentAccessoryName) || {
           value: null,
