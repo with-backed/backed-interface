@@ -66,14 +66,14 @@ type CommunityHeaderMintProps = {
   setHasNFT: (value: MaybeBoolean) => void;
 };
 function CommunityHeaderMint({ setHasNFT }: CommunityHeaderMintProps) {
-  const { data: account } = useAccount();
+  const { address } = useAccount();
   const { data: signer } = useSigner();
   const [txHash, setTxHash] = useState('');
   const [isPending, setIsPending] = useState(false);
 
   const mint = useCallback(async () => {
     const contract = web3CommunityNFT(signer!);
-    const tx = await contract.mint(account?.address!);
+    const tx = await contract.mint(address!);
     setTxHash(tx.hash);
     setIsPending(true);
     tx.wait()
@@ -82,7 +82,7 @@ function CommunityHeaderMint({ setHasNFT }: CommunityHeaderMintProps) {
         setIsPending(false);
       })
       .catch((reason) => captureException(reason));
-  }, [account?.address, setHasNFT, signer]);
+  }, [address, setHasNFT, signer]);
 
   return (
     <div className={styles.wrapper}>
@@ -212,7 +212,7 @@ export function CommunityHeaderManage({
   account,
   accessoryLookup,
 }: CommunityHeaderManageProps) {
-  const { data: wagmiAccount } = useAccount();
+  const { address } = useAccount();
   const { data: signer } = useSigner();
   const [accessories, setAccessories] = useState<Accessory[]>([]);
   const [metadata, setMetadata] = useState<CommunityTokenMetadata | null>(
@@ -220,26 +220,22 @@ export function CommunityHeaderManage({
   );
 
   useEffect(() => {
-    if (wagmiAccount?.address) {
-      getAccessories(wagmiAccount.address, accessoryLookup).then(
-        setAccessories,
-      );
+    if (address) {
+      getAccessories(address, accessoryLookup).then(setAccessories);
       if (!account) {
         // no data from graph, fall back to node
-        getMetadata(wagmiAccount.address).then(setMetadata);
+        getMetadata(address).then(setMetadata);
       }
     }
-  }, [account, wagmiAccount?.address, accessoryLookup]);
+  }, [account, address, accessoryLookup]);
 
   const setAccessory = useCallback(
     async (acc: Accessory | null) => {
       const contract = web3CommunityNFT(signer!);
       const tx = await contract.setEnabledAccessory(acc ? acc.id : 0);
-      tx.wait().then(() =>
-        getMetadata(wagmiAccount?.address!).then(setMetadata),
-      );
+      tx.wait().then(() => getMetadata(address!).then(setMetadata));
     },
-    [wagmiAccount?.address, signer],
+    [address, signer],
   );
 
   const [selectedAccessory, setSelectedAccessory] = useState<Accessory | null>(
@@ -267,7 +263,7 @@ export function CommunityHeaderManage({
     <div className={styles.wrapper}>
       {metadata ? (
         <img
-          alt={`Community NFT for ${wagmiAccount?.address}`}
+          alt={`Community NFT for ${address}`}
           src={metadata.image as string}
         />
       ) : (
@@ -277,7 +273,7 @@ export function CommunityHeaderManage({
         <h3>🖼🐇 Community NFT</h3>
         <DescriptionList>
           <dt>Address</dt>
-          <dd>{wagmiAccount?.address}</dd>
+          <dd>{address}</dd>
           <dt>Joined</dt>
           <dd>--</dd>
           <dt>Special Trait Displayed</dt>
@@ -310,7 +306,7 @@ export function CommunityHeader({
   address,
   accessoryLookup,
 }: CommunityHeaderProps) {
-  const { data: wagmiAccount } = useAccount();
+  const { address: connectedAddress } = useAccount();
   const [hasNFT, setHasNFT] = useState<MaybeBoolean>('unknown');
 
   useEffect(() => {
@@ -327,7 +323,7 @@ export function CommunityHeader({
     checkNFT();
   }, [address]);
 
-  const viewerIsHolder = wagmiAccount?.address === address;
+  const viewerIsHolder = connectedAddress === address;
 
   if (hasNFT === 'unknown') {
     return <CommunityHeaderDisconnected />;
