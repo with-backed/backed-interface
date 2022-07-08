@@ -23,8 +23,7 @@ export const getServerSideProps: GetServerSideProps<{}> = async (context) => {
 };
 
 export default function Test() {
-  const { data } = useAccount();
-  const account = data?.address;
+  const { address } = useAccount();
   return (
     <>
       <Head>
@@ -38,12 +37,12 @@ export default function Test() {
         <Fieldset
           style={{ gridColumn: 'span 6', marginTop: 'var(--gap)' }}
           legend="mint an NFT">
-          {account == null ? <ConnectWallet /> : <MintPunk />}
+          {address == null ? <ConnectWallet /> : <MintPunk />}
         </Fieldset>
         <Fieldset
           style={{ gridColumn: 'span 6', marginTop: 'var(--gap)' }}
           legend="mint DAI">
-          {account == null ? <ConnectWallet /> : <MintDAI />}
+          {address == null ? <ConnectWallet /> : <MintDAI />}
         </Fieldset>
       </TwelveColumn>
     </>
@@ -52,9 +51,8 @@ export default function Test() {
 
 function MintPunk() {
   const { jsonRpcProvider } = useConfig();
-  const { data } = useAccount();
+  const { address } = useAccount();
   const { data: signer } = useSigner();
-  const account = data?.address;
   const [txHash, setTxHash] = useState('');
   const [txPending, setTxPending] = useState(false);
   const [id, setId] = useState<ethers.BigNumber | null>(null);
@@ -77,7 +75,7 @@ function MintPunk() {
   const wait = async () => {
     const provider = new ethers.providers.JsonRpcProvider(jsonRpcProvider);
     const punk = MockPUNK__factory.connect(mockPunkContract, provider);
-    const filter = punk.filters.Transfer(null, account, null);
+    const filter = punk.filters.Transfer(null, address, null);
     punk.once(filter, (from, to, tokenId) => {
       setTxPending(false);
       setId(tokenId);
@@ -103,16 +101,15 @@ function MintPunk() {
 
 function MintDAI() {
   const { jsonRpcProvider } = useConfig();
-  const { data } = useAccount();
+  const { address } = useAccount();
   const { data: signer } = useSigner();
-  const account = data?.address;
   const [txHash, setTxHash] = useState('');
   const [txPending, setTxPending] = useState(false);
   const mockDAIContract = process.env.NEXT_PUBLIC_MOCK_DAI_CONTRACT || '';
 
   const mint = async () => {
     const dai = MockDAI__factory.connect(mockDAIContract, signer!);
-    const t = await dai.mint(ethers.BigNumber.from(10000), account as string);
+    const t = await dai.mint(ethers.BigNumber.from(10000), address as string);
     setTxHash(t.hash);
     setTxPending(true);
     t.wait()
@@ -128,7 +125,7 @@ function MintDAI() {
   const wait = async () => {
     const provider = new ethers.providers.JsonRpcProvider(jsonRpcProvider);
     const dai = MockDAI__factory.connect(mockDAIContract, provider);
-    const filter = dai.filters.Transfer(null, account, null);
+    const filter = dai.filters.Transfer(null, address, null);
     dai.once(filter, (from, to, value) => {
       setTxPending(false);
     });
