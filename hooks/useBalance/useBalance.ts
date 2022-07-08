@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
 
 export function useBalance(assetContractAddress: string) {
-  const { data: account } = useAccount();
+  const { address } = useAccount();
   const { jsonRpcProvider } = useConfig();
   const timestamp = useTimestamp();
 
@@ -14,7 +14,7 @@ export function useBalance(assetContractAddress: string) {
 
   const getBalance = useCallback(
     async () => {
-      if (!account?.address) {
+      if (!address) {
         return;
       }
       const assetContract = jsonRpcERC20Contract(
@@ -22,7 +22,7 @@ export function useBalance(assetContractAddress: string) {
         jsonRpcProvider,
       );
       const [balance, decimals] = await Promise.all([
-        assetContract.balanceOf(account.address),
+        assetContract.balanceOf(address),
         assetContract.decimals(),
       ]);
 
@@ -32,7 +32,7 @@ export function useBalance(assetContractAddress: string) {
       setBalance(humanReadableBalance);
     },
     // timestamp included as a dep to force refresh whenever timestamp updates (should indicate new block)
-    [account?.address, assetContractAddress, jsonRpcProvider, timestamp],
+    [address, assetContractAddress, jsonRpcProvider, timestamp],
   );
 
   useEffect(() => {
