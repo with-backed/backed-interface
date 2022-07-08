@@ -10,8 +10,13 @@ import { jsonRpcCommunityNFT, web3CommunityNFT } from 'lib/contracts';
 import { DescriptionList } from 'components/DescriptionList';
 import { Select } from 'components/Select';
 import { captureException } from '@sentry/nextjs';
-import { CommunityNFT } from 'types/generated/abis';
-import { AccessoryLookup, CommunityAccount } from 'lib/community';
+import {
+  AccessoryLookup,
+  CommunityAccount,
+  CommunityTokenMetadata,
+  getAccessories,
+  getMetadata,
+} from 'lib/community';
 import { Accessory } from 'types/generated/graphql/communitysubgraph';
 import Link from 'next/link';
 
@@ -103,54 +108,6 @@ function CommunityHeaderMint({ setHasNFT }: CommunityHeaderMintProps) {
   );
 }
 
-type CommunityTokenMetadata = {
-  attributes: { trait_type: string; value: string | number }[];
-  description: string;
-  image: string;
-  name: string;
-};
-
-async function getTokenID(contract: CommunityNFT, address: string) {
-  const nonce = (await contract.nonce()).toNumber();
-  for (let i = 0; i < nonce; ++i) {
-    const owner = await contract.ownerOf(i);
-    if (owner === address) {
-      return i;
-    }
-  }
-  return -1;
-}
-
-async function getMetadata(address: string): Promise<CommunityTokenMetadata> {
-  const contract = jsonRpcCommunityNFT(JSON_RPC_PROVIDER);
-  const tokenID = await getTokenID(contract, address);
-  const uri = await contract.tokenURI(tokenID);
-  return parseMetadata(uri);
-}
-
-function parseMetadata(dataUri: string) {
-  const buffer = Buffer.from(dataUri.split(',')[1], 'base64');
-  return JSON.parse(buffer.toString());
-}
-
-async function getAccessories(
-  address: string,
-  accessoryLookup: AccessoryLookup,
-) {
-  const contract = jsonRpcCommunityNFT(JSON_RPC_PROVIDER);
-  const accessoryIDs = await contract.getUnlockedAccessoriesForAddress(address);
-
-  return accessoryIDs
-    .filter((id) => !id.eq(0))
-    .reduce((result, id) => {
-      let accessory = accessoryLookup[id.toString()];
-      if (accessory) {
-        return [...result, accessory];
-      }
-      return result;
-    }, [] as Accessory[]);
-}
-
 type CommunityPageViewProps = {
   account: CommunityAccount | null;
   address: string;
@@ -163,8 +120,10 @@ export function CommunityHeaderView({
   const [accessories, setAccessories] = useState<Accessory[]>([]);
   const [metadata, setMetadata] = useState<CommunityTokenMetadata | null>(null);
   useEffect(() => {
-    getAccessories(address, accessoryLookup).then(setAccessories);
-    getMetadata(address).then(setMetadata);
+    getAccessories(address, accessoryLookup, JSON_RPC_PROVIDER).then(
+      setAccessories,
+    );
+    getMetadata(address, JSON_RPC_PROVIDER).then(setMetadata);
   }, [address, accessoryLookup]);
 
   return (
@@ -212,8 +171,10 @@ export function CommunityHeaderManage({
 
   useEffect(() => {
     if (address) {
-      getAccessories(address, accessoryLookup).then(setAccessories);
-      getMetadata(address).then(setMetadata);
+      getAccessories(address, accessoryLookup, JSON_RPC_PROVIDER).then(
+        setAccessories,
+      );
+      getMetadata(address, JSON_RPC_PROVIDER).then(setMetadata);
     }
   }, [address, accessoryLookup]);
 
@@ -221,7 +182,9 @@ export function CommunityHeaderManage({
     async (acc: Accessory | null) => {
       const contract = web3CommunityNFT(signer!);
       const tx = await contract.setEnabledAccessory(acc ? acc.id : 0);
-      tx.wait().then(() => getMetadata(address!).then(setMetadata));
+      tx.wait().then(() =>
+        getMetadata(address!, JSON_RPC_PROVIDER).then(setMetadata),
+      );
     },
     [address, signer],
   );
