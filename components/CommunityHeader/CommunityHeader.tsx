@@ -162,15 +162,10 @@ export function CommunityHeaderView({
   accessoryLookup,
 }: CommunityPageViewProps) {
   const [accessories, setAccessories] = useState<Accessory[]>([]);
-  const [metadata, setMetadata] = useState<CommunityTokenMetadata | null>(
-    account ? parseMetadata(account.token.uri) : null,
-  );
+  const [metadata, setMetadata] = useState<CommunityTokenMetadata | null>(null);
   useEffect(() => {
     getAccessories(address, accessoryLookup).then(setAccessories);
-    if (!account) {
-      // no data from graph, fall back to node
-      getMetadata(address).then(setMetadata);
-    }
+    getMetadata(address).then(setMetadata);
   }, [account, address, accessoryLookup]);
 
   return (
@@ -215,17 +210,12 @@ export function CommunityHeaderManage({
   const { address } = useAccount();
   const { data: signer } = useSigner();
   const [accessories, setAccessories] = useState<Accessory[]>([]);
-  const [metadata, setMetadata] = useState<CommunityTokenMetadata | null>(
-    account ? parseMetadata(account.token.uri) : null,
-  );
+  const [metadata, setMetadata] = useState<CommunityTokenMetadata | null>(null);
 
   useEffect(() => {
     if (address) {
       getAccessories(address, accessoryLookup).then(setAccessories);
-      if (!account) {
-        // no data from graph, fall back to node
-        getMetadata(address).then(setMetadata);
-      }
+      getMetadata(address).then(setMetadata);
     }
   }, [account, address, accessoryLookup]);
 
