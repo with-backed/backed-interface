@@ -4,11 +4,12 @@ import { Banner } from 'components/Banner';
 import userEvent from '@testing-library/user-event';
 import { WrongNetwork } from 'components/Banner/messages';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
-import { useNetwork } from 'wagmi';
+import { useNetwork, useSwitchNetwork } from 'wagmi';
 
 jest.mock('wagmi', () => ({
   ...jest.requireActual('wagmi'),
   useNetwork: jest.fn(),
+  useSwitchNetwork: jest.fn(),
 }));
 
 jest.mock('hooks/useGlobalMessages', () => ({
@@ -17,6 +18,9 @@ jest.mock('hooks/useGlobalMessages', () => ({
 }));
 
 const mockedUseNetwork = useNetwork as jest.MockedFunction<typeof useNetwork>;
+const mockedUseSwitchNetwork = useSwitchNetwork as jest.MockedFunction<
+  typeof useSwitchNetwork
+>;
 const mockedUseGlobalMessages = useGlobalMessages as jest.MockedFunction<
   typeof useGlobalMessages
 >;
@@ -47,11 +51,13 @@ describe('Banner', () => {
       beforeEach(() => {
         jest.clearAllMocks();
         mockedUseNetwork.mockReturnValue({
-          activeChain: { id: 4 },
-          switchNetwork,
+          chain: { id: 4 },
         } as any);
         mockedUseGlobalMessages.mockReturnValue({
           addMessage,
+        } as any);
+        mockedUseSwitchNetwork.mockReturnValue({
+          switchNetworkAsync: switchNetwork,
         } as any);
       });
       it('renders', () => {
