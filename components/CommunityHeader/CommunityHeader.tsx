@@ -230,6 +230,16 @@ export function CommunityHeaderManage({
     null,
   );
 
+  const currentAccessoryName = useMemo(() => {
+    if (metadata) {
+      const accessoryTrait = metadata.attributes.find(
+        (attr) => attr.trait_type === 'Accessory',
+      );
+      return accessoryTrait?.value;
+    }
+    return undefined;
+  }, [metadata]);
+
   const accessoryOptions = useMemo(() => {
     const options = accessories.map((accessory) => {
       return {
@@ -246,6 +256,18 @@ export function CommunityHeaderManage({
       ...options,
     ];
   }, [accessories]);
+
+  const defaultValue = useMemo(() => {
+    if (currentAccessoryName) {
+      return (
+        accessoryOptions.find((opt) => opt.label === currentAccessoryName) || {
+          value: null,
+          label: 'No special trait',
+        }
+      );
+    }
+    return null;
+  }, [accessoryOptions, currentAccessoryName]);
 
   return (
     <div className={styles.wrapper}>
@@ -266,15 +288,22 @@ export function CommunityHeaderManage({
           <dd>--</dd>
           <dt>Special Trait Displayed</dt>
           <dd>
-            <Select
-              className={styles.select}
-              color="clickable"
-              options={accessoryOptions}
-              onChange={(option) => setSelectedAccessory(option?.value || null)}
-            />
+            {defaultValue && (
+              <Select
+                className={styles.select}
+                color="clickable"
+                options={accessoryOptions}
+                defaultValue={defaultValue}
+                onChange={(option) =>
+                  setSelectedAccessory(option?.value || null)
+                }
+              />
+            )}
           </dd>
         </DescriptionList>
-        <Button onClick={() => setAccessory(selectedAccessory)}>
+        <Button
+          disabled={currentAccessoryName === selectedAccessory?.name}
+          onClick={() => setAccessory(selectedAccessory)}>
           Update Art
         </Button>
       </div>
