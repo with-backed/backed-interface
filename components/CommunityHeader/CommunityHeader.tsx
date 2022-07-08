@@ -157,7 +157,6 @@ type CommunityPageViewProps = {
   accessoryLookup: AccessoryLookup;
 };
 export function CommunityHeaderView({
-  account,
   address,
   accessoryLookup,
 }: CommunityPageViewProps) {
@@ -166,7 +165,7 @@ export function CommunityHeaderView({
   useEffect(() => {
     getAccessories(address, accessoryLookup).then(setAccessories);
     getMetadata(address).then(setMetadata);
-  }, [account, address, accessoryLookup]);
+  }, [address, accessoryLookup]);
 
   return (
     <div className={styles.wrapper}>
@@ -204,7 +203,6 @@ type CommunityHeaderManageProps = {
   accessoryLookup: AccessoryLookup;
 };
 export function CommunityHeaderManage({
-  account,
   accessoryLookup,
 }: CommunityHeaderManageProps) {
   const { address } = useAccount();
@@ -217,7 +215,7 @@ export function CommunityHeaderManage({
       getAccessories(address, accessoryLookup).then(setAccessories);
       getMetadata(address).then(setMetadata);
     }
-  }, [account, address, accessoryLookup]);
+  }, [address, accessoryLookup]);
 
   const setAccessory = useCallback(
     async (acc: Accessory | null) => {
