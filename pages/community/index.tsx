@@ -17,13 +17,13 @@ export const getServerSideProps: GetServerSideProps<{}> = async () => {
 };
 
 export default function Community() {
-  const { data: account } = useAccount();
+  const { address } = useAccount();
   const router = useRouter();
 
   useEffect(() => {
-    if (account && account.address) {
-      router.push(`/community/${account.address}`);
+    if (address) {
+      router.push(`/community/${address}`);
     }
-  }, [account, router]);
+  }, [address, router]);
   return <CommunityPage />;
 }
