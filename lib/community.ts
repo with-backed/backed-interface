@@ -1,4 +1,5 @@
 import { captureException } from '@sentry/nextjs';
+import { CommunityNFT } from 'types/generated/abis';
 import {
   AccessoriesDocument,
   AccessoriesQuery,
@@ -10,6 +11,7 @@ import {
   CommunityAccountQueryVariables,
   Token,
 } from 'types/generated/graphql/communitysubgraph';
+import { jsonRpcCommunityNFT } from './contracts';
 import { clientFromUrl } from './urql';
 
 export type CommunityCategoryScoreChange = Omit<CategoryScoreChange, 'account'>;
@@ -18,6 +20,12 @@ export type CommunityAccount = Pick<Account, 'id' | 'categoryScoreChanges'> & {
   token: CommunityToken;
 };
 export type AccessoryLookup = Record<string, Accessory | undefined>;
+export type CommunityTokenMetadata = {
+  attributes: { trait_type: string; value: string | number }[];
+  description: string;
+  image: string;
+  name: string;
+};
 
 export async function getCommunityAccountInfo(
   address: string,
@@ -62,4 +70,49 @@ export async function getAccessoryLookup(
   }
 
   return {};
+}
+
+export async function getTokenID(contract: CommunityNFT, address: string) {
+  const nonce = (await contract.nonce()).toNumber();
+  for (let i = 0; i < nonce; ++i) {
+    const owner = await contract.ownerOf(i);
+    if (owner === address) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+export async function getMetadata(
+  address: string,
+  jsonRpcProvider: string,
+): Promise<CommunityTokenMetadata> {
+  const contract = jsonRpcCommunityNFT(jsonRpcProvider);
+  const tokenID = await getTokenID(contract, address);
+  const uri = await contract.tokenURI(tokenID);
+  return parseMetadata(uri);
+}
+
+export function parseMetadata(dataUri: string) {
+  const buffer = Buffer.from(dataUri.split(',')[1], 'base64');
+  return JSON.parse(buffer.toString());
+}
+
+export async function getAccessories(
+  address: string,
+  accessoryLookup: AccessoryLookup,
+  jsonRpcProvider: string,
+) {
+  const contract = jsonRpcCommunityNFT(jsonRpcProvider);
+  const accessoryIDs = await contract.getUnlockedAccessoriesForAddress(address);
+
+  return accessoryIDs
+    .filter((id) => !id.eq(0))
+    .reduce((result, id) => {
+      let accessory = accessoryLookup[id.toString()];
+      if (accessory) {
+        return [...result, accessory];
+      }
+      return result;
+    }, [] as Accessory[]);
 }
