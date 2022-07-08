@@ -140,9 +140,8 @@ export function ProfileHeader({ address, loans }: ProfileHeaderProps) {
   const { network } = useConfig();
   const { query } = useRouter();
   const { addMessage, removeMessage } = useGlobalMessages();
-  const { data } = useAccount();
+  const { address: connectedAddress } = useAccount();
   const { disconnect } = useDisconnect();
-  const connectedAddress = data?.address;
 
   useEffect(() => {
     const { unsubscribe, uuid } = query;
