@@ -1,4 +1,10 @@
-import { getAccessoryLookup, getCommunityAccountInfo } from 'lib/community';
+import { ethers } from 'ethers';
+import {
+  getAccessoryLookup,
+  getCommunityAccountInfo,
+  getMetadata,
+  getTokenID,
+} from 'lib/community';
 import { COMMUNITY_NFT_SUBGRAPH } from 'lib/constants';
 import { clientFromUrl } from 'lib/urql';
 import { Accessory } from 'types/generated/graphql/communitysubgraph';
@@ -11,6 +17,7 @@ jest.mock('lib/urql', () => ({
     })),
   })),
 }));
+jest.mock('lib/contracts');
 
 const mockedClientFromUrl = clientFromUrl as jest.MockedFunction<
   typeof clientFromUrl
@@ -100,6 +107,34 @@ describe('community NFT accessors', () => {
     it('returns empty obj when the value is not available', async () => {
       const result = await getAccessoryLookup(COMMUNITY_NFT_SUBGRAPH);
       expect(result).toEqual({});
+    });
+  });
+
+  describe('getTokenID', () => {
+    const address = '0xmyaddress';
+    it('returns token id associated with a given address', async () => {
+      const contract = {
+        nonce: async () => ethers.BigNumber.from(5),
+        ownerOf: async (i: number) => {
+          if (i === 4) {
+            return address;
+          }
+          return '0xnope';
+        },
+      };
+
+      const result = await getTokenID(contract as any, address);
+      expect(result).toEqual(4);
+    });
+
+    it('returns -1 if address does not own a token', async () => {
+      const contract = {
+        nonce: async () => ethers.BigNumber.from(5),
+        ownerOf: async (i: number) => '0xnope',
+      };
+
+      const result = await getTokenID(contract as any, address);
+      expect(result).toEqual(-1);
     });
   });
 });
