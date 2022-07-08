@@ -4,6 +4,46 @@ const { JSDOM } = require('jsdom');
 
 const MARKDOWN_SOURCE =
   'https://raw.githubusercontent.com/with-backed/backed-community-nft-docs/main/README.md';
+const IMPORTS = `
+import React from 'react';
+import { XPFieldset } from './XPFieldset';
+import styles from './CommunityInfo.module.css';
+`;
+
+const BEGIN = `
+export function GeneratedSections() {
+  return (
+    <>
+`;
+const END = `
+    <>
+  )
+}
+`;
+
+function section(
+  heading,
+  explanation,
+  [activityContent, communityContent, contributorContent],
+) {
+  return `
+<div className={styles.section}>
+  <h2>${heading}</h2>
+  <p className={styles.explanation}>${explanation}</p>
+  <div className={styles.xp}>
+    <XPFieldset kind="activity">
+      ${activityContent?.innerHTML}
+    </XPFieldset>
+    <XPFieldset kind="contributor">
+      ${contributorContent?.innerHTML}
+    </XPFieldset>
+    <XPFieldset kind="community">
+      ${communityContent?.innerHTML}
+    </XPFieldset>
+  </div>
+</div>
+`;
+}
 
 function main() {
   https
@@ -20,11 +60,18 @@ function main() {
         const html = marked.parse(data);
         const dom = new JSDOM(html);
         // TODO: would be nice to have a more sophisticated selector
-        const divs = dom.window.document.querySelectorAll('div');
-        divs.forEach((div) => {
-          console.log(div.innerHTML);
+        const sections =
+          dom.window.document.querySelectorAll('div[id^="section"]');
+
+        const pageContent = [IMPORTS, BEGIN];
+        sections.forEach((s) => {
+          const heading = s.querySelector('h3').innerHTML;
+          const explanation = s.querySelector('p').innerHTML;
+          const contentSections = s.querySelectorAll('.content');
+          pageContent.push(section(heading, explanation, contentSections));
         });
-        console.log(divs.length);
+        pageContent.push(END);
+        console.log(pageContent);
       });
     })
     .on('error', (err) => {
