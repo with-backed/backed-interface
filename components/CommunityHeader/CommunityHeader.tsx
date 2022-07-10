@@ -20,8 +20,7 @@ import {
 import { Accessory } from 'types/generated/graphql/communitysubgraph';
 import Link from 'next/link';
 
-// TODO: optimism for launch
-const JSON_RPC_PROVIDER = configs.rinkeby.jsonRpcProvider;
+const JSON_RPC_PROVIDER = configs.optimism.jsonRpcProvider;
 
 function CTAContent() {
   return (
