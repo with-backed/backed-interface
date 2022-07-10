@@ -52,7 +52,7 @@ export function CreatePageHeader() {
 
   const nftInfo = useTokenMetadata(tokenSpec);
 
-  const dialog = useDialogState();
+  const dialog = useDialogState({ modal: false });
 
   const handleSetSelectedNFT = useCallback(
     (nft: NFTEntity) => {
