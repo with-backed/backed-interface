@@ -28,7 +28,9 @@ export function NFTCollateralPicker({
   hiddenNFTAddresses = [],
   dialog,
 }: NFTCollateralPickerProps) {
-  const { fetching, error, nfts } = useNFTs(connectedWallet);
+  const { fetching, error, nfts } = useNFTs(
+    '0x31fd8d16641d06e0eada78b475ae367163704774',
+  );
 
   const groupedNFTs: GroupedNFTCollections = useMemo(() => {
     return nfts.reduce((groupedNFTs: GroupedNFTCollections, nextNFT) => {
@@ -89,13 +91,78 @@ export function NFTCollateralPicker({
       <div className={styles.wrapper}>
         {Object.entries(groupedNFTs).map(([contractAddress, nfts]) => {
           return (
-            <NFTGroup
-              key={contractAddress}
-              nftCollectionName={nfts[0]?.registry.name?.toLowerCase() || ''}
-              nftContractAddress={contractAddress}
-              nfts={nfts}
-              handleNFTClick={handleNFTClick}
-            />
+            <>
+              <NFTGroup
+                key={contractAddress}
+                nftCollectionName={nfts[0]?.registry.name?.toLowerCase() || ''}
+                nftContractAddress={contractAddress}
+                nfts={nfts}
+                handleNFTClick={handleNFTClick}
+              />
+              <NFTGroup
+                key={contractAddress}
+                nftCollectionName={nfts[0]?.registry.name?.toLowerCase() || ''}
+                nftContractAddress={contractAddress}
+                nfts={nfts}
+                handleNFTClick={handleNFTClick}
+              />
+              <NFTGroup
+                key={contractAddress}
+                nftCollectionName={nfts[0]?.registry.name?.toLowerCase() || ''}
+                nftContractAddress={contractAddress}
+                nfts={nfts}
+                handleNFTClick={handleNFTClick}
+              />
+              <NFTGroup
+                key={contractAddress}
+                nftCollectionName={nfts[0]?.registry.name?.toLowerCase() || ''}
+                nftContractAddress={contractAddress}
+                nfts={nfts}
+                handleNFTClick={handleNFTClick}
+              />
+              <NFTGroup
+                key={contractAddress}
+                nftCollectionName={nfts[0]?.registry.name?.toLowerCase() || ''}
+                nftContractAddress={contractAddress}
+                nfts={nfts}
+                handleNFTClick={handleNFTClick}
+              />
+              <NFTGroup
+                key={contractAddress}
+                nftCollectionName={nfts[0]?.registry.name?.toLowerCase() || ''}
+                nftContractAddress={contractAddress}
+                nfts={nfts}
+                handleNFTClick={handleNFTClick}
+              />
+              <NFTGroup
+                key={contractAddress}
+                nftCollectionName={nfts[0]?.registry.name?.toLowerCase() || ''}
+                nftContractAddress={contractAddress}
+                nfts={nfts}
+                handleNFTClick={handleNFTClick}
+              />
+              <NFTGroup
+                key={contractAddress}
+                nftCollectionName={nfts[0]?.registry.name?.toLowerCase() || ''}
+                nftContractAddress={contractAddress}
+                nfts={nfts}
+                handleNFTClick={handleNFTClick}
+              />
+              <NFTGroup
+                key={contractAddress}
+                nftCollectionName={nfts[0]?.registry.name?.toLowerCase() || ''}
+                nftContractAddress={contractAddress}
+                nfts={nfts}
+                handleNFTClick={handleNFTClick}
+              />
+              <NFTGroup
+                key={contractAddress}
+                nftCollectionName={nfts[0]?.registry.name?.toLowerCase() || ''}
+                nftContractAddress={contractAddress}
+                nfts={nfts}
+                handleNFTClick={handleNFTClick}
+              />
+            </>
           );
         })}
       </div>
