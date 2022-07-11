@@ -13,7 +13,6 @@ export function GeneratedSections() {
         </p>
         <div className={styles.xp}>
           <XPFieldset kind="activity">
-            <h4 id="activity-xp">Activity XP</h4>
             <ul>
               <li>As a lender, provide your first loan</li>
               <li>As a borrower, pay interest on your first loan</li>
@@ -21,10 +20,19 @@ export function GeneratedSections() {
           </XPFieldset>
 
           <XPFieldset kind="contributor">
-            <h4 id="contributor-xp">Contributor XP</h4>
             <ul>
               <li>
                 Author a pull request that is merged (start in #dev on Discord)
+              </li>
+            </ul>
+          </XPFieldset>
+
+          <XPFieldset kind="community">
+            <ul>
+              <li>Attend your first community call, Mondays at 11AM EST</li>
+              <li>
+                Addional XP with exponential decay: 2nd call, 4th call, 8th,
+                16th, etc.
               </li>
             </ul>
           </XPFieldset>
@@ -44,7 +52,6 @@ export function GeneratedSections() {
         </p>
         <div className={styles.xp}>
           <XPFieldset kind="activity">
-            <h4 id="activity-xp-examples">Activity XP Examples</h4>
             <p>
               Nominate yourself for XP for remarkable protocol usage for which
               there is no automated tracking, such as:
@@ -56,7 +63,6 @@ export function GeneratedSections() {
           </XPFieldset>
 
           <XPFieldset kind="contributor">
-            <h4 id="contributor-xp-1">Contributor XP</h4>
             <p>
               Nominate yourself for XP that help develop the protocol, such as:
             </p>
@@ -69,7 +75,6 @@ export function GeneratedSections() {
           </XPFieldset>
 
           <XPFieldset kind="community">
-            <h4 id="community-xp-1">Community XP</h4>
             <p>
               Nominate yourself for XP that add your voice to the community,
               such as:

@@ -23,6 +23,13 @@ const END = `
 }
 `;
 
+function processFieldset(element) {
+  if (element) {
+    const heading = element.querySelector('h4');
+    heading.remove();
+  }
+}
+
 function section(
   heading,
   explanation,
@@ -30,6 +37,9 @@ function section(
   communityContent,
   contributorContent,
 ) {
+  [activityContent, communityContent, contributorContent].forEach(
+    processFieldset,
+  );
   return `
 <div className={styles.section}>
   <h2>${heading}</h2>
@@ -87,6 +97,7 @@ function main() {
 
         const pageContent = [IMPORTS, BEGIN];
         sections.forEach((s) => {
+          console.log(s.innerHTML);
           const heading = s.querySelector('h3').innerHTML;
           const explanation = s.querySelector('p').innerHTML;
           const activityContent = s.querySelector('.content-activity');
