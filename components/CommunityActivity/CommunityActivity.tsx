@@ -28,13 +28,16 @@ export function CommunityActivity({ account }: CommunityActivityProps) {
         )}
         {scoreChanges.length > 0 && (
           <ol className={styles.list}>
-            {scoreChanges.map((event) => (
-              <li data-testid={`event-${event.id}`} key={event.id}>
-                {event.category.name} 1XP{' '}
-                <span className={styles[event.category.name]} />{' '}
-                {new Date(event.timestamp * 1000).toLocaleDateString()}
-              </li>
-            ))}
+            {scoreChanges.map((event) => {
+              const xpDelta = event.newScore - event.oldScore;
+              return (
+                <li data-testid={`event-${event.id}`} key={event.id}>
+                  {event.category.name} {xpDelta}XP{' '}
+                  <span className={styles[event.category.name]} />{' '}
+                  {new Date(event.timestamp * 1000).toLocaleDateString()}
+                </li>
+              );
+            })}
           </ol>
         )}
       </Fieldset>
