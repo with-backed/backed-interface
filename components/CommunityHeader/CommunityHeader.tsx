@@ -102,6 +102,17 @@ function CommunityHeaderMint({ setHasNFT }: CommunityHeaderMintProps) {
           />
           {!isPending && 'on Optimism'}
         </div>
+        {!isPending && (
+          <p className={styles['connect-wallet']}>
+            To mint, you&apos;ll need ETH on{' '}
+            <Image src={optimismCircle} alt="" height={18} width={18} />{' '}
+            Optimism for gas. Use the{' '}
+            <Link href="https://app.optimism.io/bridge">
+              <a className={styles.link}>Optimism Bridge</a>
+            </Link>{' '}
+            to move ETH between networks.
+          </p>
+        )}
       </div>
     </div>
   );
