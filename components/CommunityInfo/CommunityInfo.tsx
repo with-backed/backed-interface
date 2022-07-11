@@ -43,10 +43,11 @@ export function CommunityInfo() {
       <GeneratedSections />
 
       <div className={styles.section}>
-        <h2>Special Traits</h2>
+        <h2>Special Accessories</h2>
         <p className={styles.explanation}>
-          XP-based traits are automatically awarded as you earn XP in different
-          categories, and upgrade to Super when you earn 4XP a given category.
+          XP-based accessories are automatically awarded as you earn XP in
+          different categories, and upgrade to Super when you earn 4XP a given
+          category.
         </p>
         <div className={styles.xp}>
           <XPFieldset kind="activity">
@@ -83,11 +84,11 @@ export function CommunityInfo() {
       </div>
 
       <div className={styles.section}>
-        <h2>Role-based Traits</h2>
+        <h2>Role-based Accessories</h2>
         <p className={styles.explanation}>
-          Role-based traits are awarded via a nomination process. Use this form
-          to nominate. If you have an idea for a trait that doesn&apos;t exist,
-          suggest it on Github.
+          Role-based accessories are awarded via a nomination process. Use this
+          form to nominate. If you have an idea for a trait that doesn&apos;t
+          exist, suggest it on Github.
         </p>
         <div className={styles['xp-wide']}>
           <Fieldset legend="">
