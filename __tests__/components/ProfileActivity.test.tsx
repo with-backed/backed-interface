@@ -9,6 +9,12 @@ jest.mock('hooks/useTokenMetadata', () => ({
   ...jest.requireActual('hooks/useTokenMetadata'),
   useTokenMetadata: jest.fn(),
 }));
+jest.mock('next/router', () => ({
+  ...jest.requireActual('next/router'),
+  useRouter: () => ({
+    pathname: '/profile/0xwhatever',
+  }),
+}));
 
 const mockedUseTokenMetadata = useTokenMetadata as jest.MockedFunction<
   typeof useTokenMetadata
