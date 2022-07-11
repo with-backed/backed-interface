@@ -16,7 +16,8 @@ const account: CommunityAccount = {
         name: 'ACTIVITY',
         __typename: 'Category',
       },
-      newScore: 1,
+      newScore: 10,
+      oldScore: 3,
       ipfsEntryHash:
         '0x3d247a03b5e54756fc02c5b5ab02fc572b152431d3915796ae55c651267e80ce',
       __typename: 'CategoryScoreChange',
@@ -31,6 +32,7 @@ const account: CommunityAccount = {
         __typename: 'Category',
       },
       newScore: 1,
+      oldScore: 0,
       ipfsEntryHash:
         '0xd75bb79201bd8206c1da4b0fc1e3c1dd2438fbdc9df6c069d0dc8e2c57a1fa47',
       __typename: 'CategoryScoreChange',
@@ -45,6 +47,7 @@ const account: CommunityAccount = {
         __typename: 'Category',
       },
       newScore: 1,
+      oldScore: 0,
       ipfsEntryHash:
         '0xe77af91361d772979e2aeaa11aa5bad8ba186b3a10deec222be8d58a872ef14a',
       __typename: 'CategoryScoreChange',
@@ -64,7 +67,7 @@ describe('CommunityActivity', () => {
 
     const events = getAllByTestId('event', { exact: false });
     expect(events).toHaveLength(3);
-    expect(events[0]).toHaveTextContent('ACTIVITY 1XP 12/31/1969');
+    expect(events[0]).toHaveTextContent('ACTIVITY 7XP 12/31/1969');
     expect(events[1]).toHaveTextContent('CONTRIBUTOR 1XP 12/31/1969');
     expect(events[2]).toHaveTextContent('COMMUNITY 1XP 12/31/1969');
   });
