@@ -159,13 +159,10 @@ export function CommunityHeaderView({
       )}
       <div className={styles.cta}>
         <h3>🖼🐇 Community NFT</h3>
-        {account?.token?.id && (
-          <NFTExchangeAddressLink
-            contractAddress={COMMUNITY_NFT_CONTRACT_ADDRESS}
-            forceNetwork="optimism"
-            assetId={account.token.id}
-          />
-        )}
+        <NFTExchangeAddressLink
+          contractAddress={COMMUNITY_NFT_CONTRACT_ADDRESS}
+          assetId={account?.token.id || ''}
+        />
         <DescriptionList>
           <dt>Address</dt>
           <dd>{address}</dd>
@@ -281,13 +278,10 @@ export function CommunityHeaderManage({
       )}
       <div className={styles.cta}>
         <h3>🖼🐇 Community NFT</h3>
-        {account?.token?.id && (
-          <NFTExchangeAddressLink
-            contractAddress={COMMUNITY_NFT_CONTRACT_ADDRESS}
-            forceNetwork="optimism"
-            assetId={account.token.id}
-          />
-        )}
+        <NFTExchangeAddressLink
+          contractAddress={COMMUNITY_NFT_CONTRACT_ADDRESS}
+          assetId={account?.token.id || ''}
+        />
         <DescriptionList>
           <dt>Address</dt>
           <dd>{address}</dd>

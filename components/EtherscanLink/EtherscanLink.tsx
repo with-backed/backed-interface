@@ -12,14 +12,7 @@ const EtherscanLink: FunctionComponent<EtherscanLinkProps> = ({
   ...props
 }) => {
   const { etherscanUrl } = useConfig();
-  const { pathname } = useRouter();
-  const isCommunityPage = useMemo(
-    () => pathname.startsWith('/community'),
-    [pathname],
-  );
-  const href = `${
-    isCommunityPage ? configs.optimism.etherscanUrl : etherscanUrl
-  }/${path}`;
+  const href = `${etherscanUrl}/${path}`;
   return (
     <a target="_blank" rel="noreferrer" {...props} href={href}>
       {children}

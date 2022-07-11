@@ -4,29 +4,17 @@ import {
   RainbowKitProvider,
   DisclaimerComponent,
 } from '@rainbow-me/rainbowkit';
+import { ChainName } from '@wagmi/core/dist/declarations/src/constants/chains';
 import { CachedRatesProvider } from 'hooks/useCachedRates/useCachedRates';
 import { useConfig } from 'hooks/useConfig';
 import { GlobalMessagingProvider } from 'hooks/useGlobalMessages';
 import { HasCollapsedHeaderInfoProvider } from 'hooks/useHasCollapsedHeaderInfo';
 import { TimestampProvider } from 'hooks/useTimestamp/useTimestamp';
 import React, { PropsWithChildren, useMemo } from 'react';
-import {
-  WagmiConfig,
-  chain,
-  Chain,
-  createClient,
-  configureChains,
-} from 'wagmi';
+import { WagmiConfig, chain, createClient, configureChains } from 'wagmi';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { infuraProvider } from 'wagmi/providers/infura';
 import { publicProvider } from 'wagmi/providers/public';
-
-const CHAINS: Chain[] = [
-  { ...chain.rinkeby, name: 'Rinkeby' },
-  { ...chain.mainnet, name: 'Ethereum' },
-  { ...chain.optimism, name: 'Optimism' },
-  { ...chain.polygon, name: 'Polygon' },
-];
 
 const Disclaimer: DisclaimerComponent = ({ Text, Link }) => (
   <Text>
@@ -44,16 +32,19 @@ type ApplicationProvidersProps = {};
 export const ApplicationProviders = ({
   children,
 }: PropsWithChildren<ApplicationProvidersProps>) => {
-  const { infuraId, alchemyId } = useConfig();
+  const { infuraId, alchemyId, network } = useConfig();
 
   const { provider, chains } = useMemo(
     () =>
-      configureChains(CHAINS, [
-        alchemyProvider({ alchemyId }),
-        infuraProvider({ infuraId }),
-        publicProvider(),
-      ]),
-    [alchemyId, infuraId],
+      configureChains(
+        [chain[network as ChainName]],
+        [
+          alchemyProvider({ alchemyId }),
+          infuraProvider({ infuraId }),
+          publicProvider(),
+        ],
+      ),
+    [alchemyId, infuraId, network],
   );
 
   const { connectors } = useMemo(
