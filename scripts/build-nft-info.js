@@ -97,7 +97,6 @@ function main() {
 
         const pageContent = [IMPORTS, BEGIN];
         sections.forEach((s) => {
-          console.log(s.innerHTML);
           const heading = s.querySelector('h3').innerHTML;
           const explanation = s.querySelector('p').innerHTML;
           const activityContent = s.querySelector('.content-activity');
