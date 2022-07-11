@@ -16,7 +16,7 @@ describe('CommunityInfo', () => {
     const { getByText } = render(<CommunityInfo />);
 
     getByText('Automatically Awarded XP');
-    getByText('Nominated XP');
+    getByText('XP Awarded via Nomination Form');
     getByText('Special Traits');
   });
 });

@@ -19,7 +19,6 @@ export function GeneratedSections() {
               <li>As a borrower, pay interest on your first loan</li>
             </ul>
           </XPFieldset>
-          <XPFieldset kind="contributor">undefined</XPFieldset>
           <XPFieldset kind="community">
             <h4 id="contributor-xp">Contributor XP</h4>
             <ul>
@@ -28,6 +27,7 @@ export function GeneratedSections() {
               </li>
             </ul>
           </XPFieldset>
+          undefined
         </div>
       </div>
 
@@ -54,17 +54,7 @@ export function GeneratedSections() {
               <li>Loan with most buyouts</li>
             </ul>
           </XPFieldset>
-          <XPFieldset kind="contributor">
-            <h4 id="community-xp-1">Community XP</h4>
-            <p>
-              Nominate yourself for XP that add your voice to the community,
-              such as:
-            </p>
-            <ul>
-              <li>Organize a meetup at a conference</li>
-              <li>Quality memes</li>
-            </ul>
-          </XPFieldset>
+
           <XPFieldset kind="community">
             <h4 id="contributor-xp-1">Contributor XP</h4>
             <p>
@@ -75,6 +65,18 @@ export function GeneratedSections() {
               <li>Code reviews on Github</li>
               <li>Design assets used in production</li>
               <li>Smart contract auditing</li>
+            </ul>
+          </XPFieldset>
+
+          <XPFieldset kind="contributor">
+            <h4 id="community-xp-1">Community XP</h4>
+            <p>
+              Nominate yourself for XP that add your voice to the community,
+              such as:
+            </p>
+            <ul>
+              <li>Organize a meetup at a conference</li>
+              <li>Quality memes</li>
             </ul>
           </XPFieldset>
         </div>

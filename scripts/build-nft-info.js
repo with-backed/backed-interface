@@ -33,15 +33,30 @@ function section(
   <h2>${heading}</h2>
   <p className={styles.explanation}>${explanation}</p>
   <div className={styles.xp}>
-    <XPFieldset kind="activity">
-      ${activityContent?.innerHTML}
+  ${
+    activityContent &&
+    `
+  <XPFieldset kind="activity">
+      ${activityContent.innerHTML}
     </XPFieldset>
-    <XPFieldset kind="contributor">
-      ${contributorContent?.innerHTML}
+  `
+  }
+  ${
+    contributorContent &&
+    `
+  <XPFieldset kind="contributor">
+      ${contributorContent.innerHTML}
     </XPFieldset>
-    <XPFieldset kind="community">
-      ${communityContent?.innerHTML}
+  `
+  }
+  ${
+    communityContent &&
+    `
+  <XPFieldset kind="community">
+      ${communityContent.innerHTML}
     </XPFieldset>
+  `
+  }
   </div>
 </div>
 `;
