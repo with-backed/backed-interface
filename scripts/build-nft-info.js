@@ -1,6 +1,8 @@
 const https = require('https');
 const { marked } = require('marked');
 const { JSDOM } = require('jsdom');
+const fs = require('fs');
+const { exec } = require('child_process');
 
 const MARKDOWN_SOURCE =
   'https://raw.githubusercontent.com/with-backed/backed-community-nft-docs/main/README.md';
@@ -16,7 +18,7 @@ export function GeneratedSections() {
     <>
 `;
 const END = `
-    <>
+    </>
   )
 }
 `;
@@ -71,7 +73,18 @@ function main() {
           pageContent.push(section(heading, explanation, contentSections));
         });
         pageContent.push(END);
-        console.log(pageContent);
+        fs.writeFileSync(
+          './components/CommunityInfo/GeneratedSections.tsx',
+          pageContent.join(''),
+        );
+        exec('yarn format', (err) => {
+          if (err) {
+            console.log(`error: ${err.message}`);
+            return;
+          }
+
+          console.log('Done.');
+        });
       });
     })
     .on('error', (err) => {
