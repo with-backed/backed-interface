@@ -22,8 +22,17 @@ const prodPages: Page[] = [
   { name: 'About', route: 'about', isNetworkSpecialCase: true },
 ];
 
-// TODO: put community page here while testing
-const stagingPages: Page[] = [];
+const stagingPages: Page[] = [
+  { name: 'Community', route: 'community', isNetworkSpecialCase: true },
+];
+
+function isActiveRoute(activeRoute: string, candidate: string) {
+  if (candidate.length === 0) {
+    return activeRoute.length === 0;
+  }
+
+  return activeRoute.startsWith(candidate);
+}
 
 type NavLinksProps = {
   activeRoute: string;
@@ -50,7 +59,9 @@ function NavLinks({ activeRoute }: NavLinksProps) {
             }>
             <a
               className={
-                p.route === activeRoute ? styles['link-active'] : styles.link
+                isActiveRoute(activeRoute, p.route)
+                  ? styles['link-active']
+                  : styles.link
               }>
               {p.name}
             </a>
@@ -119,7 +130,7 @@ export function Header() {
     if (pathname === '/404' || pathname === '/500') {
       return 'errorPage';
     }
-    if (pathname === '/community' || pathname === '/about') {
+    if (pathname.startsWith('/community') || pathname === '/about') {
       return pathname.substring(1);
     }
     return pathname.split('[network]/')[1] || '';
@@ -171,5 +182,7 @@ export function Header() {
  * @param activeRoute the current page
  */
 function shouldHideNetworkSelector(activeRoute: string) {
-  return ['errorPage', 'community', 'about'].some((v) => v === activeRoute);
+  return ['errorPage', 'community', 'community/[address]', 'about'].some(
+    (v) => v === activeRoute,
+  );
 }

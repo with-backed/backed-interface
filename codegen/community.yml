@@ -1,5 +1,5 @@
 overwrite: true
-schema: 'https://api.thegraph.com/subgraphs/name/with-backed/backed-community-nft-rinkeby'
+schema: 'https://api.thegraph.com/subgraphs/name/with-backed/backed-community-nft'
 documents: './graphql/community/**/*.graphql'
 generates:
   types/generated/graphql/communitysubgraph.ts:
