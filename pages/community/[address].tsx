@@ -14,13 +14,6 @@ import { COMMUNITY_NFT_SUBGRAPH } from 'lib/constants';
 export const getServerSideProps: GetServerSideProps<
   CommunityAddressProps
 > = async (context) => {
-  // Community page will be unavailable on prod until we launch
-  if (process.env.VERCEL_ENV === 'production') {
-    return {
-      notFound: true,
-    };
-  }
-
   const rawAddress = context.params?.address as string;
   const address =
     (await resolveEns(rawAddress, configs.ethereum.jsonRpcProvider)) ||
