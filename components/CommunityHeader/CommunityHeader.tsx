@@ -141,7 +141,7 @@ export function CommunityHeaderView({
 
   const joined = useMemo(
     () =>
-      account?.token.mintedAt
+      account?.token?.mintedAt
         ? new Date(account.token.mintedAt * 1000).toLocaleDateString()
         : '--',
     [account],
@@ -261,7 +261,7 @@ export function CommunityHeaderManage({
 
   const joined = useMemo(
     () =>
-      account?.token.mintedAt
+      account?.token?.mintedAt
         ? new Date(account.token.mintedAt * 1000).toLocaleDateString()
         : '--',
     [account],
