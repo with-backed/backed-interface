@@ -26,7 +26,9 @@ const END = `
 function section(
   heading,
   explanation,
-  [activityContent, communityContent, contributorContent],
+  activityContent,
+  communityContent,
+  contributorContent,
 ) {
   return `
 <div className={styles.section}>
@@ -34,28 +36,31 @@ function section(
   <p className={styles.explanation}>${explanation}</p>
   <div className={styles.xp}>
   ${
-    activityContent &&
-    `
+    activityContent
+      ? `
   <XPFieldset kind="activity">
       ${activityContent.innerHTML}
     </XPFieldset>
   `
+      : ''
   }
   ${
-    contributorContent &&
-    `
+    contributorContent
+      ? `
   <XPFieldset kind="contributor">
       ${contributorContent.innerHTML}
     </XPFieldset>
   `
+      : ''
   }
   ${
-    communityContent &&
-    `
+    communityContent
+      ? `
   <XPFieldset kind="community">
       ${communityContent.innerHTML}
     </XPFieldset>
   `
+      : ''
   }
   </div>
 </div>
@@ -84,8 +89,18 @@ function main() {
         sections.forEach((s) => {
           const heading = s.querySelector('h3').innerHTML;
           const explanation = s.querySelector('p').innerHTML;
-          const contentSections = s.querySelectorAll('.content');
-          pageContent.push(section(heading, explanation, contentSections));
+          const activityContent = s.querySelector('.content-activity');
+          const communityContent = s.querySelector('.content-community');
+          const contributorContent = s.querySelector('.content-contributor');
+          pageContent.push(
+            section(
+              heading,
+              explanation,
+              activityContent,
+              communityContent,
+              contributorContent,
+            ),
+          );
         });
         pageContent.push(END);
         fs.writeFileSync(

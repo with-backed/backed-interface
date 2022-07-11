@@ -19,7 +19,8 @@ export function GeneratedSections() {
               <li>As a borrower, pay interest on your first loan</li>
             </ul>
           </XPFieldset>
-          <XPFieldset kind="community">
+
+          <XPFieldset kind="contributor">
             <h4 id="contributor-xp">Contributor XP</h4>
             <ul>
               <li>
@@ -27,7 +28,6 @@ export function GeneratedSections() {
               </li>
             </ul>
           </XPFieldset>
-          undefined
         </div>
       </div>
 
@@ -55,7 +55,7 @@ export function GeneratedSections() {
             </ul>
           </XPFieldset>
 
-          <XPFieldset kind="community">
+          <XPFieldset kind="contributor">
             <h4 id="contributor-xp-1">Contributor XP</h4>
             <p>
               Nominate yourself for XP that help develop the protocol, such as:
@@ -68,7 +68,7 @@ export function GeneratedSections() {
             </ul>
           </XPFieldset>
 
-          <XPFieldset kind="contributor">
+          <XPFieldset kind="community">
             <h4 id="community-xp-1">Community XP</h4>
             <p>
               Nominate yourself for XP that add your voice to the community,
