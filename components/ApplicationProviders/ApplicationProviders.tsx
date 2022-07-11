@@ -28,24 +28,22 @@ const Disclaimer: DisclaimerComponent = ({ Text, Link }) => (
   </Text>
 );
 
+const CHAINS = [chain.rinkeby, chain.mainnet, chain.polygon, chain.optimism];
+
 type ApplicationProvidersProps = {};
 export const ApplicationProviders = ({
   children,
 }: PropsWithChildren<ApplicationProvidersProps>) => {
   const { infuraId, alchemyId, network } = useConfig();
 
-  const { provider, chains } = useMemo(
-    () =>
-      configureChains(
-        [chain[network as ChainName]],
-        [
-          alchemyProvider({ alchemyId }),
-          infuraProvider({ infuraId }),
-          publicProvider(),
-        ],
-      ),
-    [alchemyId, infuraId, network],
-  );
+  const { provider, chains } = useMemo(() => {
+    const c = chain[network as ChainName];
+    return configureChains(c ? [c] : CHAINS, [
+      alchemyProvider({ alchemyId }),
+      infuraProvider({ infuraId }),
+      publicProvider(),
+    ]);
+  }, [alchemyId, infuraId, network]);
 
   const { connectors } = useMemo(
     () =>
