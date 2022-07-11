@@ -13,6 +13,12 @@ jest.mock('wagmi', () => ({
   ...jest.requireActual('wagmi'),
   useSigner: jest.fn().mockReturnValue([{ data: jest.fn() }]),
 }));
+jest.mock('next/router', () => ({
+  ...jest.requireActual('next/router'),
+  useRouter: () => ({
+    pathname: '/loans/create',
+  }),
+}));
 
 const mockedIsNFTApprovedForCollateral =
   isNFTApprovedForCollateral as jest.MockedFunction<
