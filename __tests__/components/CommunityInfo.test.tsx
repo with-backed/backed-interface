@@ -17,6 +17,6 @@ describe('CommunityInfo', () => {
 
     getByText('Automatically Awarded XP');
     getByText('XP Awarded via Nomination Form');
-    getByText('Special Traits');
+    getByText('Special Accessories');
   });
 });

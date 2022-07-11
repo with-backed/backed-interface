@@ -169,7 +169,7 @@ export function CommunityHeaderView({
           <dd>{address}</dd>
           <dt>Joined</dt>
           <dd>{joined}</dd>
-          <dt>Special Traits Earned</dt>
+          <dt>Special Accessories Earned</dt>
           <dd>
             <ul>
               {accessories.map((acc) => {
