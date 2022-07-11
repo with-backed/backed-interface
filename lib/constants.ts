@@ -28,4 +28,4 @@ export const COMMUNITY_NFT_CONTRACT_ADDRESS =
 
 // TODO: optimism on launch
 export const COMMUNITY_NFT_SUBGRAPH =
-  'https://api.thegraph.com/subgraphs/name/with-backed/backed-community-nft-rinkeby';
+  'https://api.thegraph.com/subgraphs/name/with-backed/backed-community-nft';
