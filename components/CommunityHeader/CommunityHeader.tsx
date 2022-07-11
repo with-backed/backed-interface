@@ -124,6 +124,7 @@ type CommunityPageViewProps = {
   accessoryLookup: AccessoryLookup;
 };
 export function CommunityHeaderView({
+  account,
   address,
   accessoryLookup,
 }: CommunityPageViewProps) {
@@ -135,6 +136,14 @@ export function CommunityHeaderView({
     );
     getMetadata(address, JSON_RPC_PROVIDER).then(setMetadata);
   }, [address, accessoryLookup]);
+
+  const joined = useMemo(
+    () =>
+      account
+        ? new Date(account.token.mintedAt * 1000).toLocaleDateString()
+        : '--',
+    [account],
+  );
 
   return (
     <div className={styles.wrapper}>
@@ -152,7 +161,7 @@ export function CommunityHeaderView({
           <dt>Address</dt>
           <dd>{address}</dd>
           <dt>Joined</dt>
-          <dd>--</dd>
+          <dd>{joined}</dd>
           <dt>Special Traits Earned</dt>
           <dd>
             <ul>
@@ -172,6 +181,7 @@ type CommunityHeaderManageProps = {
   accessoryLookup: AccessoryLookup;
 };
 export function CommunityHeaderManage({
+  account,
   accessoryLookup,
 }: CommunityHeaderManageProps) {
   const { address } = useAccount();
@@ -242,6 +252,14 @@ export function CommunityHeaderManage({
     return null;
   }, [accessoryOptions, currentAccessoryName]);
 
+  const joined = useMemo(
+    () =>
+      account
+        ? new Date(account.token.mintedAt * 1000).toLocaleDateString()
+        : '--',
+    [account],
+  );
+
   return (
     <div className={styles.wrapper}>
       {metadata ? (
@@ -258,7 +276,7 @@ export function CommunityHeaderManage({
           <dt>Address</dt>
           <dd>{address}</dd>
           <dt>Joined</dt>
-          <dd>--</dd>
+          <dd>{joined}</dd>
           <dt>Special Trait Displayed</dt>
           <dd>
             {defaultValue && (

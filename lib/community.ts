@@ -15,7 +15,7 @@ import { jsonRpcCommunityNFT } from './contracts';
 import { clientFromUrl } from './urql';
 
 export type CommunityCategoryScoreChange = Omit<CategoryScoreChange, 'account'>;
-export type CommunityToken = Pick<Token, 'id' | 'uri'>;
+export type CommunityToken = Pick<Token, 'id' | 'uri' | 'mintedAt'>;
 export type CommunityAccount = Pick<Account, 'id' | 'categoryScoreChanges'> & {
   token: CommunityToken;
 };

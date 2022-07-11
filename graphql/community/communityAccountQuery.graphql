@@ -4,6 +4,7 @@ query communityAccount($address: ID!) {
     token {
       id
       uri
+      mintedAt
     }
     categoryScoreChanges {
       id
