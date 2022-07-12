@@ -78,8 +78,6 @@ export function CreatePageForm({
   const [loanAssetOptions, setLoanAssetOptions] = useState<LoanAsset[]>([]);
   const [hasReviewed, setHasReviewed] = useState(false);
 
-  console.log({ loanAssetOptions });
-
   const watchAllFields = watch();
 
   const wait = useCallback(async () => {
