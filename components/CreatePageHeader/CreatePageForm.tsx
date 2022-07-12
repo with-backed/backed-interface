@@ -78,6 +78,8 @@ export function CreatePageForm({
   const [loanAssetOptions, setLoanAssetOptions] = useState<LoanAsset[]>([]);
   const [hasReviewed, setHasReviewed] = useState(false);
 
+  console.log({ loanAssetOptions });
+
   const watchAllFields = watch();
 
   const wait = useCallback(async () => {
@@ -174,7 +176,7 @@ export function CreatePageForm({
     const response = await fetch(`/api/network/${network}/loanAssets`);
     const tokens: LoanAsset[] | null = await response.json();
     if (tokens) {
-      setLoanAssetOptions(tokens);
+      setLoanAssetOptions(tokens.filter((t) => t.symbol !== 'MATIC'));
     }
   }, [network]);
 
