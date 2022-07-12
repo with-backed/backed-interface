@@ -176,6 +176,7 @@ export function CreatePageForm({
     const response = await fetch(`/api/network/${network}/loanAssets`);
     const tokens: LoanAsset[] | null = await response.json();
     if (tokens) {
+      // MATIC doesn't allow users to set allowance. TODO: make this more robust when we need it elsewhere.
       setLoanAssetOptions(tokens.filter((t) => t.symbol !== 'MATIC'));
     }
   }, [network]);
