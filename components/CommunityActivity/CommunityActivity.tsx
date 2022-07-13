@@ -1,12 +1,13 @@
 import { Fieldset } from 'components/Fieldset';
-import { CommunityAccount } from 'lib/community';
-import React, { useMemo } from 'react';
+import { CommunityAccount, getReasons } from 'lib/community';
+import React, { useEffect, useMemo, useState } from 'react';
 import styles from './CommunityActivity.module.css';
 
 type CommunityActivityProps = {
   account: CommunityAccount | null;
 };
 export function CommunityActivity({ account }: CommunityActivityProps) {
+  const [reasons, setReasons] = useState({});
   const scoreChanges = useMemo(() => {
     if (account) {
       const changes = account.categoryScoreChanges || [];
@@ -15,10 +16,19 @@ export function CommunityActivity({ account }: CommunityActivityProps) {
     return [];
   }, [account]);
 
+  useEffect(() => {
+    if (account) {
+      getReasons(account).then(setReasons);
+    }
+  }, [account]);
+
   if (!account) {
     // TODO: handle
     return null;
   }
+
+  console.log(scoreChanges);
+  console.log(reasons);
 
   return (
     <div className={styles.wrapper}>
@@ -30,10 +40,13 @@ export function CommunityActivity({ account }: CommunityActivityProps) {
           <ol className={styles.list}>
             {scoreChanges.map((event) => {
               const xpDelta = event.newScore - event.oldScore;
+              console.log(event.ipfsEntryHash);
+              const reason = reasons[event.ipfsEntryHash].reason;
               return (
                 <li data-testid={`event-${event.id}`} key={event.id}>
                   {event.category.name} {xpDelta}XP{' '}
                   <span className={styles[event.category.name]} />{' '}
+                  {reason + ' ' || ''}
                   {new Date(event.timestamp * 1000).toLocaleDateString()}
                 </li>
               );

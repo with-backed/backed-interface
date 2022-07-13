@@ -22,15 +22,15 @@
 
 .COMMUNITY {
   composes: circle;
-  background-color: #ff5386;
+  background-color: #4131ff;
 }
 
 .CONTRIBUTOR {
   composes: circle;
-  background-color: #4131ff;
+  background-color: #f8d270;
 }
 
 .ACTIVITY {
   composes: circle;
-  background-color: #f8d270;
+  background-color: #ff5386;
 }

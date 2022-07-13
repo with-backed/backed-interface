@@ -12,6 +12,7 @@ import {
   Token,
 } from 'types/generated/graphql/communitysubgraph';
 import { jsonRpcCommunityNFT } from './contracts';
+import { convertIPFS } from './getNFTInfo';
 import { clientFromUrl } from './urql';
 
 export type CommunityCategoryScoreChange = Omit<CategoryScoreChange, 'account'>;
@@ -115,4 +116,18 @@ export async function getAccessories(
       }
       return result;
     }, [] as Accessory[]);
+}
+
+export async function getReasons(account: CommunityAccount) {
+  const changes = account.categoryScoreChanges || [];
+  const addresses = changes
+    .map(({ ipfsLink }) => convertIPFS(ipfsLink))
+    .filter((item) => !!item) as string[];
+
+  const responses = await Promise.all(addresses.map((add) => fetch(add)));
+  const jsons = await Promise.all(responses.map((res) => res.json()));
+
+  console.log({ jsons });
+
+  return jsons.reduce((prev, curr) => ({ ...prev, ...curr }));
 }
