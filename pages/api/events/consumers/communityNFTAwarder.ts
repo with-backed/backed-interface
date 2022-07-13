@@ -60,6 +60,10 @@ async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
     const routeSuffix =
       eventName === 'LendEvent' ? 'lend_event' : 'repayment_event';
     if (event.id === oldestEvent.id) {
+      console.log({
+        uri: `${process.env
+          .BACKED_COMMUNITY_NFT_API!}/achievements/create/activity/${routeSuffix}`,
+      });
       const res = await fetch(
         `${process.env
           .BACKED_COMMUNITY_NFT_API!}/achievements/create/activity/${routeSuffix}`,
