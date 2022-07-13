@@ -51,21 +51,23 @@ type ConnectionCTAProps = {
 };
 function ConnectionCTA({ connected }: ConnectionCTAProps) {
   return (
-    <p className={styles['connect-wallet']}>
+    <>
       {!connected && (
-        <div className={styles.notice}>
+        <p className={styles.notice}>
           Connect wallet to mint.
           <br />
-        </div>
+        </p>
       )}
-      You&apos;ll need ETH on{' '}
-      <Image src={optimismCircle} alt="" height={18} width={18} /> Optimism for
-      gas. Use the{' '}
-      <Link href="https://app.optimism.io/bridge">
-        <a className={styles.link}>Optimism Bridge</a>
-      </Link>{' '}
-      to move ETH between networks.
-    </p>
+      <p className={styles['connect-wallet']}>
+        You&apos;ll need ETH on{' '}
+        <Image src={optimismCircle} alt="" height={18} width={18} /> Optimism
+        for gas. Use the{' '}
+        <Link href="https://app.optimism.io/bridge">
+          <a className={styles.link}>Optimism Bridge</a>
+        </Link>{' '}
+        to move ETH between networks.
+      </p>
+    </>
   );
 }
 
