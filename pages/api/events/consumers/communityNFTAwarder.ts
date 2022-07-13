@@ -30,10 +30,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
       parsedBody['Message'],
     ) as EventsSNSMessage;
 
-    if (network === 'rinkeby') {
-      res.status(200);
-      return;
-    }
+    console.log({ eventName, network });
 
     let oldestEvent: RawSubgraphEvent | null = null;
 
@@ -48,7 +45,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
         event.loan.borrowTicketHolder,
       );
     } else {
-      res.status(200);
+      res.status(200).json('Community NFT Activity awarder successfully ran');
+      return;
     }
 
     console.log({ oldestEvent });
