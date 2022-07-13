@@ -72,9 +72,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
           .BACKED_COMMUNITY_NFT_API!}/achievements/create/activity/${routeSuffix}`,
         {
           method: 'POST',
-          headers: {
+          headers: new Headers({
             Authorization: `${process.env.COMMUNITY_NFT_API_USER}:${process.env.COMMUNITY_NFT_API_PASS}`,
-          },
+          }),
           body: JSON.stringify({
             ethAddress: involvedAddress,
           }),
