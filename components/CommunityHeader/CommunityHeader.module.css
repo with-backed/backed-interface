@@ -76,3 +76,7 @@
   color: var(--neutral-100);
   text-decoration: underline;
 }
+
+.notice {
+  margin-bottom: 16px;
+}
