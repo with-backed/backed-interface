@@ -33,17 +33,20 @@ async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
     console.log({ eventName, network });
 
     let oldestEvent: RawSubgraphEvent | null = null;
+    let involvedAddress: string;
 
     if (eventName === 'LendEvent') {
       oldestEvent = await getOldestLendEventForUser(
         configs[network],
         event.loan.lendTicketHolder,
       );
+      involvedAddress = oldestEvent?.lender;
     } else if (eventName === 'RepaymentEvent') {
       oldestEvent = await getOldestRepaymentEventForUser(
         configs[network],
         event.loan.borrowTicketHolder,
       );
+      involvedAddress = oldestEvent?.repayer;
     } else {
       res.status(200).json('Community NFT Activity awarder successfully ran');
       return;
@@ -72,6 +75,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
           headers: {
             Authorization: `${process.env.COMMUNITY_NFT_API_USER}:${process.env.COMMUNITY_NFT_API_PASS}`,
           },
+          body: JSON.stringify({
+            ethAddress: involvedAddress,
+          }),
         },
       );
       console.log(res.status);
