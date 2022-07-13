@@ -46,6 +46,29 @@ export function CommunityHeaderNotMinted() {
   );
 }
 
+type ConnectionCTAProps = {
+  connected?: boolean;
+};
+function ConnectionCTA({ connected }: ConnectionCTAProps) {
+  return (
+    <p className={styles['connect-wallet']}>
+      {!connected && (
+        <div className={styles.notice}>
+          Connect wallet to mint.
+          <br />
+        </div>
+      )}
+      You&apos;ll need ETH on{' '}
+      <Image src={optimismCircle} alt="" height={18} width={18} /> Optimism for
+      gas. Use the{' '}
+      <Link href="https://app.optimism.io/bridge">
+        <a className={styles.link}>Optimism Bridge</a>
+      </Link>{' '}
+      to move ETH between networks.
+    </p>
+  );
+}
+
 export function CommunityHeaderDisconnected() {
   return (
     <div className={styles.wrapper}>
@@ -53,16 +76,7 @@ export function CommunityHeaderDisconnected() {
       <div className={styles.cta}>
         <CTAContent />
         <Button disabled>Mint for Free</Button>
-
-        <p className={styles['connect-wallet']}>
-          To mint, you&apos;ll need ETH on{' '}
-          <Image src={optimismCircle} alt="" height={18} width={18} /> Optimism
-          for gas. Use the{' '}
-          <Link href="https://app.optimism.io/bridge">
-            <a className={styles.link}>Optimism Bridge</a>
-          </Link>{' '}
-          to move ETH between networks.
-        </p>
+        <ConnectionCTA />
       </div>
     </div>
   );
@@ -104,17 +118,7 @@ function CommunityHeaderMint({ setHasNFT }: CommunityHeaderMintProps) {
           />
           {!isPending && 'on Optimism'}
         </div>
-        {!isPending && (
-          <p className={styles['connect-wallet']}>
-            To mint, you&apos;ll need ETH on{' '}
-            <Image src={optimismCircle} alt="" height={18} width={18} />{' '}
-            Optimism for gas. Use the{' '}
-            <Link href="https://app.optimism.io/bridge">
-              <a className={styles.link}>Optimism Bridge</a>
-            </Link>{' '}
-            to move ETH between networks.
-          </p>
-        )}
+        {!isPending && <ConnectionCTA connected />}
       </div>
     </div>
   );
