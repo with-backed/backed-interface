@@ -100,7 +100,7 @@ describe('Community NFT Awarder consumer', () => {
           Message: JSON.stringify({
             eventName: 'RepaymentEvent',
             event: {
-              id: subgraphLendEvent.id,
+              id: subgraphRepaymentEvent.id,
               loan: {
                 borrowTicketHolder: subgraphLendEvent.loan.borrowTicketHolder,
               },
