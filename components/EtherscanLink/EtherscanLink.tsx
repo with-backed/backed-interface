@@ -1,7 +1,5 @@
 import { useConfig } from 'hooks/useConfig';
-import { configs } from 'lib/config';
-import { useRouter } from 'next/router';
-import React, { AnchorHTMLAttributes, FunctionComponent, useMemo } from 'react';
+import React, { AnchorHTMLAttributes, FunctionComponent } from 'react';
 
 interface EtherscanLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   path: string;
@@ -12,14 +10,7 @@ const EtherscanLink: FunctionComponent<EtherscanLinkProps> = ({
   ...props
 }) => {
   const { etherscanUrl } = useConfig();
-  const { pathname } = useRouter();
-  const isCommunityPage = useMemo(
-    () => pathname.startsWith('/community'),
-    [pathname],
-  );
-  const href = `${
-    isCommunityPage ? configs.optimism.etherscanUrl : etherscanUrl
-  }/${path}`;
+  const href = `${etherscanUrl}/${path}`;
   return (
     <a target="_blank" rel="noreferrer" {...props} href={href}>
       {children}

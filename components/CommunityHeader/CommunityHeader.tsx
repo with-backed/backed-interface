@@ -168,7 +168,6 @@ export function CommunityHeaderView({
         {account?.token?.id && (
           <NFTExchangeAddressLink
             contractAddress={COMMUNITY_NFT_CONTRACT_ADDRESS}
-            forceNetwork="optimism"
             assetId={account.token.id}
           />
         )}
@@ -290,7 +289,6 @@ export function CommunityHeaderManage({
         {account?.token?.id && (
           <NFTExchangeAddressLink
             contractAddress={COMMUNITY_NFT_CONTRACT_ADDRESS}
-            forceNetwork="optimism"
             assetId={account.token.id}
           />
         )}
