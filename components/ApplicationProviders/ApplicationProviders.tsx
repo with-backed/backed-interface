@@ -22,10 +22,10 @@ import { infuraProvider } from 'wagmi/providers/infura';
 import { publicProvider } from 'wagmi/providers/public';
 
 const CHAINS: Chain[] = [
-  { ...chain.rinkeby, name: 'Rinkeby' },
   { ...chain.mainnet, name: 'Ethereum' },
   { ...chain.optimism, name: 'Optimism' },
   { ...chain.polygon, name: 'Polygon' },
+  { ...chain.rinkeby, name: 'Rinkeby' },
 ];
 
 const Disclaimer: DisclaimerComponent = ({ Text, Link }) => (
