@@ -31,6 +31,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
       parsedBody['Message'],
     ) as EventsSNSMessage;
 
+    if (network === 'rinkeby') {
+      res.status(200);
+      return;
+    }
+
     let oldestEvent: RawSubgraphEvent | null = null;
     let involvedAddress: string;
 

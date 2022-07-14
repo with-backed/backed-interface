@@ -40,11 +40,6 @@ async function handler(
     };
     const config = configs[network];
 
-    if (network === 'rinkeby') {
-      res.status(200);
-      return;
-    }
-
     if (event === 'CreateEvent') {
       res.status(200).json(await getCreateEventsSince(config, 0));
     } else if (event === 'LendEvent') {
