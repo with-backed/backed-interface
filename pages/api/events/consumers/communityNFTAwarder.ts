@@ -11,6 +11,7 @@ import {
   getOldestRepaymentEventForUser,
 } from 'lib/eventsHelpers';
 import { RawSubgraphEvent } from 'types/RawEvent';
+import axios from 'axios';
 
 async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
   if (req.method != 'POST') {
@@ -67,17 +68,19 @@ async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
         uri: `${process.env
           .BACKED_COMMUNITY_NFT_API!}/achievements/create/activity/${routeSuffix}`,
       });
-      const res = await fetch(
+      console.log({
+        auth: `${process.env.COMMUNITY_NFT_API_USER}:${process.env.COMMUNITY_NFT_API_PASS}`,
+      });
+      const res = await axios.post(
         `${process.env
           .BACKED_COMMUNITY_NFT_API!}/achievements/create/activity/${routeSuffix}`,
         {
-          method: 'POST',
-          headers: new Headers({
+          ethAddress: involvedAddress,
+        },
+        {
+          headers: {
             Authorization: `${process.env.COMMUNITY_NFT_API_USER}:${process.env.COMMUNITY_NFT_API_PASS}`,
-          }),
-          body: JSON.stringify({
-            ethAddress: involvedAddress,
-          }),
+          },
         },
       );
       console.log(res.status);
