@@ -1,6 +1,5 @@
 import { useConfig } from 'hooks/useConfig';
-import { configs, SupportedNetwork } from 'lib/config';
-import React, { AnchorHTMLAttributes, FunctionComponent, useMemo } from 'react';
+import React, { AnchorHTMLAttributes, FunctionComponent } from 'react';
 
 const ADDRESS_LINK_TEXT: { [key: string]: string } = {
   rinkeby: 'View on OpenSea',
@@ -18,22 +17,14 @@ const ADDRESS_LINK_PATH_PREFIX: { [key: string]: string } = {
 
 interface ExchangeLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   path: string;
-  forceNetwork?: SupportedNetwork;
 }
 const NFTExchangeLink: FunctionComponent<ExchangeLinkProps> = ({
   children,
-  forceNetwork,
   path,
   ...props
 }) => {
   const { openSeaUrl } = useConfig();
-  const url = useMemo(() => {
-    if (forceNetwork) {
-      return configs[forceNetwork].openSeaUrl;
-    }
-    return openSeaUrl;
-  }, [forceNetwork, openSeaUrl]);
-  const href = `${url}/${path}`;
+  const href = `${openSeaUrl}/${path}`;
   return (
     <a target="_blank" rel="noreferrer" {...props} href={href}>
       {children}
@@ -44,20 +35,16 @@ const NFTExchangeLink: FunctionComponent<ExchangeLinkProps> = ({
 interface NFTExchangeLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   contractAddress: string;
   assetId: string;
-  forceNetwork?: SupportedNetwork;
 }
 export const NFTExchangeAddressLink: FunctionComponent<
   NFTExchangeLinkProps
-> = ({ assetId, contractAddress, forceNetwork, ...props }) => {
+> = ({ assetId, contractAddress, ...props }) => {
   const { network } = useConfig();
   return (
     <NFTExchangeLink
-      path={`/${
-        ADDRESS_LINK_PATH_PREFIX[forceNetwork || network]
-      }/${contractAddress}/${assetId}`}
-      forceNetwork={forceNetwork}
+      path={`/${ADDRESS_LINK_PATH_PREFIX[network]}/${contractAddress}/${assetId}`}
       {...props}>
-      {ADDRESS_LINK_TEXT[forceNetwork || network]}
+      {ADDRESS_LINK_TEXT[network]}
     </NFTExchangeLink>
   );
 };

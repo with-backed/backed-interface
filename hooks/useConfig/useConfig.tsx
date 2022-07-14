@@ -1,5 +1,6 @@
 import { Config, configs, SupportedNetwork } from 'lib/config';
-import { createContext, FunctionComponent, useContext } from 'react';
+import { useRouter } from 'next/router';
+import { createContext, FunctionComponent, useContext, useMemo } from 'react';
 
 const ConfigContext = createContext<Config | null>(null);
 
@@ -19,5 +20,15 @@ export const ConfigProvider: FunctionComponent<ConfigProviderProps> = ({
 
 export function useConfig(): Config {
   const config = useContext(ConfigContext);
+  const { pathname } = useRouter();
+  const isCommunityPage = useMemo(
+    () => pathname.startsWith('/community'),
+    [pathname],
+  );
+
+  if (isCommunityPage) {
+    return configs.optimism;
+  }
+
   return config!;
 }
