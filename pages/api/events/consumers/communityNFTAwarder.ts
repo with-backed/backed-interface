@@ -31,8 +31,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
       parsedBody['Message'],
     ) as EventsSNSMessage;
 
-    console.log({ eventName, network });
-
     let oldestEvent: RawSubgraphEvent | null = null;
     let involvedAddress: string;
 
@@ -53,8 +51,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
       return;
     }
 
-    console.log({ oldestEvent });
-
     if (!oldestEvent) {
       // TODO(adamgobes): capture exception here
       res.status(400);
@@ -64,14 +60,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
     const routeSuffix =
       eventName === 'LendEvent' ? 'lend_event' : 'repayment_event';
     if (event.id === oldestEvent.id) {
-      console.log({
-        uri: `${process.env
-          .BACKED_COMMUNITY_NFT_API!}/achievements/create/activity/${routeSuffix}`,
-      });
-      console.log({
-        auth: `${process.env.COMMUNITY_NFT_API_USER}:${process.env.COMMUNITY_NFT_API_PASS}`,
-      });
-      const res = await axios.post(
+      await axios.post(
         `${process.env
           .BACKED_COMMUNITY_NFT_API!}/achievements/create/activity/${routeSuffix}`,
         {
@@ -83,7 +72,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
           },
         },
       );
-      console.log(res.status);
     }
     res.status(200).json(`Community NFT Activity awarder successfully ran`);
   } catch (e) {
