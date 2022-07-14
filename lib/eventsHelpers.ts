@@ -25,6 +25,10 @@ import {
   CollateralSeizureEvent_Filter,
   AllCollateralSeizureEventsQuery,
   AllCollateralSeizureEventsDocument,
+  LendEvent_OrderBy,
+  MostEventsQuery,
+  MostEventsDocument,
+  OrderDirection,
 } from 'types/generated/graphql/nftLoans';
 import { RawEventNameType, RawSubgraphEvent } from 'types/RawEvent';
 import { captureException } from '@sentry/nextjs';
@@ -195,4 +199,49 @@ export async function getCollateralSeizureEventsSince(
     captureException(error);
   }
   return data?.collateralSeizureEvents || [];
+}
+
+export async function getOldestLendEventForUser(config: Config, user: string) {
+  const nftBackedLoansClient = clientFromUrl(config.nftBackedLoansSubgraph);
+
+  const where: LendEvent_Filter = {
+    lender: user,
+  };
+
+  const { data, error } = await nftBackedLoansClient
+    .query<MostEventsQuery>(MostEventsDocument, {
+      lendWhere: where,
+      first: 1,
+      lendOrderBy: LendEvent_OrderBy.Timestamp,
+      orderDirection: OrderDirection.Desc,
+    })
+    .toPromise();
+  if (error) {
+    captureException(error);
+  }
+  return data?.lendEvents[0] || null;
+}
+
+export async function getOldestRepaymentEventForUser(
+  config: Config,
+  user: string,
+) {
+  const nftBackedLoansClient = clientFromUrl(config.nftBackedLoansSubgraph);
+
+  const where: RepaymentEvent_Filter = {
+    repayer: user,
+  };
+
+  const { data, error } = await nftBackedLoansClient
+    .query<MostEventsQuery>(MostEventsDocument, {
+      repaymentWhere: where,
+      first: 1,
+      repaymentOrderBy: LendEvent_OrderBy.Timestamp,
+      orderDirection: OrderDirection.Desc,
+    })
+    .toPromise();
+  if (error) {
+    captureException(error);
+  }
+  return data?.repaymentEvents[0] || null;
 }
