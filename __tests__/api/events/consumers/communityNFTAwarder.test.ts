@@ -51,7 +51,7 @@ describe('Community NFT Awarder consumer', () => {
               },
             },
             mostRecentTermsEvent: subgraphLendEvent,
-            network: 'rinkeby',
+            network: 'mainnet',
           }),
         },
       });
@@ -77,7 +77,7 @@ describe('Community NFT Awarder consumer', () => {
               },
             },
             mostRecentTermsEvent: subgraphLendEvent,
-            network: 'rinkeby',
+            network: 'mainnet',
           }),
         },
       });
@@ -106,7 +106,7 @@ describe('Community NFT Awarder consumer', () => {
               },
             },
             mostRecentTermsEvent: subgraphLendEvent,
-            network: 'rinkeby',
+            network: 'mainnet',
           }),
         },
       });
@@ -132,7 +132,7 @@ describe('Community NFT Awarder consumer', () => {
               },
             },
             mostRecentTermsEvent: subgraphLendEvent,
-            network: 'rinkeby',
+            network: 'mainnet',
           }),
         },
       });
