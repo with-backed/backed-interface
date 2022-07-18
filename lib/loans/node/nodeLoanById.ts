@@ -18,10 +18,12 @@ export async function nodeLoanById(
   const lendTicket = jsonRpcERC721Contract(
     contractDirectory[network].lendTicket,
     jsonRpcProvider,
+    network,
   );
   const borrowTicket = jsonRpcERC721Contract(
     contractDirectory[network].borrowTicket,
     jsonRpcProvider,
+    network,
   );
 
   const loanInfo = await loanFacilitator.loanInfo(loanId);
@@ -41,6 +43,7 @@ export async function nodeLoanById(
   const loanAssetContract = jsonRpcERC20Contract(
     loanAssetContractAddress,
     jsonRpcProvider,
+    network,
   );
 
   const decimals = await loanAssetContract.decimals();
@@ -60,6 +63,7 @@ export async function nodeLoanById(
   const collateralAssetContract = jsonRpcERC721Contract(
     collateralContractAddress,
     jsonRpcProvider,
+    network,
   );
   const collateralTokenURI = await collateralAssetContract.tokenURI(
     collateralTokenId,

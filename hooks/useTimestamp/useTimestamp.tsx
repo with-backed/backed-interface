@@ -18,11 +18,11 @@ export const TimestampContext = createContext<number | null>(null);
 
 export function TimestampProvider({ children }: PropsWithChildren<{}>) {
   const [timestamp, setTimestamp] = useState<number | null>(null);
-  const { jsonRpcProvider } = useConfig();
+  const { jsonRpcProvider, chainId } = useConfig();
 
   const provider = useMemo(() => {
-    return new ethers.providers.JsonRpcProvider(jsonRpcProvider);
-  }, [jsonRpcProvider]);
+    return new ethers.providers.JsonRpcProvider(jsonRpcProvider, chainId);
+  }, [chainId, jsonRpcProvider]);
 
   useEffect(() => {
     const setLatestTimestamp = async () => {

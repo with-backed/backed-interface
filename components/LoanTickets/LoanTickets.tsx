@@ -25,6 +25,7 @@ function BorrowerColumn({ loan }: BorrowerColumnProps) {
   const BORROW_CONTRACT = jsonRpcERC721Contract(
     contractDirectory[network as SupportedNetwork].borrowTicket,
     jsonRpcProvider,
+    network as SupportedNetwork,
   );
 
   return (
@@ -59,6 +60,7 @@ function LenderColumn({ loan }: LenderColumnProps) {
   const LEND_CONTRACT = jsonRpcERC721Contract(
     contractDirectory[network as SupportedNetwork].lendTicket,
     jsonRpcProvider,
+    network as SupportedNetwork,
   );
 
   if (!loan.lender) {

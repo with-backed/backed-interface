@@ -6,7 +6,7 @@ import {
   ERC721__factory,
   NFTLoanFacilitator__factory,
 } from 'types/generated/abis';
-import { SupportedNetwork } from './config';
+import { configs, SupportedNetwork } from './config';
 import { COMMUNITY_NFT_CONTRACT_ADDRESS } from './constants';
 
 type ContractDirectoryListing = {
@@ -42,11 +42,18 @@ export function web3LoanFacilitator(signer: Signer, network: SupportedNetwork) {
   return loanFacilitator(signer, network);
 }
 
+function makeProvider(jsonRpcProvider: string, network: SupportedNetwork) {
+  return new ethers.providers.JsonRpcProvider(
+    jsonRpcProvider,
+    configs[network].chainId,
+  );
+}
+
 export function jsonRpcLoanFacilitator(
   jsonRpcProvider: string,
   network: SupportedNetwork,
 ) {
-  const provider = new ethers.providers.JsonRpcProvider(jsonRpcProvider);
+  const provider = makeProvider(jsonRpcProvider, network);
   return loanFacilitator(provider, network);
 }
 
@@ -61,13 +68,18 @@ export function web3Erc721Contract(address: string, signer: Signer) {
 export function jsonRpcERC721Contract(
   address: string,
   jsonRpcProvider: string,
+  network: SupportedNetwork,
 ): ERC721 {
-  const provider = new ethers.providers.JsonRpcProvider(jsonRpcProvider);
+  const provider = makeProvider(jsonRpcProvider, network);
   return erc721Contract(address, provider);
 }
 
-export function jsonRpcERC20Contract(address: string, jsonRpcProvider: string) {
-  const provider = new ethers.providers.JsonRpcProvider(jsonRpcProvider);
+export function jsonRpcERC20Contract(
+  address: string,
+  jsonRpcProvider: string,
+  network: SupportedNetwork,
+) {
+  const provider = makeProvider(jsonRpcProvider, network);
   return erc20Contract(address, provider);
 }
 
@@ -100,7 +112,7 @@ export function web3CommunityNFT(signer: Signer) {
 }
 
 export function jsonRpcCommunityNFT(jsonRpcProvider: string) {
-  const provider = new ethers.providers.JsonRpcProvider(jsonRpcProvider);
+  const provider = makeProvider(jsonRpcProvider, 'optimism');
   return communityNFT(provider);
 }
 
