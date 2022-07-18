@@ -58,17 +58,21 @@ describe('Formatting events for discord bot messages', () => {
           '0x0dd7d has created a loan with collateral: monarchs #147',
         ),
         undefined,
+        undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
         expect.stringContaining('8192.0 DAI'),
+        undefined,
         undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
         expect.stringContaining('120 days'),
         undefined,
+        undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
         expect.stringContaining('2.0%'),
+        undefined,
         undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
@@ -76,11 +80,13 @@ describe('Formatting events for discord bot messages', () => {
           'Loan: <https://staging.withbacked.xyz/network/rinkeby/loans/65>',
         ),
         undefined,
+        undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
         expect.stringContaining(
           'Event Tx: <https://rinkeby.etherscan.io/tx/0x7685d19b85fb80c03ac0c117ea542b77a6c8ecebea56744b121183cfb614bce6>',
         ),
+        undefined,
         undefined,
       );
     });
@@ -100,17 +106,21 @@ describe('Formatting events for discord bot messages', () => {
           'Loan #65: monarchs has been lent to by 0x7e646',
         ),
         undefined,
+        undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
         expect.stringContaining('8192.0 DAI'),
+        undefined,
         undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
         expect.stringContaining('120 days'),
         undefined,
+        undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
         expect.stringContaining('2.0%'),
+        undefined,
         undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
@@ -118,11 +128,13 @@ describe('Formatting events for discord bot messages', () => {
           'Loan: <https://staging.withbacked.xyz/network/rinkeby/loans/65>',
         ),
         undefined,
+        undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
         expect.stringContaining(
           'Event Tx: <https://rinkeby.etherscan.io/tx/0x7685d19b85fb80c03ac0c117ea542b77a6c8ecebea56744b121183cfb614bce6>',
         ),
+        undefined,
         undefined,
       );
     });
@@ -147,27 +159,33 @@ describe('Formatting events for discord bot messages', () => {
           'Loan #65: monarchs has been bought out by 0x7e646',
         ),
         undefined,
+        undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
         expect.stringContaining(
           '0x10359 held the loan for 2 days and earned 0.00000000000001 DAI over that time',
         ),
         undefined,
+        undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
         expect.stringContaining('8000.0 DAI'),
+        undefined,
         undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
         expect.stringContaining('120 days'),
         undefined,
+        undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
         expect.stringContaining('2.0%'),
         undefined,
+        undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
         expect.stringContaining('8193.0 DAI'),
+        undefined,
         undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
@@ -175,11 +193,13 @@ describe('Formatting events for discord bot messages', () => {
           'Loan: <https://staging.withbacked.xyz/network/rinkeby/loans/65>',
         ),
         undefined,
+        undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
         expect.stringContaining(
           'Event Tx: <https://rinkeby.etherscan.io/tx/0x7685d19b85fb80c03ac0c117ea542b77a6c8ecebea56744b121183cfb614bce6>',
         ),
+        undefined,
         undefined,
       );
     });
@@ -199,17 +219,21 @@ describe('Formatting events for discord bot messages', () => {
           'Loan #65: monarchs has been repaid by 0x0dd7d',
         ),
         undefined,
+        undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
         expect.stringContaining('8192.0 DAI'),
+        undefined,
         undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
         expect.stringContaining('120 days'),
         undefined,
+        undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
         expect.stringContaining('2.0%'),
+        undefined,
         undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
@@ -217,11 +241,13 @@ describe('Formatting events for discord bot messages', () => {
           'Loan: <https://staging.withbacked.xyz/network/rinkeby/loans/65>',
         ),
         undefined,
+        undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
         expect.stringContaining(
           'Event Tx: <https://rinkeby.etherscan.io/tx/0x7685d19b85fb80c03ac0c117ea542b77a6c8ecebea56744b121183cfb614bce6>',
         ),
+        undefined,
         undefined,
       );
     });
@@ -241,11 +267,13 @@ describe('Formatting events for discord bot messages', () => {
           'Loan #65: monarchs has had its collateral seized',
         ),
         undefined,
+        undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
         expect.stringContaining(
           "0x7e646 held the loan for 53 minutes. The loan became due on 01/01/1970 with a repayment cost of 8245.73952 DAI. 0x0dd7d did not repay, so 0x7e646 was able to seize the loan's collateral",
         ),
+        undefined,
         undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
@@ -253,11 +281,13 @@ describe('Formatting events for discord bot messages', () => {
           'Loan: <https://staging.withbacked.xyz/network/rinkeby/loans/65>',
         ),
         undefined,
+        undefined,
       );
       expect(mockSendBotUpdateCall).toHaveBeenCalledWith(
         expect.stringContaining(
           'Event Tx: <https://rinkeby.etherscan.io/tx/0x7685d19b85fb80c03ac0c117ea542b77a6c8ecebea56744b121183cfb614bce6>',
         ),
+        undefined,
         undefined,
       );
     });
