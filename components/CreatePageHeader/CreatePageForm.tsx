@@ -108,6 +108,7 @@ export function CreatePageForm({
       const assetContract = jsonRpcERC20Contract(
         denomination.address,
         jsonRpcProvider,
+        network as SupportedNetwork,
       );
       const loanAssetDecimals = await assetContract.decimals();
       const durationInSeconds = Math.ceil(parsedDuration * SECONDS_IN_A_DAY);

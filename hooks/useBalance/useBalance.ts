@@ -1,13 +1,14 @@
 import { ethers } from 'ethers';
 import { useConfig } from 'hooks/useConfig';
 import { useTimestamp } from 'hooks/useTimestamp';
+import { SupportedNetwork } from 'lib/config';
 import { jsonRpcERC20Contract } from 'lib/contracts';
 import { useCallback, useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
 
 export function useBalance(assetContractAddress: string) {
   const { address } = useAccount();
-  const { jsonRpcProvider } = useConfig();
+  const { jsonRpcProvider, network } = useConfig();
   const timestamp = useTimestamp();
 
   const [balance, setBalance] = useState<number>(0);
@@ -20,6 +21,7 @@ export function useBalance(assetContractAddress: string) {
       const assetContract = jsonRpcERC20Contract(
         assetContractAddress,
         jsonRpcProvider,
+        network as SupportedNetwork,
       );
       const [balance, decimals] = await Promise.all([
         assetContract.balanceOf(address),
@@ -32,7 +34,7 @@ export function useBalance(assetContractAddress: string) {
       setBalance(humanReadableBalance);
     },
     // timestamp included as a dep to force refresh whenever timestamp updates (should indicate new block)
-    [address, assetContractAddress, jsonRpcProvider, timestamp],
+    [address, assetContractAddress, jsonRpcProvider, network, timestamp],
   );
 
   useEffect(() => {

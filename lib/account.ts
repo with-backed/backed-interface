@@ -11,6 +11,7 @@ export async function getAccountLoanAssetAllowance(
   const assetContract = jsonRpcERC20Contract(
     loanAssetContractAddress,
     jsonRpcProvider,
+    network,
   );
   return assetContract.allowance(
     account as string,
@@ -24,7 +25,11 @@ export function waitForApproval(
   jsonRpcProvider: string,
   network: SupportedNetwork,
 ) {
-  const contract = jsonRpcERC20Contract(contractAddress, jsonRpcProvider);
+  const contract = jsonRpcERC20Contract(
+    contractAddress,
+    jsonRpcProvider,
+    network,
+  );
   const filter = contract.filters.Approval(
     account,
     contractDirectory[network].loanFacilitator,

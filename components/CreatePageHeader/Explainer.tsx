@@ -2,6 +2,7 @@ import { Explainer as ExplainerWrapper } from 'components/Explainer';
 import { ethers } from 'ethers';
 import { formatUnits } from 'ethers/lib/utils';
 import { useConfig } from 'hooks/useConfig';
+import { SupportedNetwork } from 'lib/config';
 import { jsonRpcERC20Contract } from 'lib/contracts';
 import { estimatedRepayment } from 'lib/loans/utils';
 import React, { useEffect, useState } from 'react';
@@ -34,7 +35,7 @@ export const explainers: {
 };
 
 export function Explainer({ form, state, top }: ExplainerProps) {
-  const { jsonRpcProvider } = useConfig();
+  const { jsonRpcProvider, network } = useConfig();
   const context = form.watch();
   const [decimals, setDecimals] = useState<number | null>(null);
   useEffect(() => {
@@ -42,10 +43,11 @@ export function Explainer({ form, state, top }: ExplainerProps) {
       const loanAssetContract = jsonRpcERC20Contract(
         context.denomination.address,
         jsonRpcProvider,
+        network as SupportedNetwork,
       );
       loanAssetContract.decimals().then(setDecimals);
     }
-  }, [context.denomination, jsonRpcProvider, setDecimals]);
+  }, [context.denomination, jsonRpcProvider, network, setDecimals]);
 
   const error = Object.values(form.formState.errors)[0];
   const Inner = explainers[state] || null;

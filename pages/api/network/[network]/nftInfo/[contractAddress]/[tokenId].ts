@@ -47,7 +47,11 @@ export async function getMetadata(
 ): Promise<NFTResponseData> {
   try {
     const { jsonRpcProvider } = configs[network];
-    const contract = jsonRpcERC721Contract(contractAddress, jsonRpcProvider);
+    const contract = jsonRpcERC721Contract(
+      contractAddress,
+      jsonRpcProvider,
+      network,
+    );
     const uri = await contract.tokenURI(ethers.BigNumber.from(tokenId));
     const resolvedUri = convertIPFS(uri);
     if (!resolvedUri) {

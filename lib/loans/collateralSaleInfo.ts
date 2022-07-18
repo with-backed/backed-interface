@@ -49,7 +49,7 @@ export async function getCollateralSaleInfo(
 async function getMostRecentSale(
   nftContractAddress: string,
   tokenId: string,
-  nftSalesSubgraph: string | null,
+  _nftSalesSubgraph: string | null, // TODO: deprecate
   network: SupportedNetwork,
   jsonRpcProvider: string,
 ): Promise<{ paymentToken: string; price: number } | null> {
@@ -73,6 +73,7 @@ async function getMostRecentSale(
   const erc20Contract = jsonRpcERC20Contract(
     paymentTokenAddress,
     jsonRpcProvider,
+    network,
   );
 
   let paymentTokenSymbol: string;
