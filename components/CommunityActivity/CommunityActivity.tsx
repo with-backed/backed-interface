@@ -7,11 +7,13 @@ type CommunityActivityProps = {
   account: CommunityAccount | null;
 };
 export function CommunityActivity({ account }: CommunityActivityProps) {
-  const [reasons, setReasons] = useState({});
+  const [reasons, setReasons] = useState<{
+    [key: string]: { reason: string } | undefined;
+  }>({});
   const scoreChanges = useMemo(() => {
     if (account) {
       const changes = account.categoryScoreChanges || [];
-      return changes.sort((a, b) => a.timestamp - b.timestamp);
+      return changes.sort((a, b) => b.timestamp - a.timestamp);
     }
     return [];
   }, [account]);
@@ -27,9 +29,6 @@ export function CommunityActivity({ account }: CommunityActivityProps) {
     return null;
   }
 
-  console.log(scoreChanges);
-  console.log(reasons);
-
   return (
     <div className={styles.wrapper}>
       <Fieldset legend="✨ XP Earned">
@@ -41,7 +40,9 @@ export function CommunityActivity({ account }: CommunityActivityProps) {
             {scoreChanges.map((event) => {
               const xpDelta = event.newScore - event.oldScore;
               console.log(event.ipfsEntryHash);
-              const reason = reasons[event.ipfsEntryHash].reason;
+              const reason =
+                reasons[event.ipfsEntryHash]?.reason ||
+                'Initial transition script';
               return (
                 <li data-testid={`event-${event.id}`} key={event.id}>
                   {event.category.name} {xpDelta}XP{' '}
