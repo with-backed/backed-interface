@@ -127,7 +127,5 @@ export async function getReasons(account: CommunityAccount) {
   const responses = await Promise.all(addresses.map((add) => fetch(add)));
   const jsons = await Promise.all(responses.map((res) => res.json()));
 
-  console.log({ jsons });
-
   return jsons.reduce((prev, curr) => ({ ...prev, ...curr }));
 }
