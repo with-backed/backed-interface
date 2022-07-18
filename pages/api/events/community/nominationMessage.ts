@@ -11,7 +11,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
   try {
     const { ethAddress, category, reason, value } = req.body;
 
-    const message = `**New Form Nomination for ${ethAddress}
+    const message = `**New Form Nomination for ${ethAddress}**
 Category: ${category}
 Value: ${value} XP
 Reason: ${reason}
