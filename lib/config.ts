@@ -13,6 +13,9 @@ export type Config = {
 
 export type SupportedNetwork = keyof typeof configs;
 
+// Limited Alchemy API key for use on localdev only. Prod ones can only be used from our prod site's location.
+const developmentAlchemyKey = 'BtHbvji7nhBOC943JJB2XoXMSJAh64g-';
+
 const rinkeby: Config = {
   ...baseConfig,
   centerNetwork: 'ethereum-rinkeby',
@@ -21,7 +24,7 @@ const rinkeby: Config = {
     'https://api.thegraph.com/subgraphs/name/with-backed/backed-protocol-rinkeby',
   jsonRpcProvider:
     'https://eth-rinkeby.alchemyapi.io/v2/BtHbvji7nhBOC943JJB2XoXMSJAh64g-',
-  alchemyId: 'BtHbvji7nhBOC943JJB2XoXMSJAh64g-',
+  alchemyId: developmentAlchemyKey,
   eip721Subgraph:
     'https://api.thegraph.com/subgraphs/name/sunguru98/erc721-rinkeby-subgraph',
   openSeaUrl: 'https://testnets.opensea.io',
@@ -42,7 +45,10 @@ const ethereum = {
     'https://api.thegraph.com/subgraphs/name/adamgobes/nft-sales-indexer',
   eip721Subgraph:
     'https://api.thegraph.com/subgraphs/name/sunguru98/mainnet-erc721-subgraph',
-  infuraId: '54c753f04ec64374aa679e383e7f84d5',
+  infuraId:
+    process.env.VERCEL_ENV === 'production'
+      ? '54c753f04ec64374aa679e383e7f84d5'
+      : developmentAlchemyKey,
   openSeaUrl: 'https://opensea.io',
   etherscanUrl: 'https://etherscan.io',
   chainId: 1,
@@ -68,7 +74,10 @@ const optimism: Config = {
   chainId: 10,
   jsonRpcProvider:
     'https://opt-mainnet.g.alchemy.com/v2/_K-HnfZvE5ChalM8ys4TQEkmsWn8CPTU',
-  alchemyId: '_K-HnfZvE5ChalM8ys4TQEkmsWn8CPTU',
+  alchemyId:
+    process.env.VERCEL_ENV === 'production'
+      ? '_K-HnfZvE5ChalM8ys4TQEkmsWn8CPTU'
+      : developmentAlchemyKey,
   siteUrl: 'https://withbacked.xyz',
   network: 'optimism',
   emailSubjectPrefix: '[Optimism]:',
@@ -88,7 +97,10 @@ const polygon: Config = {
   chainId: 137,
   jsonRpcProvider:
     'https://polygon-mainnet.g.alchemy.com/v2/sRuR0U0CxGifKBURcsLPibuCjYj8nmZJ',
-  alchemyId: 'sRuR0U0CxGifKBURcsLPibuCjYj8nmZJ',
+  alchemyId:
+    process.env.VERCEL_ENV === 'production'
+      ? 'sRuR0U0CxGifKBURcsLPibuCjYj8nmZJ'
+      : developmentAlchemyKey,
   siteUrl: 'https://withbacked.xyz',
   network: 'polygon',
   emailSubjectPrefix: '[Polygon]:',
