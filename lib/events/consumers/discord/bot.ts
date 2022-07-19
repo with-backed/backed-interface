@@ -3,13 +3,14 @@ import { DiscordMetric } from 'lib/events/consumers/discord/shared';
 
 export async function sendBotMessage(
   content: string,
+  channelID: string,
   messageEmbed?: MessageEmbed,
 ) {
   const client = new Discord.Client();
   await client.login(process.env.DISCORD_BOT_TOKEN!);
 
   const channel = (await client.channels.fetch(
-    process.env.NEXT_PUBLIC_BACKED_UPDATES_CHANNEL_ID!,
+    channelID,
   )) as Discord.TextChannel;
 
   await channel.send(content, {

@@ -57,7 +57,11 @@ Event Tx: <${config.etherscanUrl}/tx/${event.id}>
     event.loan.collateralContractAddress,
   );
 
-  await sendBotMessage(botMessageContent, messagedEmbed);
+  await sendBotMessage(
+    botMessageContent,
+    process.env.NEXT_PUBLIC_BACKED_UPDATES_CHANNEL_ID!,
+    messagedEmbed,
+  );
 }
 
 async function generateContentStringForEvent(
