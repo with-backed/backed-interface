@@ -7,6 +7,7 @@
 .list {
   list-style-type: none;
   padding: 0;
+  font-size: var(--font-small);
 }
 
 .list > li {
