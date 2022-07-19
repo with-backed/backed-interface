@@ -16,7 +16,8 @@ export function DisplayAddress({
   const [name, setName] = useState<string | null>(null);
 
   const formattedAddress = useMemo(
-    () => address.substring(0, 7) + '…' + address.substring(35),
+    // leading 0x + first four digits + ellipsis + last 4 digits
+    () => address.substring(0, 6) + '…' + address.substring(address.length - 4),
     [address],
   );
 
