@@ -21,6 +21,7 @@ import { Accessory } from 'types/generated/graphql/communitysubgraph';
 import Link from 'next/link';
 import { NFTExchangeAddressLink } from 'components/NFTExchangeLink';
 import { COMMUNITY_NFT_CONTRACT_ADDRESS } from 'lib/constants';
+import { DisplayAddress } from 'components/DisplayAddress';
 
 const JSON_RPC_PROVIDER = configs.optimism.jsonRpcProvider;
 
@@ -173,7 +174,9 @@ export function CommunityHeaderView({
         )}
         <DescriptionList>
           <dt>Address</dt>
-          <dd>{address}</dd>
+          <dd>
+            <DisplayAddress address={address} />
+          </dd>
           <dt>Joined</dt>
           <dd>{joined}</dd>
           <dt>Special Accessories Earned</dt>
@@ -294,7 +297,9 @@ export function CommunityHeaderManage({
         )}
         <DescriptionList>
           <dt>Address</dt>
-          <dd>{address}</dd>
+          <dd>
+            <DisplayAddress address={address!} />
+          </dd>
           <dt>Joined</dt>
           <dd>{joined}</dd>
           <dt>Special Trait Displayed</dt>

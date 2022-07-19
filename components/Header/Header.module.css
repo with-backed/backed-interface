@@ -29,9 +29,7 @@
 }
 
 .controls {
-  display: grid;
-  max-width: 400px;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  display: flex;
   gap: 20px;
 }
 

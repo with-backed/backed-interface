@@ -1,4 +1,3 @@
 .address {
-  display: flex;
-  gap: 1ch;
+  width: auto;
 }
