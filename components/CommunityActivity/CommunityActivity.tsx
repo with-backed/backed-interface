@@ -1,3 +1,4 @@
+import { EtherscanTransactionLink } from 'components/EtherscanLink';
 import { Fieldset } from 'components/Fieldset';
 import { CommunityAccount, getReasons } from 'lib/community';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -38,6 +39,7 @@ export function CommunityActivity({ account }: CommunityActivityProps) {
         {scoreChanges.length > 0 && (
           <ol className={styles.list}>
             {scoreChanges.map((event) => {
+              const transactionHash = event.id.split('-')[0];
               const xpDelta = event.newScore - event.oldScore;
               const reason =
                 reasons[event.ipfsEntryHash]?.reason ||
@@ -49,7 +51,9 @@ export function CommunityActivity({ account }: CommunityActivityProps) {
                   </span>{' '}
                   <span className={styles[event.category.name]} />{' '}
                   {reason + ' ' || ''}
-                  {new Date(event.timestamp * 1000).toLocaleDateString()}
+                  <EtherscanTransactionLink transactionHash={transactionHash}>
+                    {new Date(event.timestamp * 1000).toLocaleDateString()}
+                  </EtherscanTransactionLink>
                 </li>
               );
             })}
