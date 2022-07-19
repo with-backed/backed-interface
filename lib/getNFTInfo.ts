@@ -3,6 +3,7 @@ import { ethers } from 'ethers';
 import IPFSGatewayTools from '@pinata/ipfs-gateway-tools/dist/node';
 import { SupportedNetwork } from './config';
 
+const DATA_URI_MIME_REGEXP = /data:([^;]*)/;
 const ipfsGatewayTools = new IPFSGatewayTools();
 
 export type NFTResponseData = {
@@ -63,6 +64,13 @@ export async function getMimeType(mediaUrl?: string) {
 
   if (!mediaUrl) {
     return defaultMimeType;
+  }
+
+  if (mediaUrl.startsWith('data')) {
+    const matches = mediaUrl.match(DATA_URI_MIME_REGEXP);
+    if (matches && matches[1]) {
+      return matches[1];
+    }
   }
 
   try {
