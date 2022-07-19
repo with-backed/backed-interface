@@ -20,6 +20,12 @@
   display: inline-block;
 }
 
+.category {
+  text-transform: uppercase;
+  font-family: var(--sans);
+  letter-spacing: 0.12rem;
+}
+
 .COMMUNITY {
   composes: circle;
   background-color: #4131ff;

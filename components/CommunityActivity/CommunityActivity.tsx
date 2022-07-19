@@ -45,7 +45,9 @@ export function CommunityActivity({ account }: CommunityActivityProps) {
                 'Initial transition script';
               return (
                 <li data-testid={`event-${event.id}`} key={event.id}>
-                  {event.category.name} {xpDelta}XP{' '}
+                  <span className={styles.category}>
+                    {event.category.name} {xpDelta}XP
+                  </span>{' '}
                   <span className={styles[event.category.name]} />{' '}
                   {reason + ' ' || ''}
                   {new Date(event.timestamp * 1000).toLocaleDateString()}
