@@ -7,6 +7,7 @@
 .list {
   list-style-type: none;
   padding: 0;
+  font-size: var(--font-small);
 }
 
 .list > li {
@@ -20,17 +21,23 @@
   display: inline-block;
 }
 
-.COMMUNITY {
-  composes: circle;
-  background-color: #ff5386;
+.category {
+  text-transform: uppercase;
+  font-family: var(--sans);
+  letter-spacing: 0.12rem;
 }
 
-.CONTRIBUTOR {
+.COMMUNITY {
   composes: circle;
   background-color: #4131ff;
 }
 
-.ACTIVITY {
+.CONTRIBUTOR {
   composes: circle;
   background-color: #f8d270;
+}
+
+.ACTIVITY {
+  composes: circle;
+  background-color: #ff5386;
 }

@@ -67,8 +67,14 @@ describe('CommunityActivity', () => {
 
     const events = getAllByTestId('event', { exact: false });
     expect(events).toHaveLength(3);
-    expect(events[0]).toHaveTextContent('ACTIVITY 7XP 12/31/1969');
-    expect(events[1]).toHaveTextContent('CONTRIBUTOR 1XP 12/31/1969');
-    expect(events[2]).toHaveTextContent('COMMUNITY 1XP 12/31/1969');
+    expect(events[0]).toHaveTextContent(
+      'COMMUNITY 1XP Initial transition script 12/31/1969',
+    );
+    expect(events[1]).toHaveTextContent(
+      'CONTRIBUTOR 1XP Initial transition script 12/31/1969',
+    );
+    expect(events[2]).toHaveTextContent(
+      'ACTIVITY 7XP Initial transition script 12/31/1969',
+    );
   });
 });
