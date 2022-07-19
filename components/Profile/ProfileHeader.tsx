@@ -22,6 +22,7 @@ import { useRouter } from 'next/router';
 import { useGlobalMessages } from 'hooks/useGlobalMessages';
 import { useAccount, useDisconnect } from 'wagmi';
 import { useConfig } from 'hooks/useConfig';
+import { DisplayAddress } from 'components/DisplayAddress';
 
 type ProfileHeaderProps = {
   address: string;
@@ -193,7 +194,7 @@ export function ProfileHeader({ address, loans }: ProfileHeaderProps) {
       <TwelveColumn>
         <Fieldset legend="📭 Address">
           <div className={styles.container}>
-            <span>{address}</span>
+            <DisplayAddress address={address} />
             <EtherscanAddressLink address={address}>
               View on Etherscan 🔗
             </EtherscanAddressLink>

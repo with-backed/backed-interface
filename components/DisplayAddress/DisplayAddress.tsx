@@ -1,7 +1,6 @@
 import { useConfig } from 'hooks/useConfig';
 import { addressToENS } from 'lib/account';
-import React, { useEffect, useState } from 'react';
-import styles from './Address.module.css';
+import React, { useEffect, useMemo, useState } from 'react';
 
 export interface DisplayAddressProps {
   address: string;
@@ -16,10 +15,17 @@ export function DisplayAddress({
   const [gotResponse, setGotResponse] = useState(false);
   const [name, setName] = useState<string | null>(null);
 
+  const formattedAddress = useMemo(
+    // leading 0x + first four digits + ellipsis + last 4 digits
+    () => address.substring(0, 6) + '…' + address.substring(address.length - 4),
+    [address],
+  );
+
   useEffect(() => {
     async function getEnsName() {
       setName(null);
       try {
+        // TODO: can we always use ethereum ENS lookup?
         let name = await addressToENS(address, jsonRpcProvider);
 
         setGotResponse(true);
@@ -36,19 +42,11 @@ export function DisplayAddress({
   }, [address, jsonRpcProvider, useEns]);
 
   if (!useEns) {
-    return (
-      <span title={address} className={styles.truncate}>
-        {address}
-      </span>
-    );
+    return <span title={address}>{formattedAddress}</span>;
   }
 
   if (gotResponse) {
-    return (
-      <span title={name || address} className={styles.truncate}>
-        {name || address}
-      </span>
-    );
+    return <span title={name || address}>{name || formattedAddress}</span>;
   }
 
   return null;

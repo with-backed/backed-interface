@@ -4,6 +4,7 @@ import { DisplayAddress } from 'components/DisplayAddress';
 import { addressToENS } from 'lib/account';
 
 const address = '0x0DD7D78Ed27632839cd2a929EE570eAd346C19fC';
+const formattedAddress = '0x0DD7…19fC';
 const ens = 'moonparty.eth';
 
 jest.mock('lib/account', () => ({
@@ -21,11 +22,12 @@ describe('DisplayAddress', () => {
     mockAddressToENS.mockResolvedValue(ens);
   });
   it('renders a regular address', () => {
-    const { getByText } = render(
+    const { getByText, getByTitle } = render(
       <DisplayAddress address={address} useEns={false} />,
     );
 
-    getByText(address);
+    getByTitle(address);
+    getByText(formattedAddress);
     expect(mockAddressToENS).not.toHaveBeenCalled();
   });
 
@@ -33,7 +35,7 @@ describe('DisplayAddress', () => {
     mockAddressToENS.mockResolvedValue(null);
     render(<DisplayAddress address={address} />);
 
-    await screen.findByText(address);
+    await screen.findByText(formattedAddress);
   });
 
   it('renders the ENS name if an address resolves to one', async () => {
@@ -48,6 +50,6 @@ describe('DisplayAddress', () => {
     });
     render(<DisplayAddress address={address} />);
 
-    await screen.findByText(address);
+    await screen.findByText(formattedAddress);
   });
 });
