@@ -39,7 +39,6 @@ export function CommunityActivity({ account }: CommunityActivityProps) {
           <ol className={styles.list}>
             {scoreChanges.map((event) => {
               const xpDelta = event.newScore - event.oldScore;
-              console.log(event.ipfsEntryHash);
               const reason =
                 reasons[event.ipfsEntryHash]?.reason ||
                 'Initial transition script';
