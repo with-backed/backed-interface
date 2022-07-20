@@ -13,6 +13,7 @@ import goldKeyMultisig from './bunns/gold key multisig.svg';
 import preserverOfWisdom from './bunns/preserver of wisdom.svg';
 import { XPFieldset } from './XPFieldset';
 import { GeneratedSections } from './GeneratedSections';
+import Link from 'next/link';
 
 type BunnProps = {
   imageData: any;
@@ -88,7 +89,10 @@ export function CommunityInfo() {
         <p className={styles.explanation}>
           Role-based accessories are awarded via a nomination process. Use this
           form to nominate. If you have an idea for a trait that doesn&apos;t
-          exist, suggest it on Github.
+          exist,{' '}
+          <Link href="https://github.com/with-backed/backed-community-nft-docs">
+            <a>suggest it on Github.</a>
+          </Link>
         </p>
         <div className={styles['xp-wide']}>
           <Fieldset legend="">
