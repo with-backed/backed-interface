@@ -16,7 +16,7 @@ export async function getPendingMultiSigChanges(): Promise<{
   [key: number]: PendingChanges[];
 }> {
   const safeAddress = process.env.COMMUNITY_NFT_MULTISIG!;
-  const { safeService, safeSdk } = await initGnosisSdk(safeAddress);
+  const { safeService } = await initGnosisSdk(safeAddress);
 
   const pendingTransactions = await safeService.getPendingTransactions(
     safeAddress,
@@ -61,7 +61,7 @@ export async function getPendingMultiSigChanges(): Promise<{
 async function initGnosisSdk(safeAddress: string) {
   const ethAdapter = new EthersAdapter({
     ethers,
-    signer: new Wallet(process.env.GNOSIS_SAFE_OWNER_PK!, getAlchemyProvider()),
+    signer: Wallet.createRandom().connect(getAlchemyProvider()),
   });
   const txServiceUrl = process.env.GNOSIS_TX_SERVICE_URL!;
   const safeService = new SafeServiceClient({

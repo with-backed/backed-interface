@@ -14,11 +14,11 @@ export function PendingCommunityTransactions({
   return (
     <div>
       {Object.keys(multiSigChanges).map((nonce) => (
-        <div className={styles.wrapper}>
+        <div className={styles.wrapper} key={nonce}>
           <Fieldset legend={`Pending Transaction #${nonce}`} key={nonce}>
             {multiSigChanges[parseInt(nonce)].map((change, i) => {
               return (
-                <>
+                <div key={i}>
                   <span>Change #{i + 1}</span>
                   <ol className={styles.list}>
                     <li>account: {change.account}</li>
@@ -27,12 +27,11 @@ export function PendingCommunityTransactions({
                       value: {ethers.BigNumber.from(change.value).toString()}
                     </li>
                     <li>
-                      {' '}
                       IPFS Link:{' '}
                       <Link href={change.ipfsLink}>{change.ipfsLink}</Link>
                     </li>
                   </ol>
-                </>
+                </div>
               );
             })}
           </Fieldset>

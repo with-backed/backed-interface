@@ -1,7 +1,7 @@
 import { PendingCommunityTransactions } from 'components/PendingCommunityTransactions/PendingCommunityTransactions';
 import { getPendingMultiSigChanges } from 'lib/communityNFT/multisig';
 import { GetServerSideProps } from 'next';
-import { PendingChanges } from 'pages/api/community/multiSigTxs';
+import { PendingChanges } from 'lib/communityNFT/multisig';
 
 export type MultiSigProps = {
   multiSigChanges: string;
