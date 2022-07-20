@@ -39,7 +39,7 @@
 }
 
 .cta > p {
-  font-size: var(--font-large);
+  line-height: 1.6;
 }
 
 .connect-wallet > span {

@@ -32,7 +32,7 @@
 .explanation {
   font-size: var(--font-small);
   max-width: 550px;
-  line-height: 1.5rem;
+  line-height: 1.3rem;
 }
 
 .xp fieldset {
@@ -89,4 +89,8 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
   }
+}
+
+.fieldset-children > ul {
+  padding-inline-start: 16px;
 }
