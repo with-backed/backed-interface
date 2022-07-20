@@ -1,8 +1,19 @@
 .collectionInfoElement {
-    display: inline-block;
-    width: 50%;
+  display: inline-block;
+  width: 50%;
 }
 
 .label {
-    text-transform: capitalize;
+  text-transform: capitalize;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.conversion {
+  font-size: var(--font-small);
+  line-height: var(--font-small);
+  color: var(--highlight-success-100);
 }
