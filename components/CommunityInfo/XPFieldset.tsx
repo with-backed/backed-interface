@@ -29,5 +29,9 @@ export const XPFieldset: FunctionComponent<XPFieldsetProps> = ({
   kind,
   children,
 }) => {
-  return <Fieldset legend={<Legend kind={kind} />}>{children}</Fieldset>;
+  return (
+    <Fieldset legend={<Legend kind={kind} />}>
+      <div className={styles['fieldset-children']}>{children}</div>
+    </Fieldset>
+  );
 };

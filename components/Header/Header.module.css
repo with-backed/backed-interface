@@ -51,7 +51,6 @@
 .link:visited {
   color: var(--neutral-50);
   font-weight: var(--weight-semibold);
-  font-size: var(--font-large);
   transition: color 200ms ease;
 }
 
