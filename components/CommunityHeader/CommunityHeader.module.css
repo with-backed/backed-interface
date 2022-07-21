@@ -31,12 +31,20 @@
 }
 
 .cta {
+  width: 100%;
   max-width: 500px;
   margin-top: 32px;
   font-family: var(--sans);
 }
 
 .cta button {
+  width: auto;
+  padding-left: 2em;
+  padding-right: 2em;
+}
+
+.cta > div[class^='Button'] {
+  display: inline-flex;
   width: auto;
   padding-left: 2em;
   padding-right: 2em;
@@ -66,7 +74,7 @@
 
 .select {
   margin: 8px 0 24px 0;
-  width: auto;
+  max-width: 300px;
 }
 
 .not-minted-wrapper {

@@ -205,6 +205,8 @@ export function CommunityHeaderManage({
   const { data: signer } = useSigner();
   const [accessories, setAccessories] = useState<Accessory[]>([]);
   const [metadata, setMetadata] = useState<CommunityTokenMetadata | null>(null);
+  const [txHash, setTxHash] = useState('');
+  const [isPending, setIsPending] = useState(false);
 
   useEffect(() => {
     if (address) {
@@ -219,9 +221,15 @@ export function CommunityHeaderManage({
     async (acc: Accessory | null) => {
       const contract = web3CommunityNFT(signer!);
       const tx = await contract.setEnabledAccessory(acc ? acc.id : 0);
-      tx.wait().then(() =>
-        getMetadata(address!, JSON_RPC_PROVIDER).then(setMetadata),
-      );
+      setTxHash(tx.hash);
+      setIsPending(true);
+      tx.wait().then(() => {
+        getMetadata(address!, JSON_RPC_PROVIDER).then((result) => {
+          setMetadata(result);
+          setTxHash('');
+          setIsPending(false);
+        });
+      });
     },
     [address, signer],
   );
@@ -305,23 +313,26 @@ export function CommunityHeaderManage({
           <dt>Special Trait Displayed</dt>
           <dd>
             {defaultValue && (
-              <Select
-                className={styles.select}
-                color="clickable"
-                options={accessoryOptions}
-                defaultValue={defaultValue}
-                onChange={(option) =>
-                  setSelectedAccessory(option?.value || null)
-                }
-              />
+              <div className={styles.select}>
+                <Select
+                  color="clickable"
+                  options={accessoryOptions}
+                  defaultValue={defaultValue}
+                  onChange={(option) =>
+                    setSelectedAccessory(option?.value || null)
+                  }
+                />
+              </div>
             )}
           </dd>
         </DescriptionList>
-        <Button
+        <TransactionButton
+          text="Update Art"
           disabled={currentAccessoryName === selectedAccessory?.name}
-          onClick={() => setAccessory(selectedAccessory)}>
-          Update Art
-        </Button>
+          onClick={() => setAccessory(selectedAccessory)}
+          txHash={txHash}
+          isPending={isPending}
+        />
       </div>
     </div>
   );
