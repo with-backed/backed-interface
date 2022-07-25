@@ -11,6 +11,7 @@ const HOURS_IN_DAY = 24;
 type LiquidatedLoans = {
   liquidationOccurringLoans: Loan[];
   liquidationOccurredLoans: Loan[];
+  currentRunTimestamp: number;
 };
 
 export async function getLiquidatedLoansForTimestamp(
@@ -21,14 +22,8 @@ export async function getLiquidatedLoansForTimestamp(
     process.env.NEXT_PUBLIC_NOTIFICATIONS_FREQUENCY_HOURS!,
   );
 
-  if (process.env.NEXT_PUBLIC_NOTIFICATIONS_KILLSWITCH || !notificationsFreq)
-    return {
-      liquidationOccurredLoans: [],
-      liquidationOccurringLoans: [],
-    };
-
   let pastTimestamp = await getLastWrittenTimestamp();
-  console.log({ pastTimestamp });
+
   if (!pastTimestamp) {
     // if we couldn't get pastTimestamp from postgres for whatever reason, just default to N hours before
     pastTimestamp = currentTimestamp - notificationsFreq * SECONDS_IN_AN_HOUR;
@@ -39,7 +34,12 @@ export async function getLiquidatedLoansForTimestamp(
   const currentRunTimestamp =
     pastTimestamp + notificationsFreq * SECONDS_IN_AN_HOUR;
 
-  console.log({ currentTimestamp, currentRunTimestamp });
+  if (process.env.NEXT_PUBLIC_NOTIFICATIONS_KILLSWITCH || !notificationsFreq)
+    return {
+      liquidationOccurredLoans: [],
+      liquidationOccurringLoans: [],
+      currentRunTimestamp: currentRunTimestamp,
+    };
 
   const [liquidationOccurringLoans, liquidationOccurredLoans] =
     await Promise.all([
@@ -56,12 +56,9 @@ export async function getLiquidatedLoansForTimestamp(
       ),
     ]);
 
-  await overrideLastWrittenTimestamp(currentRunTimestamp);
-  const newPastTimestamp = await getLastWrittenTimestamp();
-  console.log({ newPastTimestamp });
-
   return {
     liquidationOccurringLoans,
     liquidationOccurredLoans,
+    currentRunTimestamp,
   };
 }
