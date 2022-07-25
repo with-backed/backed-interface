@@ -19,7 +19,7 @@ export function PendingCommunityTransactions({
           <Fieldset legend={`Pending Transaction #${nonce}`} key={nonce}>
             {multiSigChanges[parseInt(nonce)].map((change, i) => {
               return (
-                <div key={i}>
+                <div key={`${change.account}-${change.id}`}>
                   <span>Change #{i + 1}</span>
                   <ol className={styles.list}>
                     <li>account: {change.account}</li>
