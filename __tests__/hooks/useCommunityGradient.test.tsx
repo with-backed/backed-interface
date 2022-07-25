@@ -14,17 +14,28 @@ describe('useCommunityGradient', () => {
     const { result } = renderHook(() => useCommunityGradient(), { wrapper });
 
     expect(result.current.from).toEqual('#ffffff');
-    expect(result.current.to).toEqual('#f6f3fa');
+    expect(result.current.to).toEqual('var(--highlight-clickable-5)');
   });
 
-  it('adds messages', () => {
+  it('updates the gradient values', () => {
     const { result } = renderHook(() => useCommunityGradient(), { wrapper });
 
     act(() => {
-      result.current.setGradient('#c0ffee');
+      result.current.setGradient('Pink Protocol Lei');
     });
 
     expect(result.current.from).toEqual('#ffffff');
-    expect(result.current.to).toEqual('#c0ffee');
+    expect(result.current.to).toEqual('#FF5CDB0A');
+  });
+
+  it('falls back to default when there is no gradient value in the table', () => {
+    const { result } = renderHook(() => useCommunityGradient(), { wrapper });
+
+    act(() => {
+      result.current.setGradient('Punk Protocol Lei');
+    });
+
+    expect(result.current.from).toEqual('#ffffff');
+    expect(result.current.to).toEqual('var(--highlight-clickable-5)');
   });
 });

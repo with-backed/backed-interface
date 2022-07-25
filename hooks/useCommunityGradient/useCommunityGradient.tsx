@@ -7,18 +7,18 @@ import {
 } from 'react';
 
 const FROM = '#ffffff';
-const DEFAULT_TO = '#f6f3fa';
+const DEFAULT_TO = 'var(--highlight-clickable-5)';
 
 const accessoryToValue: Record<string, string> = {
-  'Gold Chain Contributor': '#ffcf53',
-  'Gold Key': '#F8D270',
-  'Preserver of Wisdom': '#FFB653',
-  'Pink Protocol Lei': '#FF5CDB',
-  'Purple Community Scarf': '#5653ff',
-  'Alpha-Snake': '#86A362',
-  'Super Chain Contributor': '#ffcf53',
-  'Super Protocol Lei': '#FF5CDB',
-  'Super Community Scarf': '#5653ff',
+  'Gold Chain Contributor': '#ffcf530a',
+  'Gold Key': '#F8D2700a',
+  'Preserver of Wisdom': '#FFB6530a',
+  'Pink Protocol Lei': '#FF5CDB0A',
+  'Purple Community Scarf': '#5653ff0a',
+  'Alpha-Snake': '#86A3620a',
+  'Super Chain Contributor': '#ffcf530a',
+  'Super Protocol Lei': '#FF5CDB0a',
+  'Super Community Scarf': '#5653ff0a',
 };
 
 export const CommunityGradientContext = createContext({
