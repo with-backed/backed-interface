@@ -34,7 +34,6 @@ jest.mock('lib/loans/subgraph/subgraphLoans', () => ({
 }));
 
 jest.mock('lib/events/consumers/userNotifications/repository', () => ({
-  overrideLastWrittenTimestamp: jest.fn(),
   getLastWrittenTimestamp: jest.fn(),
 }));
 
@@ -55,7 +54,6 @@ describe('getLiquidatedLoansForTimestamp', () => {
     jest.clearAllMocks();
     mockedGetExpiringLoansCall.mockResolvedValueOnce([aboutToExpireLoan]);
     mockedGetExpiringLoansCall.mockResolvedValueOnce([alreadyExpiredLoan]);
-    mockedOverrideLastTimestampCall.mockResolvedValue();
     mockedGetLastWrittenTimestampCall.mockResolvedValue(lastRun);
   });
 
@@ -79,8 +77,6 @@ describe('getLiquidatedLoansForTimestamp', () => {
       now,
       configs.rinkeby.nftBackedLoansSubgraph,
     );
-
-    expect(mockedOverrideLastTimestampCall).toHaveBeenCalledWith(now);
 
     expect(liquidationOccurringLoans).toEqual([aboutToExpireLoan]);
     expect(liquidationOccurredLoans).toEqual([alreadyExpiredLoan]);
