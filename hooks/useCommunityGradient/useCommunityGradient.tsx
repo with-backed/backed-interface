@@ -10,15 +10,15 @@ const FROM = '#ffffff';
 const DEFAULT_TO = 'var(--highlight-clickable-5)';
 
 const accessoryToValue: Record<string, string> = {
-  'Gold Chain Contributor': '#ffcf530a',
-  'Gold Key': '#F8D2700a',
-  'Preserver of Wisdom': '#FFB6530a',
-  'Pink Protocol Lei': '#FF5CDB0A',
-  'Purple Community Scarf': '#5653ff0a',
-  'Alpha-Snake': '#86A3620a',
-  'Super Chain Contributor': '#ffcf530a',
-  'Super Protocol Lei': '#FF5CDB0a',
-  'Super Community Scarf': '#5653ff0a',
+  'Gold Chain Contributor': '#ffcf5314',
+  'Gold Key': '#F8D27014',
+  'Preserver of Wisdom': '#FFB65314',
+  'Pink Protocol Lei': '#FF5CDB14',
+  'Purple Community Scarf': '#5653ff14',
+  'Alpha-Snake': '#86A36214',
+  'Super Chain Contributor': '#ffcf5314',
+  'Super Protocol Lei': '#FF5CDB14',
+  'Super Community Scarf': '#5653ff14',
 };
 
 export const CommunityGradientContext = createContext({
