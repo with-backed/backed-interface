@@ -3,6 +3,7 @@ import { sendEmailsForTriggerAndEntity } from 'lib/events/consumers/userNotifica
 import { getLiquidatedLoansForTimestamp } from 'lib/events/timely/timely';
 import { captureException, withSentry } from '@sentry/nextjs';
 import { Config, devConfigs, prodConfigs } from 'lib/config';
+import { overrideLastWrittenTimestamp } from 'lib/events/consumers/userNotifications/repository';
 
 async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
   if (req.method != 'POST') {
@@ -23,12 +24,16 @@ async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
       `running notifications cron job with timestamp ${currentTimestamp}`,
     );
 
+    let newRunTimestamp: number = 0; // guranteed to get reinitialized below, we'll always have at least one config
     for (const config of configs) {
-      const { liquidationOccurringLoans, liquidationOccurredLoans } =
-        await getLiquidatedLoansForTimestamp(
-          currentTimestamp,
-          config.nftBackedLoansSubgraph,
-        );
+      const {
+        liquidationOccurringLoans,
+        liquidationOccurredLoans,
+        currentRunTimestamp,
+      } = await getLiquidatedLoansForTimestamp(
+        currentTimestamp,
+        config.nftBackedLoansSubgraph,
+      );
 
       for (
         let loanIndex = 0;
@@ -55,7 +60,10 @@ async function handler(req: NextApiRequest, res: NextApiResponse<string>) {
           config,
         );
       }
+      newRunTimestamp = currentRunTimestamp;
     }
+
+    await overrideLastWrittenTimestamp(newRunTimestamp);
 
     res.status(200).json(`notifications successfully sent`);
   } catch (e) {
