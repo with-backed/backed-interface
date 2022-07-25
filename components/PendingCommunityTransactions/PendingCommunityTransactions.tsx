@@ -1,6 +1,7 @@
 import { Fieldset } from 'components/Fieldset';
 import { ethers } from 'ethers';
 import { PendingChanges } from 'lib/communityNFT/multisig';
+import { convertIPFS } from 'lib/getNFTInfo';
 import Link from 'next/link';
 import styles from './PendingCommunityTransactions.module.css';
 
@@ -26,14 +27,20 @@ export function PendingCommunityTransactions({
                     <li>
                       value: {ethers.BigNumber.from(change.value).toString()}
                     </li>
-                    <li>
+                    <li className={styles.ipfsLink}>
                       IPFS Link:{' '}
-                      <Link href={change.ipfsLink}>{change.ipfsLink}</Link>
+                      <Link
+                        href={convertIPFS(change.ipfsLink) || change.ipfsLink}>
+                        {convertIPFS(change.ipfsLink) || change.ipfsLink}
+                      </Link>
                     </li>
                   </ol>
                 </div>
               );
             })}
+            <Link href="https://gnosis-safe.io/app/oeth:0xa327C62acaE63Fa70945FDFcd252b89435400AE3/transactions/queue">
+              See on Gnosis
+            </Link>
           </Fieldset>
         </div>
       ))}

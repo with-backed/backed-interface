@@ -13,3 +13,10 @@
 .list > li {
   margin: 14px 0;
 }
+
+.ipfsLink {
+  max-width: 70%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
