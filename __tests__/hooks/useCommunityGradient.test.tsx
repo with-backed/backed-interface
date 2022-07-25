@@ -25,7 +25,7 @@ describe('useCommunityGradient', () => {
     });
 
     expect(result.current.from).toEqual('#ffffff');
-    expect(result.current.to).toEqual('#FF5CDB0A');
+    expect(result.current.to).toEqual('#FF5CDB1A');
   });
 
   it('falls back to default when there is no gradient value in the table', () => {
