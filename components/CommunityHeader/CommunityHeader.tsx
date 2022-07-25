@@ -22,6 +22,7 @@ import Link from 'next/link';
 import { NFTExchangeAddressLink } from 'components/NFTExchangeLink';
 import { COMMUNITY_NFT_CONTRACT_ADDRESS } from 'lib/constants';
 import { DisplayAddress } from 'components/DisplayAddress';
+import { useCommunityGradient } from 'hooks/useCommunityGradient';
 
 const JSON_RPC_PROVIDER = configs.optimism.jsonRpcProvider;
 
@@ -139,6 +140,7 @@ export function CommunityHeaderView({
 }: CommunityPageViewProps) {
   const [accessories, setAccessories] = useState<Accessory[]>([]);
   const [metadata, setMetadata] = useState<CommunityTokenMetadata | null>(null);
+  const { setGradient } = useCommunityGradient();
   useEffect(() => {
     getAccessories(address, accessoryLookup, JSON_RPC_PROVIDER).then(
       setAccessories,
@@ -153,6 +155,22 @@ export function CommunityHeaderView({
         : '--',
     [account],
   );
+
+  const currentAccessoryName = useMemo(() => {
+    if (metadata) {
+      const accessoryTrait = metadata.attributes.find(
+        (attr) => attr.trait_type === 'Accessory',
+      );
+      return accessoryTrait?.value;
+    }
+    return undefined;
+  }, [metadata]);
+
+  useEffect(() => {
+    if (currentAccessoryName && typeof currentAccessoryName === 'string') {
+      setGradient(currentAccessoryName);
+    }
+  }, [currentAccessoryName, setGradient]);
 
   return (
     <div className={styles.wrapper}>
@@ -207,6 +225,7 @@ export function CommunityHeaderManage({
   const [metadata, setMetadata] = useState<CommunityTokenMetadata | null>(null);
   const [txHash, setTxHash] = useState('');
   const [isPending, setIsPending] = useState(false);
+  const { setGradient } = useCommunityGradient();
 
   useEffect(() => {
     if (address) {
@@ -247,6 +266,12 @@ export function CommunityHeaderManage({
     }
     return undefined;
   }, [metadata]);
+
+  useEffect(() => {
+    if (currentAccessoryName && typeof currentAccessoryName === 'string') {
+      setGradient(currentAccessoryName);
+    }
+  }, [currentAccessoryName, setGradient]);
 
   const accessoryOptions = useMemo(() => {
     const options = accessories.map((accessory) => {
