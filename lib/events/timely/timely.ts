@@ -28,6 +28,7 @@ export async function getLiquidatedLoansForTimestamp(
     };
 
   let pastTimestamp = await getLastWrittenTimestamp();
+  console.log({ pastTimestamp });
   if (!pastTimestamp) {
     // if we couldn't get pastTimestamp from postgres for whatever reason, just default to N hours before
     pastTimestamp = currentTimestamp - notificationsFreq * SECONDS_IN_AN_HOUR;
@@ -37,6 +38,8 @@ export async function getLiquidatedLoansForTimestamp(
   // in a perfect world, currentTimestamp === currentRunTimestamp, but with inconsistincies in our cron or anything else, they may differ
   const currentRunTimestamp =
     pastTimestamp + notificationsFreq * SECONDS_IN_AN_HOUR;
+
+  console.log({ currentTimestamp, currentRunTimestamp });
 
   const [liquidationOccurringLoans, liquidationOccurredLoans] =
     await Promise.all([
@@ -54,6 +57,8 @@ export async function getLiquidatedLoansForTimestamp(
     ]);
 
   await overrideLastWrittenTimestamp(currentRunTimestamp);
+  const newPastTimestamp = await getLastWrittenTimestamp();
+  console.log({ newPastTimestamp });
 
   return {
     liquidationOccurringLoans,
