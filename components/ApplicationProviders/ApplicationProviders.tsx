@@ -5,6 +5,7 @@ import {
   DisclaimerComponent,
 } from '@rainbow-me/rainbowkit';
 import { CachedRatesProvider } from 'hooks/useCachedRates/useCachedRates';
+import { CommunityGradientProvider } from 'hooks/useCommunityGradient';
 import { useConfig } from 'hooks/useConfig';
 import { GlobalMessagingProvider } from 'hooks/useGlobalMessages';
 import { HasCollapsedHeaderInfoProvider } from 'hooks/useHasCollapsedHeaderInfo';
@@ -83,7 +84,9 @@ export const ApplicationProviders = ({
           <TimestampProvider>
             <CachedRatesProvider>
               <HasCollapsedHeaderInfoProvider>
-                {children}
+                <CommunityGradientProvider>
+                  {children}
+                </CommunityGradientProvider>
               </HasCollapsedHeaderInfoProvider>
             </CachedRatesProvider>
           </TimestampProvider>
