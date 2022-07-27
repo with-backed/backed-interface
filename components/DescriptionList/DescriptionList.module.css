@@ -4,7 +4,6 @@
   grid-template-columns: var(--column-width) 1fr;
   column-gap: var(--gap);
   row-gap: calc(var(--gap) / 2);
-  align-items: center;
 }
 
 .clamped {
