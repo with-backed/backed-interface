@@ -5,7 +5,7 @@ import { Loan } from 'types/Loan';
 import React, { useMemo } from 'react';
 import { CollateralSaleInfo } from 'lib/loans/collateralSaleInfo';
 import styles from './CollateralInfo.module.css';
-import { DisplayCurrency, DisplayEth } from 'components/DisplayCurrency';
+import { DisplayEth } from 'components/DisplayCurrency';
 
 type CollateralInfoProps = {
   loan: Loan;
