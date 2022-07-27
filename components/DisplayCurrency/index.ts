@@ -1,1 +1,1 @@
-export { DisplayCurrency } from './DisplayCurrency';
+export { DisplayCurrency, DisplayEth } from './DisplayCurrency';

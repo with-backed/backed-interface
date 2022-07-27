@@ -232,7 +232,12 @@ function LoansInner({
           imageUrl={metadata.image!.mediaUrl}
         />
       )}
-      <LoanHeader loan={loan} collateralMedia={media} refresh={refresh} />
+      <LoanHeader
+        loan={loan}
+        floorPrice={collateralSaleInfo.collectionStats.floor}
+        collateralMedia={media}
+        refresh={refresh}
+      />
       <LoanInfo loan={loan} collateralSaleInfo={collateralSaleInfo} />
     </>
   );

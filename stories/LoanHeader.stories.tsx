@@ -31,6 +31,7 @@ const collateralMedia = {
 export function LoanHeaderAwaiting() {
   return (
     <LoanHeader
+      floorPrice={100.3}
       loan={baseLoan}
       collateralMedia={collateralMedia}
       refresh={noop}
@@ -41,6 +42,7 @@ export function LoanHeaderAwaiting() {
 export function LoanHeaderWithLenderAccruing() {
   return (
     <LoanHeader
+      floorPrice={100.3}
       loan={loanWithLenderAccruing}
       collateralMedia={collateralMedia}
       refresh={noop}
@@ -51,6 +53,7 @@ export function LoanHeaderWithLenderAccruing() {
 export function LoanHeaderWithLenderPastDue() {
   return (
     <LoanHeader
+      floorPrice={100.3}
       loan={loanWithLenderPastDue}
       collateralMedia={collateralMedia}
       refresh={noop}
@@ -61,6 +64,7 @@ export function LoanHeaderWithLenderPastDue() {
 export function LoanHeaderClosed() {
   return (
     <LoanHeader
+      floorPrice={100.3}
       loan={closedLoan}
       collateralMedia={collateralMedia}
       refresh={noop}
