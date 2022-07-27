@@ -1,6 +1,6 @@
 import { useCachedRates } from 'hooks/useCachedRates/useCachedRates';
 import { ERC20Amount } from 'lib/erc20Helper';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 type BaseProps = {
   currency: 'usd' | 'gbp' | 'eur';
@@ -10,6 +10,9 @@ type SingleAmount = BaseProps & {
 };
 type AggregateAmounts = BaseProps & {
   amounts: ERC20Amount[];
+};
+type EthAmount = BaseProps & {
+  nominal: number | null;
 };
 
 export function DisplayCurrency(props: SingleAmount): JSX.Element | null;
@@ -53,6 +56,37 @@ export function DisplayCurrency(props: any): JSX.Element | null {
     }
     fetchTotalAmounts();
   }, [amounts, currency, getRate]);
+
+  if (!total) {
+    return null;
+  }
+
+  return <>{formatter.format(total)}</>;
+}
+
+export function DisplayEth({ currency, nominal }: EthAmount) {
+  const formatter = useMemo(() => {
+    return new Intl.NumberFormat('en-US', { currency, style: 'currency' });
+  }, [currency]);
+  const { getEthRate } = useCachedRates();
+
+  const [total, setTotal] = useState<number | null>(null);
+  useEffect(() => {
+    if (!!process.env.NEXT_PUBLIC_COINGECKO_KILLSWITCH_ON) {
+      setTotal(null);
+      return;
+    }
+
+    async function fetchTotal() {
+      const rate = await getEthRate(currency);
+      if (rate && nominal) {
+        setTotal(nominal * rate);
+      } else {
+        setTotal(null);
+      }
+    }
+    fetchTotal();
+  }, [currency, getEthRate, nominal]);
 
   if (!total) {
     return null;

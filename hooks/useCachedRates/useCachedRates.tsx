@@ -1,5 +1,5 @@
 import { useConfig } from 'hooks/useConfig';
-import { getUnitPriceForCoin } from 'lib/coingecko';
+import { getUnitPriceForCoin, getUnitPriceForEth } from 'lib/coingecko';
 import { SupportedNetwork } from 'lib/config';
 import {
   createContext,
@@ -18,10 +18,12 @@ export type CurrentCachedRates = {
 
 type CachedRatesAccessor = {
   getRate: (erc20Address: string, fiat: string) => Promise<number | null>;
+  getEthRate: (toCurrency: string) => Promise<number | null>;
 };
 
 export const CachedRatesContext = createContext<CachedRatesAccessor>({
   getRate: async () => null,
+  getEthRate: async () => null,
 });
 
 export function CachedRatesProvider({ children }: PropsWithChildren<{}>) {
@@ -64,8 +66,30 @@ export function CachedRatesProvider({ children }: PropsWithChildren<{}>) {
     [network, rateCache, setKeyValueForCache],
   );
 
+  const getEthRate = useCallback(
+    async (toCurrency: string) => {
+      const key = `eth:${toCurrency}`;
+      let rate: number | undefined;
+      const now = Math.floor(new Date().getTime() / 1000);
+      if (rateCache[key] && now < rateCache[key].expiry) {
+        rate = rateCache[key].nominal;
+      } else {
+        rate = await getUnitPriceForEth(toCurrency);
+
+        if (!rate) return null;
+
+        setKeyValueForCache(key, {
+          nominal: rate,
+          expiry: now + 120, // 2 min expiry
+        });
+      }
+      return rate;
+    },
+    [rateCache, setKeyValueForCache],
+  );
+
   return (
-    <CachedRatesContext.Provider value={{ getRate }}>
+    <CachedRatesContext.Provider value={{ getRate, getEthRate }}>
       {children}
     </CachedRatesContext.Provider>
   );

@@ -5,7 +5,7 @@ import { Loan } from 'types/Loan';
 import React, { useMemo } from 'react';
 import { CollateralSaleInfo } from 'lib/loans/collateralSaleInfo';
 import styles from './CollateralInfo.module.css';
-import { DisplayCurrency } from 'components/DisplayCurrency';
+import { DisplayCurrency, DisplayEth } from 'components/DisplayCurrency';
 
 type CollateralInfoProps = {
   loan: Loan;
@@ -78,7 +78,12 @@ export const CollateralInfo = ({
                 {collateralSaleInfo.collectionStats.floor?.toFixed(4) || '--'}{' '}
                 ETH
               </span>
-              <span className={styles.conversion}>$34,000.00</span>
+              <span className={styles.conversion}>
+                <DisplayEth
+                  currency="usd"
+                  nominal={collateralSaleInfo.collectionStats.floor}
+                />
+              </span>
             </div>
           </dd>
         </div>
@@ -96,7 +101,12 @@ export const CollateralInfo = ({
                 {collateralSaleInfo.collectionStats.volume?.toFixed(2) || '--'}{' '}
                 ETH
               </span>
-              <span className={styles.conversion}>$34,000.00</span>
+              <span className={styles.conversion}>
+                <DisplayEth
+                  currency="usd"
+                  nominal={collateralSaleInfo.collectionStats.volume}
+                />
+              </span>
             </div>
           </dd>
         </div>
