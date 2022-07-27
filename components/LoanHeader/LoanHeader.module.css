@@ -11,6 +11,17 @@
   max-width: var(--max-width);
 }
 
+.stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.conversion {
+  font-size: var(--font-small);
+  line-height: var(--font-small);
+  color: var(--highlight-success-100);
+}
+
 .red {
   color: var(--highlight-alert-100);
 }

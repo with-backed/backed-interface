@@ -5,13 +5,18 @@ import { Fallback } from 'components/Media/Fallback';
 import { useLoanDetails } from 'hooks/useLoanDetails';
 import { CollateralMedia } from 'types/CollateralMedia';
 import { Loan } from 'types/Loan';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import styles from './LoanHeader.module.css';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
+import { DisplayCurrency } from 'components/DisplayCurrency';
+import { ethers } from 'ethers';
+import { useCachedRates } from 'hooks/useCachedRates/useCachedRates';
 
 type LoanHeaderProps = {
   loan: Loan;
   collateralMedia: CollateralMedia | null;
+  // floorPrice denominated in ETH
+  floorPrice: number | null;
   refresh: () => void;
 };
 
@@ -41,13 +46,59 @@ const NonOverflowDD: React.FunctionComponent = ({ children }) => {
 export function LoanHeader({
   collateralMedia,
   loan,
+  floorPrice,
   refresh,
 }: LoanHeaderProps) {
   const details = useLoanDetails(loan);
+  const [ltv, setLtv] = useState<string | null>(null);
+  const { getEthRate, getRate } = useCachedRates();
+  const convertedLoanAmount = useMemo(
+    () => (
+      <DisplayCurrency
+        currency="usd"
+        amount={{
+          nominal: ethers.utils.formatUnits(
+            loan.loanAmount,
+            loan.loanAssetDecimals,
+          ),
+          symbol: loan.loanAssetSymbol,
+          address: loan.loanAssetContractAddress,
+        }}
+      />
+    ),
+    [loan],
+  );
   const List = useMemo(
     () => listComponentLookup[details.formattedStatus],
     [details.formattedStatus],
   );
+
+  useEffect(() => {
+    const formatter = Intl.NumberFormat('en-US', {
+      style: 'percent',
+      minimumFractionDigits: 2,
+    });
+    const getLtv = async () => {
+      const [ethRate, loanDenominationRate] = await Promise.all([
+        getEthRate('usd'),
+        getRate(loan.loanAssetContractAddress, 'usd'),
+      ]);
+
+      if (!floorPrice || !ethRate || !loanDenominationRate) {
+        return;
+      }
+
+      const loanAmountUSD =
+        parseFloat(
+          ethers.utils.formatUnits(loan.loanAmount, loan.loanAssetDecimals),
+        ) * loanDenominationRate;
+      const tokenFloorUSD = floorPrice * ethRate;
+      const ltvRatio = formatter.format(loanAmountUSD / tokenFloorUSD);
+
+      setLtv(ltvRatio);
+    };
+    getLtv();
+  }, [floorPrice, getEthRate, getRate, loan]);
 
   return (
     <div className={styles['loan-header']}>
@@ -63,7 +114,11 @@ export function LoanHeader({
           {!collateralMedia && <Fallback />}
         </div>
         <div className={styles.form}>
-          <List details={details} />
+          <List
+            convertedLoanAmount={convertedLoanAmount}
+            details={details}
+            ltv={ltv}
+          />
           <LoanForm loan={loan} refresh={refresh} />
         </div>
       </TwelveColumn>
@@ -73,6 +128,8 @@ export function LoanHeader({
 
 type ListProps = {
   details: ReturnType<typeof useLoanDetails>;
+  convertedLoanAmount: JSX.Element;
+  ltv: string | null;
 };
 
 function LoanHeaderLoadingList({
@@ -83,13 +140,22 @@ function LoanHeaderLoadingList({
     formattedLoanID,
     longFormattedPrincipal,
   },
+  convertedLoanAmount,
+  ltv,
 }: ListProps) {
   return (
     <DescriptionList orientation="horizontal" clamped>
       <dt>Loan ID</dt>
       <dd>{formattedLoanID}</dd>
       <dt>Loan Amount</dt>
-      <dd>{longFormattedPrincipal}</dd>
+      <dd>
+        <div className={styles.stack}>
+          <span>{longFormattedPrincipal}</span>
+          <span className={styles.conversion}>{convertedLoanAmount}</span>
+        </div>
+      </dd>
+      <dt>LTV</dt>
+      <dd>{ltv}</dd>
       <dt>Interest Rate</dt>
       <dd>{longFormattedInterestRate}</dd>
       <dt>Duration</dt>
@@ -108,13 +174,22 @@ function LoanHeaderAwaitingList({
     longFormattedPrincipal,
     formattedTotalDuration,
   },
+  convertedLoanAmount,
+  ltv,
 }: ListProps) {
   return (
     <DescriptionList orientation="horizontal" clamped>
       <dt>Loan ID</dt>
       <dd>{formattedLoanID}</dd>
       <dt>Loan Amount</dt>
-      <dd>{longFormattedPrincipal}</dd>
+      <dd>
+        <div className={styles.stack}>
+          <span>{longFormattedPrincipal}</span>
+          <span className={styles.conversion}>{convertedLoanAmount}</span>
+        </div>
+      </dd>
+      <dt>LTV</dt>
+      <dd>{ltv}</dd>
       <dt>Interest Rate</dt>
       <dd>{longFormattedInterestRate}</dd>
       <dt>Duration</dt>
@@ -135,13 +210,22 @@ function LoanHeaderClosedList({
     longFormattedInterestAccrued,
     longFormattedTotalPayback,
   },
+  convertedLoanAmount,
+  ltv,
 }: ListProps) {
   return (
     <DescriptionList orientation="horizontal" clamped>
       <dt>Loan ID</dt>
       <dd>{formattedLoanID}</dd>
       <dt>Loan Amount</dt>
-      <dd>{longFormattedPrincipal}</dd>
+      <dd>
+        <div className={styles.stack}>
+          <span>{longFormattedPrincipal}</span>
+          <span className={styles.conversion}>{convertedLoanAmount}</span>
+        </div>
+      </dd>
+      <dt>LTV</dt>
+      <dd>{ltv}</dd>
       <dt>Interest Rate</dt>
       <dd>{longFormattedInterestRate}</dd>
       <dt>Status</dt>
@@ -169,13 +253,22 @@ function LoanHeaderAccruingList({
     longFormattedEstimatedPaybackAtMaturity,
     formattedTimeRemaining,
   },
+  convertedLoanAmount,
+  ltv,
 }: ListProps) {
   return (
     <DescriptionList orientation="horizontal" clamped>
       <dt>Loan ID</dt>
       <dd>{formattedLoanID}</dd>
       <dt>Loan Amount</dt>
-      <dd>{longFormattedPrincipal}</dd>
+      <dd>
+        <div className={styles.stack}>
+          <span>{longFormattedPrincipal}</span>
+          <span className={styles.conversion}>{convertedLoanAmount}</span>
+        </div>
+      </dd>
+      <dt>LTV</dt>
+      <dd>{ltv}</dd>
       <dt>Interest Rate</dt>
       <dd>{longFormattedInterestRate}</dd>
       <dt>Status</dt>
@@ -202,13 +295,22 @@ function LoanHeaderPastDueList({
     longFormattedInterestAccrued,
     longFormattedEstimatedPaybackAtMaturity,
   },
+  convertedLoanAmount,
+  ltv,
 }: ListProps) {
   return (
     <DescriptionList orientation="horizontal" clamped>
       <dt>Loan ID</dt>
       <dd>{formattedLoanID}</dd>
       <dt>Loan Amount</dt>
-      <dd>{longFormattedPrincipal}</dd>
+      <dd>
+        <div className={styles.stack}>
+          <span>{longFormattedPrincipal}</span>
+          <span className={styles.conversion}>{convertedLoanAmount}</span>
+        </div>
+      </dd>
+      <dt>LTV</dt>
+      <dd>{ltv}</dd>
       <dt>Interest Rate</dt>
       <dd>{longFormattedInterestRate}</dd>
       <dt>Status</dt>
