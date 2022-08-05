@@ -1,11 +1,14 @@
 import { Explainer as ExplainerWrapper } from 'components/Explainer';
 import { ethers } from 'ethers';
 import { formatUnits } from 'ethers/lib/utils';
+import { useCachedRates } from 'hooks/useCachedRates/useCachedRates';
 import { useConfig } from 'hooks/useConfig';
+import { useLTV } from 'hooks/useLTV';
 import { SupportedNetwork } from 'lib/config';
 import { jsonRpcERC20Contract } from 'lib/contracts';
 import { estimatedRepayment } from 'lib/loans/utils';
-import React, { useEffect, useState } from 'react';
+import { CollectionStatistics } from 'lib/nftCollectionStats';
+import React, { useEffect, useMemo, useState } from 'react';
 import { FieldError, UseFormReturn } from 'react-hook-form';
 import type { CreateFormData } from './CreateFormData';
 
@@ -13,9 +16,13 @@ type ExplainerProps = {
   form: UseFormReturn<CreateFormData, object>;
   state: string;
   top: number;
+  collectionStats: CollectionStatistics | null;
 };
 
-type InnerProps = { context: CreateFormData; decimals: number | null };
+type InnerProps = {
+  context: CreateFormData & { collectionStats: CollectionStatistics | null };
+  decimals: number | null;
+};
 
 export const explainers: {
   [key: string]: (props: InnerProps) => JSX.Element;
@@ -34,9 +41,15 @@ export const explainers: {
   acceptHigherLoanAmount: LoanAmount,
 };
 
-export function Explainer({ form, state, top }: ExplainerProps) {
+export function Explainer({
+  form,
+  state,
+  top,
+  collectionStats,
+}: ExplainerProps) {
   const { jsonRpcProvider, network } = useConfig();
-  const context = form.watch();
+  const formData = form.watch();
+  const context = { ...formData, collectionStats };
   const [decimals, setDecimals] = useState<number | null>(null);
   useEffect(() => {
     if (context.denomination) {
@@ -59,7 +72,7 @@ export function Explainer({ form, state, top }: ExplainerProps) {
   return (
     <ExplainerWrapper top={top} display={!!error ? 'error' : 'normal'}>
       {!!error && <Error error={error} />}
-      {!error && <Inner context={form.watch()} decimals={decimals} />}
+      {!error && <Inner context={context} decimals={decimals} />}
     </ExplainerWrapper>
   );
 }
@@ -123,11 +136,32 @@ function Denomination({ context }: InnerProps) {
 }
 
 function LoanAmount({ context }: InnerProps) {
+  const ltv = useLTV({
+    assetContractAddress: context.denomination.address,
+    floorPrice: context.collectionStats?.floor,
+    loanAmount: context.loanAmount,
+  });
+
+  const ltvInfo = useMemo(() => {
+    if (!ltv) {
+      return null;
+    }
+
+    return (
+      <>
+        <br />
+        Based on the values you have entered, this loan has a Loan-to-Value
+        (LTV) ratio of {ltv}.
+      </>
+    );
+  }, [ltv]);
+
   if (context.acceptHigherLoanAmounts) {
     return (
       <div>
         Lenders can give you a larger loan, but this is the minimum amount
         you&apos;ll accept.
+        {ltvInfo}
       </div>
     );
   }
@@ -136,6 +170,7 @@ function LoanAmount({ context }: InnerProps) {
     <div>
       Lenders will be able to offer improved interest rates and duration, but
       loan amount will stay fixed.
+      {ltvInfo}
     </div>
   );
 }
