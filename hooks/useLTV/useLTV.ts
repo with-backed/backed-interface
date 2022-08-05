@@ -1,0 +1,72 @@
+import { ethers } from 'ethers';
+import { useCachedRates } from 'hooks/useCachedRates/useCachedRates';
+import { useConfig } from 'hooks/useConfig';
+import { SupportedNetwork } from 'lib/config';
+import { jsonRpcERC20Contract } from 'lib/contracts';
+import { useEffect, useState } from 'react';
+
+type UseLTVParams = {
+  assetContractAddress?: string;
+  loanAmount?: ethers.BigNumberish;
+  floorPrice?: number | null;
+};
+
+export function useLTV({
+  assetContractAddress,
+  floorPrice,
+  loanAmount,
+}: UseLTVParams) {
+  const { getEthRate, getRate } = useCachedRates();
+  const [ltv, setLtv] = useState<string | null>(null);
+  const { jsonRpcProvider, network } = useConfig();
+
+  useEffect(() => {
+    if (!assetContractAddress || !loanAmount || !floorPrice) {
+      // Not enough info to calculate; e.g. if loan form isn't filled out
+      return;
+    }
+
+    const assetContract = jsonRpcERC20Contract(
+      assetContractAddress,
+      jsonRpcProvider,
+      network as SupportedNetwork,
+    );
+
+    const formatter = Intl.NumberFormat('en-US', {
+      style: 'percent',
+      minimumFractionDigits: 2,
+    });
+
+    const getLtv = async () => {
+      const [ethRate, loanDenominationRate, decimals] = await Promise.all([
+        getEthRate('usd'),
+        getRate(assetContractAddress, 'usd'),
+        assetContract.decimals(),
+      ]);
+
+      if (!ethRate || !loanDenominationRate || !decimals) {
+        return;
+      }
+
+      const loanAmountUSD =
+        parseFloat(ethers.utils.formatUnits(loanAmount, decimals)) *
+        loanDenominationRate;
+      const tokenFloorUSD = floorPrice * ethRate;
+      const ltvRatio = formatter.format(loanAmountUSD / tokenFloorUSD);
+
+      setLtv(ltvRatio);
+    };
+
+    getLtv();
+  }, [
+    assetContractAddress,
+    floorPrice,
+    getEthRate,
+    getRate,
+    jsonRpcProvider,
+    loanAmount,
+    network,
+  ]);
+
+  return ltv;
+}
