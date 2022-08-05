@@ -52,7 +52,7 @@ export function LoanHeader({
   const details = useLoanDetails(loan);
   const ltv = useLTV({
     loanAmount: loan.loanAmount,
-    assetContractAddress: loan.collateralContractAddress,
+    assetContractAddress: loan.loanAssetContractAddress,
     floorPrice,
   });
   const convertedLoanAmount = useMemo(
