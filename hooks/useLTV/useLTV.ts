@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 
 type UseLTVParams = {
   assetContractAddress?: string;
-  loanAmount?: ethers.BigNumberish;
+  loanAmount?: ethers.BigNumber | string;
   floorPrice?: number | null;
 };
 
@@ -50,9 +50,13 @@ export function useLTV({
         return;
       }
 
-      const loanAmountUSD =
-        parseFloat(ethers.utils.formatUnits(loanAmount, decimals)) *
-        loanDenominationRate;
+      const floatLoanAmount =
+        // loanAmount is string when coming from form, requires no transformation.
+        // BigNumber from chain does need to be formatted.
+        typeof loanAmount === 'string'
+          ? parseFloat(loanAmount)
+          : parseFloat(ethers.utils.formatUnits(loanAmount, decimals));
+      const loanAmountUSD = floatLoanAmount * loanDenominationRate;
       const tokenFloorUSD = floorPrice * ethRate;
       const ltvRatio = formatter.format(loanAmountUSD / tokenFloorUSD);
 
