@@ -21,6 +21,8 @@ export function useLTV({
   const { jsonRpcProvider, network } = useConfig();
 
   useEffect(() => {
+    // Don't want to cache a stale LTV, every time this runs we should zero it first
+    setLtv(null);
     if (!assetContractAddress || !loanAmount || !floorPrice) {
       // Not enough info to calculate; e.g. if loan form isn't filled out
       return;
