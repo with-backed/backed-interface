@@ -5,12 +5,12 @@ import { Fallback } from 'components/Media/Fallback';
 import { useLoanDetails } from 'hooks/useLoanDetails';
 import { CollateralMedia } from 'types/CollateralMedia';
 import { Loan } from 'types/Loan';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import styles from './LoanHeader.module.css';
 import { TwelveColumn } from 'components/layouts/TwelveColumn';
 import { DisplayCurrency } from 'components/DisplayCurrency';
 import { ethers } from 'ethers';
-import { useCachedRates } from 'hooks/useCachedRates/useCachedRates';
+import { useLTV } from 'hooks/useLTV';
 
 type LoanHeaderProps = {
   loan: Loan;
@@ -50,8 +50,11 @@ export function LoanHeader({
   refresh,
 }: LoanHeaderProps) {
   const details = useLoanDetails(loan);
-  const [ltv, setLtv] = useState<string | null>(null);
-  const { getEthRate, getRate } = useCachedRates();
+  const ltv = useLTV({
+    loanAmount: loan.loanAmount,
+    assetContractAddress: loan.loanAssetContractAddress,
+    floorPrice,
+  });
   const convertedLoanAmount = useMemo(
     () => (
       <DisplayCurrency
@@ -72,33 +75,6 @@ export function LoanHeader({
     () => listComponentLookup[details.formattedStatus],
     [details.formattedStatus],
   );
-
-  useEffect(() => {
-    const formatter = Intl.NumberFormat('en-US', {
-      style: 'percent',
-      minimumFractionDigits: 2,
-    });
-    const getLtv = async () => {
-      const [ethRate, loanDenominationRate] = await Promise.all([
-        getEthRate('usd'),
-        getRate(loan.loanAssetContractAddress, 'usd'),
-      ]);
-
-      if (!floorPrice || !ethRate || !loanDenominationRate) {
-        return;
-      }
-
-      const loanAmountUSD =
-        parseFloat(
-          ethers.utils.formatUnits(loan.loanAmount, loan.loanAssetDecimals),
-        ) * loanDenominationRate;
-      const tokenFloorUSD = floorPrice * ethRate;
-      const ltvRatio = formatter.format(loanAmountUSD / tokenFloorUSD);
-
-      setLtv(ltvRatio);
-    };
-    getLtv();
-  }, [floorPrice, getEthRate, getRate, loan]);
 
   return (
     <div className={styles['loan-header']}>

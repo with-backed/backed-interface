@@ -24,6 +24,10 @@ import { useAccount } from 'wagmi';
 import { Button } from 'components/Button';
 import { useConfig } from 'hooks/useConfig';
 import { SupportedNetwork } from 'lib/config';
+import {
+  CollectionStatistics,
+  getCollectionStats,
+} from 'lib/nftCollectionStats';
 
 export function CreatePageHeader() {
   const form = useForm<CreateFormData>({
@@ -49,6 +53,18 @@ export function CreatePageHeader() {
     () => ({ collateralContractAddress, collateralTokenId }),
     [collateralContractAddress, collateralTokenId],
   );
+
+  const [collectionStats, setCollectionStats] =
+    useState<CollectionStatistics | null>(null);
+
+  useEffect(() => {
+    setCollectionStats(null);
+    getCollectionStats(
+      collateralContractAddress,
+      collateralTokenId.toString(),
+      network as SupportedNetwork,
+    ).then(setCollectionStats);
+  }, [collateralContractAddress, collateralTokenId, network]);
 
   const nftInfo = useTokenMetadata(tokenSpec);
 
@@ -213,6 +229,7 @@ export function CreatePageHeader() {
           state={current.toStrings()[0]}
           top={explainerTop}
           form={form}
+          collectionStats={collectionStats}
         />
       </ThreeColumn>
       <Provider value={eip721Client}>
