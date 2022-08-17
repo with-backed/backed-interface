@@ -2,11 +2,19 @@ import { DescriptionList } from 'components/DescriptionList';
 import { Fieldset } from 'components/Fieldset';
 import { NFTExchangeAddressLink } from 'components/NFTExchangeLink';
 import { Loan } from 'types/Loan';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { CollateralSaleInfo } from 'lib/loans/collateralSaleInfo';
 import styles from './CollateralInfo.module.css';
 import { DisplayEth } from 'components/DisplayCurrency';
 import { useConfig } from 'hooks/useConfig';
+import { CurrencyAmount, Token } from '@uniswap/sdk-core';
+import { UNISWAP_POSTIION_ADDRESS } from 'lib/constants';
+import { nonFungiblePositionManager, v3Pool } from 'lib/contracts';
+import { SupportedNetwork } from 'lib/config';
+import { useV3PositionFromTokenId } from 'hooks/useV3PositionFromTokenId';
+import { useUniswapToken } from 'hooks/useUniswapToken';
+import { useCachedRates } from 'hooks/useCachedRates/useCachedRates';
+import { getPool } from 'lib/uniswap';
 
 type CollateralInfoProps = {
   loan: Loan;
@@ -19,8 +27,6 @@ type CollateralInfoPropsAbsent = CollateralInfoProps & {
 type CollateralInfoPropsPresent = CollateralInfoProps & {
   collateralSaleInfo: CollateralSaleInfo;
 };
-
-const UNISWAP_POSTIION_ADDRESS = '0xC36442b4a4522E871399CD717aBDD847Ab11FE88';
 
 const CollateralSaleInfoAbsent = ({ loan }: CollateralInfoPropsAbsent) => {
   const tokenId = loan.collateralTokenId.toString();
@@ -135,6 +141,48 @@ const UniswapViewPositionLink = ({ tokenId }: { tokenId: string }) => {
 
 const CollateralInfoUniswap = ({ loan }: CollateralInfoPropsAbsent) => {
   const tokenId = loan.collateralTokenId.toString();
+  const { getRate } = useCachedRates();
+  const { jsonRpcProvider, network } = useConfig();
+  const { positionDetails, loading } = useV3PositionFromTokenId(
+    loan.collateralTokenId,
+  );
+
+  const {
+    token0: token0Address,
+    token1: token1Address,
+    fee: feeAmount,
+    liquidity,
+    tickLower,
+    tickUpper,
+  } = positionDetails || {};
+
+  const token0 = useUniswapToken(token0Address);
+  const token1 = useUniswapToken(token1Address);
+
+  const [price0, price1] = useMemo(() => {
+    if (token0 && token1) {
+      return [token0.address, token1.address];
+    }
+    return [undefined, undefined];
+  }, [token0, token1]);
+
+  const fiatValueOfLiquidity: CurrencyAmount<Token> | null = useMemo(() => {
+    if (token0 && token1 && feeAmount) {
+      const contract = v3Pool(
+        token0,
+        token1,
+        feeAmount,
+        jsonRpcProvider,
+        network as SupportedNetwork,
+      );
+      const pool = getPool(contract, token0, token1);
+    }
+    if (!price0 || !price1 || !position) return null;
+    const amount0 = price0.quote(position.amount0);
+    const amount1 = price1.quote(position.amount1);
+    return amount0.add(amount1);
+  }, [price0, price1, position]);
+
   return (
     <Fieldset legend="🖼️ Collateral">
       <DescriptionList>

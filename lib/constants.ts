@@ -27,3 +27,5 @@ export const COMMUNITY_NFT_CONTRACT_ADDRESS =
   '0x63a9addF2327A0F4B71BcF9BFa757E333e1B7177';
 export const COMMUNITY_NFT_SUBGRAPH =
   'https://api.thegraph.com/subgraphs/name/with-backed/backed-community-nft';
+export const UNISWAP_POSTIION_ADDRESS =
+  '0xC36442b4a4522E871399CD717aBDD847Ab11FE88';

@@ -1,13 +1,20 @@
+import { Token } from '@uniswap/sdk-core';
+import { computePoolAddress } from '@uniswap/v3-sdk';
 import { ethers, Signer } from 'ethers';
 import {
   CommunityNFT__factory,
   ERC20__factory,
   ERC721,
   ERC721__factory,
+  IUniswapV3Pool__factory,
   NFTLoanFacilitator__factory,
+  NonFungiblePositionManager__factory,
 } from 'types/generated/abis';
 import { configs, SupportedNetwork } from './config';
-import { COMMUNITY_NFT_CONTRACT_ADDRESS } from './constants';
+import {
+  COMMUNITY_NFT_CONTRACT_ADDRESS,
+  UNISWAP_POSTIION_ADDRESS,
+} from './constants';
 
 type ContractDirectoryListing = {
   loanFacilitator: string;
@@ -123,4 +130,32 @@ export function communityNFT(
     COMMUNITY_NFT_CONTRACT_ADDRESS,
     provider,
   );
+}
+
+export function nonFungiblePositionManager(
+  jsonRpcProvider: string,
+  network: SupportedNetwork,
+) {
+  const provider = makeProvider(jsonRpcProvider, network);
+  return NonFungiblePositionManager__factory.connect(
+    UNISWAP_POSTIION_ADDRESS,
+    provider,
+  );
+}
+
+export function v3Pool(
+  tokenA: Token,
+  tokenB: Token,
+  fee: number,
+  jsonRpcProvider: string,
+  network: SupportedNetwork,
+) {
+  const address = computePoolAddress({
+    factoryAddress: UNISWAP_POSTIION_ADDRESS,
+    tokenA,
+    tokenB,
+    fee,
+  });
+  const provider = makeProvider(jsonRpcProvider, network);
+  return IUniswapV3Pool__factory.connect(address, provider);
 }
