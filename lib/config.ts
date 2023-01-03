@@ -53,8 +53,8 @@ const ethereum = {
   etherscanUrl: 'https://etherscan.io',
   chainId: 1,
   jsonRpcProvider:
-    'https://eth-mainnet.alchemyapi.io/v2/De3LMv_8CYuN9WzVEgoOI5w7ltnGIhnH',
-  alchemyId: 'De3LMv_8CYuN9WzVEgoOI5w7ltnGIhnH',
+    'https://eth-mainnet.g.alchemy.com/v2/3an6BUp_BrNODaog2vz-z03zE1HkMlc1',
+  alchemyId: '3an6BUp_BrNODaog2vz-z03zE1HkMlc1',
   siteUrl: 'https://withbacked.xyz',
   network: 'ethereum',
   emailSubjectPrefix: '[Ethereum]:',
