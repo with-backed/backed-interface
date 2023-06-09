@@ -1,5 +1,5 @@
 overwrite: true
-schema: 'https://api.thegraph.com/subgraphs/name/sunguru98/erc721-rinkeby-subgraph'
+schema: 'https://api.thegraph.com/subgraphs/name/sunguru98/mainnet-erc721-subgraph'
 documents: './graphql/eip721/**/*.graphql'
 generates:
   types/generated/graphql/eip721subgraph.ts:
