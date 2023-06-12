@@ -5,10 +5,6 @@ import {
   CollectionStatistics,
   getCollectionStats,
 } from 'lib/nftCollectionStats';
-import {
-  generateFakeSaleForNFT,
-  queryMostRecentSaleForNFT,
-} from 'lib/nftSalesSubgraph';
 import { Sale as NFTSale } from 'types/generated/graphql/nftSales';
 
 export type CollateralSaleInfo = {
@@ -53,46 +49,7 @@ async function getMostRecentSale(
   network: SupportedNetwork,
   jsonRpcProvider: string,
 ): Promise<{ paymentToken: string; price: number } | null> {
-  let sale: NFTSale | null = null;
+  // deprecating most recent sale, return null and UI will handle
 
-  switch (network) {
-    case 'ethereum':
-      //TODO(adamgobes): find an NFT sales api for eth mainnet
-      return null;
-    case 'rinkeby':
-      sale = generateFakeSaleForNFT(nftContractAddress, tokenId);
-      break;
-    default:
-      // TODO(adamgobes): follow up with Quixotic team on when they will release API to get most recent sale. it is not available for now
-      return null;
-  }
-
-  const paymentTokenAddress = sale.paymentToken;
-  const price = sale.price;
-
-  const erc20Contract = jsonRpcERC20Contract(
-    paymentTokenAddress,
-    jsonRpcProvider,
-    network,
-  );
-
-  let paymentTokenSymbol: string;
-  let recentSaleTokenDecimals: number;
-  if (paymentTokenAddress === '0x0000000000000000000000000000000000000000') {
-    paymentTokenSymbol = 'ETH';
-    recentSaleTokenDecimals = 18;
-  } else {
-    paymentTokenSymbol = await erc20Contract.symbol();
-    recentSaleTokenDecimals = await erc20Contract.decimals();
-  }
-
-  const formatttedPrice = ethers.utils.formatUnits(
-    ethers.BigNumber.from(price),
-    recentSaleTokenDecimals,
-  );
-
-  return {
-    paymentToken: paymentTokenSymbol,
-    price: parseFloat(formatttedPrice),
-  };
+  return null;
 }
