@@ -1,11 +1,8 @@
-import { ethers } from 'ethers';
 import { SupportedNetwork } from 'lib/config';
-import { jsonRpcERC20Contract } from 'lib/contracts';
 import {
   CollectionStatistics,
   getCollectionStats,
 } from 'lib/nftCollectionStats';
-import { Sale as NFTSale } from 'types/generated/graphql/nftSales';
 
 export type CollateralSaleInfo = {
   recentSale: {
