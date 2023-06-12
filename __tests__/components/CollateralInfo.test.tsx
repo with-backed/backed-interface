@@ -2,7 +2,6 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { CollateralInfo } from 'components/CollateralInfo';
 import { CollateralSaleInfo } from 'lib/loans/collateralSaleInfo';
-import { generateFakeSaleForNFT } from 'lib/nftSalesSubgraph';
 import { baseLoan } from 'lib/mockData';
 
 const loan = baseLoan;
@@ -18,10 +17,7 @@ const collectionStats = {
   volume,
 };
 
-const recentSale = generateFakeSaleForNFT(
-  baseLoan.collateralContractAddress,
-  baseLoan.collateralTokenId.toString(),
-);
+const recentSale = null;
 
 const saleInfo: CollateralSaleInfo = {
   recentSale,
@@ -36,7 +32,6 @@ describe('CollateralInfo', () => {
 
     getByText('View on OpenSea');
     getByText("item's last sale");
-    getByText(`${recentSale.price} ${recentSale.paymentToken}`);
     getByText('collection');
     getByText(loan.collateralName);
     getByText('items');

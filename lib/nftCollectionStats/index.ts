@@ -19,7 +19,8 @@ export async function getCollectionStats(
     case 'ethereum':
       return collectionStatsEthMainnet(contractAddress, tokenId);
     case 'optimism':
-      return collectionStatsOptimism(contractAddress);
+      // quixotic api broke
+      return nullCollectionStats;
     case 'polygon':
       return nullCollectionStats;
     case 'rinkeby':
