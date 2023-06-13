@@ -23,7 +23,7 @@ type Page = {
 };
 const prodPages: Page[] = [
   { name: 'Lend', route: '' },
-  { name: 'Borrow', route: 'loans/create' },
+  // { name: 'Borrow', route: 'loans/create' },
   { name: 'About', route: 'about', isNetworkSpecialCase: true },
 ];
 
