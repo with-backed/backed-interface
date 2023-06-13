@@ -154,9 +154,10 @@ export function Header() {
             placeholder="blur"
           />
           <p>
-            The Backed protocol is stopping active development.
+            This interface will go offline September 1, 2023. The protocol will
+            continue to operate.
             <br />
-            This interface will be taken offline on September 1, 2023. Read{' '}
+            Read{' '}
             <Link href={ANNOUNCEMENT_URL}>
               <a className={styles.announcement}>the announcement</a>
             </Link>
