@@ -6,8 +6,13 @@ import { useConfig } from 'hooks/useConfig';
 import { useOnClickOutside } from 'hooks/useOnClickOutside';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import AngelBunny from 'public/angelbunny-XL.png';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import styles from './Header.module.css';
+import Image from 'next/image';
+
+const ANNOUNCEMENT_URL =
+  'https://backed.mirror.xyz/Y7aaIAo8TG9vVCYp1X0bJBTC0wEGR3OS57iMUG3DyCg';
 
 type Page = {
   name: string;
@@ -18,7 +23,7 @@ type Page = {
 };
 const prodPages: Page[] = [
   { name: 'Lend', route: '' },
-  { name: 'Borrow', route: 'loans/create' },
+  // { name: 'Borrow', route: 'loans/create' },
   { name: 'About', route: 'about', isNetworkSpecialCase: true },
 ];
 
@@ -138,6 +143,28 @@ export function Header() {
 
   return (
     <nav className={styles.nav}>
+      <div className={styles.shutdown}>
+        <div className={styles['shutdown-content']}>
+          <Image
+            height={67}
+            width={56}
+            src={AngelBunny}
+            alt=""
+            priority
+            placeholder="blur"
+          />
+          <p>
+            This interface will go offline September 1, 2023. The protocol will
+            continue to operate.
+            <br />
+            Read{' '}
+            <Link href={ANNOUNCEMENT_URL}>
+              <a className={styles.announcement}>the announcement</a>
+            </Link>
+            .
+          </p>
+        </div>
+      </div>
       <div className={styles.content}>
         <div className={styles['desktop-header']}>
           <div className={styles['left-side']}>
